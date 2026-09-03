@@ -4,8 +4,8 @@ Mobile-first ordering website for Nasty Burger House, built with Next.js 16, Rea
 
 ## Current functionality
 
-- Category and dietary menu filters
-- Menu search with combined category and dietary filtering
+- Full-screen homepage carousel for the signature burger, Beast of the Month and Beast Boxes
+- Dark Nasty Burger House visual theme across the homepage and menu catalogue
 - Accessible mobile navigation drawer with ordering status
 - Multi-page category catalogue at `/menu/[category]`
 - Product links that open the existing customisation and ordering flow

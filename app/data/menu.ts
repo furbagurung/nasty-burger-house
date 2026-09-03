@@ -26,6 +26,7 @@ export type MenuItem = {
   description: string;
   category: Exclude<MenuCategoryId, "featured">;
   price: number;
+  priceConfirmed?: boolean;
   image?: string;
   featured?: boolean;
   canUpgrade?: boolean;
@@ -35,20 +36,6 @@ export type MenuItem = {
   removableIngredients?: string[];
   boxConfig?: BeastBoxConfig;
 };
-
-export const menuCategories: Array<{
-  id: "all" | MenuCategoryId;
-  label: string;
-}> = [
-  { id: "all", label: "Full menu" },
-  { id: "featured", label: "Featured" },
-  { id: "burgers", label: "Beast Burgers" },
-  { id: "loaded-sides", label: "Loaded Sides" },
-  { id: "kids", label: "Little Beasts" },
-  { id: "beast-boxes", label: "Beast Boxes" },
-  { id: "sweet", label: "Sweet" },
-  { id: "drinks", label: "Drinks" },
-];
 
 export const adultDrinkChoices = [
   "Coca-Cola",
@@ -61,9 +48,9 @@ export const adultDrinkChoices = [
 export const kidsDrinkChoices = ["Water", "Apple Juice", "Orange Juice"];
 
 // Kept in one configuration block so client-approved pricing can be changed safely.
-export const comboUpgradePrice = 7;
+export const comboUpgradePrice = 6.99;
 export const pricingNotice =
-  "Combo, modifier and kids' drink pricing is provisional until final client approval.";
+  "Monster Cheese, standalone drinks, modifiers and kids' drink pricing remain provisional. The $6.99 meal upgrade and supplied menu prices are confirmed.";
 
 export const modifierChoices: ModifierChoice[] = [
   { id: "beef-patty", name: "Extra smashed beef patty", price: 4 },
@@ -82,7 +69,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Our signature flame-grilled beef patty with American cheese, crisp lettuce, pickled onion and house-made NBH Signature Sauce on a toasted milk bun.",
     category: "burgers",
-    price: 16,
+    price: 19,
     image: "/images/signature-beast.webp",
     featured: true,
     canUpgrade: true,
@@ -101,7 +88,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Tender flame-grilled peri-peri chicken thigh, marinated in our signature peri-peri sauce, with tomato, fresh cabbage slaw and creamy mayo on a toasted milk bun.",
     category: "burgers",
-    price: 18,
+    price: 19,
     canUpgrade: true,
     dietaryTags: ["Halal"],
     modifierIds: ["chicken-patty", "bacon", "cheese", "house-sauce"],
@@ -113,7 +100,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Golden beer-battered fish fillet with house-made tartare sauce, American cheese and crisp lettuce on a toasted milk bun.",
     category: "burgers",
-    price: 18,
+    price: 21,
     canUpgrade: true,
     dietaryTags: ["Halal"],
     modifierIds: ["cheese", "house-sauce"],
@@ -125,7 +112,7 @@ export const menuItems: MenuItem[] = [
     description:
       "House-made vegetable patty with jalapeño mint mayo, pickled onion, fresh cabbage slaw and American cheese on a toasted milk bun.",
     category: "burgers",
-    price: 18,
+    price: 17,
     canUpgrade: true,
     dietaryTags: ["Vegetarian"],
     modifierIds: ["cheese", "house-sauce"],
@@ -142,7 +129,7 @@ export const menuItems: MenuItem[] = [
     description:
       "Juicy flame-grilled beef patty with crispy bacon, American cheese, house-made Bourbon BBQ sauce and creamy mayo on a toasted milk bun.",
     category: "burgers",
-    price: 18,
+    price: 19,
     featured: true,
     canUpgrade: true,
     dietaryTags: ["Halal"],
@@ -197,6 +184,7 @@ export const menuItems: MenuItem[] = [
       "Flame-grilled beef patty with American cheese, tomato sauce and pickles on a soft milk bun.",
     category: "kids",
     price: 14,
+    priceConfirmed: false,
     canUpgrade: true,
     isKidsItem: true,
     dietaryTags: ["Halal"],
@@ -220,9 +208,9 @@ export const menuItems: MenuItem[] = [
     id: "solo-beast-box",
     name: "Solo Beast Box",
     description:
-      "Any Beast Burger · Nasty Fries · 2 Buffalo Fury Wings · 2 Dirty Eggplant Pieces · 1 soft drink or water.",
+      "Any Beast Burger · Nasty Fries · 2 Dirty Eggplant Pieces · 1 soft drink or water.",
     category: "beast-boxes",
-    price: 31.9,
+    price: 34.99,
     featured: true,
     boxConfig: { burgerCount: 1, drinkCount: 1 },
   },
@@ -230,18 +218,18 @@ export const menuItems: MenuItem[] = [
     id: "duo-beast-box",
     name: "Duo Beast Box",
     description:
-      "Any 2 Beast Burgers · Nasty Fries · 4 Buffalo Fury Wings · 4 Dirty Eggplant Pieces · 2 soft drinks or waters.",
+      "Any 2 Beast Burgers · Nasty Fries · 4 Buffalo Fury Wings · 2 Dirty Eggplant Pieces · 2 soft drinks or waters · Mango Pudding with Lychee Granita.",
     category: "beast-boxes",
-    price: 54.9,
+    price: 59.99,
     boxConfig: { burgerCount: 2, drinkCount: 2 },
   },
   {
     id: "family-beast-box",
     name: "Family Beast Box",
     description:
-      "Any 2 Beast Burgers · Monster Cheese · 2 Nasty Fries · 8 Buffalo Fury Wings · 4 Dirty Eggplant Pieces · 6 Dino Nuggets · 3 soft drinks or waters.",
+      "Any 2 Beast Burgers · Monster Cheese · 2 Nasty Fries · 4 Buffalo Fury Wings · 4 Dirty Eggplant Pieces · 6 Dino Nuggets · 3 soft drinks or waters · Mango Pudding with Lychee Granita.",
     category: "beast-boxes",
-    price: 79.9,
+    price: 79.99,
     boxConfig: { burgerCount: 2, drinkCount: 3 },
   },
   {
@@ -259,5 +247,6 @@ export const menuItems: MenuItem[] = [
     description: name === "Water" ? "Chilled bottle." : "Chilled can.",
     category: "drinks" as const,
     price: 4,
+    priceConfirmed: false,
   })),
 ];

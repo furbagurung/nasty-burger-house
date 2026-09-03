@@ -59,7 +59,7 @@ export default function MenuCategoryPage({
           <Link className="catalogue-location-link" href="/#location">
             Find the truck
           </Link>
-          <Link className="catalogue-order-button" href="/#menu">
+          <Link className="catalogue-order-button" href="/menu/burgers">
             Order Now
           </Link>
           <details className="catalogue-mobile-nav">
@@ -130,7 +130,10 @@ export default function MenuCategoryPage({
                   )}
                 </div>
                 <h2>{item.name}</h2>
-                <p>{money.format(item.price)}</p>
+                <p>
+                  {money.format(item.price)}
+                  {item.priceConfirmed === false && <small> · Provisional</small>}
+                </p>
                 <span className="catalogue-product__action">
                   Customise &amp; order
                 </span>
@@ -139,8 +142,8 @@ export default function MenuCategoryPage({
           </div>
 
           <p className="catalogue-disclaimer">
-            Menu availability and provisional modifier pricing may change after
-            the final client confirmation.
+            Supplied menu prices are updated. Monster Cheese, standalone drinks,
+            modifiers and kids&apos; drinks remain provisional until confirmed.
           </p>
         </section>
       </main>

@@ -84,6 +84,8 @@ button:disabled {
 
 .site-shell {
   min-height: 100vh;
+  background: #100f0e;
+  color: #f8f4ec;
 }
 
 .service-bar {
@@ -145,8 +147,9 @@ button:disabled {
   gap: 2rem;
   min-height: 5.25rem;
   padding: 0.75rem clamp(1rem, 4vw, 4rem);
-  border-bottom: 1px solid rgba(21, 19, 15, 0.12);
-  background: rgba(246, 241, 231, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(14, 13, 12, 0.95);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(18px);
 }
 
@@ -189,7 +192,7 @@ button:disabled {
 .text-button {
   border: 0;
   background: transparent;
-  color: var(--ink);
+  color: #f8f4ec;
   font-size: 0.9rem;
   font-weight: 750;
   text-decoration: none;
@@ -212,9 +215,9 @@ button:disabled {
   height: 2.9rem;
   place-content: center;
   gap: 0.28rem;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
-  background: var(--card);
+  background: #1d1a18;
 }
 
 .mobile-menu-button span {
@@ -222,7 +225,7 @@ button:disabled {
   width: 1.05rem;
   height: 2px;
   border-radius: 99px;
-  background: var(--ink);
+  background: white;
 }
 
 .cart-button {
@@ -252,6 +255,152 @@ button:disabled {
 main {
   width: min(100% - 2rem, 1180px);
   margin-inline: auto;
+}
+
+.home-main {
+  width: 100%;
+  margin: 0;
+}
+
+.hero-carousel {
+  position: relative;
+  min-height: max(38rem, calc(100svh - 8rem));
+  overflow: hidden;
+  background: #080706;
+  color: white;
+}
+
+.hero-carousel__slides,
+.hero-slide {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-slide {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 700ms ease,
+    visibility 700ms ease;
+}
+
+.hero-slide.is-active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.hero-slide__image {
+  object-fit: cover;
+  object-position: 64% center;
+  transform: scale(1.025);
+  transition: transform 7s ease;
+}
+
+.hero-slide.is-active .hero-slide__image {
+  transform: scale(1);
+}
+
+.hero-slide__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(5, 4, 4, 0.96) 0%, rgba(5, 4, 4, 0.8) 34%, rgba(5, 4, 4, 0.18) 70%, rgba(5, 4, 4, 0.1) 100%),
+    linear-gradient(0deg, rgba(5, 4, 4, 0.72), transparent 45%);
+}
+
+.hero-slide__copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: min(100% - 2rem, 1180px);
+  min-height: max(38rem, calc(100svh - 8rem));
+  flex-direction: column;
+  justify-content: center;
+  margin-inline: auto;
+  padding: clamp(3rem, 8vw, 7rem) 0 clamp(7rem, 11vw, 9rem);
+}
+
+.hero-slide__copy .eyebrow {
+  color: var(--gold);
+}
+
+.hero-slide__copy h1,
+.hero-slide__copy h2 {
+  max-width: 9ch;
+  margin: 0;
+  font-size: clamp(4rem, 9vw, 8rem);
+  font-weight: 1000;
+  letter-spacing: -0.075em;
+  line-height: 0.84;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.hero-slide__copy > p:not(.eyebrow) {
+  max-width: 37rem;
+  margin: 1.5rem 0 0;
+  color: #d5cec5;
+  font-size: clamp(1rem, 1.7vw, 1.15rem);
+  line-height: 1.65;
+}
+
+.hero-carousel__controls {
+  position: absolute;
+  right: clamp(1rem, 4vw, 4rem);
+  bottom: 2rem;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  padding: 0.42rem;
+  background: rgba(8, 7, 6, 0.68);
+  backdrop-filter: blur(14px);
+}
+
+.hero-carousel__controls > button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 0.75rem;
+  background: transparent;
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.hero-carousel__controls > button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.hero-carousel__dots {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hero-carousel__dots button {
+  width: 0.58rem;
+  height: 0.58rem;
+  border: 0;
+  border-radius: 999px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.38);
+  transition:
+    width 180ms ease,
+    background-color 180ms ease;
+}
+
+.hero-carousel__dots button.is-active {
+  width: 1.7rem;
+  background: var(--hot);
+}
+
+.home-main .location-section {
+  width: min(100% - 2rem, 1180px);
+  margin: clamp(4rem, 8vw, 7rem) auto;
 }
 
 .order-hero {
@@ -747,7 +896,7 @@ main {
   justify-content: space-between;
   gap: 2rem;
   padding: 2.5rem clamp(1rem, 4vw, 4rem) 3rem;
-  background: var(--ink);
+  background: #080706;
   color: white;
 }
 
@@ -799,6 +948,7 @@ main {
   place-items: center;
   padding: 1rem;
   background: rgba(12, 10, 8, 0.72);
+  color: var(--ink);
   backdrop-filter: blur(8px);
 }
 
@@ -851,7 +1001,20 @@ main {
 }
 
 .pending-price {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
   font-weight: 850;
+}
+
+.pending-price small {
+  border-radius: 999px;
+  padding: 0.3rem 0.55rem;
+  background: rgba(232, 59, 24, 0.1);
+  color: var(--hot-dark);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .close-button {
@@ -1064,7 +1227,8 @@ legend span {
 
 .catalogue-shell {
   min-height: 100vh;
-  background: white;
+  background: #100f0e;
+  color: #f8f4ec;
 }
 
 .catalogue-header {
@@ -1077,9 +1241,9 @@ legend span {
   align-items: center;
   gap: 2rem;
   padding: 0.55rem clamp(1rem, 4vw, 4rem);
-  border-bottom: 1px solid #e2e2e2;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 5px 18px rgba(24, 20, 15, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(14, 13, 12, 0.96);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.24);
   backdrop-filter: blur(18px);
 }
 
@@ -1103,7 +1267,7 @@ legend span {
 
 .catalogue-desktop-nav a,
 .catalogue-location-link {
-  color: var(--ink);
+  color: #f8f4ec;
   font-size: 0.9rem;
   font-weight: 800;
   text-decoration: none;
@@ -1156,9 +1320,9 @@ legend span {
   height: 2.9rem;
   place-content: center;
   gap: 0.28rem;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
-  background: white;
+  background: #1d1a18;
   cursor: pointer;
   list-style: none;
 }
@@ -1172,7 +1336,7 @@ legend span {
   width: 1.05rem;
   height: 2px;
   border-radius: 99px;
-  background: var(--ink);
+  background: white;
 }
 
 .catalogue-mobile-nav nav {
@@ -1182,16 +1346,16 @@ legend span {
   display: grid;
   width: min(19rem, calc(100vw - 2rem));
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 1px solid #3a342f;
   border-radius: 1rem;
-  background: white;
+  background: #171513;
   box-shadow: var(--shadow);
 }
 
 .catalogue-mobile-nav nav a {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid #302b27;
   padding: 0.95rem 1rem;
-  color: var(--ink);
+  color: #f8f4ec;
   font-weight: 800;
   text-decoration: none;
 }
@@ -1214,17 +1378,17 @@ legend span {
   position: sticky;
   top: 7.5rem;
   overflow: hidden;
-  border: 1px solid #d7d7d7;
+  border: 1px solid #3a342f;
   border-radius: 0.2rem;
-  background: white;
-  box-shadow: 0 2px 5px rgba(20, 18, 15, 0.08);
+  background: #171513;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.2);
 }
 
 .catalogue-categories > p {
   margin: 0;
   padding: 1rem 1.15rem;
-  border-bottom: 1px solid #e4e4e4;
-  color: var(--muted);
+  border-bottom: 1px solid #302b27;
+  color: #aaa399;
   font-size: 0.75rem;
   font-weight: 900;
   letter-spacing: 0.14em;
@@ -1242,9 +1406,9 @@ legend span {
   grid-template-columns: 3.8rem 1fr;
   align-items: center;
   gap: 0.65rem;
-  border-bottom: 1px solid #ededed;
+  border-bottom: 1px solid #302b27;
   padding: 0.55rem 1rem;
-  color: var(--ink);
+  color: #f8f4ec;
   font-size: 0.95rem;
   font-weight: 650;
   text-decoration: none;
@@ -1255,11 +1419,11 @@ legend span {
 }
 
 .catalogue-categories a:hover {
-  background: #faf7f1;
+  background: #211e1b;
 }
 
 .catalogue-categories a.is-active {
-  background: #fff9f6;
+  background: #2a1713;
   font-weight: 900;
 }
 
@@ -1279,7 +1443,7 @@ legend span {
   height: 3.25rem;
   place-items: center;
   border-radius: 0.9rem;
-  background: var(--paper);
+  background: #24211e;
   color: var(--hot);
   font-size: 0.78rem;
   font-weight: 950;
@@ -1312,7 +1476,7 @@ legend span {
 .catalogue-heading > p:last-child {
   max-width: 44rem;
   margin: 1.4rem auto 0;
-  color: var(--muted);
+  color: #b7b0a6;
   font-size: 1rem;
   line-height: 1.65;
 }
@@ -1330,7 +1494,7 @@ legend span {
   align-items: center;
   border-radius: 1.2rem;
   padding: 0.75rem;
-  color: var(--ink);
+  color: #f8f4ec;
   text-align: center;
   text-decoration: none;
   transition:
@@ -1339,7 +1503,7 @@ legend span {
 }
 
 .catalogue-product:hover {
-  background: #faf7f1;
+  background: #1a1816;
   transform: translateY(-3px);
 }
 
@@ -1359,7 +1523,7 @@ legend span {
   height: 13.5rem;
   place-content: center;
   border-radius: 50%;
-  background: radial-gradient(circle, #f8eadf 0 47%, transparent 48%);
+  background: radial-gradient(circle, #261b17 0 47%, transparent 48%);
   color: var(--hot);
 }
 
@@ -1372,7 +1536,7 @@ legend span {
 
 .catalogue-product__placeholder small {
   margin-top: 0.55rem;
-  color: var(--muted);
+  color: #aaa399;
   font-size: 0.72rem;
   font-weight: 750;
   letter-spacing: 0.04em;
@@ -1389,9 +1553,16 @@ legend span {
 
 .catalogue-product > p {
   margin: 0.55rem 0 0;
-  color: var(--muted);
+  color: #b7b0a6;
   font-size: 0.9rem;
   font-weight: 800;
+}
+
+.catalogue-product > p small {
+  color: var(--hot);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .catalogue-product__action {
@@ -1405,7 +1576,7 @@ legend span {
 .catalogue-disclaimer {
   max-width: 43rem;
   margin: 6rem auto 0;
-  color: var(--muted);
+  color: #aaa399;
   font-size: 0.82rem;
   line-height: 1.55;
   text-align: center;
@@ -1417,7 +1588,7 @@ legend span {
   justify-content: space-between;
   gap: 2rem;
   padding: 2.5rem clamp(1rem, 4vw, 4rem);
-  background: var(--ink);
+  background: #080706;
   color: white;
 }
 
@@ -1488,12 +1659,15 @@ legend span {
   color: var(--muted);
 }
 
-.empty-cart button {
+.empty-cart button,
+.empty-cart a {
   border: 0;
   border-bottom: 2px solid currentColor;
   padding: 0.5rem;
   background: transparent;
+  color: var(--ink);
   font-weight: 800;
+  text-decoration: none;
 }
 
 .cart-line {
@@ -1978,6 +2152,14 @@ legend span {
   line-height: 1.5;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide,
+  .hero-slide__image,
+  .hero-carousel__dots button {
+    transition: none;
+  }
+}
+
 @media (max-width: 900px) {
   .site-header {
     grid-template-columns: auto 1fr;
@@ -2032,7 +2214,7 @@ legend span {
     min-width: 9.5rem;
     min-height: 4.5rem;
     grid-template-columns: 2.8rem 1fr;
-    border-right: 1px solid #ededed;
+    border-right: 1px solid #302b27;
     border-bottom: 0;
     padding: 0.45rem 0.75rem;
     font-size: 0.82rem;
@@ -2196,6 +2378,48 @@ legend span {
     width: min(100% - 1rem, 1180px);
   }
 
+  .home-main {
+    width: 100%;
+  }
+
+  .hero-carousel,
+  .hero-slide__copy {
+    min-height: max(37rem, calc(100svh - 7.15rem));
+  }
+
+  .hero-slide__image {
+    object-position: 68% center;
+  }
+
+  .hero-slide__shade {
+    background:
+      linear-gradient(90deg, rgba(5, 4, 4, 0.92) 0%, rgba(5, 4, 4, 0.58) 68%, rgba(5, 4, 4, 0.28) 100%),
+      linear-gradient(0deg, rgba(5, 4, 4, 0.88) 0%, rgba(5, 4, 4, 0.18) 72%);
+  }
+
+  .hero-slide__copy {
+    width: min(100% - 2rem, 38rem);
+    justify-content: flex-end;
+    padding: 3rem 0 8.5rem;
+  }
+
+  .hero-slide__copy h1,
+  .hero-slide__copy h2 {
+    max-width: 8ch;
+    font-size: clamp(3.4rem, 17vw, 5.7rem);
+  }
+
+  .hero-slide__copy > p:not(.eyebrow) {
+    max-width: 31rem;
+    font-size: 0.98rem;
+  }
+
+  .hero-carousel__controls {
+    right: 50%;
+    bottom: 1.25rem;
+    transform: translateX(50%);
+  }
+
   .order-hero {
     min-height: 0;
     border-radius: 1.15rem;
@@ -2294,8 +2518,8 @@ legend span {
     grid-template-columns: 0.8fr 1.2fr;
     gap: 0.65rem;
     padding: 0.7rem;
-    border-top: 1px solid rgba(21, 19, 15, 0.16);
-    background: rgba(246, 241, 231, 0.96);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(14, 13, 12, 0.96);
     backdrop-filter: blur(18px);
   }
 
@@ -2306,15 +2530,15 @@ legend span {
     align-items: center;
     justify-content: center;
     gap: 0.7rem;
-    border: 1px solid var(--line);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 999px;
-    background: white;
-    color: var(--ink);
+    background: #1d1a18;
+    color: white;
     font-weight: 850;
     text-decoration: none;
   }
 
-  .mobile-order-bar button {
+  .mobile-order-bar > :last-child {
     border-color: var(--hot);
     background: var(--hot);
     color: white;

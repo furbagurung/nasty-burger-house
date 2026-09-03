@@ -7,10 +7,8 @@ import {
   adultDrinkChoices,
   comboUpgradePrice,
   kidsDrinkChoices,
-  menuCategories,
   modifierChoices,
   pricingNotice,
-  type DietaryTag,
   type MenuItem,
 } from "../data/menu";
 import {
@@ -36,6 +34,63 @@ const LEGACY_CART_STORAGE_KEY = "nasty-burger-phase-one-cart";
 const LOYALTY_STORAGE_KEY = "nasty-burger-drip-signup";
 const LOYALTY_DISMISSED_KEY = "nasty-burger-loyalty-dismissed";
 const MONTHLY_SEEN_KEY = "nasty-burger-monthly-seen";
+
+type HeroSlide = {
+  id: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  primaryLabel: string;
+  primaryHref?: string;
+  primaryItemId?: string;
+  secondaryLabel: string;
+  secondaryHref?: string;
+  secondaryItemId?: string;
+};
+
+const heroSlides: HeroSlide[] = [
+  {
+    id: "signature",
+    eyebrow: "Signature Beast · $19",
+    title: "Feed the beast.",
+    description:
+      "Flame-grilled, fully loaded and built for pickup. Start with the burger that made Nasty Burger House.",
+    image: "/images/signature-beast.webp",
+    imageAlt: "Double flame-grilled burger with cheese, pickles and sauce",
+    primaryLabel: "Explore Beast Burgers",
+    primaryHref: "/menu/burgers",
+    secondaryLabel: "Find today’s truck",
+    secondaryHref: "#location",
+  },
+  {
+    id: "monthly",
+    eyebrow: "Beast of the Month · $19",
+    title: "Meet the BBQ Beast.",
+    description:
+      "Beef, crispy bacon, American cheese and house-made Bourbon BBQ sauce. Smoky, messy and here for a limited run.",
+    image: "/images/bbq-beast-hero.webp",
+    imageAlt: "BBQ burger with beef patties, bacon, cheese and smoky sauce",
+    primaryLabel: "Build the BBQ Beast",
+    primaryItemId: "bbq-beast",
+    secondaryLabel: "View all burgers",
+    secondaryHref: "/menu/burgers",
+  },
+  {
+    id: "boxes",
+    eyebrow: "Beast Boxes · From $34.99",
+    title: "Big feeds. Boxed.",
+    description:
+      "Choose your burgers and drinks, then load up a Solo, Duo or Family Beast Box for the whole crew.",
+    image: "/images/beast-box-hero.webp",
+    imageAlt: "Beast Box with burger, fries, wings, eggplant bites and dessert",
+    primaryLabel: "Explore Beast Boxes",
+    primaryHref: "/menu/beast-boxes",
+    secondaryLabel: "Start a Solo Box",
+    secondaryItemId: "solo-beast-box",
+  },
+];
 
 const money = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -108,9 +163,8 @@ export default function OrderExperience({
   items,
   initialServiceStatus,
 }: OrderExperienceProps) {
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [activeDietary, setActiveDietary] = useState<DietaryTag | null>(null);
-  const [menuQuery, setMenuQuery] = useState("");
+  const [activeHeroSlide, setActiveHeroSlide] = useState(0);
+  const [isHeroPaused, setIsHeroPaused] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [modifierQuantities, setModifierQuantities] = useState<
@@ -146,31 +200,6 @@ export default function OrderExperience({
     () => items.filter((item) => item.category === "burgers"),
     [items],
   );
-
-  const visibleItems = useMemo(() => {
-    const categoryItems =
-      activeCategory === "all"
-        ? items
-        : activeCategory === "featured"
-          ? items.filter((item) => item.featured)
-          : items.filter((item) => item.category === activeCategory);
-
-    const dietaryItems = activeDietary
-      ? categoryItems.filter((item) =>
-          item.dietaryTags?.includes(activeDietary),
-        )
-      : categoryItems;
-
-    const query = menuQuery.trim().toLocaleLowerCase();
-    if (!query) return dietaryItems;
-
-    return dietaryItems.filter((item) =>
-      [item.name, item.description, item.category, ...(item.dietaryTags ?? [])]
-        .join(" ")
-        .toLocaleLowerCase()
-        .includes(query),
-    );
-  }, [activeCategory, activeDietary, items, menuQuery]);
 
   const selectedModifiers = useMemo(
     () =>
@@ -239,10 +268,19 @@ export default function OrderExperience({
 
     const timer = window.setTimeout(() => {
       if (requestedItem) {
-        setSelectedItem(requestedItem);
         setIsCartOpen(false);
         setIsLoyaltyOpen(false);
-        setIsMonthlyOpen(false);
+        if (
+          requestedItem.id !== "bbq-beast" &&
+          window.sessionStorage.getItem(MONTHLY_SEEN_KEY) !== "1"
+        ) {
+          setPendingItem(requestedItem);
+          setIsMonthlyOpen(true);
+          window.sessionStorage.setItem(MONTHLY_SEEN_KEY, "1");
+        } else {
+          setSelectedItem(requestedItem);
+          setIsMonthlyOpen(false);
+        }
       } else if (shouldOpenCart) {
         setIsCartOpen(true);
       } else if (shouldOpenLoyalty) {
@@ -288,6 +326,21 @@ export default function OrderExperience({
       window.clearInterval(interval);
     };
   }, []);
+
+  useEffect(() => {
+    if (
+      isHeroPaused ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setActiveHeroSlide((current) => (current + 1) % heroSlides.length);
+    }, 6500);
+
+    return () => window.clearInterval(interval);
+  }, [isHeroPaused]);
 
   useEffect(() => {
     if (
@@ -687,21 +740,6 @@ export default function OrderExperience({
     }
   }
 
-  function filterAndScroll(category: string) {
-    setIsMobileNavOpen(false);
-    setActiveCategory(category);
-    window.setTimeout(
-      () => document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" }),
-      0,
-    );
-  }
-
-  function clearMenuFilters() {
-    setMenuQuery("");
-    setActiveCategory("all");
-    setActiveDietary(null);
-  }
-
   const drinksForSelectedItem = selectedItem?.isKidsItem
     ? kidsDrinkChoices
     : adultDrinkChoices;
@@ -834,187 +872,129 @@ export default function OrderExperience({
         </div>
       )}
 
-      <main id="top">
-        <section className="order-hero" aria-labelledby="hero-title">
-          <div className="order-hero__copy">
-            <p className="eyebrow">Made for mobile pickup</p>
-            <h1 id="hero-title">Choose it. Load it. Get nasty.</h1>
-            <p>
-              Browse the menu, customise every item, build a Beast Box and keep
-              your order open while you explore.
-            </p>
-            <div className="hero-actions">
-              <a className="primary-button" href="#menu">
-                Start an order
-              </a>
-              <a className="secondary-button" href="#location">
-                Find today&apos;s truck
-              </a>
-            </div>
-            <small>
-              {serviceStatus.notice}
-            </small>
-          </div>
-          <div className="order-hero__image">
-            <Image
-              src="/images/signature-beast.webp"
-              alt="Double smash burger with cheese, pickles, onions and sauce"
-              fill
-              priority
-              sizes="(max-width: 760px) 100vw, 50vw"
-            />
-          </div>
-        </section>
-
+      <main className="home-main" id="top">
         <section
-          className="quick-promos"
+          className="hero-carousel"
           id="beast-month"
-          aria-label="Featured offers"
+          aria-label="Featured Nasty Burger House offers"
+          aria-roledescription="carousel"
         >
-          <article className="promo-card promo-card--hot">
-            <p className="eyebrow">Rotating feature</p>
-            <h2>BBQ Beast</h2>
-            <p>
-              Beef, crispy bacon, American cheese and house-made Bourbon BBQ
-              sauce.
-            </p>
-            <button
-              type="button"
-              onClick={() => monthlyItem && beginProduct(monthlyItem)}
-            >
-              Build yours · {monthlyItem ? formatPrice(monthlyItem.price) : ""}
-            </button>
-          </article>
-          <article className="promo-card">
-            <p className="eyebrow">Built for sharing</p>
-            <h2>Beast Boxes</h2>
-            <p>
-              Choose the burgers and drinks for Solo, Duo or Family-sized feeds.
-            </p>
-            <button type="button" onClick={() => filterAndScroll("beast-boxes")}>
-              Browse boxes
-            </button>
-          </article>
-        </section>
-
-        <section className="menu-section" id="menu" aria-labelledby="menu-title">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Build your pickup</p>
-              <h2 id="menu-title">Explore the menu</h2>
-            </div>
-            <p>
-              Halal and vegetarian labels follow the supplied menu. Gluten-free
-              and allergen filters remain off until the client verifies them.
-            </p>
-          </div>
-
-          <div className="category-tabs" aria-label="Menu categories">
-            {menuCategories.map((category) => (
-              <button
-                key={category.id}
-                type="button"
-                className={activeCategory === category.id ? "is-active" : ""}
-                onClick={() => setActiveCategory(category.id)}
-                aria-pressed={activeCategory === category.id}
+          <div className="hero-carousel__slides" aria-live="off">
+            {heroSlides.map((slide, index) => (
+              <article
+                className={`hero-slide ${
+                  activeHeroSlide === index ? "is-active" : ""
+                }`}
+                aria-hidden={activeHeroSlide !== index}
+                key={slide.id}
               >
-                {category.label}
-              </button>
+                <Image
+                  className="hero-slide__image"
+                  src={slide.image}
+                  alt={slide.imageAlt}
+                  fill
+                  priority={index === 0}
+                  sizes="100vw"
+                />
+                <div className="hero-slide__shade" aria-hidden="true" />
+                <div className="hero-slide__copy">
+                  <p className="eyebrow">{slide.eyebrow}</p>
+                  {index === 0 ? (
+                    <h1>{slide.title}</h1>
+                  ) : (
+                    <h2>{slide.title}</h2>
+                  )}
+                  <p>{slide.description}</p>
+                  <div className="hero-actions">
+                    {slide.primaryItemId ? (
+                      <button
+                        className="primary-button"
+                        type="button"
+                        onClick={() => {
+                          const item = items.find(
+                            (entry) => entry.id === slide.primaryItemId,
+                          );
+                          if (item) openItem(item);
+                        }}
+                      >
+                        {slide.primaryLabel}
+                      </button>
+                    ) : (
+                      <Link className="primary-button" href={slide.primaryHref!}>
+                        {slide.primaryLabel}
+                      </Link>
+                    )}
+                    {slide.secondaryItemId ? (
+                      <button
+                        className="secondary-button"
+                        type="button"
+                        onClick={() => {
+                          const item = items.find(
+                            (entry) => entry.id === slide.secondaryItemId,
+                          );
+                          if (item) openItem(item);
+                        }}
+                      >
+                        {slide.secondaryLabel}
+                      </button>
+                    ) : (
+                      <Link
+                        className="secondary-button"
+                        href={slide.secondaryHref!}
+                      >
+                        {slide.secondaryLabel}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
 
-          <div className="menu-tools">
-            <label className="menu-search">
-              <span className="sr-only">Search the menu</span>
-              <input
-                type="search"
-                value={menuQuery}
-                onChange={(event) => setMenuQuery(event.target.value)}
-                placeholder="Search burgers, sides or drinks"
-                autoComplete="off"
-              />
-              {menuQuery && (
-                <button type="button" onClick={() => setMenuQuery("")}>
-                  Clear
-                </button>
-              )}
-            </label>
-
-            <div className="dietary-filters" aria-label="Dietary filters">
-              <span>Quick filter</span>
-              {(["Halal", "Vegetarian"] as DietaryTag[]).map((filter) => (
+          <div className="hero-carousel__controls">
+            <button
+              type="button"
+              onClick={() =>
+                setActiveHeroSlide(
+                  (current) =>
+                    (current - 1 + heroSlides.length) % heroSlides.length,
+                )
+              }
+              aria-label="Show previous promotion"
+            >
+              ←
+            </button>
+            <div className="hero-carousel__dots" aria-label="Choose promotion">
+              {heroSlides.map((slide, index) => (
                 <button
-                  key={filter}
+                  className={activeHeroSlide === index ? "is-active" : ""}
                   type="button"
-                  className={activeDietary === filter ? "is-active" : ""}
-                  onClick={() =>
-                    setActiveDietary((current) =>
-                      current === filter ? null : filter,
-                    )
-                  }
-                  aria-pressed={activeDietary === filter}
-                >
-                  {filter}
-                </button>
+                  onClick={() => setActiveHeroSlide(index)}
+                  aria-label={`Show promotion ${index + 1}: ${slide.title}`}
+                  aria-current={activeHeroSlide === index ? "true" : undefined}
+                  key={slide.id}
+                />
               ))}
             </div>
+            <button
+              type="button"
+              onClick={() => setIsHeroPaused((current) => !current)}
+              aria-label={isHeroPaused ? "Play carousel" : "Pause carousel"}
+            >
+              {isHeroPaused ? "Play" : "Pause"}
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                setActiveHeroSlide(
+                  (current) => (current + 1) % heroSlides.length,
+                )
+              }
+              aria-label="Show next promotion"
+            >
+              →
+            </button>
           </div>
-
-          <p className="menu-result-count" aria-live="polite">
-            {visibleItems.length} {visibleItems.length === 1 ? "item" : "items"}
-          </p>
-
-          {visibleItems.length === 0 ? (
-            <div className="menu-empty">
-              <h3>No matching items.</h3>
-              <p>Try another search or clear the active menu filters.</p>
-              <button type="button" onClick={clearMenuFilters}>
-                Clear all filters
-              </button>
-            </div>
-          ) : (
-            <div className="menu-grid">
-              {visibleItems.map((item) => (
-                <article className="menu-card" key={item.id}>
-                  {item.image ? (
-                    <div className="menu-card__image">
-                      <Image
-                        src={item.image}
-                        alt=""
-                        fill
-                        sizes="(max-width: 680px) 100vw, 33vw"
-                      />
-                    </div>
-                  ) : (
-                    <div className="menu-card__placeholder" aria-hidden="true">
-                      <span>{item.name.slice(0, 1)}</span>
-                    </div>
-                  )}
-                  <div className="menu-card__content">
-                    <div className="menu-card__title">
-                      <h3>{item.name}</h3>
-                      {item.featured && <span>Featured</span>}
-                    </div>
-                    {item.dietaryTags && (
-                      <p className="menu-card__tags">
-                        {item.dietaryTags.join(" · ")}
-                      </p>
-                    )}
-                    <p>{item.description}</p>
-                    <div className="menu-card__action">
-                      <strong>{formatPrice(item.price)}</strong>
-                      <button type="button" onClick={() => openItem(item)}>
-                        {item.boxConfig || item.canUpgrade || item.modifierIds
-                          ? "Customise"
-                          : "Add"}
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-          <p className="pricing-notice">{pricingNotice}</p>
         </section>
 
         <section
@@ -1069,7 +1049,7 @@ export default function OrderExperience({
             width={256}
             height={256}
           />
-          <p>Function-first ordering website by Brahmanda Tech.</p>
+          <p>Bold burgers. Big flavour. No mercy.</p>
         </div>
         <nav aria-label="Footer navigation">
           <Link href="/menu/burgers">Menu</Link>
@@ -1082,11 +1062,13 @@ export default function OrderExperience({
 
       <div className="mobile-order-bar" aria-label="Mobile ordering actions">
         <a href="#location">Find Us</a>
-        <button type="button" onClick={openCart}>
-          {cartCount > 0
-            ? `View Order · ${formatPrice(cartSubtotal)}`
-            : "Order Now"}
-        </button>
+        {cartCount > 0 ? (
+          <button type="button" onClick={openCart}>
+            View Order · {formatPrice(cartSubtotal)}
+          </button>
+        ) : (
+          <Link href="/menu/burgers">Order Now</Link>
+        )}
       </div>
 
       {selectedItem && (
@@ -1110,7 +1092,12 @@ export default function OrderExperience({
             </p>
             <h2 id="product-modal-title">{selectedItem.name}</h2>
             <p>{selectedItem.description}</p>
-            <p className="pending-price">{formatPrice(selectedItem.price)}</p>
+            <p className="pending-price">
+              {formatPrice(selectedItem.price)}
+              {selectedItem.priceConfirmed === false && (
+                <small>Provisional price</small>
+              )}
+            </p>
 
             {selectedItem.boxConfig && (
               <>
@@ -1426,9 +1413,12 @@ export default function OrderExperience({
               <div className="empty-cart">
                 <h3>Your order is empty.</h3>
                 <p>Choose an item from the menu to begin.</p>
-                <button type="button" onClick={() => setIsCartOpen(false)}>
+                <Link
+                  href="/menu/burgers"
+                  onClick={() => setIsCartOpen(false)}
+                >
                   Browse menu
-                </button>
+                </Link>
               </div>
             ) : (
               <div className="cart-lines">
@@ -1571,13 +1561,13 @@ export default function OrderExperience({
                     order platform is connected.
                   </p>
                 </div>
-                <button
+                <Link
                   className="primary-button full-width"
-                  type="button"
+                  href="/menu/burgers"
                   onClick={() => setIsCheckoutOpen(false)}
                 >
                   Return to menu
-                </button>
+                </Link>
               </div>
             ) : (
               <form className="checkout-form" onSubmit={submitOrder}>

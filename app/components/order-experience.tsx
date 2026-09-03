@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   adultDrinkChoices,
@@ -227,6 +228,40 @@ export default function OrderExperience({
     if (!cartHydrated) return;
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
   }, [cart, cartHydrated]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedItem = items.find((item) => item.id === params.get("item"));
+    const shouldOpenCart = params.get("cart") === "1";
+    const shouldOpenLoyalty = params.get("loyalty") === "1";
+
+    if (!requestedItem && !shouldOpenCart && !shouldOpenLoyalty) return;
+
+    const timer = window.setTimeout(() => {
+      if (requestedItem) {
+        setSelectedItem(requestedItem);
+        setIsCartOpen(false);
+        setIsLoyaltyOpen(false);
+        setIsMonthlyOpen(false);
+      } else if (shouldOpenCart) {
+        setIsCartOpen(true);
+      } else if (shouldOpenLoyalty) {
+        setIsLoyaltyOpen(true);
+      }
+    }, 0);
+
+    params.delete("item");
+    params.delete("cart");
+    params.delete("loyalty");
+    const remainingQuery = params.toString();
+    window.history.replaceState(
+      {},
+      "",
+      `${window.location.pathname}${remainingQuery ? `?${remainingQuery}` : ""}${window.location.hash}`,
+    );
+
+    return () => window.clearTimeout(timer);
+  }, [items]);
 
   useEffect(() => {
     let cancelled = false;
@@ -709,7 +744,7 @@ export default function OrderExperience({
           />
         </a>
         <nav className="desktop-nav" aria-label="Primary navigation">
-          <a href="#menu">Menu</a>
+          <Link href="/menu/burgers">Menu</Link>
           <a href="#beast-month">Beast of the Month</a>
           <a href="#location">Find Us</a>
         </nav>
@@ -764,9 +799,9 @@ export default function OrderExperience({
               </button>
             </div>
             <nav className="mobile-nav-links" aria-label="Mobile navigation">
-              <button type="button" onClick={() => filterAndScroll("all")}>
+              <Link href="/menu/burgers">
                 Explore menu <span aria-hidden="true">→</span>
-              </button>
+              </Link>
               <a
                 href="#beast-month"
                 onClick={() => setIsMobileNavOpen(false)}
@@ -1037,7 +1072,7 @@ export default function OrderExperience({
           <p>Function-first ordering website by Brahmanda Tech.</p>
         </div>
         <nav aria-label="Footer navigation">
-          <a href="#menu">Menu</a>
+          <Link href="/menu/burgers">Menu</Link>
           <a href="#location">Find Us</a>
           <button type="button" onClick={openLoyalty}>
             Drip Points

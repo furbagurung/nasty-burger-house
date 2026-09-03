@@ -32,7 +32,6 @@ type CheckoutResult = {
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 const LEGACY_CART_STORAGE_KEY = "nasty-burger-phase-one-cart";
 const LOYALTY_STORAGE_KEY = "nasty-burger-drip-signup";
-const LOYALTY_DISMISSED_KEY = "nasty-burger-loyalty-dismissed";
 const MONTHLY_SEEN_KEY = "nasty-burger-monthly-seen";
 
 type HeroSlide = {
@@ -42,12 +41,6 @@ type HeroSlide = {
   description: string;
   image: string;
   imageAlt: string;
-  primaryLabel: string;
-  primaryHref?: string;
-  primaryItemId?: string;
-  secondaryLabel: string;
-  secondaryHref?: string;
-  secondaryItemId?: string;
 };
 
 const heroSlides: HeroSlide[] = [
@@ -59,10 +52,6 @@ const heroSlides: HeroSlide[] = [
       "Flame-grilled, fully loaded and built for pickup. Start with the burger that made Nasty Burger House.",
     image: "/images/signature-beast.webp",
     imageAlt: "Double flame-grilled burger with cheese, pickles and sauce",
-    primaryLabel: "Explore Beast Burgers",
-    primaryHref: "/menu/burgers",
-    secondaryLabel: "Find today’s truck",
-    secondaryHref: "#location",
   },
   {
     id: "monthly",
@@ -72,10 +61,6 @@ const heroSlides: HeroSlide[] = [
       "Beef, crispy bacon, American cheese and house-made Bourbon BBQ sauce. Smoky, messy and here for a limited run.",
     image: "/images/bbq-beast-hero.webp",
     imageAlt: "BBQ burger with beef patties, bacon, cheese and smoky sauce",
-    primaryLabel: "Build the BBQ Beast",
-    primaryItemId: "bbq-beast",
-    secondaryLabel: "View all burgers",
-    secondaryHref: "/menu/burgers",
   },
   {
     id: "boxes",
@@ -85,10 +70,6 @@ const heroSlides: HeroSlide[] = [
       "Choose your burgers and drinks, then load up a Solo, Duo or Family Beast Box for the whole crew.",
     image: "/images/beast-box-hero.webp",
     imageAlt: "Beast Box with burger, fries, wings, eggplant bites and dessert",
-    primaryLabel: "Explore Beast Boxes",
-    primaryHref: "/menu/beast-boxes",
-    secondaryLabel: "Start a Solo Box",
-    secondaryItemId: "solo-beast-box",
   },
 ];
 
@@ -180,6 +161,7 @@ export default function OrderExperience({
   const [cart, setCart] = useState<CartLine[]>([]);
   const [cartHydrated, setCartHydrated] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isOrderTypeOpen, setIsOrderTypeOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [checkoutState, setCheckoutState] = useState<
     "idle" | "submitting" | "success" | "error"
@@ -189,12 +171,11 @@ export default function OrderExperience({
     useState<CheckoutResult | null>(null);
   const [isLoyaltyOpen, setIsLoyaltyOpen] = useState(false);
   const [loyaltyComplete, setLoyaltyComplete] = useState(false);
-  const [loyaltyDismissed, setLoyaltyDismissed] = useState(false);
   const [isMonthlyOpen, setIsMonthlyOpen] = useState(false);
   const [pendingItem, setPendingItem] = useState<MenuItem | null>(null);
   const [selectionError, setSelectionError] = useState("");
   const [announcement, setAnnouncement] = useState("");
-  const [serviceStatus, setServiceStatus] = useState(initialServiceStatus);
+  const [serviceStatus] = useState(initialServiceStatus);
 
   const burgerItems = useMemo(
     () => items.filter((item) => item.category === "burgers"),
@@ -242,13 +223,9 @@ export default function OrderExperience({
 
     const storedLoyaltyComplete =
       window.localStorage.getItem(LOYALTY_STORAGE_KEY) === "complete";
-    const storedLoyaltyDismissed =
-      window.localStorage.getItem(LOYALTY_DISMISSED_KEY) === "1";
-
     queueMicrotask(() => {
       setCart(parsedCart);
       setLoyaltyComplete(storedLoyaltyComplete);
-      setLoyaltyDismissed(storedLoyaltyDismissed);
       setCartHydrated(true);
     });
   }, []);
@@ -302,32 +279,6 @@ export default function OrderExperience({
   }, [items]);
 
   useEffect(() => {
-    let cancelled = false;
-
-    async function refreshServiceStatus() {
-      try {
-        const response = await fetch("/api/service-status", {
-          cache: "no-store",
-        });
-        if (!response.ok) return;
-
-        const refreshedStatus = (await response.json()) as ServiceStatus;
-        if (!cancelled) setServiceStatus(refreshedStatus);
-      } catch {
-        // Keep the server-rendered status when a background refresh fails.
-      }
-    }
-
-    void refreshServiceStatus();
-    const interval = window.setInterval(refreshServiceStatus, 60_000);
-
-    return () => {
-      cancelled = true;
-      window.clearInterval(interval);
-    };
-  }, []);
-
-  useEffect(() => {
     if (
       isHeroPaused ||
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -343,36 +294,10 @@ export default function OrderExperience({
   }, [isHeroPaused]);
 
   useEffect(() => {
-    if (
-      !cartHydrated ||
-      loyaltyComplete ||
-      loyaltyDismissed ||
-      selectedItem ||
-      isCartOpen ||
-      isCheckoutOpen ||
-      isMonthlyOpen ||
-      isMobileNavOpen
-    ) {
-      return;
-    }
-
-    const timer = window.setTimeout(() => setIsLoyaltyOpen(true), 1100);
-    return () => window.clearTimeout(timer);
-  }, [
-    cartHydrated,
-    isCartOpen,
-    isCheckoutOpen,
-    isMobileNavOpen,
-    isMonthlyOpen,
-    loyaltyComplete,
-    loyaltyDismissed,
-    selectedItem,
-  ]);
-
-  useEffect(() => {
     const overlayOpen =
       Boolean(selectedItem) ||
       isCartOpen ||
+      isOrderTypeOpen ||
       isCheckoutOpen ||
       isLoyaltyOpen ||
       isMonthlyOpen ||
@@ -384,6 +309,7 @@ export default function OrderExperience({
       setSelectedItem(null);
       setEditingLineId(null);
       setIsCartOpen(false);
+      setIsOrderTypeOpen(false);
       setIsCheckoutOpen(false);
       setIsLoyaltyOpen(false);
       setIsMonthlyOpen(false);
@@ -397,6 +323,7 @@ export default function OrderExperience({
     };
   }, [
     isCartOpen,
+    isOrderTypeOpen,
     isCheckoutOpen,
     isLoyaltyOpen,
     isMobileNavOpen,
@@ -418,26 +345,10 @@ export default function OrderExperience({
   function beginProduct(item: MenuItem) {
     resetProductForm();
     setIsMobileNavOpen(false);
+    setIsOrderTypeOpen(false);
     setIsLoyaltyOpen(false);
     setIsCheckoutOpen(false);
     setSelectedItem(item);
-  }
-
-  function openItem(item: MenuItem) {
-    setEditingLineId(null);
-    setIsLoyaltyOpen(false);
-
-    if (
-      item.id !== "bbq-beast" &&
-      window.sessionStorage.getItem(MONTHLY_SEEN_KEY) !== "1"
-    ) {
-      setPendingItem(item);
-      setIsMonthlyOpen(true);
-      window.sessionStorage.setItem(MONTHLY_SEEN_KEY, "1");
-      return;
-    }
-
-    beginProduct(item);
   }
 
   function continueAfterMonthly(item: MenuItem | null) {
@@ -630,20 +541,17 @@ export default function OrderExperience({
   function submitLoyalty(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     window.localStorage.setItem(LOYALTY_STORAGE_KEY, "complete");
-    window.localStorage.setItem(LOYALTY_DISMISSED_KEY, "1");
     setLoyaltyComplete(true);
-    setLoyaltyDismissed(true);
     setAnnouncement("Drip Points signup saved for this functional draft.");
   }
 
   function closeLoyalty() {
-    window.localStorage.setItem(LOYALTY_DISMISSED_KEY, "1");
-    setLoyaltyDismissed(true);
     setIsLoyaltyOpen(false);
   }
 
   function openLoyalty() {
     setIsMobileNavOpen(false);
+    setIsOrderTypeOpen(false);
     setSelectedItem(null);
     setEditingLineId(null);
     setIsCartOpen(false);
@@ -654,6 +562,7 @@ export default function OrderExperience({
 
   function openCart() {
     setIsMobileNavOpen(false);
+    setIsOrderTypeOpen(false);
     setIsLoyaltyOpen(false);
     setIsCheckoutOpen(false);
     setIsMonthlyOpen(false);
@@ -662,12 +571,19 @@ export default function OrderExperience({
     setIsCartOpen(true);
   }
 
+  function openOrderType() {
+    setIsMobileNavOpen(false);
+    setSelectedItem(null);
+    setEditingLineId(null);
+    setIsCartOpen(false);
+    setIsCheckoutOpen(false);
+    setIsLoyaltyOpen(false);
+    setIsMonthlyOpen(false);
+    setIsOrderTypeOpen(true);
+  }
+
   function openCheckout() {
     if (cart.length === 0) return;
-    if (!serviceStatus.acceptingOrders) {
-      setAnnouncement(serviceStatus.notice);
-      return;
-    }
     setCheckoutState("idle");
     setCheckoutErrors([]);
     setCheckoutResult(null);
@@ -755,21 +671,6 @@ export default function OrderExperience({
         {announcement}
       </p>
 
-      <div className="service-bar" id="find-us">
-        <div className="service-bar__status">
-          <span
-            className={`status-dot status-dot--${serviceStatus.statusTone}`}
-            aria-hidden="true"
-          />
-          <strong>{serviceStatus.statusLabel}</strong>
-        </div>
-        <p>
-          {serviceStatus.locationName} · {serviceStatus.tradingHours}
-        </p>
-        <p>Estimated prep: {serviceStatus.prepTimeLabel}</p>
-        <a href="#location">View location</a>
-      </div>
-
       <header className="site-header">
         <a className="wordmark" href="#top" aria-label="Nasty Burger House home">
           <Image
@@ -782,14 +683,13 @@ export default function OrderExperience({
           />
         </a>
         <nav className="desktop-nav" aria-label="Primary navigation">
-          <Link href="/menu/burgers">Menu</Link>
+          <a href="#menu">Menu</a>
           <a href="#beast-month">Beast of the Month</a>
-          <a href="#location">Find Us</a>
+          <button className="nav-button" type="button" onClick={openLoyalty}>
+            Drip Points
+          </button>
         </nav>
         <div className="header-actions">
-          <button className="text-button" type="button" onClick={openLoyalty}>
-            {loyaltyComplete ? "Drip Points joined" : "Join Drip Points"}
-          </button>
           <button
             className="mobile-menu-button"
             type="button"
@@ -805,10 +705,15 @@ export default function OrderExperience({
           <button
             className="cart-button"
             type="button"
-            onClick={openCart}
-            aria-label={`Open order, ${cartCount} items`}
+            onClick={cartCount > 0 ? openCart : openOrderType}
+            aria-label={
+              cartCount > 0
+                ? `View order, ${cartCount} items`
+                : "Choose an order type"
+            }
           >
-            Order <span>{cartCount}</span>
+            {cartCount > 0 ? "View order" : "Order now"}
+            {cartCount > 0 && <span>{cartCount}</span>}
           </button>
         </div>
       </header>
@@ -837,36 +742,27 @@ export default function OrderExperience({
               </button>
             </div>
             <nav className="mobile-nav-links" aria-label="Mobile navigation">
-              <Link href="/menu/burgers">
+              <a href="#menu" onClick={() => setIsMobileNavOpen(false)}>
                 Explore menu <span aria-hidden="true">→</span>
-              </Link>
+              </a>
               <a
                 href="#beast-month"
                 onClick={() => setIsMobileNavOpen(false)}
               >
                 Beast of the Month <span aria-hidden="true">→</span>
               </a>
-              <a href="#location" onClick={() => setIsMobileNavOpen(false)}>
-                Find today&apos;s truck <span aria-hidden="true">→</span>
-              </a>
               <button type="button" onClick={openLoyalty}>
                 Join Drip Points <span aria-hidden="true">→</span>
               </button>
             </nav>
-            <div className="mobile-nav-status">
-              <span
-                className={`status-dot status-dot--${serviceStatus.statusTone}`}
-                aria-hidden="true"
-              />
-              <div>
-                <strong>{serviceStatus.statusLabel}</strong>
-                <p>{serviceStatus.locationName}</p>
-              </div>
-            </div>
-            <button className="primary-button full-width" type="button" onClick={openCart}>
+            <button
+              className="primary-button full-width"
+              type="button"
+              onClick={cartCount > 0 ? openCart : openOrderType}
+            >
               {cartCount > 0
                 ? `View order · ${formatPrice(cartSubtotal)}`
-                : "Start an order"}
+                : "Order now"}
             </button>
           </aside>
         </div>
@@ -906,45 +802,13 @@ export default function OrderExperience({
                   )}
                   <p>{slide.description}</p>
                   <div className="hero-actions">
-                    {slide.primaryItemId ? (
-                      <button
-                        className="primary-button"
-                        type="button"
-                        onClick={() => {
-                          const item = items.find(
-                            (entry) => entry.id === slide.primaryItemId,
-                          );
-                          if (item) openItem(item);
-                        }}
-                      >
-                        {slide.primaryLabel}
-                      </button>
-                    ) : (
-                      <Link className="primary-button" href={slide.primaryHref!}>
-                        {slide.primaryLabel}
-                      </Link>
-                    )}
-                    {slide.secondaryItemId ? (
-                      <button
-                        className="secondary-button"
-                        type="button"
-                        onClick={() => {
-                          const item = items.find(
-                            (entry) => entry.id === slide.secondaryItemId,
-                          );
-                          if (item) openItem(item);
-                        }}
-                      >
-                        {slide.secondaryLabel}
-                      </button>
-                    ) : (
-                      <Link
-                        className="secondary-button"
-                        href={slide.secondaryHref!}
-                      >
-                        {slide.secondaryLabel}
-                      </Link>
-                    )}
+                    <button
+                      className="primary-button"
+                      type="button"
+                      onClick={openOrderType}
+                    >
+                      Order now
+                    </button>
                   </div>
                 </div>
               </article>
@@ -997,46 +861,69 @@ export default function OrderExperience({
           </div>
         </section>
 
-        <section
-          className="location-section"
-          id="location"
-          aria-labelledby="location-title"
-        >
-          <div>
-            <p className="eyebrow">Today&apos;s service</p>
-            <h2 id="location-title">Know where the truck is before ordering.</h2>
+        <section className="menu-preview" id="menu" aria-labelledby="menu-preview-title">
+          <div className="menu-preview__heading">
+            <p className="eyebrow">Find your favourite</p>
+            <h2 id="menu-preview-title">Explore our menu</h2>
+            <Link className="outline-button" href="/menu/burgers">View menu</Link>
           </div>
-          <dl>
-            <div>
-              <dt>Status</dt>
-              <dd>{serviceStatus.statusLabel}</dd>
+          <div className="menu-preview__grid">
+            <Link className="menu-preview-card menu-preview-card--featured" href="/menu/featured">
+              <span>01</span>
+              <strong>Featured</strong>
+            </Link>
+            <Link className="menu-preview-card menu-preview-card--burgers" href="/menu/burgers">
+              <span>02</span>
+              <strong>Beast Burgers</strong>
+            </Link>
+            <Link className="menu-preview-card menu-preview-card--sides" href="/menu/loaded-sides">
+              <span>03</span>
+              <strong>Loaded Sides</strong>
+            </Link>
+            <Link className="menu-preview-card menu-preview-card--boxes" href="/menu/beast-boxes">
+              <span>04</span>
+              <strong>Beast Boxes</strong>
+            </Link>
+            <Link className="menu-preview-card menu-preview-card--drinks" href="/menu/drinks">
+              <span>05</span>
+              <strong>Drinks</strong>
+            </Link>
+          </div>
+        </section>
+
+        <section className="home-features" aria-label="Popular Nasty Burger House picks">
+          <article className="home-feature home-feature--bbq">
+            <div className="home-feature__image">
+              <Image
+                src="/images/bbq-beast-hero.webp"
+                alt="BBQ Beast burger with bacon, cheese and smoky sauce"
+                fill
+                sizes="(max-width: 760px) 100vw, 50vw"
+              />
             </div>
-            <div>
-              <dt>Location</dt>
-              <dd>{serviceStatus.locationName}</dd>
+            <div className="home-feature__copy">
+              <p className="eyebrow">Beast of the Month</p>
+              <h2>Meet the BBQ Beast.</h2>
+              <p>Smoky Bourbon BBQ, crispy bacon and American cheese stacked for serious appetite.</p>
+              <button type="button" onClick={openOrderType}>Order now</button>
             </div>
-            <div>
-              <dt>Trading hours</dt>
-              <dd>{serviceStatus.tradingHours}</dd>
+          </article>
+          <article className="home-feature home-feature--boxes">
+            <div className="home-feature__image">
+              <Image
+                src="/images/beast-box-hero.webp"
+                alt="Beast Box with burger, fries, wings and sides"
+                fill
+                sizes="(max-width: 760px) 100vw, 50vw"
+              />
             </div>
-            <div>
-              <dt>Preparation</dt>
-              <dd>Approximately {serviceStatus.prepTimeLabel}</dd>
+            <div className="home-feature__copy">
+              <p className="eyebrow">Built for sharing</p>
+              <h2>Bring the whole crew.</h2>
+              <p>Solo, Duo and Family boxes loaded with burgers, wings, fries and more.</p>
+              <button type="button" onClick={openOrderType}>Order now</button>
             </div>
-          </dl>
-          <p className="location-note">
-            {serviceStatus.mapUrl ? (
-              <a
-                href={serviceStatus.mapUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open directions to {serviceStatus.locationName}
-              </a>
-            ) : (
-              "The final Google Maps link and daily update method are still required."
-            )}
-          </p>
+          </article>
         </section>
       </main>
 
@@ -1049,27 +936,89 @@ export default function OrderExperience({
             width={256}
             height={256}
           />
-          <p>Bold burgers. Big flavour. No mercy.</p>
+          <p>Big flavour. Zero apologies.</p>
         </div>
-        <nav aria-label="Footer navigation">
-          <Link href="/menu/burgers">Menu</Link>
-          <a href="#location">Find Us</a>
-          <button type="button" onClick={openLoyalty}>
-            Drip Points
-          </button>
-        </nav>
+        <div className="footer-links">
+          <nav aria-label="Menu links">
+            <h2>Our menu</h2>
+            <Link href="/menu/featured">Featured</Link>
+            <Link href="/menu/burgers">Beast Burgers</Link>
+            <Link href="/menu/loaded-sides">Loaded Sides</Link>
+            <Link href="/menu/beast-boxes">Beast Boxes</Link>
+          </nav>
+          <nav aria-label="Ordering links">
+            <h2>Order</h2>
+            <button type="button" onClick={openOrderType}>Order now</button>
+            <span>Pickup available</span>
+            <span>Uber Eats delivery — coming soon</span>
+          </nav>
+          <nav aria-label="Nasty Burger House links">
+            <h2>Nasty Burger House</h2>
+            <a href="#beast-month">Beast of the Month</a>
+            <button type="button" onClick={openLoyalty}>
+              {loyaltyComplete ? "Drip Points joined" : "Join Drip Points"}
+            </button>
+          </nav>
+        </div>
+        <div className="footer-bottom">
+          <span>© 2026 Nasty Burger House</span>
+          <span>Pickup ordering only</span>
+        </div>
       </footer>
 
       <div className="mobile-order-bar" aria-label="Mobile ordering actions">
-        <a href="#location">Find Us</a>
-        {cartCount > 0 ? (
-          <button type="button" onClick={openCart}>
-            View Order · {formatPrice(cartSubtotal)}
-          </button>
-        ) : (
-          <Link href="/menu/burgers">Order Now</Link>
-        )}
+        <button type="button" onClick={cartCount > 0 ? openCart : openOrderType}>
+          {cartCount > 0
+            ? `View order · ${formatPrice(cartSubtotal)}`
+            : "Order now"}
+        </button>
       </div>
+
+      {isOrderTypeOpen && (
+        <div className="modal-backdrop order-type-backdrop" role="presentation">
+          <section
+            className="order-type-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="order-type-title"
+          >
+            <button
+              className="close-button"
+              type="button"
+              onClick={() => setIsOrderTypeOpen(false)}
+              aria-label="Close order type selection"
+            >
+              ×
+            </button>
+            <p className="eyebrow">Let&apos;s get started</p>
+            <h2 id="order-type-title">Choose your order type</h2>
+            <p className="order-type-intro">
+              How would you like to get your Nasty Burger House order?
+            </p>
+            <div className="order-type-options">
+              <Link className="order-type-option" href="/menu/burgers">
+                <span className="order-type-option__icon" aria-hidden="true">P</span>
+                <span>
+                  <strong>Pickup</strong>
+                  <small>Order ahead and collect</small>
+                </span>
+                <span className="order-type-option__arrow" aria-hidden="true">→</span>
+              </Link>
+              <div className="order-type-option order-type-option--disabled" aria-disabled="true">
+                <span className="order-type-option__icon order-type-option__icon--uber" aria-hidden="true">U</span>
+                <span>
+                  <strong>Delivery with Uber Eats</strong>
+                  <small>Coming soon</small>
+                </span>
+                <span className="coming-soon-pill">Soon</span>
+              </div>
+            </div>
+            <p className="order-type-note">
+              Pickup is the only available order type right now.
+            </p>
+          </section>
+        </div>
+      )}
 
       {selectedItem && (
         <div className="modal-backdrop" role="presentation">
@@ -1722,7 +1671,7 @@ export default function OrderExperience({
                       <strong>{formatPrice(cartSubtotal)}</strong>
                     </div>
                     <p className="allergen-note">
-                      Tell the truck team about allergies before ordering.
+                      Tell the kitchen team about allergies before ordering.
                       Gluten-free and cross-contamination information is awaiting
                       client verification.
                     </p>

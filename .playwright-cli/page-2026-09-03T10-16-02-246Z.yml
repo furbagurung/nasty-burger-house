@@ -1,0 +1,101 @@
+- generic [active] [ref=f4e1]:
+  - generic [ref=f4e2]:
+    - paragraph [ref=f4e3]
+    - banner [ref=f4e4]:
+      - link "Nasty Burger House home" [ref=f4e5] [cursor=pointer]:
+        - /url: "#top"
+      - navigation "Primary navigation" [ref=f4e6]:
+        - link "Menu" [ref=f4e7] [cursor=pointer]:
+          - /url: "#menu"
+        - link "Beast of the Month" [ref=f4e8] [cursor=pointer]:
+          - /url: "#beast-month"
+        - button "Drip Points" [ref=f4e9] [cursor=pointer]
+      - button "Choose an order type" [ref=f4e11] [cursor=pointer]: Order now
+    - main [ref=f4e12]:
+      - region "Featured Nasty Burger House offers" [ref=f4e13]:
+        - article [ref=f4e15]:
+          - img "Double flame-grilled burger with cheese, pickles and sauce" [ref=f4e16]
+          - generic [ref=f4e18]:
+            - paragraph [ref=f4e19]: Signature Beast · $19
+            - heading "Feed the beast." [level=1] [ref=f4e20]
+            - paragraph [ref=f4e21]: Flame-grilled, fully loaded and built for pickup. Start with the burger that made Nasty Burger House.
+            - button "Order now" [ref=f4e23] [cursor=pointer]
+        - generic [ref=f4e24]:
+          - button "Show previous promotion" [ref=f4e25] [cursor=pointer]: ←
+          - generic "Choose promotion" [ref=f4e26]:
+            - 'button "Show promotion 1: Feed the beast." [ref=f4e27] [cursor=pointer]'
+            - 'button "Show promotion 2: Meet the BBQ Beast." [ref=f4e28] [cursor=pointer]'
+            - 'button "Show promotion 3: Big feeds. Boxed." [ref=f4e29] [cursor=pointer]'
+          - button "Pause carousel" [ref=f4e30] [cursor=pointer]: Pause
+          - button "Show next promotion" [ref=f4e31] [cursor=pointer]: →
+      - region [ref=f4e32]:
+        - generic [ref=f4e33]:
+          - paragraph [ref=f4e34]: Find your favourite
+          - heading "Explore our menu" [level=2] [ref=f4e35]
+          - link "View menu" [ref=f4e36] [cursor=pointer]:
+            - /url: /menu/burgers
+        - generic [ref=f4e37]:
+          - link "01 Featured" [ref=f4e38] [cursor=pointer]:
+            - /url: /menu/featured
+            - generic [ref=f4e39]: "01"
+            - strong [ref=f4e40]: Featured
+          - link "02 Beast Burgers" [ref=f4e41] [cursor=pointer]:
+            - /url: /menu/burgers
+            - generic [ref=f4e42]: "02"
+            - strong [ref=f4e43]: Beast Burgers
+          - link "03 Loaded Sides" [ref=f4e44] [cursor=pointer]:
+            - /url: /menu/loaded-sides
+            - generic [ref=f4e45]: "03"
+            - strong [ref=f4e46]: Loaded Sides
+          - link "04 Beast Boxes" [ref=f4e47] [cursor=pointer]:
+            - /url: /menu/beast-boxes
+            - generic [ref=f4e48]: "04"
+            - strong [ref=f4e49]: Beast Boxes
+          - link "05 Drinks" [ref=f4e50] [cursor=pointer]:
+            - /url: /menu/drinks
+            - generic [ref=f4e51]: "05"
+            - strong [ref=f4e52]: Drinks
+      - region "Popular Nasty Burger House picks" [ref=f4e53]:
+        - article [ref=f4e54]:
+          - img "BBQ Beast burger with bacon, cheese and smoky sauce" [ref=f4e56]
+          - generic [ref=f4e57]:
+            - paragraph [ref=f4e58]: Beast of the Month
+            - heading "Meet the BBQ Beast." [level=2] [ref=f4e59]
+            - paragraph [ref=f4e60]: Smoky Bourbon BBQ, crispy bacon and American cheese stacked for serious appetite.
+            - button "Order now" [ref=f4e61] [cursor=pointer]
+        - article [ref=f4e62]:
+          - img "Beast Box with burger, fries, wings and sides" [ref=f4e64]
+          - generic [ref=f4e65]:
+            - paragraph [ref=f4e66]: Built for sharing
+            - heading "Bring the whole crew." [level=2] [ref=f4e67]
+            - paragraph [ref=f4e68]: Solo, Duo and Family boxes loaded with burgers, wings, fries and more.
+            - button "Order now" [ref=f4e69] [cursor=pointer]
+    - contentinfo [ref=f4e70]:
+      - generic [ref=f4e71]:
+        - img "Nasty Burger House" [ref=f4e72]
+        - paragraph [ref=f4e73]: Big flavour. Zero apologies.
+      - generic [ref=f4e74]:
+        - navigation "Menu links" [ref=f4e75]:
+          - heading "Our menu" [level=2] [ref=f4e76]
+          - link "Featured" [ref=f4e77] [cursor=pointer]:
+            - /url: /menu/featured
+          - link "Beast Burgers" [ref=f4e78] [cursor=pointer]:
+            - /url: /menu/burgers
+          - link "Loaded Sides" [ref=f4e79] [cursor=pointer]:
+            - /url: /menu/loaded-sides
+          - link "Beast Boxes" [ref=f4e80] [cursor=pointer]:
+            - /url: /menu/beast-boxes
+        - navigation "Ordering links" [ref=f4e81]:
+          - heading "Order" [level=2] [ref=f4e82]
+          - button "Order now" [ref=f4e83] [cursor=pointer]
+          - generic [ref=f4e84]: Pickup available
+          - generic [ref=f4e85]: Uber Eats delivery — coming soon
+        - navigation "Nasty Burger House links" [ref=f4e86]:
+          - heading "Nasty Burger House" [level=2] [ref=f4e87]
+          - link "Beast of the Month" [ref=f4e88] [cursor=pointer]:
+            - /url: "#beast-month"
+          - button "Join Drip Points" [ref=f4e89] [cursor=pointer]
+      - generic [ref=f4e90]:
+        - generic [ref=f4e91]: © 2026 Nasty Burger House
+        - generic [ref=f4e92]: Pickup ordering only
+  - alert [ref=f4e93]

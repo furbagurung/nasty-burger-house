@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nasty Burger House | Food Truck Pickup",
+  title: "Nasty Burger House | Order Pickup Online",
   description:
-    "Browse the Nasty Burger House menu, customise your order and prepare for fast food-truck pickup.",
+    "Browse the Nasty Burger House menu, customise your order and order ahead for pickup.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

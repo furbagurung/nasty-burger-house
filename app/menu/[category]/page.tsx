@@ -6,7 +6,6 @@ import {
   findMenuPageCategory,
   menuPageCategories,
 } from "../../data/menu-pages";
-import { getServiceStatus } from "../../lib/service";
 
 type CategoryPageProps = {
   params: Promise<{ category: string }>;
@@ -43,11 +42,5 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       ? menuItems.filter((item) => item.featured)
       : menuItems.filter((item) => item.category === category.id);
 
-  return (
-    <MenuCategoryPage
-      category={category}
-      items={items}
-      serviceStatus={getServiceStatus()}
-    />
-  );
+  return <MenuCategoryPage category={category} items={items} />;
 }

@@ -69,7 +69,7 @@ export const menuItems: MenuItem[] = [
     id: "og-nasty",
     name: "The OG Nasty",
     description:
-      "Our signature flame-grilled beef patty with American cheese, crisp lettuce, pickled onion and house-made NBH Signature Sauce on a toasted milk bun.",
+      "Our signature flame-grilled beef patty with American cheese, crisp lettuce, pickled onion and our house-made NBH Signature Sauce on a toasted milk bun.",
     category: "burgers",
     price: 19,
     image: "/images/signature-beast.webp",
@@ -88,7 +88,7 @@ export const menuItems: MenuItem[] = [
     id: "peri-beast",
     name: "Peri Beast",
     description:
-      "Tender flame-grilled peri-peri chicken thigh, marinated in our signature peri-peri sauce, with tomato, fresh cabbage slaw and creamy mayo on a toasted milk bun.",
+      "Tender flame-grilled peri-peri chicken thigh, marinated in our house-made signature peri-peri sauce, finished with fresh tomato, green cabbage slaw and creamy mayo on a toasted milk bun.",
     category: "burgers",
     price: 19,
     canUpgrade: true,
@@ -100,19 +100,24 @@ export const menuItems: MenuItem[] = [
     id: "hooked",
     name: "Hooked",
     description:
-      "Golden beer-battered fish fillet with house-made tartare sauce, American cheese and crisp lettuce on a toasted milk bun.",
+      "Golden beer-battered fish fillet with house-made tartare sauce, American cheese, cos lettuce and creamy mayo on a toasted milk bun.",
     category: "burgers",
     price: 21,
     canUpgrade: true,
     dietaryTags: ["Halal"],
     modifierIds: ["cheese", "house-sauce"],
-    removableIngredients: ["Tartare sauce", "American cheese", "Lettuce"],
+    removableIngredients: [
+      "Tartare sauce",
+      "American cheese",
+      "Cos lettuce",
+      "Creamy mayo",
+    ],
   },
   {
     id: "green-beast",
     name: "Green Beast",
     description:
-      "House-made vegetable patty with jalapeño mint mayo, pickled onion, fresh cabbage slaw and American cheese on a toasted milk bun.",
+      "House-made vegetable patty with house-made jalapeño mint mayo, pickled onion, fresh cabbage slaw and American cheese on a toasted milk bun.",
     category: "burgers",
     price: 17,
     canUpgrade: true,
@@ -147,7 +152,7 @@ export const menuItems: MenuItem[] = [
     id: "dirty-eggplant",
     name: "Dirty Eggplant",
     description:
-      "Eight crispy battered eggplant pieces tossed in signature NBH Asian dressing, finished with crispy fried onion and fresh coriander.",
+      "Eight crispy battered eggplant pieces tossed in our house-made Signature NBH Asian dressing, finished with crispy fried onion and fresh coriander.",
     category: "loaded-sides",
     price: 15,
     canUpgrade: true,
@@ -159,13 +164,13 @@ export const menuItems: MenuItem[] = [
     id: "buffalo-fury",
     name: "Buffalo Fury",
     description:
-      "Four whole chicken wings tossed in house-made Buffalo Fury sauce, finished with fresh herbs.",
+      "Four whole chicken wings tossed in our house-made Buffalo Fury sauce, finished with blue cheese sauce.",
     category: "loaded-sides",
     price: 15,
     canUpgrade: true,
     dietaryTags: ["Halal"],
     modifierIds: ["house-sauce"],
-    removableIngredients: ["Fresh herbs"],
+    removableIngredients: ["Buffalo Fury sauce", "Blue cheese sauce"],
   },
   {
     id: "nasty-fries",
@@ -209,7 +214,7 @@ export const menuItems: MenuItem[] = [
     id: "solo-beast-box",
     name: "Solo Beast Box",
     description:
-      "Any Beast Burger · Nasty Fries · 2 Dirty Eggplant Pieces · 1 soft drink or water.",
+      "Any Beast Burger · Nasty Fries · 2 Buffalo Fury Wings · 2 Dirty Eggplant Pieces · 1 soft drink or water · Mango Pudding with Lychee Granita & Lychee Pearls.",
     category: "beast-boxes",
     price: 34.99,
     featured: true,
@@ -219,7 +224,7 @@ export const menuItems: MenuItem[] = [
     id: "duo-beast-box",
     name: "Duo Beast Box",
     description:
-      "Any 2 Beast Burgers · Nasty Fries · 4 Buffalo Fury Wings · 2 Dirty Eggplant Pieces · 2 soft drinks or waters · Mango Pudding with Lychee Granita.",
+      "Any 2 Beast Burgers · Nasty Fries · 4 Buffalo Fury Wings · 4 Dirty Eggplant Pieces · 2 soft drinks or waters · Mango Pudding with Lychee Granita & Lychee Pearls.",
     category: "beast-boxes",
     price: 59.99,
     boxConfig: { burgerCount: 2, drinkCount: 2 },
@@ -228,16 +233,16 @@ export const menuItems: MenuItem[] = [
     id: "family-beast-box",
     name: "Family Beast Box",
     description:
-      "Any 2 Beast Burgers · Monster Cheese · 2 Nasty Fries · 4 Buffalo Fury Wings · 4 Dirty Eggplant Pieces · 6 Dino Nuggets · 3 soft drinks or waters · Mango Pudding with Lychee Granita.",
+      "Any 2 Beast Burgers · 1 Monster Cheese · 2 Nasty Fries · 4 Buffalo Fury Wings · 4 Dirty Eggplant Pieces · 6 Dino Nuggets · 3 soft drinks or waters · Mango Pudding with Lychee Granita & Lychee Pearls.",
     category: "beast-boxes",
     price: 79.99,
     boxConfig: { burgerCount: 2, drinkCount: 3 },
   },
   {
     id: "mango-pudding",
-    name: "Mango Pudding with Lychee Granita",
+    name: "Mango Pudding with Lychee Granita & Lychee Pearls",
     description:
-      "A refreshing tropical dessert with silky mango pudding and house-made lychee granita.",
+      "A refreshing tropical dessert with silky mango pudding, lychee granita and lychee pearls.",
     category: "sweet",
     price: 12,
     dietaryTags: ["Vegetarian"],

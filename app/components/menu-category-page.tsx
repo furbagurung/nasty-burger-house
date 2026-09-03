@@ -5,12 +5,10 @@ import {
   menuPageCategories,
   type MenuPageCategory,
 } from "../data/menu-pages";
-import type { ServiceStatus } from "../lib/service";
 
 type MenuCategoryPageProps = {
   category: MenuPageCategory;
   items: MenuItem[];
-  serviceStatus: ServiceStatus;
 };
 
 const money = new Intl.NumberFormat("en-AU", {
@@ -23,24 +21,9 @@ const money = new Intl.NumberFormat("en-AU", {
 export default function MenuCategoryPage({
   category,
   items,
-  serviceStatus,
 }: MenuCategoryPageProps) {
   return (
     <div className="catalogue-shell">
-      <div className="service-bar catalogue-service-bar">
-        <div className="service-bar__status">
-          <span
-            className={`status-dot status-dot--${serviceStatus.statusTone}`}
-            aria-hidden="true"
-          />
-          <strong>{serviceStatus.statusLabel}</strong>
-        </div>
-        <p>
-          {serviceStatus.locationName} · {serviceStatus.tradingHours}
-        </p>
-        <p>Estimated prep: {serviceStatus.prepTimeLabel}</p>
-      </div>
-
       <header className="catalogue-header">
         <Link className="catalogue-logo" href="/" aria-label="Nasty Burger House home">
           <Image src="/logo.webp" alt="" width={256} height={256} priority />
@@ -56,9 +39,6 @@ export default function MenuCategoryPage({
         </nav>
 
         <div className="catalogue-header-actions">
-          <Link className="catalogue-location-link" href="/#location">
-            Find the truck
-          </Link>
           <Link className="catalogue-order-button" href="/menu/burgers">
             Order Now
           </Link>
@@ -73,7 +53,6 @@ export default function MenuCategoryPage({
               <Link href="/menu/burgers">Menu</Link>
               <Link href="/#beast-month">What&apos;s New</Link>
               <Link href="/?loyalty=1">Drip Points</Link>
-              <Link href="/#location">Find the truck</Link>
             </nav>
           </details>
         </div>
@@ -151,12 +130,11 @@ export default function MenuCategoryPage({
       <footer className="catalogue-footer">
         <div>
           <Image src="/logo.webp" alt="Nasty Burger House" width={256} height={256} />
-          <p>Food-truck pickup ordering built around today&apos;s location.</p>
+          <p>Order online and collect from Nasty Burger House.</p>
         </div>
         <nav aria-label="Footer navigation">
           <Link href="/">Home</Link>
           <Link href="/menu/burgers">Menu</Link>
-          <Link href="/#location">Find Us</Link>
           <Link href="/?loyalty=1">Drip Points</Link>
         </nav>
       </footer>

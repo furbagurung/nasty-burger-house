@@ -1,4 +1,9 @@
 import { validateOrderPayload } from "../../lib/order";
+import {
+  createOrderDispatchPayload,
+  createOrderId,
+  dispatchOrder,
+} from "../../lib/order-dispatch";
 import { getServiceStatus } from "../../lib/service";
 
 const MAX_REQUEST_BYTES = 50_000;
@@ -41,17 +46,39 @@ export async function POST(request: Request) {
     });
   }
 
-  // Phase 3 validates the complete order on the server. It deliberately does
-  // not persist, charge or send the order until a payment/POS provider is chosen.
-  const orderId = `NBH-DEMO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+  const orderId = createOrderId(validation.order.requestId);
+  const orderPayload = createOrderDispatchPayload(
+    validation.order,
+    serviceStatus,
+    orderId,
+  );
+  const dispatch = await dispatchOrder(orderPayload);
+
+  if (!dispatch.ok) {
+    const notConfigured = dispatch.reason === "not-configured";
+    return Response.json(
+      {
+        ok: false,
+        errors: [
+          notConfigured
+            ? "Online ordering is being connected. Please try again later."
+            : "We could not send the order to the kitchen. Please try again.",
+        ],
+      },
+      {
+        status: notConfigured ? 503 : 502,
+        headers: { "Cache-Control": "no-store" },
+      },
+    );
+  }
 
   return Response.json(
     {
       ok: true,
-      status: "demo",
+      status: "submitted",
       orderId,
       subtotal: validation.order.subtotal,
-      message: "Order validated successfully. No payment was taken.",
+      message: "Pickup order received. Payment is due when you collect.",
     },
     {
       status: 201,

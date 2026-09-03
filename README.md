@@ -15,15 +15,31 @@ Mobile-first ordering website for Nasty Burger House, built with Next.js 16, Rea
 - Persistent editable cart with AUD totals
 - Drip Points signup experience
 - Frequency-capped promotional modals
-- Pickup location and preparation-time placeholders
-- Central service configuration with preview, open and closed modes
-- Live service-status endpoint with automatic customer-page refresh
+- Fixed pickup location and preparation-time configuration
+- Central ordering availability configuration with preview, open and closed modes
 - Checkout availability enforced in both the interface and order endpoint
 - Mobile checkout form with pickup, customer and order-review steps
 - Server-side menu, modifier, combo, Beast Box and total validation
-- Demo order references with clear payment and kitchen-delivery safeguards
+- Secure webhook dispatch for real pay-at-pickup orders
+- Idempotency references to help the order receiver prevent duplicates
 
-The complete checkout path currently runs in demo mode. It validates orders but does not charge, persist or send them to the kitchen until the client confirms the payment/POS provider and supplies collaborator access.
+Checkout validates every price on the server and sends the complete pickup order
+to the configured HTTPS webhook. No online payment is taken; customers pay when
+they collect. Square can replace the temporary webhook after POS access arrives.
+
+## Order delivery
+
+Create `.env.local` for local development and configure the same values in
+Vercel for production:
+
+```bash
+ORDER_WEBHOOK_URL=https://your-secure-order-receiver.example
+ORDER_WEBHOOK_SECRET=optional-shared-bearer-token
+```
+
+The receiver must accept a JSON `POST` request and return a successful `2xx`
+response. Without `ORDER_WEBHOOK_URL`, checkout stops safely instead of showing
+a false order confirmation.
 
 ## Local development
 
@@ -44,9 +60,10 @@ npm run build
 ## Main files
 
 - `app/data/menu.ts` — menu, pricing and customisation rules
-- `app/data/service.ts` — truck status, location, hours and preparation settings
+- `app/data/service.ts` — pickup availability, fixed address, hours and preparation settings
 - `app/lib/order.ts` — shared pricing and order validation
-- `app/lib/service.ts` — customer-facing service status and ordering rules
+- `app/lib/order-dispatch.ts` — secure pay-at-pickup order delivery adapter
+- `app/lib/service.ts` — pickup availability and ordering rules
 - `app/api/orders/route.ts` — server-side order submission endpoint
 - `app/api/service-status/route.ts` — refreshable operating-status endpoint
 - `app/components/order-experience.tsx` — ordering, promotional and cart behaviour

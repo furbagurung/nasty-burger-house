@@ -169,6 +169,7 @@ export default function OrderExperience({
   const [checkoutErrors, setCheckoutErrors] = useState<string[]>([]);
   const [checkoutResult, setCheckoutResult] =
     useState<CheckoutResult | null>(null);
+  const [checkoutRequestId, setCheckoutRequestId] = useState("");
   const [isLoyaltyOpen, setIsLoyaltyOpen] = useState(false);
   const [loyaltyComplete, setLoyaltyComplete] = useState(false);
   const [isMonthlyOpen, setIsMonthlyOpen] = useState(false);
@@ -587,6 +588,7 @@ export default function OrderExperience({
     setCheckoutState("idle");
     setCheckoutErrors([]);
     setCheckoutResult(null);
+    setCheckoutRequestId(crypto.randomUUID());
     setIsCartOpen(false);
     setIsCheckoutOpen(true);
   }
@@ -605,7 +607,7 @@ export default function OrderExperience({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          requestId: crypto.randomUUID(),
+          requestId: checkoutRequestId || crypto.randomUUID(),
           customer: {
             name: data.get("name"),
             email: data.get("email"),
@@ -634,7 +636,7 @@ export default function OrderExperience({
         setCheckoutErrors(
           result.errors?.length
             ? result.errors
-            : ["The order could not be validated. Please try again."],
+            : ["The order could not be submitted. Please try again."],
         );
         setCheckoutState("error");
         return;
@@ -643,11 +645,11 @@ export default function OrderExperience({
       setCheckoutResult({
         orderId: result.orderId,
         subtotal: result.subtotal,
-        message: result.message ?? "Order validated successfully.",
+        message: result.message ?? "Pickup order submitted successfully.",
       });
       setCart([]);
       setCheckoutState("success");
-      setAnnouncement(`Demo order ${result.orderId} validated successfully.`);
+      setAnnouncement(`Pickup order ${result.orderId} submitted successfully.`);
     } catch {
       setCheckoutErrors([
         "We could not reach the order service. Check your connection and try again.",
@@ -1495,19 +1497,18 @@ export default function OrderExperience({
                 <span className="checkout-success__mark" aria-hidden="true">
                   ✓
                 </span>
-                <p className="eyebrow">Demo order validated</p>
-                <h2 id="checkout-title">Your checkout flow works.</h2>
+                <p className="eyebrow">Pickup order received</p>
+                <h2 id="checkout-title">Your order is in.</h2>
                 <p className="checkout-reference">{checkoutResult.orderId}</p>
                 <p>
-                  The server recalculated and accepted the order for
-                  {" "}{formatPrice(checkoutResult.subtotal)}.
+                  Your pickup order for {formatPrice(checkoutResult.subtotal)}
+                  {" "}has been sent to Nasty Burger House.
                 </p>
                 <div className="demo-warning">
-                  <strong>No payment was taken.</strong>
+                  <strong>Pay when you collect.</strong>
                   <p>
-                    This demo order was not saved or sent to the kitchen. Live
-                    submission will activate after Square, Stripe or another
-                    order platform is connected.
+                    No online payment has been taken. Keep your order number and
+                    present it when collecting your food.
                   </p>
                 </div>
                 <Link
@@ -1529,11 +1530,11 @@ export default function OrderExperience({
                     height={256}
                   />
                   <div>
-                    <p className="eyebrow">ASAP pickup · Demo mode</p>
+                    <p className="eyebrow">ASAP pickup · Pay at pickup</p>
                     <h2 id="checkout-title">Checkout</h2>
                     <p>
-                      Review your pickup, add contact details and validate the
-                      complete order before payment is connected.
+                      Review your pickup order and add the contact details the
+                      team will use to identify it.
                     </p>
                   </div>
                 </div>
@@ -1553,7 +1554,7 @@ export default function OrderExperience({
                       <div className="checkout-location-card">
                         <strong>{serviceStatus.locationName}</strong>
                         <span>
-                          {serviceStatus.address} · {serviceStatus.statusLabel}
+                          {serviceStatus.address} · Fixed pickup location
                         </span>
                       </div>
                     </section>
@@ -1616,18 +1617,17 @@ export default function OrderExperience({
                       <div className="checkout-section__heading">
                         <span>3</span>
                         <div>
-                          <h3 id="payment-heading">Payment</h3>
-                          <p>Payment provider connection is still required.</p>
+                          <h3 id="payment-heading">Payment at pickup</h3>
+                          <p>Online payment will be added after Square is connected.</p>
                         </div>
                       </div>
                       <div className="payment-placeholder">
                         <div>
-                          <strong>Demo validation only</strong>
-                          <span>No card or wallet details will be requested.</span>
+                          <strong>Pay when you collect</strong>
+                          <span>No card or wallet details are required online.</span>
                         </div>
-                        <div className="wallet-labels" aria-label="Planned express payments">
-                          <span>Apple Pay</span>
-                          <span>Google Pay</span>
+                        <div className="wallet-labels" aria-label="Future payment provider">
+                          <span>Square coming later</span>
                         </div>
                       </div>
                     </section>
@@ -1698,11 +1698,11 @@ export default function OrderExperience({
                       {!serviceStatus.acceptingOrders
                         ? "Ordering unavailable"
                         : checkoutState === "submitting"
-                          ? "Validating order…"
-                          : "Submit demo order"}
+                          ? "Sending order…"
+                          : "Place pickup order"}
                     </button>
                     <small>
-                      Demo mode does not charge, save or send this order.
+                      No online payment is required. You&apos;ll pay at pickup.
                     </small>
                   </aside>
                 </div>

@@ -18,43 +18,57 @@ Create a high-converting food-truck ordering website that helps customers:
 
 ## 2. Current Development Status
 
-### Completed in the first working build
+### Phase 1 — Ordering foundation (completed)
 
 - New website project created from scratch
-- Bold Nasty Burger House visual direction
 - Responsive desktop and mobile layouts
-- Current truck status and location banner
+- Draft truck status and location banner
 - Cinematic burger hero section
 - Beast of the Month feature
-- Dedicated Beast Boxes section
 - Updated menu without a standalone Combo category
-- Updated drinks: Coca-Cola, Coke Zero, Solo, Water, Lemon Lime Bitters and Ginger Beer
-- Menu category and dietary filters
-- Product-customization modal
-- Extra patties, cheese, bacon and sauce modifiers
-- Combo upgrades with adult and kids’ drink selection
 - Slide-out shopping cart
-- Beast Box cart upsell
 - Mobile sticky Find Us / Order Now bar
 - Drip Points sign-up modal with email and phone
-- Persistent loyalty-member database with 500 starting points
-- Pop-up frequency control to prevent overlay stacking
-- Estimated preparation time display
-- Social-media section and platform links
 - Compressed WebP food imagery
-- Production build validation completed successfully
+
+### Phase 2 — Frontend ordering engine (completed September 3)
+
+- Full supplied burger, side, Little Beasts, dessert, drink and Beast Box menu
+- Updated drinks: Coca-Cola, Coke Zero, Solo and Water
+- Category and Halal/vegetarian filters
+- Item-specific modifiers with quantity controls and calculated pricing
+- Ingredient-removal options per eligible item
+- Combo upgrade validation with required adult or kids' drink selection
+- Configurable Solo, Duo and Family Beast Boxes with exact burger/drink quotas
+- Persistent cart with accurate AUD subtotal calculations
+- Edit, remove and quantity controls for every cart line
+- Beast Box cart upsell
+- Automated loyalty and Beast of the Month prompts with frequency capping
+- Overlay sequencing that prevents simultaneous pop-ups
+- Empty, validation and success states for the ordering flow
+- Lint, TypeScript and production build validation passed
+
+### Provisional values isolated for client approval
+
+- Combo upgrade: $7
+- Modifier prices
+- Kids' drinks: Water, Apple Juice and Orange Juice
+- Franklin Woolworths Carpark location and 12 PM–10 PM trading hours
+- 10–15 minute estimated preparation time
+- BBQ Beast as the current Beast of the Month
 
 ### Integration work still required
 
-- Real checkout and order submission
+- Real checkout, order submission and confirmation
 - Square or selected payment-provider connection
 - Apple Pay and Google Pay merchant activation
 - Real-time truck location and trading-hours management
 - Dynamic preparation-time controls
 - Drip Points earning from completed orders
 - Reward redemption and POS synchronisation
-- Live or curated Instagram feed connection
 - Final verified dietary and allergen data
+- Privacy, terms, refund and loyalty-policy pages
+- Official logo, food imagery, social links, analytics and production domain
 
 ## 3. Development Schedule
 
@@ -71,18 +85,18 @@ Create a high-converting food-truck ordering website that helps customers:
 
 These items should be collected as early as possible:
 
-1. Attached Word file with final menu descriptions
-2. Final menu prices and modifier prices
-3. Confirmed kids’ drink choices
-4. Logo files and original food photography
-5. Payment-provider collaborator access
-6. Square application ID and location details, if Square is retained
-7. Apple Pay and Google Pay merchant setup status
-8. Official Google Maps location link
-9. Method for updating daily truck location and hours
-10. Confirmed Halal, gluten-free and allergen information
-11. Privacy policy, loyalty terms and customer-consent wording
-12. Confirmed Facebook, Instagram and TikTok URLs
+1. Approval or correction of combo and modifier prices
+2. Confirmed kids’ drink choices
+3. Logo files and original food photography
+4. Payment-provider collaborator access
+5. Square application ID and location details, if Square is retained
+6. Apple Pay and Google Pay merchant setup status
+7. Official Google Maps location link and regular trading schedule
+8. Method for updating daily truck location, hours and preparation time
+9. Confirmed gluten-free and allergen information
+10. Privacy policy, terms, refund policy and loyalty consent wording
+11. Confirmed Facebook, Instagram and TikTok URLs
+12. Current Beast of the Month details and end date
 
 Do not request passwords from the client. Use collaborator or developer access.
 
@@ -114,11 +128,11 @@ Do not request passwords from the client. Use collaborator or developer access.
 | Risk | Impact | Response |
 |---|---|---|
 | Payment access arrives late | Checkout cannot be activated | Request collaborator access by September 1 |
-| Menu Word file is delayed | Incorrect descriptions may launch | Use current menu temporarily and mark content for approval |
+| Provisional prices remain unapproved | Incorrect totals may reach checkout | Keep values isolated and block live checkout until approved |
 | Dietary information is unverified | Customer-safety and trust risk | Do not publish dietary claims until confirmed |
 | Truck status has no editing workflow | Location becomes outdated | Provide a simple admin or structured daily update method |
 | Loyalty is not connected to completed orders | Points cannot accumulate correctly | Connect order webhooks before enabling earning and redemption |
 
-## 7. Current Review-Build Note
+## 7. Current Source Note
 
-The website completed its production build successfully. The first private publication attempt was stopped by a hosting-platform TLS certificate timeout. No application build error was reported. The saved website version remains intact for a controlled publication retry.
+The manually coded Next.js repository contains the Phase 1 and Phase 2 work. The frontend currently builds successfully and is ready for the payment/POS integration phase. Live checkout remains intentionally disabled until the client selects a provider and supplies collaborator access.

@@ -405,6 +405,63 @@ main {
   color: white;
 }
 
+.dietary-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: -0.75rem 0 1.5rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 750;
+}
+
+.dietary-filters button {
+  min-height: 2.35rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.dietary-filters button.is-active {
+  border-color: var(--green);
+  background: var(--green);
+  color: white;
+}
+
+.menu-empty {
+  display: grid;
+  min-height: 18rem;
+  place-content: center;
+  border: 1px dashed var(--line);
+  border-radius: 1.35rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.menu-empty h3,
+.menu-empty p {
+  margin: 0;
+}
+
+.menu-empty p {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+.menu-empty button {
+  justify-self: center;
+  margin-top: 1rem;
+  border: 0;
+  border-bottom: 2px solid currentColor;
+  padding: 0.35rem 0;
+  background: transparent;
+  font-weight: 800;
+}
+
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -483,6 +540,15 @@ main {
   line-height: 1.55;
 }
 
+.menu-card__content > .menu-card__tags {
+  margin: 0.65rem 0 -0.35rem;
+  color: var(--green);
+  font-size: 0.75rem;
+  font-weight: 850;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
 .menu-card__action {
   margin-top: auto;
 }
@@ -499,6 +565,14 @@ main {
   background: var(--ink);
   color: white;
   font-weight: 800;
+}
+
+.pricing-notice {
+  max-width: 46rem;
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
 .location-section {
@@ -595,7 +669,8 @@ main {
 }
 
 .product-modal,
-.loyalty-modal {
+.loyalty-modal,
+.monthly-modal {
   position: relative;
   width: min(100%, 40rem);
   max-height: calc(100vh - 2rem);
@@ -608,6 +683,7 @@ main {
 
 .product-modal h2,
 .loyalty-modal h2,
+.monthly-modal h2,
 .cart-drawer h2 {
   margin: 0;
   font-size: clamp(2rem, 6vw, 3.2rem);
@@ -617,9 +693,15 @@ main {
 }
 
 .product-modal > p:not(.eyebrow, .pending-price),
-.loyalty-modal > p:not(.eyebrow) {
+.loyalty-modal > p:not(.eyebrow),
+.monthly-modal > p:not(.eyebrow) {
   color: var(--muted);
   line-height: 1.55;
+}
+
+.monthly-modal h3 {
+  margin: 1.5rem 0 0;
+  font-size: 1.35rem;
 }
 
 .pending-price {
@@ -640,7 +722,8 @@ main {
 }
 
 .product-modal > .close-button,
-.loyalty-modal > .close-button {
+.loyalty-modal > .close-button,
+.monthly-modal > .close-button {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -655,6 +738,13 @@ fieldset {
 legend {
   margin-bottom: 0.7rem;
   font-weight: 850;
+}
+
+legend span {
+  margin-left: 0.5rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 .option-row {
@@ -690,6 +780,63 @@ legend {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
+}
+
+.stepper-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.stepper-row {
+  display: flex;
+  min-height: 3.6rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.6rem 0.7rem 0.6rem 1rem;
+  background: white;
+  font-weight: 780;
+}
+
+.stepper-row > span {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.stepper-row small {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.product-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.75rem 0 1rem;
+}
+
+.product-total-row > strong {
+  font-size: 1.25rem;
+}
+
+.selection-error {
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  background: rgba(184, 36, 11, 0.1);
+  color: var(--hot-dark);
+  font-size: 0.85rem;
+  font-weight: 750;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
 }
 
 .drawer-backdrop {
@@ -764,6 +911,26 @@ legend {
   font-size: 0.78rem;
 }
 
+.cart-line__main {
+  min-width: 0;
+}
+
+.cart-line__actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 0.65rem;
+}
+
+.cart-line__actions button {
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  padding: 0.2rem 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
 .quantity-control {
   display: grid;
   grid-template-columns: 2.4rem 2rem 2.4rem;
@@ -778,6 +945,11 @@ legend {
   border-radius: 999px;
   background: white;
   font-size: 1.15rem;
+}
+
+.quantity-control button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .cart-upsell {
@@ -804,6 +976,31 @@ legend {
   margin-top: 1.5rem;
 }
 
+.pickup-summary {
+  margin-top: 1.25rem;
+  border-radius: 1rem;
+  padding: 1rem;
+  background: white;
+}
+
+.pickup-summary p {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.checkout-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.checkout-total strong {
+  font-size: 1.35rem;
+}
+
 .checkout-summary p {
   color: var(--muted);
   font-size: 0.86rem;
@@ -819,6 +1016,23 @@ legend {
   color: #625c53;
   font-weight: 850;
   cursor: not-allowed;
+}
+
+.wallet-labels {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.wallet-labels span {
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0.35rem 0.55rem;
+  background: white;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .loyalty-modal form {
@@ -1029,11 +1243,21 @@ legend {
   }
 
   .product-modal,
-  .loyalty-modal {
+  .loyalty-modal,
+  .monthly-modal {
     width: 100%;
     max-height: calc(100vh - 1rem);
     border-radius: 1.25rem;
     padding: 1.25rem;
+  }
+
+  .dietary-filters {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .modal-actions {
+    display: grid;
   }
 
   .modal-backdrop {

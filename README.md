@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nasty Burger House
 
-## Getting Started
+Mobile-first ordering website for Nasty Burger House, built with Next.js 16, React 19 and TypeScript.
 
-First, run the development server:
+## Current functionality
+
+- Category and dietary menu filters
+- Product-specific extras and ingredient removal
+- Combo upgrades with required drink selection
+- Configurable Beast Boxes
+- Persistent editable cart with AUD totals
+- Drip Points signup experience
+- Frequency-capped promotional modals
+- Pickup location and preparation-time placeholders
+
+Real checkout is intentionally disabled until the client confirms the payment/POS provider and supplies collaborator access.
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Validation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## Main files
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/data/menu.ts` — menu, pricing and customisation rules
+- `app/components/order-experience.tsx` — ordering, promotional and cart behaviour
+- `app/globals.css` — responsive presentation
+- `Nasty_Burger_House_Development_Plan.md` — scope, status and remaining client inputs

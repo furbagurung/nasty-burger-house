@@ -1,8 +1,20 @@
 import { validateOrderPayload } from "../../lib/order";
+import { getServiceStatus } from "../../lib/service";
 
 const MAX_REQUEST_BYTES = 50_000;
 
 export async function POST(request: Request) {
+  const serviceStatus = getServiceStatus();
+  if (!serviceStatus.acceptingOrders) {
+    return Response.json(
+      { ok: false, errors: [serviceStatus.notice] },
+      {
+        status: 409,
+        headers: { "Cache-Control": "no-store" },
+      },
+    );
+  }
+
   const contentLength = Number(request.headers.get("content-length") ?? 0);
   if (contentLength > MAX_REQUEST_BYTES) {
     return Response.json(

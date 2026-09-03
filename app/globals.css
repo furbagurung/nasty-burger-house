@@ -10,6 +10,8 @@
   --hot-dark: #b9240b;
   --gold: #ffc928;
   --green: #198754;
+  --amber: #e6a315;
+  --closed: #c64b3c;
   --shadow: 0 22px 70px rgba(31, 22, 11, 0.14);
 }
 
@@ -63,6 +65,11 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -111,8 +118,21 @@ button {
   width: 0.62rem;
   height: 0.62rem;
   border-radius: 999px;
+}
+
+.status-dot--open {
   background: var(--green);
   box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.2);
+}
+
+.status-dot--preview {
+  background: var(--amber);
+  box-shadow: 0 0 0 4px rgba(230, 163, 21, 0.22);
+}
+
+.status-dot--closed {
+  background: var(--closed);
+  box-shadow: 0 0 0 4px rgba(198, 75, 60, 0.2);
 }
 
 .site-header {
@@ -640,6 +660,11 @@ main {
 .location-note {
   margin: 1.25rem 0 0;
   font-size: 0.84rem;
+}
+
+.location-note a {
+  color: inherit;
+  font-weight: 800;
 }
 
 .site-footer {

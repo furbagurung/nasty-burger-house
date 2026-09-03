@@ -17,9 +17,11 @@ import {
   calculateLineUnitPrice,
   type CartLine,
 } from "../lib/order";
+import type { ServiceStatus } from "../lib/service";
 
 type OrderExperienceProps = {
   items: MenuItem[];
+  initialServiceStatus: ServiceStatus;
 };
 
 type CheckoutResult = {
@@ -101,7 +103,10 @@ function normaliseCart(value: unknown): CartLine[] {
   });
 }
 
-export default function OrderExperience({ items }: OrderExperienceProps) {
+export default function OrderExperience({
+  items,
+  initialServiceStatus,
+}: OrderExperienceProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [activeDietary, setActiveDietary] = useState<DietaryTag | null>(null);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
@@ -132,6 +137,7 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
   const [pendingItem, setPendingItem] = useState<MenuItem | null>(null);
   const [selectionError, setSelectionError] = useState("");
   const [announcement, setAnnouncement] = useState("");
+  const [serviceStatus, setServiceStatus] = useState(initialServiceStatus);
 
   const burgerItems = useMemo(
     () => items.filter((item) => item.category === "burgers"),
@@ -209,6 +215,32 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
     if (!cartHydrated) return;
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
   }, [cart, cartHydrated]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function refreshServiceStatus() {
+      try {
+        const response = await fetch("/api/service-status", {
+          cache: "no-store",
+        });
+        if (!response.ok) return;
+
+        const refreshedStatus = (await response.json()) as ServiceStatus;
+        if (!cancelled) setServiceStatus(refreshedStatus);
+      } catch {
+        // Keep the server-rendered status when a background refresh fails.
+      }
+    }
+
+    void refreshServiceStatus();
+    const interval = window.setInterval(refreshServiceStatus, 60_000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     if (
@@ -524,6 +556,10 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
 
   function openCheckout() {
     if (cart.length === 0) return;
+    if (!serviceStatus.acceptingOrders) {
+      setAnnouncement(serviceStatus.notice);
+      return;
+    }
     setCheckoutState("idle");
     setCheckoutErrors([]);
     setCheckoutResult(null);
@@ -621,11 +657,16 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
 
       <div className="service-bar" id="find-us">
         <div className="service-bar__status">
-          <span className="status-dot" aria-hidden="true" />
-          <strong>Draft service status</strong>
+          <span
+            className={`status-dot status-dot--${serviceStatus.statusTone}`}
+            aria-hidden="true"
+          />
+          <strong>{serviceStatus.statusLabel}</strong>
         </div>
-        <p>Franklin Woolworths Carpark · 12 PM–10 PM</p>
-        <p>Estimated prep: 10–15 min</p>
+        <p>
+          {serviceStatus.locationName} · {serviceStatus.tradingHours}
+        </p>
+        <p>Estimated prep: {serviceStatus.prepTimeLabel}</p>
         <a href="#location">View location</a>
       </div>
 
@@ -678,8 +719,7 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
               </a>
             </div>
             <small>
-              Function-first development build. Checkout and live truck data
-              will connect after client platform access is supplied.
+              {serviceStatus.notice}
             </small>
           </div>
           <div className="order-hero__image">
@@ -834,23 +874,33 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
           <dl>
             <div>
               <dt>Status</dt>
-              <dd>Draft location data</dd>
+              <dd>{serviceStatus.statusLabel}</dd>
             </div>
             <div>
               <dt>Location</dt>
-              <dd>Franklin Woolworths Carpark</dd>
+              <dd>{serviceStatus.locationName}</dd>
             </div>
             <div>
               <dt>Trading hours</dt>
-              <dd>12 PM–10 PM</dd>
+              <dd>{serviceStatus.tradingHours}</dd>
             </div>
             <div>
               <dt>Preparation</dt>
-              <dd>Approximately 10–15 min</dd>
+              <dd>Approximately {serviceStatus.prepTimeLabel}</dd>
             </div>
           </dl>
           <p className="location-note">
-            The final Google Maps link and daily update method are still required.
+            {serviceStatus.mapUrl ? (
+              <a
+                href={serviceStatus.mapUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open directions to {serviceStatus.locationName}
+              </a>
+            ) : (
+              "The final Google Maps link and daily update method are still required."
+            )}
           </p>
         </section>
       </main>
@@ -1293,8 +1343,10 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
 
                 <div className="pickup-summary">
                   <strong>Pickup details</strong>
-                  <p>Franklin Woolworths Carpark</p>
-                  <p>Estimated preparation: 10–15 minutes</p>
+                  <p>{serviceStatus.locationName}</p>
+                  <p>
+                    Estimated preparation: {serviceStatus.prepTimeLabel}
+                  </p>
                 </div>
 
                 <div className="checkout-summary">
@@ -1302,9 +1354,19 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
                     <span>Subtotal</span>
                     <strong>{formatPrice(cartSubtotal)}</strong>
                   </div>
-                  <p>{pricingNotice}</p>
-                  <button type="button" onClick={openCheckout}>
-                    Continue to checkout
+                  <p>
+                    {serviceStatus.acceptingOrders
+                      ? pricingNotice
+                      : serviceStatus.notice}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={openCheckout}
+                    disabled={!serviceStatus.acceptingOrders}
+                  >
+                    {serviceStatus.acceptingOrders
+                      ? "Continue to checkout"
+                      : "Ordering unavailable"}
                   </button>
                   <div className="wallet-labels" aria-label="Planned express payments">
                     <span>Apple Pay</span>
@@ -1389,12 +1451,16 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
                         <span>1</span>
                         <div>
                           <h3 id="pickup-heading">Pickup</h3>
-                          <p>ASAP · Estimated preparation 10–15 minutes</p>
+                          <p>
+                            ASAP · Estimated preparation {serviceStatus.prepTimeLabel}
+                          </p>
                         </div>
                       </div>
                       <div className="checkout-location-card">
-                        <strong>Franklin Woolworths Carpark</strong>
-                        <span>Draft location · final map link pending</span>
+                        <strong>{serviceStatus.locationName}</strong>
+                        <span>
+                          {serviceStatus.address} · {serviceStatus.statusLabel}
+                        </span>
                       </div>
                     </section>
 
@@ -1530,11 +1596,16 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
                     <button
                       className="primary-button full-width"
                       type="submit"
-                      disabled={checkoutState === "submitting"}
+                      disabled={
+                        checkoutState === "submitting" ||
+                        !serviceStatus.acceptingOrders
+                      }
                     >
-                      {checkoutState === "submitting"
-                        ? "Validating order…"
-                        : "Submit demo order"}
+                      {!serviceStatus.acceptingOrders
+                        ? "Ordering unavailable"
+                        : checkoutState === "submitting"
+                          ? "Validating order…"
+                          : "Submit demo order"}
                     </button>
                     <small>
                       Demo mode does not charge, save or send this order.

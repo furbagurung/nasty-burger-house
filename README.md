@@ -12,6 +12,9 @@ Mobile-first ordering website for Nasty Burger House, built with Next.js 16, Rea
 - Drip Points signup experience
 - Frequency-capped promotional modals
 - Pickup location and preparation-time placeholders
+- Central service configuration with preview, open and closed modes
+- Live service-status endpoint with automatic customer-page refresh
+- Checkout availability enforced in both the interface and order endpoint
 - Mobile checkout form with pickup, customer and order-review steps
 - Server-side menu, modifier, combo, Beast Box and total validation
 - Demo order references with clear payment and kitchen-delivery safeguards
@@ -37,8 +40,11 @@ npm run build
 ## Main files
 
 - `app/data/menu.ts` — menu, pricing and customisation rules
+- `app/data/service.ts` — truck status, location, hours and preparation settings
 - `app/lib/order.ts` — shared pricing and order validation
+- `app/lib/service.ts` — customer-facing service status and ordering rules
 - `app/api/orders/route.ts` — server-side order submission endpoint
+- `app/api/service-status/route.ts` — refreshable operating-status endpoint
 - `app/components/order-experience.tsx` — ordering, promotional and cart behaviour
 - `app/globals.css` — responsive presentation
 - `Nasty_Burger_House_Development_Plan.md` — scope, status and remaining client inputs

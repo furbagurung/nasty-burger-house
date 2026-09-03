@@ -131,24 +131,32 @@ button {
 }
 
 .wordmark {
-  display: flex;
-  flex-direction: column;
-  color: var(--ink);
-  line-height: 0.86;
+  display: block;
+  flex: 0 0 auto;
   text-decoration: none;
 }
 
-.wordmark span {
-  font-size: 1.75rem;
-  font-weight: 1000;
-  letter-spacing: -0.08em;
+.brand-logo {
+  display: block;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
-.wordmark small {
-  margin-top: 0.35rem;
-  font-size: 0.57rem;
-  font-weight: 850;
-  letter-spacing: 0.19em;
+.brand-logo--header {
+  width: 4.4rem;
+  height: 4.4rem;
+  transition: transform 180ms ease;
+}
+
+.wordmark:hover .brand-logo--header {
+  transform: rotate(-2deg) scale(1.03);
+}
+
+.wordmark:focus-visible {
+  border-radius: 0.75rem;
+  outline: 3px solid var(--hot);
+  outline-offset: 3px;
 }
 
 .desktop-nav {
@@ -649,6 +657,22 @@ main {
   color: #aaa399;
 }
 
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer-brand p {
+  max-width: 17rem;
+  margin: 0;
+}
+
+.brand-logo--footer {
+  width: 5.5rem;
+  height: 5.5rem;
+}
+
 .site-footer nav {
   display: flex;
   gap: 1.25rem;
@@ -1047,8 +1071,17 @@ legend span {
 }
 
 .checkout-heading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   max-width: 44rem;
   padding-right: 3rem;
+}
+
+.brand-logo--checkout {
+  flex: 0 0 auto;
+  width: 4.5rem;
+  height: 4.5rem;
 }
 
 .checkout-heading h2 {
@@ -1056,6 +1089,12 @@ legend span {
 }
 
 .checkout-heading > p:not(.eyebrow) {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.checkout-heading > div > p:not(.eyebrow) {
   margin-bottom: 0;
   color: var(--muted);
   line-height: 1.55;
@@ -1441,8 +1480,9 @@ legend span {
     padding: 0.6rem 1rem;
   }
 
-  .wordmark span {
-    font-size: 1.45rem;
+  .brand-logo--header {
+    width: 3.55rem;
+    height: 3.55rem;
   }
 
   .cart-button {
@@ -1510,8 +1550,27 @@ legend span {
     padding-bottom: 2rem;
   }
 
+  .footer-brand {
+    align-items: flex-start;
+  }
+
+  .brand-logo--footer {
+    width: 4.75rem;
+    height: 4.75rem;
+  }
+
   .site-footer nav {
     flex-wrap: wrap;
+  }
+
+  .checkout-heading {
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .brand-logo--checkout {
+    width: 3.75rem;
+    height: 3.75rem;
   }
 
   .mobile-order-bar {

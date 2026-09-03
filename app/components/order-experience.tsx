@@ -631,8 +631,14 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
 
       <header className="site-header">
         <a className="wordmark" href="#top" aria-label="Nasty Burger House home">
-          <span>NASTY</span>
-          <small>BURGER HOUSE</small>
+          <Image
+            className="brand-logo brand-logo--header"
+            src="/logo.webp"
+            alt=""
+            width={256}
+            height={256}
+            priority
+          />
         </a>
         <nav className="desktop-nav" aria-label="Primary navigation">
           <a href="#menu">Menu</a>
@@ -850,8 +856,14 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
       </main>
 
       <footer className="site-footer">
-        <div>
-          <strong>Nasty Burger House</strong>
+        <div className="footer-brand">
+          <Image
+            className="brand-logo brand-logo--footer"
+            src="/logo.webp"
+            alt="Nasty Burger House"
+            width={256}
+            height={256}
+          />
           <p>Function-first ordering website by Brahmanda Tech.</p>
         </div>
         <nav aria-label="Footer navigation">
@@ -1353,12 +1365,21 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
             ) : (
               <form className="checkout-form" onSubmit={submitOrder}>
                 <div className="checkout-heading">
-                  <p className="eyebrow">ASAP pickup · Demo mode</p>
-                  <h2 id="checkout-title">Checkout</h2>
-                  <p>
-                    Review your pickup, add contact details and validate the
-                    complete order before payment is connected.
-                  </p>
+                  <Image
+                    className="brand-logo brand-logo--checkout"
+                    src="/logo.webp"
+                    alt="Nasty Burger House"
+                    width={256}
+                    height={256}
+                  />
+                  <div>
+                    <p className="eyebrow">ASAP pickup · Demo mode</p>
+                    <h2 id="checkout-title">Checkout</h2>
+                    <p>
+                      Review your pickup, add contact details and validate the
+                      complete order before payment is connected.
+                    </p>
+                  </div>
                 </div>
 
                 <div className="checkout-layout">

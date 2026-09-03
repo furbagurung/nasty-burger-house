@@ -12,26 +12,20 @@ import {
   type DietaryTag,
   type MenuItem,
 } from "../data/menu";
-
-type ModifierQuantity = {
-  id: string;
-  quantity: number;
-};
-
-type CartLine = {
-  lineId: string;
-  itemId: string;
-  quantity: number;
-  combo: boolean;
-  drink?: string;
-  modifiers: ModifierQuantity[];
-  removedIngredients: string[];
-  boxBurgers: string[];
-  boxDrinks: string[];
-};
+import {
+  calculateCartSubtotal,
+  calculateLineUnitPrice,
+  type CartLine,
+} from "../lib/order";
 
 type OrderExperienceProps = {
   items: MenuItem[];
+};
+
+type CheckoutResult = {
+  orderId: string;
+  subtotal: number;
+  message: string;
 };
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
@@ -124,6 +118,13 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [cartHydrated, setCartHydrated] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [checkoutState, setCheckoutState] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+  const [checkoutErrors, setCheckoutErrors] = useState<string[]>([]);
+  const [checkoutResult, setCheckoutResult] =
+    useState<CheckoutResult | null>(null);
   const [isLoyaltyOpen, setIsLoyaltyOpen] = useState(false);
   const [loyaltyComplete, setLoyaltyComplete] = useState(false);
   const [loyaltyDismissed, setLoyaltyDismissed] = useState(false);
@@ -170,24 +171,11 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
     return selectedItem.price + modifiersTotal + (isCombo ? comboUpgradePrice : 0);
   }, [isCombo, modifierQuantities, selectedItem, selectedModifiers]);
 
-  function lineUnitPrice(line: CartLine, item: MenuItem) {
-    const modifiersTotal = line.modifiers.reduce((total, selection) => {
-      const modifier = modifierChoices.find(
-        (choice) => choice.id === selection.id,
-      );
-      return total + (modifier?.price ?? 0) * selection.quantity;
-    }, 0);
-    return item.price + modifiersTotal + (line.combo ? comboUpgradePrice : 0);
-  }
-
   const cartCount = cart.reduce(
     (total, line) => total + line.quantity,
     0,
   );
-  const cartSubtotal = cart.reduce((total, line) => {
-    const item = items.find((entry) => entry.id === line.itemId);
-    return item ? total + lineUnitPrice(line, item) * line.quantity : total;
-  }, 0);
+  const cartSubtotal = calculateCartSubtotal(cart);
 
   useEffect(() => {
     const storedCart =
@@ -229,6 +217,7 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
       loyaltyDismissed ||
       selectedItem ||
       isCartOpen ||
+      isCheckoutOpen ||
       isMonthlyOpen
     ) {
       return;
@@ -239,6 +228,7 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
   }, [
     cartHydrated,
     isCartOpen,
+    isCheckoutOpen,
     isMonthlyOpen,
     loyaltyComplete,
     loyaltyDismissed,
@@ -247,7 +237,11 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
 
   useEffect(() => {
     const overlayOpen =
-      Boolean(selectedItem) || isCartOpen || isLoyaltyOpen || isMonthlyOpen;
+      Boolean(selectedItem) ||
+      isCartOpen ||
+      isCheckoutOpen ||
+      isLoyaltyOpen ||
+      isMonthlyOpen;
     document.body.style.overflow = overlayOpen ? "hidden" : "";
 
     function closeOnEscape(event: KeyboardEvent) {
@@ -255,6 +249,7 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
       setSelectedItem(null);
       setEditingLineId(null);
       setIsCartOpen(false);
+      setIsCheckoutOpen(false);
       setIsLoyaltyOpen(false);
       setIsMonthlyOpen(false);
     }
@@ -264,7 +259,13 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", closeOnEscape);
     };
-  }, [isCartOpen, isLoyaltyOpen, isMonthlyOpen, selectedItem]);
+  }, [
+    isCartOpen,
+    isCheckoutOpen,
+    isLoyaltyOpen,
+    isMonthlyOpen,
+    selectedItem,
+  ]);
 
   function resetProductForm() {
     setModifierQuantities({});
@@ -280,6 +281,7 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
   function beginProduct(item: MenuItem) {
     resetProductForm();
     setIsLoyaltyOpen(false);
+    setIsCheckoutOpen(false);
     setSelectedItem(item);
   }
 
@@ -506,16 +508,92 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
     setSelectedItem(null);
     setEditingLineId(null);
     setIsCartOpen(false);
+    setIsCheckoutOpen(false);
     setIsMonthlyOpen(false);
     setIsLoyaltyOpen(true);
   }
 
   function openCart() {
     setIsLoyaltyOpen(false);
+    setIsCheckoutOpen(false);
     setIsMonthlyOpen(false);
     setSelectedItem(null);
     setEditingLineId(null);
     setIsCartOpen(true);
+  }
+
+  function openCheckout() {
+    if (cart.length === 0) return;
+    setCheckoutState("idle");
+    setCheckoutErrors([]);
+    setCheckoutResult(null);
+    setIsCartOpen(false);
+    setIsCheckoutOpen(true);
+  }
+
+  async function submitOrder(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (checkoutState === "submitting" || cart.length === 0) return;
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    setCheckoutState("submitting");
+    setCheckoutErrors([]);
+
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          requestId: crypto.randomUUID(),
+          customer: {
+            name: data.get("name"),
+            email: data.get("email"),
+            phone: data.get("phone"),
+          },
+          notes: data.get("notes"),
+          pickupMethod: "asap",
+          cart,
+          clientSubtotal: cartSubtotal,
+        }),
+      });
+      const result = (await response.json()) as {
+        ok?: boolean;
+        errors?: string[];
+        orderId?: string;
+        subtotal?: number;
+        message?: string;
+      };
+
+      if (
+        !response.ok ||
+        !result.ok ||
+        !result.orderId ||
+        typeof result.subtotal !== "number"
+      ) {
+        setCheckoutErrors(
+          result.errors?.length
+            ? result.errors
+            : ["The order could not be validated. Please try again."],
+        );
+        setCheckoutState("error");
+        return;
+      }
+
+      setCheckoutResult({
+        orderId: result.orderId,
+        subtotal: result.subtotal,
+        message: result.message ?? "Order validated successfully.",
+      });
+      setCart([]);
+      setCheckoutState("success");
+      setAnnouncement(`Demo order ${result.orderId} validated successfully.`);
+    } catch {
+      setCheckoutErrors([
+        "We could not reach the order service. Check your connection and try again.",
+      ]);
+      setCheckoutState("error");
+    }
   }
 
   function filterAndScroll(category: string) {
@@ -1141,7 +1219,8 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
                   const item = items.find((entry) => entry.id === line.itemId);
                   if (!item) return null;
                   const details = lineDetails(line);
-                  const lineTotal = lineUnitPrice(line, item) * line.quantity;
+                  const lineTotal =
+                    calculateLineUnitPrice(line, item) * line.quantity;
 
                   return (
                     <article className="cart-line" key={line.lineId}>
@@ -1212,8 +1291,8 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
                     <strong>{formatPrice(cartSubtotal)}</strong>
                   </div>
                   <p>{pricingNotice}</p>
-                  <button type="button" disabled>
-                    Checkout integration pending
+                  <button type="button" onClick={openCheckout}>
+                    Continue to checkout
                   </button>
                   <div className="wallet-labels" aria-label="Planned express payments">
                     <span>Apple Pay</span>
@@ -1223,6 +1302,227 @@ export default function OrderExperience({ items }: OrderExperienceProps) {
               </div>
             )}
           </aside>
+        </div>
+      )}
+
+      {isCheckoutOpen && (
+        <div className="modal-backdrop checkout-backdrop" role="presentation">
+          <section
+            className="checkout-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="checkout-title"
+          >
+            <button
+              className="close-button"
+              type="button"
+              onClick={() => setIsCheckoutOpen(false)}
+              aria-label="Close checkout"
+            >
+              ×
+            </button>
+
+            {checkoutState === "success" && checkoutResult ? (
+              <div className="checkout-success">
+                <span className="checkout-success__mark" aria-hidden="true">
+                  ✓
+                </span>
+                <p className="eyebrow">Demo order validated</p>
+                <h2 id="checkout-title">Your checkout flow works.</h2>
+                <p className="checkout-reference">{checkoutResult.orderId}</p>
+                <p>
+                  The server recalculated and accepted the order for
+                  {" "}{formatPrice(checkoutResult.subtotal)}.
+                </p>
+                <div className="demo-warning">
+                  <strong>No payment was taken.</strong>
+                  <p>
+                    This demo order was not saved or sent to the kitchen. Live
+                    submission will activate after Square, Stripe or another
+                    order platform is connected.
+                  </p>
+                </div>
+                <button
+                  className="primary-button full-width"
+                  type="button"
+                  onClick={() => setIsCheckoutOpen(false)}
+                >
+                  Return to menu
+                </button>
+              </div>
+            ) : (
+              <form className="checkout-form" onSubmit={submitOrder}>
+                <div className="checkout-heading">
+                  <p className="eyebrow">ASAP pickup · Demo mode</p>
+                  <h2 id="checkout-title">Checkout</h2>
+                  <p>
+                    Review your pickup, add contact details and validate the
+                    complete order before payment is connected.
+                  </p>
+                </div>
+
+                <div className="checkout-layout">
+                  <div className="checkout-fields">
+                    <section className="checkout-section" aria-labelledby="pickup-heading">
+                      <div className="checkout-section__heading">
+                        <span>1</span>
+                        <div>
+                          <h3 id="pickup-heading">Pickup</h3>
+                          <p>ASAP · Estimated preparation 10–15 minutes</p>
+                        </div>
+                      </div>
+                      <div className="checkout-location-card">
+                        <strong>Franklin Woolworths Carpark</strong>
+                        <span>Draft location · final map link pending</span>
+                      </div>
+                    </section>
+
+                    <section className="checkout-section" aria-labelledby="contact-heading">
+                      <div className="checkout-section__heading">
+                        <span>2</span>
+                        <div>
+                          <h3 id="contact-heading">Contact details</h3>
+                          <p>Used to identify your pickup order.</p>
+                        </div>
+                      </div>
+                      <div className="checkout-inputs">
+                        <label>
+                          Pickup name
+                          <input
+                            name="name"
+                            type="text"
+                            autoComplete="name"
+                            minLength={2}
+                            maxLength={80}
+                            required
+                          />
+                        </label>
+                        <label>
+                          Email address
+                          <input
+                            name="email"
+                            type="email"
+                            autoComplete="email"
+                            maxLength={160}
+                            required
+                          />
+                        </label>
+                        <label>
+                          Mobile number
+                          <input
+                            name="phone"
+                            type="tel"
+                            autoComplete="tel"
+                            minLength={8}
+                            maxLength={24}
+                            placeholder="04xx xxx xxx"
+                            required
+                          />
+                        </label>
+                        <label>
+                          Order notes <span>Optional</span>
+                          <textarea
+                            name="notes"
+                            rows={3}
+                            maxLength={300}
+                            placeholder="Pickup or preparation notes"
+                          />
+                        </label>
+                      </div>
+                    </section>
+
+                    <section className="checkout-section" aria-labelledby="payment-heading">
+                      <div className="checkout-section__heading">
+                        <span>3</span>
+                        <div>
+                          <h3 id="payment-heading">Payment</h3>
+                          <p>Payment provider connection is still required.</p>
+                        </div>
+                      </div>
+                      <div className="payment-placeholder">
+                        <div>
+                          <strong>Demo validation only</strong>
+                          <span>No card or wallet details will be requested.</span>
+                        </div>
+                        <div className="wallet-labels" aria-label="Planned express payments">
+                          <span>Apple Pay</span>
+                          <span>Google Pay</span>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+
+                  <aside className="checkout-review" aria-labelledby="review-heading">
+                    <div className="checkout-review__heading">
+                      <h3 id="review-heading">Order review</h3>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsCheckoutOpen(false);
+                          setIsCartOpen(true);
+                        }}
+                      >
+                        Edit order
+                      </button>
+                    </div>
+                    <div className="checkout-review__lines">
+                      {cart.map((line) => {
+                        const item = items.find(
+                          (entry) => entry.id === line.itemId,
+                        );
+                        if (!item) return null;
+                        return (
+                          <div key={line.lineId}>
+                            <span>
+                              {line.quantity}× {item.name}
+                            </span>
+                            <strong>
+                              {formatPrice(
+                                calculateLineUnitPrice(line, item) * line.quantity,
+                              )}
+                            </strong>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="checkout-review__total">
+                      <span>Subtotal</span>
+                      <strong>{formatPrice(cartSubtotal)}</strong>
+                    </div>
+                    <p className="allergen-note">
+                      Tell the truck team about allergies before ordering.
+                      Gluten-free and cross-contamination information is awaiting
+                      client verification.
+                    </p>
+
+                    {checkoutErrors.length > 0 && (
+                      <div className="checkout-errors" role="alert">
+                        <strong>Please check your order:</strong>
+                        <ul>
+                          {checkoutErrors.map((error) => (
+                            <li key={error}>{error}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <button
+                      className="primary-button full-width"
+                      type="submit"
+                      disabled={checkoutState === "submitting"}
+                    >
+                      {checkoutState === "submitting"
+                        ? "Validating order…"
+                        : "Submit demo order"}
+                    </button>
+                    <small>
+                      Demo mode does not charge, save or send this order.
+                    </small>
+                  </aside>
+                </div>
+              </form>
+            )}
+          </section>
         </div>
       )}
 

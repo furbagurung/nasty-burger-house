@@ -37,7 +37,8 @@ body {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
 }
 
@@ -49,6 +50,11 @@ a {
 button:focus-visible,
 a:focus-visible,
 input:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+textarea:focus-visible {
   outline: 3px solid var(--gold);
   outline-offset: 3px;
 }
@@ -286,6 +292,11 @@ main {
 
 .primary-button:hover {
   background: var(--hot-dark);
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
 
 .secondary-button {
@@ -681,9 +692,21 @@ main {
   box-shadow: var(--shadow);
 }
 
+.checkout-modal {
+  position: relative;
+  width: min(100%, 74rem);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  border-radius: 1.5rem;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
 .product-modal h2,
 .loyalty-modal h2,
 .monthly-modal h2,
+.checkout-modal h2,
 .cart-drawer h2 {
   margin: 0;
   font-size: clamp(2rem, 6vw, 3.2rem);
@@ -723,10 +746,12 @@ main {
 
 .product-modal > .close-button,
 .loyalty-modal > .close-button,
-.monthly-modal > .close-button {
+.monthly-modal > .close-button,
+.checkout-modal > .close-button {
   position: absolute;
   top: 1rem;
   right: 1rem;
+  z-index: 2;
 }
 
 fieldset {
@@ -1012,10 +1037,293 @@ legend span {
   min-height: 3.2rem;
   border: 0;
   border-radius: 999px;
-  background: #cbc3b6;
-  color: #625c53;
+  background: var(--hot);
+  color: white;
   font-weight: 850;
-  cursor: not-allowed;
+}
+
+.checkout-summary button:hover {
+  background: var(--hot-dark);
+}
+
+.checkout-heading {
+  max-width: 44rem;
+  padding-right: 3rem;
+}
+
+.checkout-heading h2 {
+  margin: 0;
+}
+
+.checkout-heading > p:not(.eyebrow) {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(20rem, 0.75fr);
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.checkout-fields {
+  display: grid;
+  gap: 1rem;
+}
+
+.checkout-section,
+.checkout-review {
+  border: 1px solid var(--line);
+  border-radius: 1.15rem;
+  padding: 1.25rem;
+  background: var(--card);
+}
+
+.checkout-section__heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.checkout-section__heading > span {
+  display: grid;
+  flex: 0 0 auto;
+  width: 1.9rem;
+  height: 1.9rem;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ink);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.checkout-section h3,
+.checkout-review h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.checkout-section__heading p {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.checkout-location-card,
+.payment-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  border-radius: 0.85rem;
+  padding: 0.9rem 1rem;
+  background: var(--paper);
+}
+
+.checkout-location-card {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.checkout-location-card span,
+.payment-placeholder span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.payment-placeholder > div:first-child {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.checkout-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.checkout-inputs label {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.checkout-inputs label:last-child {
+  grid-column: 1 / -1;
+}
+
+.checkout-inputs label > span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.checkout-inputs input,
+.checkout-inputs textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  background: white;
+  color: var(--ink);
+}
+
+.checkout-inputs input {
+  min-height: 3rem;
+}
+
+.checkout-inputs textarea {
+  resize: vertical;
+}
+
+.checkout-review {
+  align-self: start;
+  position: sticky;
+  top: 0;
+}
+
+.checkout-review__heading,
+.checkout-review__lines > div,
+.checkout-review__total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.checkout-review__heading button {
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  padding: 0.2rem 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.checkout-review__lines {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.1rem;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 1rem 0;
+}
+
+.checkout-review__lines span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.checkout-review__lines strong {
+  font-size: 0.8rem;
+}
+
+.checkout-review__total {
+  padding: 1rem 0;
+}
+
+.checkout-review__total strong {
+  font-size: 1.3rem;
+}
+
+.allergen-note {
+  margin: 0 0 1rem;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(255, 201, 40, 0.18);
+  color: #66500b;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.checkout-errors {
+  margin-bottom: 1rem;
+  border-radius: 0.75rem;
+  padding: 0.8rem;
+  background: rgba(184, 36, 11, 0.1);
+  color: var(--hot-dark);
+  font-size: 0.8rem;
+}
+
+.checkout-errors ul {
+  margin: 0.45rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.checkout-review > small {
+  display: block;
+  margin-top: 0.7rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.checkout-success {
+  max-width: 38rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 7vw, 5rem) 0;
+  text-align: center;
+}
+
+.checkout-success__mark {
+  display: grid;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: 0 auto 1.25rem;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--green);
+  color: white;
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.checkout-success h2 {
+  margin: 0;
+}
+
+.checkout-success > p:not(.eyebrow, .checkout-reference) {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.checkout-reference {
+  display: inline-block;
+  margin: 1.25rem 0 0;
+  border-radius: 999px;
+  padding: 0.55rem 0.85rem;
+  background: var(--ink);
+  color: white;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.demo-warning {
+  margin: 1.5rem 0;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: var(--card);
+  text-align: left;
+}
+
+.demo-warning p {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
 }
 
 .wallet-labels {
@@ -1244,11 +1552,43 @@ legend span {
 
   .product-modal,
   .loyalty-modal,
-  .monthly-modal {
+  .monthly-modal,
+  .checkout-modal {
     width: 100%;
     max-height: calc(100vh - 1rem);
     border-radius: 1.25rem;
     padding: 1.25rem;
+  }
+
+  .checkout-backdrop {
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .checkout-modal {
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-review {
+    position: static;
+  }
+
+  .checkout-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-inputs label:last-child {
+    grid-column: auto;
+  }
+
+  .payment-placeholder {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .dietary-filters {

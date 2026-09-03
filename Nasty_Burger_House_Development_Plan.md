@@ -48,6 +48,19 @@ Create a high-converting food-truck ordering website that helps customers:
 - Empty, validation and success states for the ordering flow
 - Lint, TypeScript and production build validation passed
 
+### Phase 3 — Checkout and order submission (completed September 3)
+
+- Mobile checkout with pickup, customer contact and order-review steps
+- Required customer fields, optional preparation notes and accessible error states
+- Shared client/server pricing calculations
+- Server validation against the canonical menu instead of browser-supplied prices
+- Rejection of changed totals, invalid drinks, unavailable modifiers and incomplete Beast Boxes
+- Request-size and quantity limits
+- Loading, error and successful confirmation states
+- Unique demo order reference generation
+- Explicit safeguards: no payment, persistence or kitchen delivery in demo mode
+- Development server moved to port 3001
+
 ### Provisional values isolated for client approval
 
 - Combo upgrade: $7
@@ -59,7 +72,7 @@ Create a high-converting food-truck ordering website that helps customers:
 
 ### Integration work still required
 
-- Real checkout, order submission and confirmation
+- Persistent order creation and restaurant notification
 - Square or selected payment-provider connection
 - Apple Pay and Google Pay merchant activation
 - Real-time truck location and trading-hours management
@@ -135,4 +148,4 @@ Do not request passwords from the client. Use collaborator or developer access.
 
 ## 7. Current Source Note
 
-The manually coded Next.js repository contains the Phase 1 and Phase 2 work. The frontend currently builds successfully and is ready for the payment/POS integration phase. Live checkout remains intentionally disabled until the client selects a provider and supplies collaborator access.
+The manually coded Next.js repository contains the Phase 1–3 work. The checkout interface and server-side submission validation are complete and testable in demo mode. Live payments, durable order storage and restaurant notifications remain intentionally disabled until the client selects a provider and supplies collaborator access.

@@ -1,6 +1,10 @@
 /* Mobile app-style presentation.
    Desktop remains unchanged; these overrides only apply to phone layouts. */
 
+.mobile-tab-bar {
+  display: none;
+}
+
 @media (max-width: 680px) {
   :root {
     --app-surface: #f4f2ed;
@@ -226,28 +230,118 @@
     display: none;
   }
 
-  /* Persistent order CTA, styled like an app cart bar. */
-  .mobile-order-bar {
+  /* Five-tab app navigation with a raised primary ordering action. */
+  .mobile-tab-bar {
+    --tab-bar-height: 4.75rem;
     right: 0;
     bottom: 0;
     left: 0;
     z-index: 55;
-    display: block;
-    padding: 0.65rem 0.85rem calc(0.65rem + env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    min-height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+    padding: 0.45rem 0.25rem calc(0.35rem + env(safe-area-inset-bottom));
     border-top: 1px solid rgba(21, 19, 15, 0.08);
-    background: rgba(255, 255, 255, 0.96);
-    box-shadow: 0 -10px 30px rgba(25, 21, 16, 0.08);
-    backdrop-filter: blur(22px);
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 -10px 34px rgba(25, 21, 16, 0.11);
+    backdrop-filter: blur(24px);
+    position: fixed;
   }
 
-  .mobile-order-bar button {
-    width: 100%;
-    min-height: 3.45rem;
+  .mobile-tab {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-height: 3.85rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
     border: 0;
-    border-radius: 0.95rem;
+    border-radius: 0.85rem;
+    background: transparent;
+    color: #746d65;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 780;
+    line-height: 1;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-tab svg {
+    width: 1.45rem;
+    height: 1.45rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+
+  .mobile-tab.is-active {
+    color: var(--hot);
+  }
+
+  .mobile-tab:focus-visible {
+    outline: 3px solid rgba(232, 59, 24, 0.28);
+    outline-offset: -2px;
+  }
+
+  .mobile-tab__icon-wrap {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+
+  .mobile-tab__badge {
+    position: absolute;
+    top: -0.55rem;
+    right: -0.75rem;
+    display: grid;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    place-items: center;
+    border: 2px solid white;
+    border-radius: 999px;
+    padding: 0 0.2rem;
     background: var(--hot);
-    box-shadow: 0 8px 18px rgba(232, 59, 24, 0.18);
-    font-size: 0.94rem;
+    color: white;
+    font-size: 0.65rem;
+    line-height: 1;
+  }
+
+  .mobile-tab--order {
+    justify-content: flex-start;
+    gap: 0.22rem;
+    overflow: visible;
+    padding-top: 0;
+    color: #151310;
+    font-weight: 850;
+  }
+
+  .mobile-tab__order-circle {
+    display: grid;
+    width: 4.7rem;
+    height: 4.7rem;
+    margin-top: -2rem;
+    place-items: center;
+    border: 0.3rem solid white;
+    border-radius: 50%;
+    background: #151310;
+    box-shadow: 0 8px 24px rgba(22, 18, 14, 0.24);
+    color: white;
+  }
+
+  .mobile-tab__order-circle svg {
+    width: 1.65rem;
+    height: 1.65rem;
+    stroke-width: 1.7;
+  }
+
+  .mobile-tab--order.is-active .mobile-tab__order-circle {
+    background: var(--hot);
+    box-shadow: 0 8px 24px rgba(232, 59, 24, 0.28);
   }
 
   /* All ordering overlays become bottom sheets on mobile. */
@@ -632,51 +726,4 @@
     display: none;
   }
 
-  .catalogue-app-nav {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 55;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    padding: 0.45rem 0.45rem calc(0.45rem + env(safe-area-inset-bottom));
-    border-top: 1px solid rgba(21, 19, 15, 0.09);
-    background: rgba(255, 255, 255, 0.97);
-    box-shadow: 0 -8px 26px rgba(31, 25, 18, 0.08);
-    backdrop-filter: blur(20px);
-  }
-
-  .catalogue-app-nav a {
-    display: grid;
-    min-height: 3.65rem;
-    place-items: center;
-    align-content: center;
-    gap: 0.18rem;
-    border-radius: 0.85rem;
-    color: #6e675f;
-    font-size: 0.66rem;
-    font-weight: 800;
-    text-decoration: none;
-  }
-
-  .catalogue-app-nav a.is-active {
-    color: var(--hot);
-  }
-
-  .catalogue-app-nav strong {
-    color: inherit;
-    font-size: 1.15rem;
-    line-height: 1;
-  }
-
-  .catalogue-app-nav span {
-    color: inherit;
-  }
-}
-
-@media (min-width: 681px) {
-  .catalogue-app-nav {
-    display: none;
-  }
 }

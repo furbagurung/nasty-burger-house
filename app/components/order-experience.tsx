@@ -17,6 +17,7 @@ import {
   type CartLine,
 } from "../lib/order";
 import type { ServiceStatus } from "../lib/service";
+import MobileBottomNav from "./mobile-bottom-nav";
 
 type OrderExperienceProps = {
   items: MenuItem[];
@@ -241,8 +242,16 @@ export default function OrderExperience({
     const requestedItem = items.find((item) => item.id === params.get("item"));
     const shouldOpenCart = params.get("cart") === "1";
     const shouldOpenLoyalty = params.get("loyalty") === "1";
+    const shouldOpenOrderType = params.get("order") === "1";
 
-    if (!requestedItem && !shouldOpenCart && !shouldOpenLoyalty) return;
+    if (
+      !requestedItem &&
+      !shouldOpenCart &&
+      !shouldOpenLoyalty &&
+      !shouldOpenOrderType
+    ) {
+      return;
+    }
 
     const timer = window.setTimeout(() => {
       if (requestedItem) {
@@ -263,12 +272,15 @@ export default function OrderExperience({
         setIsCartOpen(true);
       } else if (shouldOpenLoyalty) {
         setIsLoyaltyOpen(true);
+      } else if (shouldOpenOrderType) {
+        setIsOrderTypeOpen(true);
       }
     }, 0);
 
     params.delete("item");
     params.delete("cart");
     params.delete("loyalty");
+    params.delete("order");
     const remainingQuery = params.toString();
     window.history.replaceState(
       {},
@@ -968,13 +980,21 @@ export default function OrderExperience({
         </div>
       </footer>
 
-      <div className="mobile-order-bar" aria-label="Mobile ordering actions">
-        <button type="button" onClick={cartCount > 0 ? openCart : openOrderType}>
-          {cartCount > 0
-            ? `View order · ${formatPrice(cartSubtotal)}`
-            : "Order now"}
-        </button>
-      </div>
+      <MobileBottomNav
+        active={
+          isCartOpen
+            ? "cart"
+            : isLoyaltyOpen
+              ? "profile"
+              : isOrderTypeOpen || Boolean(selectedItem) || isCheckoutOpen
+                ? "order"
+                : "home"
+        }
+        cartCount={cartCount}
+        onOrder={openOrderType}
+        onCart={openCart}
+        onProfile={openLoyalty}
+      />
 
       {isOrderTypeOpen && (
         <div className="modal-backdrop order-type-backdrop" role="presentation">

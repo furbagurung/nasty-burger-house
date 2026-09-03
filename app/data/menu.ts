@@ -39,18 +39,20 @@ export type MenuItem = {
 
 export const adultDrinkChoices = [
   "Coca-Cola",
-  "Coke Zero",
-  "Solo",
+  "Coke No Sugar",
+  "Sprite",
+  "Fanta",
+  "Lift",
   "Water",
 ];
 
-// Apple and orange juice remain draft choices until the client confirms the kids' range.
-export const kidsDrinkChoices = ["Water", "Apple Juice", "Orange Juice"];
+// The latest printed menu lists soft drinks or water for the kids' meal upgrade.
+export const kidsDrinkChoices = adultDrinkChoices;
 
 // Kept in one configuration block so client-approved pricing can be changed safely.
 export const comboUpgradePrice = 6.99;
 export const pricingNotice =
-  "Monster Cheese, standalone drinks, modifiers and kids' drink pricing remain provisional. The $6.99 meal upgrade and supplied menu prices are confirmed.";
+  "Standalone drink and modifier prices remain provisional. All printed menu item prices and the $6.99 meal upgrade are confirmed.";
 
 export const modifierChoices: ModifierChoice[] = [
   { id: "beef-patty", name: "Extra smashed beef patty", price: 4 },
@@ -184,7 +186,6 @@ export const menuItems: MenuItem[] = [
       "Flame-grilled beef patty with American cheese, tomato sauce and pickles on a soft milk bun.",
     category: "kids",
     price: 14,
-    priceConfirmed: false,
     canUpgrade: true,
     isKidsItem: true,
     dietaryTags: ["Halal"],

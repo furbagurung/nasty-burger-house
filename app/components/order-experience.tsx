@@ -1190,7 +1190,7 @@ export default function OrderExperience({
                 </div>
                 {selectedItem.isKidsItem && (
                   <small className="field-note">
-                    Kids&apos; juice choices remain provisional until client approval.
+                    Choose any listed soft drink or water with the meal upgrade.
                   </small>
                 )}
               </fieldset>

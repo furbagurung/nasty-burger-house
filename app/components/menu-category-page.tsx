@@ -142,8 +142,8 @@ export default function MenuCategoryPage({
           </div>
 
           <p className="catalogue-disclaimer">
-            Supplied menu prices are updated. Monster Cheese, standalone drinks,
-            modifiers and kids&apos; drinks remain provisional until confirmed.
+            Printed menu prices are confirmed. Standalone drink and modifier
+            prices remain provisional until supplied.
           </p>
         </section>
       </main>

@@ -109,6 +109,8 @@ export default function OrderExperience({
 }: OrderExperienceProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [activeDietary, setActiveDietary] = useState<DietaryTag | null>(null);
+  const [menuQuery, setMenuQuery] = useState("");
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [modifierQuantities, setModifierQuantities] = useState<
     Record<string, number>
@@ -152,12 +154,22 @@ export default function OrderExperience({
           ? items.filter((item) => item.featured)
           : items.filter((item) => item.category === activeCategory);
 
-    return activeDietary
+    const dietaryItems = activeDietary
       ? categoryItems.filter((item) =>
           item.dietaryTags?.includes(activeDietary),
         )
       : categoryItems;
-  }, [activeCategory, activeDietary, items]);
+
+    const query = menuQuery.trim().toLocaleLowerCase();
+    if (!query) return dietaryItems;
+
+    return dietaryItems.filter((item) =>
+      [item.name, item.description, item.category, ...(item.dietaryTags ?? [])]
+        .join(" ")
+        .toLocaleLowerCase()
+        .includes(query),
+    );
+  }, [activeCategory, activeDietary, items, menuQuery]);
 
   const selectedModifiers = useMemo(
     () =>
@@ -250,7 +262,8 @@ export default function OrderExperience({
       selectedItem ||
       isCartOpen ||
       isCheckoutOpen ||
-      isMonthlyOpen
+      isMonthlyOpen ||
+      isMobileNavOpen
     ) {
       return;
     }
@@ -261,6 +274,7 @@ export default function OrderExperience({
     cartHydrated,
     isCartOpen,
     isCheckoutOpen,
+    isMobileNavOpen,
     isMonthlyOpen,
     loyaltyComplete,
     loyaltyDismissed,
@@ -273,7 +287,8 @@ export default function OrderExperience({
       isCartOpen ||
       isCheckoutOpen ||
       isLoyaltyOpen ||
-      isMonthlyOpen;
+      isMonthlyOpen ||
+      isMobileNavOpen;
     document.body.style.overflow = overlayOpen ? "hidden" : "";
 
     function closeOnEscape(event: KeyboardEvent) {
@@ -284,6 +299,7 @@ export default function OrderExperience({
       setIsCheckoutOpen(false);
       setIsLoyaltyOpen(false);
       setIsMonthlyOpen(false);
+      setIsMobileNavOpen(false);
     }
 
     window.addEventListener("keydown", closeOnEscape);
@@ -295,6 +311,7 @@ export default function OrderExperience({
     isCartOpen,
     isCheckoutOpen,
     isLoyaltyOpen,
+    isMobileNavOpen,
     isMonthlyOpen,
     selectedItem,
   ]);
@@ -312,6 +329,7 @@ export default function OrderExperience({
 
   function beginProduct(item: MenuItem) {
     resetProductForm();
+    setIsMobileNavOpen(false);
     setIsLoyaltyOpen(false);
     setIsCheckoutOpen(false);
     setSelectedItem(item);
@@ -537,6 +555,7 @@ export default function OrderExperience({
   }
 
   function openLoyalty() {
+    setIsMobileNavOpen(false);
     setSelectedItem(null);
     setEditingLineId(null);
     setIsCartOpen(false);
@@ -546,6 +565,7 @@ export default function OrderExperience({
   }
 
   function openCart() {
+    setIsMobileNavOpen(false);
     setIsLoyaltyOpen(false);
     setIsCheckoutOpen(false);
     setIsMonthlyOpen(false);
@@ -633,11 +653,18 @@ export default function OrderExperience({
   }
 
   function filterAndScroll(category: string) {
+    setIsMobileNavOpen(false);
     setActiveCategory(category);
     window.setTimeout(
       () => document.getElementById("menu")?.scrollIntoView({ behavior: "smooth" }),
       0,
     );
+  }
+
+  function clearMenuFilters() {
+    setMenuQuery("");
+    setActiveCategory("all");
+    setActiveDietary(null);
   }
 
   const drinksForSelectedItem = selectedItem?.isKidsItem
@@ -691,6 +718,18 @@ export default function OrderExperience({
             {loyaltyComplete ? "Drip Points joined" : "Join Drip Points"}
           </button>
           <button
+            className="mobile-menu-button"
+            type="button"
+            aria-label="Open navigation"
+            aria-expanded={isMobileNavOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setIsMobileNavOpen(true)}
+          >
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+          </button>
+          <button
             className="cart-button"
             type="button"
             onClick={openCart}
@@ -700,6 +739,65 @@ export default function OrderExperience({
           </button>
         </div>
       </header>
+
+      {isMobileNavOpen && (
+        <div className="drawer-backdrop mobile-nav-backdrop" role="presentation">
+          <aside
+            className="mobile-nav-drawer"
+            id="mobile-navigation"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-navigation-title"
+          >
+            <div className="drawer-heading">
+              <div>
+                <p className="eyebrow">Nasty Burger House</p>
+                <h2 id="mobile-navigation-title">Menu</h2>
+              </div>
+              <button
+                className="close-button"
+                type="button"
+                onClick={() => setIsMobileNavOpen(false)}
+                aria-label="Close navigation"
+              >
+                ×
+              </button>
+            </div>
+            <nav className="mobile-nav-links" aria-label="Mobile navigation">
+              <button type="button" onClick={() => filterAndScroll("all")}>
+                Explore menu <span aria-hidden="true">→</span>
+              </button>
+              <a
+                href="#beast-month"
+                onClick={() => setIsMobileNavOpen(false)}
+              >
+                Beast of the Month <span aria-hidden="true">→</span>
+              </a>
+              <a href="#location" onClick={() => setIsMobileNavOpen(false)}>
+                Find today&apos;s truck <span aria-hidden="true">→</span>
+              </a>
+              <button type="button" onClick={openLoyalty}>
+                Join Drip Points <span aria-hidden="true">→</span>
+              </button>
+            </nav>
+            <div className="mobile-nav-status">
+              <span
+                className={`status-dot status-dot--${serviceStatus.statusTone}`}
+                aria-hidden="true"
+              />
+              <div>
+                <strong>{serviceStatus.statusLabel}</strong>
+                <p>{serviceStatus.locationName}</p>
+              </div>
+            </div>
+            <button className="primary-button full-width" type="button" onClick={openCart}>
+              {cartCount > 0
+                ? `View order · ${formatPrice(cartSubtotal)}`
+                : "Start an order"}
+            </button>
+          </aside>
+        </div>
+      )}
 
       <main id="top">
         <section className="order-hero" aria-labelledby="hero-title">
@@ -790,31 +888,53 @@ export default function OrderExperience({
             ))}
           </div>
 
-          <div className="dietary-filters" aria-label="Dietary filters">
-            <span>Quick filter</span>
-            {(["Halal", "Vegetarian"] as DietaryTag[]).map((filter) => (
-              <button
-                key={filter}
-                type="button"
-                className={activeDietary === filter ? "is-active" : ""}
-                onClick={() =>
-                  setActiveDietary((current) =>
-                    current === filter ? null : filter,
-                  )
-                }
-                aria-pressed={activeDietary === filter}
-              >
-                {filter}
-              </button>
-            ))}
+          <div className="menu-tools">
+            <label className="menu-search">
+              <span className="sr-only">Search the menu</span>
+              <input
+                type="search"
+                value={menuQuery}
+                onChange={(event) => setMenuQuery(event.target.value)}
+                placeholder="Search burgers, sides or drinks"
+                autoComplete="off"
+              />
+              {menuQuery && (
+                <button type="button" onClick={() => setMenuQuery("")}>
+                  Clear
+                </button>
+              )}
+            </label>
+
+            <div className="dietary-filters" aria-label="Dietary filters">
+              <span>Quick filter</span>
+              {(["Halal", "Vegetarian"] as DietaryTag[]).map((filter) => (
+                <button
+                  key={filter}
+                  type="button"
+                  className={activeDietary === filter ? "is-active" : ""}
+                  onClick={() =>
+                    setActiveDietary((current) =>
+                      current === filter ? null : filter,
+                    )
+                  }
+                  aria-pressed={activeDietary === filter}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
           </div>
+
+          <p className="menu-result-count" aria-live="polite">
+            {visibleItems.length} {visibleItems.length === 1 ? "item" : "items"}
+          </p>
 
           {visibleItems.length === 0 ? (
             <div className="menu-empty">
               <h3>No matching items.</h3>
-              <p>Clear the dietary filter to view this category.</p>
-              <button type="button" onClick={() => setActiveDietary(null)}>
-                Clear filter
+              <p>Try another search or clear the active menu filters.</p>
+              <button type="button" onClick={clearMenuFilters}>
+                Clear all filters
               </button>
             </div>
           ) : (

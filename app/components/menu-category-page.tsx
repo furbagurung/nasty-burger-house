@@ -160,6 +160,25 @@ export default function MenuCategoryPage({
           <Link href="/?loyalty=1">Drip Points</Link>
         </nav>
       </footer>
+
+      <nav className="catalogue-app-nav" aria-label="Mobile app navigation">
+        <Link href="/">
+          <strong aria-hidden="true">⌂</strong>
+          <span>Home</span>
+        </Link>
+        <Link className="is-active" href={`/menu/${category.id}`} aria-current="page">
+          <strong aria-hidden="true">≡</strong>
+          <span>Menu</span>
+        </Link>
+        <Link href="/#beast-month">
+          <strong aria-hidden="true">★</strong>
+          <span>New</span>
+        </Link>
+        <Link href="/?loyalty=1">
+          <strong aria-hidden="true">D</strong>
+          <span>Points</span>
+        </Link>
+      </nav>
     </div>
   );
 }

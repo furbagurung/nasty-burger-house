@@ -5,6 +5,8 @@ import {
   menuPageCategories,
   type MenuPageCategory,
 } from "../data/menu-pages";
+import CatalogueMobileMenu from "./catalogue-mobile-menu";
+import MenuItemMedia from "./menu-item-media";
 import MobileBottomNav from "./mobile-bottom-nav";
 
 type MenuCategoryPageProps = {
@@ -26,6 +28,7 @@ export default function MenuCategoryPage({
   return (
     <div className="catalogue-shell">
       <header className="catalogue-header">
+        <CatalogueMobileMenu />
         <Link className="catalogue-logo" href="/" aria-label="Nasty Burger House home">
           <Image src="/logo.webp" alt="" width={256} height={256} priority />
         </Link>
@@ -43,19 +46,6 @@ export default function MenuCategoryPage({
           <Link className="catalogue-order-button" href="/menu/burgers">
             Order Now
           </Link>
-          <details className="catalogue-mobile-nav">
-            <summary aria-label="Open navigation">
-              <span aria-hidden="true" />
-              <span aria-hidden="true" />
-              <span aria-hidden="true" />
-            </summary>
-            <nav aria-label="Mobile navigation">
-              <Link href="/">Home</Link>
-              <Link href="/menu/burgers">Menu</Link>
-              <Link href="/#beast-month">What&apos;s New</Link>
-              <Link href="/?loyalty=1">Drip Points</Link>
-            </nav>
-          </details>
         </div>
       </header>
 
@@ -90,24 +80,12 @@ export default function MenuCategoryPage({
             {items.map((item) => (
               <Link
                 className="catalogue-product"
-                href={`/?item=${item.id}`}
+                href={`/product/${item.id}`}
                 key={item.id}
-                aria-label={`Customise and order ${item.name}`}
+                aria-label={`View ${item.name}`}
               >
                 <div className="catalogue-product__media">
-                  {item.image ? (
-                    <Image
-                      src={item.image}
-                      alt=""
-                      fill
-                      sizes="(max-width: 720px) 80vw, 24vw"
-                    />
-                  ) : (
-                    <div className="catalogue-product__placeholder" aria-hidden="true">
-                      <span>{item.name.slice(0, 1)}</span>
-                      <small>Photo coming soon</small>
-                    </div>
-                  )}
+                  <MenuItemMedia item={item} sizes="(max-width: 680px) 42vw, 24vw" />
                 </div>
                 <h2>{item.name}</h2>
                 <p>
@@ -115,7 +93,7 @@ export default function MenuCategoryPage({
                   {item.priceConfirmed === false && <small> · Provisional</small>}
                 </p>
                 <span className="catalogue-product__action">
-                  Customise &amp; order
+                  View item <strong aria-hidden="true">+</strong>
                 </span>
               </Link>
             ))}

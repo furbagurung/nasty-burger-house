@@ -22,6 +22,10 @@ export function createOrderDispatchPayload(
   serviceStatus: ServiceStatus,
   orderId: string,
 ) {
+  const notificationEmail =
+    process.env.ORDER_NOTIFICATION_EMAIL?.trim() ||
+    "vcouncil.furba@gmail.com";
+
   return {
     schemaVersion: 1,
     orderId,
@@ -40,6 +44,9 @@ export function createOrderDispatchPayload(
       status: "unpaid",
       amount: order.subtotal,
       currency: "AUD",
+    },
+    notification: {
+      email: notificationEmail,
     },
     customer: order.customer,
     notes: order.notes,

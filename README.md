@@ -8,7 +8,9 @@ Mobile-first ordering website for Nasty Burger House, built with Next.js 16, Rea
 - Dark Nasty Burger House visual theme across the homepage and menu catalogue
 - Accessible mobile navigation drawer with ordering status
 - Multi-page category catalogue at `/menu/[category]`
-- Product links that open the existing customisation and ordering flow
+- Statically generated detail page for every item at `/product/[item]`
+- Premium mobile header, full-screen side drawer and category-rail menu layout
+- Product links that continue into the existing customisation and ordering flow
 - Product-specific extras and ingredient removal
 - Combo upgrades with required drink selection
 - Configurable Beast Boxes
@@ -35,11 +37,13 @@ Vercel for production:
 ```bash
 ORDER_WEBHOOK_URL=https://your-secure-order-receiver.example
 ORDER_WEBHOOK_SECRET=optional-shared-bearer-token
+ORDER_NOTIFICATION_EMAIL=vcouncil.furba@gmail.com
 ```
 
 The receiver must accept a JSON `POST` request and return a successful `2xx`
-response. Without `ORDER_WEBHOOK_URL`, checkout stops safely instead of showing
-a false order confirmation.
+response. It receives `vcouncil.furba@gmail.com` as the temporary notification
+recipient. Without `ORDER_WEBHOOK_URL`, checkout stops safely instead of
+showing a false order confirmation.
 
 ## Local development
 

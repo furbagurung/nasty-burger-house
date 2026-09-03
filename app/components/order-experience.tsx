@@ -742,9 +742,17 @@ export default function OrderExperience({
             aria-labelledby="mobile-navigation-title"
           >
             <div className="drawer-heading">
-              <div>
-                <p className="eyebrow">Nasty Burger House</p>
-                <h2 id="mobile-navigation-title">Menu</h2>
+              <div className="mobile-nav-brand">
+                <Image
+                  src="/logo.webp"
+                  alt="Nasty Burger House"
+                  width={256}
+                  height={256}
+                />
+                <div>
+                  <p className="eyebrow">Nasty Burger House</p>
+                  <h2 id="mobile-navigation-title">Choose your feed.</h2>
+                </div>
               </div>
               <button
                 className="close-button"
@@ -756,9 +764,12 @@ export default function OrderExperience({
               </button>
             </div>
             <nav className="mobile-nav-links" aria-label="Mobile navigation">
-              <a href="#menu" onClick={() => setIsMobileNavOpen(false)}>
+              <Link
+                href="/menu/burgers"
+                onClick={() => setIsMobileNavOpen(false)}
+              >
                 Explore menu <span aria-hidden="true">→</span>
-              </a>
+              </Link>
               <a
                 href="#beast-month"
                 onClick={() => setIsMobileNavOpen(false)}

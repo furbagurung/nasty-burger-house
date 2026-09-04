@@ -4,7 +4,6 @@ import Image from "next/image";
 import { ShoppingBag, UserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import LottieCoin from "./lottie-coin";
 
 function triggerHomeAction(selector: string, fallbackHref: string) {
   const control = document.querySelector<HTMLButtonElement>(selector);
@@ -47,7 +46,6 @@ export default function HomeTopHeader() {
         setIsHeroTransparent(false);
       }
 
-      // Menu catalogue pages keep the global header permanently visible.
       if (isMenuPage) {
         setIsHidden(false);
         lastScrollY.current = currentY;
@@ -125,7 +123,12 @@ export default function HomeTopHeader() {
           }
         >
           <span className="home-top-header__drip-icon" aria-hidden="true">
-            <LottieCoin className="home-top-header__drip-lottie" />
+            <Image
+              src="/images/drip-points/drip-coin.png"
+              alt=""
+              width={32}
+              height={32}
+            />
           </span>
           <span>Drip Points</span>
         </button>

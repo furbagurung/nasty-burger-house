@@ -14,13 +14,6 @@ type MenuCategoryPageProps = {
   items: MenuItem[];
 };
 
-const money = new Intl.NumberFormat("en-AU", {
-  style: "currency",
-  currency: "AUD",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 2,
-});
-
 export default function MenuCategoryPage({
   category,
   items,
@@ -76,33 +69,24 @@ export default function MenuCategoryPage({
             <p>{category.description}</p>
           </div>
 
-          <div className="catalogue-product-grid">
+          <div className="catalogue-product-grid catalogue-product-grid--browse">
             {items.map((item) => (
               <Link
-                className="catalogue-product"
+                className="catalogue-product catalogue-product--browse"
                 href={`/product/${item.id}`}
                 key={item.id}
                 aria-label={`View ${item.name}`}
               >
-                <div className="catalogue-product__media">
-                  <MenuItemMedia item={item} sizes="(max-width: 680px) 42vw, 24vw" />
+                <div className="catalogue-product__media catalogue-product__media--browse">
+                  <MenuItemMedia
+                    item={item}
+                    sizes="(max-width: 680px) 44vw, (max-width: 1100px) 28vw, 22vw"
+                  />
                 </div>
                 <h2>{item.name}</h2>
-                <p>
-                  {money.format(item.price)}
-                  {item.priceConfirmed === false && <small> · Provisional</small>}
-                </p>
-                <span className="catalogue-product__action">
-                  View item <strong aria-hidden="true">+</strong>
-                </span>
               </Link>
             ))}
           </div>
-
-          <p className="catalogue-disclaimer">
-            Printed menu prices are confirmed. Standalone drink and modifier
-            prices remain provisional until supplied.
-          </p>
         </section>
       </main>
 

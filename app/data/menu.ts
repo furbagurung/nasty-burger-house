@@ -54,6 +54,7 @@ const drinkImages: Record<string, string> = {
   "Coke No Sugar": "/images/menu/coke no sugar.webp",
   Sprite: "/images/menu/sprite.jpg",
   Fanta: "/images/menu/fanta.webp",
+  Lift: "/images/menu/lift.avif",
   Water: "/images/menu/water.jpg",
 };
 
@@ -220,6 +221,7 @@ export const menuItems: MenuItem[] = [
       "Six crispy chicken dino nuggets served with Nasty Fries and tomato sauce.",
     category: "kids",
     price: 14,
+    image: "/images/menu/dino-nuggets.jpg",
     canUpgrade: true,
     isKidsItem: true,
     dietaryTags: ["Halal"],
@@ -261,6 +263,7 @@ export const menuItems: MenuItem[] = [
       "A refreshing tropical dessert with silky mango pudding, lychee granita and lychee pearls.",
     category: "sweet",
     price: 12,
+    image: "/images/menu/mango-pudding-v2.jpg",
     dietaryTags: ["Vegetarian"],
   },
   ...adultDrinkChoices.map((name) => ({

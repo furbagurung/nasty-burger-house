@@ -20,6 +20,7 @@ export default function HomeTopHeader() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isMenuPage = pathname.startsWith("/menu/");
+  const isProductPage = pathname.startsWith("/product/");
   const [isHidden, setIsHidden] = useState(false);
   const [isHeroTransparent, setIsHeroTransparent] = useState(isHome);
   const lastScrollY = useRef(0);
@@ -46,7 +47,8 @@ export default function HomeTopHeader() {
         setIsHeroTransparent(false);
       }
 
-      if (isMenuPage) {
+      // Menu and product pages keep the shared desktop header permanently visible.
+      if (isMenuPage || isProductPage) {
         setIsHidden(false);
         lastScrollY.current = currentY;
         return;
@@ -80,7 +82,7 @@ export default function HomeTopHeader() {
       window.removeEventListener("resize", updateWindowHeader);
       catalogueScroller?.removeEventListener("scroll", updateCatalogueHeader);
     };
-  }, [isHome, isMenuPage, pathname]);
+  }, [isHome, isMenuPage, isProductPage, pathname]);
 
   const headerClassName = [
     "home-top-header",

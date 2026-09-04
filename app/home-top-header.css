@@ -1,0 +1,198 @@
+/* Desktop home header inspired by the simple McDonald's logo → nav → account → cart hierarchy. */
+.home-top-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(2rem, 4vw, 4.5rem);
+  min-height: 6.4rem;
+  padding: 0.55rem clamp(1.5rem, 4vw, 4.5rem);
+  border-bottom: 1px solid transparent;
+  background: linear-gradient(180deg, rgba(6, 6, 6, 0.48) 0%, rgba(6, 6, 6, 0.12) 64%, transparent 100%);
+  color: #fff;
+  transition:
+    min-height 220ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    backdrop-filter 220ms ease;
+}
+
+.home-top-header.is-scrolled {
+  min-height: 5.45rem;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  background: rgba(10, 10, 10, 0.94);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+}
+
+.home-top-header__brand {
+  display: inline-grid;
+  width: 5.1rem;
+  height: 5.1rem;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.home-top-header__brand img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 180ms ease;
+}
+
+.home-top-header__brand:hover img {
+  transform: scale(1.035);
+}
+
+.home-top-header__nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: clamp(1.5rem, 2.6vw, 2.8rem);
+}
+
+.home-top-header__nav a,
+.home-top-header__nav button {
+  position: relative;
+  border: 0;
+  padding: 0.65rem 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 0.93rem;
+  font-weight: 760;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.home-top-header__nav a::after,
+.home-top-header__nav button::after {
+  position: absolute;
+  right: 0;
+  bottom: 0.22rem;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--hot);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease;
+}
+
+.home-top-header__nav a:hover::after,
+.home-top-header__nav button:hover::after {
+  transform: scaleX(1);
+}
+
+.home-top-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.home-top-header__account,
+.home-top-header__cart {
+  display: flex;
+  min-height: 3.25rem;
+  align-items: center;
+  gap: 0.7rem;
+  border-radius: 0.85rem;
+  padding: 0.45rem 0.75rem;
+  color: #fff;
+}
+
+.home-top-header__account {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.home-top-header__cart {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.home-top-header__account:hover,
+.home-top-header__cart:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.home-top-header__icon {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.home-top-header__icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.home-top-header__action-copy {
+  display: grid;
+  justify-items: start;
+  line-height: 1.02;
+}
+
+.home-top-header__action-copy small {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.63rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.home-top-header__action-copy strong {
+  margin-top: 0.24rem;
+  font-size: 0.88rem;
+  font-weight: 820;
+}
+
+/* Keep the existing functional header in the DOM so its cart/loyalty actions still work,
+   but replace it visually on desktop. Mobile keeps the existing app-style header. */
+@media (min-width: 901px) {
+  .site-shell > .site-header {
+    display: none;
+  }
+}
+
+@media (max-width: 1050px) {
+  .home-top-header {
+    gap: 1.6rem;
+    padding-inline: 1.5rem;
+  }
+
+  .home-top-header__nav {
+    gap: 1.25rem;
+  }
+
+  .home-top-header__action-copy small {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .home-top-header {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-top-header,
+  .home-top-header__brand img,
+  .home-top-header__nav a::after,
+  .home-top-header__nav button::after {
+    transition: none;
+  }
+}

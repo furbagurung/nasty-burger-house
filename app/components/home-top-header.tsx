@@ -42,9 +42,9 @@ export default function HomeTopHeader() {
 
       if (currentY <= 16) {
         setIsHidden(false);
-      } else if (currentY > lastScrollY.current + 7) {
+      } else if (currentY > lastScrollY.current + 3) {
         setIsHidden(true);
-      } else if (currentY < lastScrollY.current - 7) {
+      } else if (currentY < lastScrollY.current - 3) {
         setIsHidden(false);
       }
 
@@ -63,7 +63,7 @@ export default function HomeTopHeader() {
 
   const headerClassName = [
     "home-top-header",
-    isHeroTransparent ? "is-hero-transparent" : "is-dark",
+    isHome && isHeroTransparent ? "is-hero-transparent" : "is-dark",
     isHidden ? "is-hidden" : "is-visible",
   ].join(" ");
 

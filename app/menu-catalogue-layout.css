@@ -1,6 +1,5 @@
-/* Professional ordering catalogue: light category rail + independently scrollable products. */
+/* Professional ordering catalogue: centered light category rail + independently scrollable products. */
 
-/* Keep the full catalogue canvas pure white on desktop and mobile. */
 .catalogue-shell:not(.product-page-shell),
 .catalogue-shell:not(.product-page-shell) .catalogue-main,
 .catalogue-shell:not(.product-page-shell) .catalogue-content {
@@ -16,16 +15,18 @@
 
   .catalogue-shell:not(.product-page-shell) .catalogue-main {
     display: grid;
-    width: 100%;
-    max-width: none;
+    width: min(100%, 1440px);
+    max-width: 1440px;
     height: calc(100vh - 5.85rem);
     min-height: 34rem;
-    grid-template-columns: clamp(15.5rem, 18vw, 18.5rem) minmax(0, 1fr);
+    grid-template-columns: 15rem minmax(0, 1fr);
     align-items: stretch;
     gap: 0;
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
     overflow: hidden;
+    border-right: 1px solid #eeeeee;
+    border-left: 1px solid #eeeeee;
     background: #ffffff;
   }
 
@@ -49,7 +50,7 @@
     box-shadow: none;
     color: #171513;
     scrollbar-width: thin;
-    scrollbar-color: #dedede transparent;
+    scrollbar-color: #dddddd transparent;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-categories > p {
@@ -59,10 +60,10 @@
     margin: 0;
     border: 0;
     border-bottom: 1px solid #eeeeee;
-    padding: 1.3rem 1.4rem 1.05rem;
+    padding: 1.2rem 1.2rem 1rem;
     background: #ffffff;
     color: #81796f;
-    font-size: 0.72rem;
+    font-size: 0.69rem;
     font-weight: 850;
     letter-spacing: 0.11em;
     text-transform: uppercase;
@@ -70,29 +71,30 @@
 
   .catalogue-shell:not(.product-page-shell) .catalogue-categories nav {
     display: grid;
-    padding: 0.65rem 0.75rem 1rem;
+    gap: 0.2rem;
+    padding: 0.65rem 0.65rem 1rem;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-categories a {
     position: relative;
     display: grid;
-    min-height: 4.35rem;
-    grid-template-columns: 2.55rem minmax(0, 1fr);
+    min-height: 3.85rem;
+    grid-template-columns: 2.35rem minmax(0, 1fr);
     align-items: center;
-    gap: 0.85rem;
+    gap: 0.75rem;
     border: 0;
-    border-radius: 0.9rem;
-    padding: 0.65rem 0.75rem;
+    border-radius: 0.8rem;
+    padding: 0.55rem 0.65rem;
     background: transparent;
     color: #292521;
-    font-size: 0.9rem;
+    font-size: 0.84rem;
     font-weight: 730;
     text-decoration: none;
     transition: none;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-categories a:hover {
-    background: #f8f8f8;
+    background: #fafafa;
     color: #171513;
   }
 
@@ -103,8 +105,8 @@
 
   .catalogue-shell:not(.product-page-shell) .catalogue-categories a.is-active::before {
     position: absolute;
-    top: 0.75rem;
-    bottom: 0.75rem;
+    top: 0.65rem;
+    bottom: 0.65rem;
     left: 0;
     width: 3px;
     border-radius: 999px;
@@ -114,14 +116,14 @@
 
   .catalogue-shell:not(.product-page-shell) .catalogue-category-mark {
     display: grid;
-    width: 2.55rem;
-    height: 2.55rem;
+    width: 2.35rem;
+    height: 2.35rem;
     place-items: center;
     border: 1px solid #e8e8e8;
-    border-radius: 0.8rem;
-    background: #fafafa;
+    border-radius: 0.72rem;
+    background: #ffffff;
     color: #8d847a;
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 900;
   }
 
@@ -140,7 +142,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
-    padding: clamp(2.6rem, 4.5vw, 4.5rem) clamp(2rem, 5vw, 5.5rem) 5rem;
+    padding: clamp(2.3rem, 4vw, 3.75rem) clamp(2rem, 4vw, 4rem) 4.5rem;
     background: #ffffff;
     scrollbar-gutter: stable;
     scrollbar-width: thin;
@@ -149,7 +151,7 @@
 
   .catalogue-shell:not(.product-page-shell) .catalogue-content::-webkit-scrollbar,
   .catalogue-shell:not(.product-page-shell) .catalogue-categories::-webkit-scrollbar {
-    width: 9px;
+    width: 8px;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-content::-webkit-scrollbar-thumb,
@@ -162,62 +164,65 @@
 
   .catalogue-shell:not(.product-page-shell) .catalogue-heading,
   .catalogue-shell:not(.product-page-shell) .catalogue-product-grid--browse {
-    width: min(100%, 68rem);
+    width: min(100%, 58rem);
     margin-inline: auto;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-heading {
-    margin-bottom: clamp(3.25rem, 6vw, 5.5rem);
-    text-align: left;
+    margin-bottom: clamp(2.8rem, 5vw, 4rem);
+    text-align: center;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-heading .eyebrow {
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.65rem;
     color: var(--hot-dark);
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
+    font-size: 0.67rem;
+    letter-spacing: 0.15em;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-heading h1 {
     margin: 0;
     color: #151311;
-    font-size: clamp(3.2rem, 5vw, 5.2rem);
+    font-size: clamp(2.9rem, 4.5vw, 4.6rem);
     font-weight: 1000;
     letter-spacing: -0.065em;
-    line-height: 0.92;
+    line-height: 0.94;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-heading > p:last-child {
-    max-width: 42rem;
-    margin: 1.1rem 0 0;
+    max-width: 39rem;
+    margin: 0.95rem auto 0;
     color: #6e675f;
-    font-size: 1rem;
-    line-height: 1.65;
+    font-size: 0.94rem;
+    line-height: 1.6;
+    text-align: center;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-product-grid--browse {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: start;
-    gap: clamp(4.8rem, 8vh, 7.5rem) clamp(1.5rem, 3.5vw, 3.25rem);
+    justify-items: center;
+    gap: clamp(3.4rem, 6vh, 5rem) clamp(1.4rem, 3vw, 2.6rem);
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-product--browse {
-    min-height: 17rem;
+    width: 100%;
+    min-height: 13.5rem;
     justify-content: flex-start;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-product__media--browse {
-    width: min(100%, 14rem);
+    width: min(100%, 10.75rem);
     aspect-ratio: 1 / 1;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-product--browse h2 {
-    max-width: 14rem;
-    margin-top: 0.85rem;
+    max-width: 12rem;
+    margin-top: 0.65rem;
     color: #171513;
-    font-size: 1.02rem;
-    font-weight: 560;
-    line-height: 1.3;
+    font-size: 0.94rem;
+    font-weight: 540;
+    line-height: 1.28;
   }
 
   .catalogue-shell:not(.product-page-shell) > .catalogue-footer {
@@ -228,14 +233,24 @@
 
 @media (min-width: 901px) and (max-width: 1120px) {
   .catalogue-shell:not(.product-page-shell) .catalogue-main {
-    grid-template-columns: 15.5rem minmax(0, 1fr);
+    width: 100%;
+    grid-template-columns: 14rem minmax(0, 1fr);
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-content {
-    padding-inline: 2rem;
+    padding-inline: 1.65rem;
+  }
+
+  .catalogue-shell:not(.product-page-shell) .catalogue-heading,
+  .catalogue-shell:not(.product-page-shell) .catalogue-product-grid--browse {
+    width: min(100%, 52rem);
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-product-grid--browse {
-    gap-inline: 1.4rem;
+    gap-inline: 1.15rem;
+  }
+
+  .catalogue-shell:not(.product-page-shell) .catalogue-product__media--browse {
+    width: min(100%, 9.75rem);
   }
 }

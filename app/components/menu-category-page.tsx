@@ -54,7 +54,13 @@ export default function MenuCategoryPage({
                 aria-current={menuCategory.id === category.id ? "page" : undefined}
               >
                 <span className="catalogue-category-mark" aria-hidden="true">
-                  {menuCategory.shortLabel}
+                  <Image
+                    className="catalogue-category-image"
+                    src={menuCategory.image}
+                    alt=""
+                    fill
+                    sizes="56px"
+                  />
                 </span>
                 <span>{menuCategory.label}</span>
               </Link>

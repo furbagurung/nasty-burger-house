@@ -40,7 +40,11 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const items =
     category.id === "featured"
       ? menuItems.filter((item) => item.featured)
-      : menuItems.filter((item) => item.category === category.id);
+      : category.id === "burgers"
+        ? menuItems.filter(
+            (item) => item.category === "burgers" || item.id === "monster-cheese",
+          )
+        : menuItems.filter((item) => item.category === category.id);
 
   return <MenuCategoryPage category={category} items={items} />;
 }

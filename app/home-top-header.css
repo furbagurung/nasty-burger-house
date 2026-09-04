@@ -57,7 +57,7 @@
 }
 
 .home-top-header.is-scrolled {
-  inset-top: 0.55rem;
+  top: 0.55rem;
   min-height: 5.2rem;
   border-color: rgba(255, 255, 255, 0.17);
   background:

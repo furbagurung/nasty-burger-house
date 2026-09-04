@@ -30,7 +30,7 @@ export default function MenuCategoryPage({
       <header className="catalogue-header">
         <CatalogueMobileMenu />
         <Link className="catalogue-logo" href="/" aria-label="Nasty Burger House home">
-          <Image src="/logo.webp" alt="" width={256} height={256} priority />
+          <Image src="/logo.webp" alt="" width={456} height={456} priority />
         </Link>
 
         <nav className="catalogue-desktop-nav" aria-label="Primary navigation">

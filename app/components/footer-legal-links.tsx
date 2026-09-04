@@ -44,6 +44,7 @@ function FooterUtilityLinks() {
 
 export default function FooterLegalLinks() {
   const [target, setTarget] = useState<HTMLElement | null>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     setTarget(
@@ -51,7 +52,10 @@ export default function FooterLegalLinks() {
         ".site-footer .footer-bottom, .catalogue-footer",
       ),
     );
+    setReady(true);
   }, []);
+
+  if (!ready) return null;
 
   if (target) {
     return createPortal(<FooterUtilityLinks />, target);

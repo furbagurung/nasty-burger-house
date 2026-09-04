@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ShoppingBag, UserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import LottieCoin from "./lottie-coin";
 
 function triggerHomeAction(selector: string, fallbackHref: string) {
   const control = document.querySelector<HTMLButtonElement>(selector);
@@ -124,12 +125,7 @@ export default function HomeTopHeader() {
           }
         >
           <span className="home-top-header__drip-icon" aria-hidden="true">
-            <Image
-              src="/images/drip-points/drip-coin.png"
-              alt=""
-              width={32}
-              height={32}
-            />
+            <LottieCoin className="home-top-header__drip-lottie" />
           </span>
           <span>Drip Points</span>
         </button>

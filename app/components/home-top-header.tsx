@@ -19,6 +19,7 @@ function triggerHomeAction(selector: string, fallbackHref: string) {
 export default function HomeTopHeader() {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const isMenuPage = pathname.startsWith("/menu/");
   const [isHidden, setIsHidden] = useState(false);
   const [isHeroTransparent, setIsHeroTransparent] = useState(isHome);
   const lastScrollY = useRef(0);
@@ -43,6 +44,13 @@ export default function HomeTopHeader() {
         setIsHeroTransparent(window.scrollY < heroBottom - 24);
       } else {
         setIsHeroTransparent(false);
+      }
+
+      // Menu catalogue pages keep the global header permanently visible.
+      if (isMenuPage) {
+        setIsHidden(false);
+        lastScrollY.current = currentY;
+        return;
       }
 
       if (currentY <= 16) {
@@ -73,7 +81,7 @@ export default function HomeTopHeader() {
       window.removeEventListener("resize", updateWindowHeader);
       catalogueScroller?.removeEventListener("scroll", updateCatalogueHeader);
     };
-  }, [isHome, pathname]);
+  }, [isHome, isMenuPage, pathname]);
 
   const headerClassName = [
     "home-top-header",

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import CookieSettings from "./components/cookie-settings";
 import FooterLegalLinks from "./components/footer-legal-links";
 import HomeTopHeader from "./components/home-top-header";
 import "./globals.css";
@@ -7,12 +8,16 @@ import "./catalogue-theme.css";
 import "./menu-browse.css";
 import "./mobile-app.css";
 import "./home-top-header.css";
+import "./nav-marker.css";
 import "./shared-header-pages.css";
 import "./menu-catalogue-layout.css";
 import "./footer-dark.css";
+import "./footer-utility.css";
 import "./product-detail-premium.css";
 import "./product-light-body.css";
 import "./drip-points.css";
+import "./cookie-settings.css";
+import "./help-support.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <HomeTopHeader />
         {children}
         <FooterLegalLinks />
+        <CookieSettings />
       </body>
     </html>
   );

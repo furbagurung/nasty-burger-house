@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { MenuItem } from "../data/menu";
 import {
-  menuPageCategories,
+  menuNavigationCategories,
   type MenuPageCategory,
 } from "../data/menu-pages";
 import CatalogueMobileMenu from "./catalogue-mobile-menu";
@@ -46,7 +46,7 @@ export default function MenuCategoryPage({
         <aside className="catalogue-categories" aria-label="Menu categories">
           <p>Our menu</p>
           <nav>
-            {menuPageCategories.map((menuCategory) => (
+            {menuNavigationCategories.map((menuCategory) => (
               <Link
                 className={menuCategory.id === category.id ? "is-active" : ""}
                 href={`/menu/${menuCategory.id}`}
@@ -99,6 +99,7 @@ export default function MenuCategoryPage({
           <Link href="/">Home</Link>
           <Link href="/menu/burgers">Menu</Link>
           <Link href="/?loyalty=1">Drip Points</Link>
+          <Link href="/help-support">Help &amp; Support</Link>
         </nav>
       </footer>
 

@@ -1,9 +1,17 @@
-/* Professional desktop ordering catalogue: fixed light category rail + independently scrollable products. */
+/* Professional ordering catalogue: light category rail + independently scrollable products. */
+
+/* Keep the full catalogue canvas pure white on desktop and mobile. */
+.catalogue-shell:not(.product-page-shell),
+.catalogue-shell:not(.product-page-shell) .catalogue-main,
+.catalogue-shell:not(.product-page-shell) .catalogue-content {
+  background: #ffffff;
+}
+
 @media (min-width: 901px) {
   .catalogue-shell:not(.product-page-shell) {
     min-height: 100vh;
     padding-top: 5.85rem !important;
-    background: #f7f5f0;
+    background: #ffffff;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-main {
@@ -18,7 +26,7 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background: #f7f5f0;
+    background: #ffffff;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-main::before {
@@ -35,13 +43,13 @@
     align-self: stretch;
     overflow-y: auto;
     border: 0;
-    border-right: 1px solid #e6e1d9;
+    border-right: 1px solid #ececec;
     border-radius: 0;
     background: #ffffff;
     box-shadow: none;
     color: #171513;
     scrollbar-width: thin;
-    scrollbar-color: #d8d2c9 transparent;
+    scrollbar-color: #dedede transparent;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-categories > p {
@@ -50,7 +58,7 @@
     z-index: 2;
     margin: 0;
     border: 0;
-    border-bottom: 1px solid #ece8e1;
+    border-bottom: 1px solid #eeeeee;
     padding: 1.3rem 1.4rem 1.05rem;
     background: #ffffff;
     color: #81796f;
@@ -84,12 +92,12 @@
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-categories a:hover {
-    background: #faf8f4;
+    background: #f8f8f8;
     color: #171513;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-categories a.is-active {
-    background: #f4f0ea;
+    background: #f4f4f4;
     color: #171513;
   }
 
@@ -109,9 +117,9 @@
     width: 2.55rem;
     height: 2.55rem;
     place-items: center;
-    border: 1px solid #e7e2da;
+    border: 1px solid #e8e8e8;
     border-radius: 0.8rem;
-    background: #faf8f5;
+    background: #fafafa;
     color: #8d847a;
     font-size: 0.68rem;
     font-weight: 900;
@@ -133,10 +141,10 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     padding: clamp(2.6rem, 4.5vw, 4.5rem) clamp(2rem, 5vw, 5.5rem) 5rem;
-    background: #f7f5f0;
+    background: #ffffff;
     scrollbar-gutter: stable;
     scrollbar-width: thin;
-    scrollbar-color: #cfc8be transparent;
+    scrollbar-color: #d5d5d5 transparent;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-content::-webkit-scrollbar,
@@ -148,7 +156,7 @@
   .catalogue-shell:not(.product-page-shell) .catalogue-categories::-webkit-scrollbar-thumb {
     border: 3px solid transparent;
     border-radius: 999px;
-    background: #cfc8be;
+    background: #d5d5d5;
     background-clip: padding-box;
   }
 

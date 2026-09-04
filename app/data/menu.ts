@@ -50,10 +50,10 @@ export const adultDrinkChoices = [
 export const kidsDrinkChoices = adultDrinkChoices;
 
 const drinkImages: Record<string, string> = {
-  "Coca-Cola": "/images/menu/coca-cola.webp",
-  "Coke No Sugar": "/images/menu/coke-no-sugar.jpg",
+  "Coca-Cola": "/images/menu/coke.webp",
+  "Coke No Sugar": "/images/menu/coke no sugar.webp",
   Sprite: "/images/menu/sprite.jpg",
-  Fanta: "/images/menu/fanta.jpg",
+  Fanta: "/images/menu/fanta.webp",
   Water: "/images/menu/water.jpg",
 };
 

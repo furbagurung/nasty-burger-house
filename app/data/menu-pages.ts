@@ -35,11 +35,11 @@ export const menuPageCategories: MenuPageCategory[] = [
   },
   {
     id: "kids",
-    label: "Little Beasts",
-    shortLabel: "LB",
+    label: "Kids",
+    shortLabel: "K",
     image: "/images/menu/Dino-nuggets.jpg",
     description:
-      "Smaller favourites for little appetites, with kids’ combo choices available during ordering.",
+      "Monster Cheese, Dino Nuggets and smaller favourites made for little appetites.",
   },
   {
     id: "beast-boxes",
@@ -66,8 +66,10 @@ export const menuPageCategories: MenuPageCategory[] = [
 ];
 
 const menuNavigationIds: MenuCategoryId[] = [
+  "beast-boxes",
   "burgers",
   "loaded-sides",
+  "kids",
   "sweet",
   "drinks",
 ];

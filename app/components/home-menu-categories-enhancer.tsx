@@ -2,33 +2,31 @@
 
 import { useEffect } from "react";
 
-const HOME_MENU_PLACEHOLDER = "/images/home-menu/placeholder.svg";
-
 const homeMenuCategories = [
   {
     href: "/product/bbq-beast",
     title: "Beast of the Month",
-    image: HOME_MENU_PLACEHOLDER,
+    image: "/images/home-menu/beast-of-the-month.jpg",
   },
   {
     href: "/menu/burgers",
     title: "Beast Burgers",
-    image: HOME_MENU_PLACEHOLDER,
+    image: "/images/home-menu/beast-burgers.jpg",
   },
   {
     href: "/menu/kids",
     title: "Kids",
-    image: HOME_MENU_PLACEHOLDER,
+    image: "/images/home-menu/kids.jpg",
   },
   {
     href: "/menu/sweet",
     title: "Desserts",
-    image: HOME_MENU_PLACEHOLDER,
+    image: "/images/home-menu/desserts.jpg",
   },
   {
     href: "/menu/drinks",
     title: "Nasty Drinks",
-    image: HOME_MENU_PLACEHOLDER,
+    image: "/images/home-menu/nasty-drinks.jpg",
   },
 ] as const;
 
@@ -44,10 +42,9 @@ function enhanceMenuGrid() {
     const card = cards[index];
     if (!card) return;
 
-    card.setAttribute("href", category.href);
+    card.href = category.href;
     card.className = "menu-preview-card menu-preview-card--clean";
     card.setAttribute("aria-label", category.title);
-
     card.querySelectorAll(":scope > span").forEach((node) => node.remove());
 
     let media = card.querySelector<HTMLDivElement>(
@@ -77,6 +74,7 @@ function enhanceMenuGrid() {
       title = document.createElement("strong");
       card.appendChild(title);
     }
+
     title.textContent = category.title;
   });
 }
@@ -100,7 +98,7 @@ export default function HomeMenuCategoriesEnhancer() {
     <style>{`
       .menu-preview {
         padding: clamp(5rem, 8vw, 7.5rem) max(1.25rem, calc((100% - 1180px) / 2)) !important;
-        background: #ffffff !important;
+        background: #fff !important;
         color: #15130f;
       }
 
@@ -127,13 +125,7 @@ export default function HomeMenuCategoriesEnhancer() {
       .menu-preview__heading .outline-button {
         margin-top: 2rem;
         border-color: #77716a;
-        background: #ffffff;
-        color: #15130f;
-      }
-
-      .menu-preview__heading .outline-button:hover {
-        border-color: #15130f;
-        background: #ffffff;
+        background: #fff;
         color: #15130f;
       }
 
@@ -147,7 +139,6 @@ export default function HomeMenuCategoriesEnhancer() {
       }
 
       .menu-preview-card--clean {
-        position: relative;
         display: flex;
         min-width: 0;
         min-height: 0 !important;
@@ -180,7 +171,6 @@ export default function HomeMenuCategoriesEnhancer() {
       }
 
       .menu-preview-card__image {
-        position: relative;
         display: flex;
         width: 100%;
         height: clamp(9.5rem, 13.5vw, 12.25rem);
@@ -191,19 +181,15 @@ export default function HomeMenuCategoriesEnhancer() {
       }
 
       .menu-preview-card__image img {
-        position: relative !important;
-        inset: auto !important;
         display: block;
         width: 100% !important;
         height: 100% !important;
-        padding: 0 !important;
         object-fit: contain !important;
         object-position: center !important;
       }
 
       .menu-preview-card--clean strong {
         position: static !important;
-        z-index: auto !important;
         display: block;
         max-width: 13rem !important;
         margin-top: 1.25rem;
@@ -213,11 +199,6 @@ export default function HomeMenuCategoriesEnhancer() {
         letter-spacing: -0.02em !important;
         line-height: 1.3 !important;
         text-align: center;
-      }
-
-      .menu-preview-card--clean:focus-visible {
-        border-radius: 0.5rem;
-        outline-color: #e83b18;
       }
 
       @media (max-width: 980px) {
@@ -238,10 +219,6 @@ export default function HomeMenuCategoriesEnhancer() {
 
         .menu-preview__heading h2 {
           font-size: clamp(2.75rem, 12vw, 4rem) !important;
-        }
-
-        .menu-preview__heading .outline-button {
-          margin-top: 1.5rem;
         }
 
         .menu-preview__grid {

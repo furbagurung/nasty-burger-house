@@ -1,0 +1,86 @@
+.site-footer .footer-legal-links button,
+.catalogue-footer .footer-legal-links button,
+.utility-footer .footer-legal-links button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.site-footer .footer-legal-links button {
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 0.78rem;
+  font-weight: 560;
+}
+
+.site-footer .footer-legal-links button:hover {
+  color: #fff;
+}
+
+.catalogue-footer .footer-legal-links {
+  display: flex;
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem 1.1rem;
+  width: 100%;
+  margin-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.15rem;
+}
+
+.catalogue-footer .footer-legal-links a,
+.catalogue-footer .footer-legal-links button {
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.78rem;
+  font-weight: 560;
+  text-decoration: none;
+}
+
+.catalogue-footer .footer-legal-links a:hover,
+.catalogue-footer .footer-legal-links button:hover {
+  color: #fff;
+}
+
+.utility-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1.4rem clamp(1.25rem, 5vw, 5rem);
+  background: #070707;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.78rem;
+}
+
+.utility-footer .footer-legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem 1.1rem;
+}
+
+.utility-footer .footer-legal-links a,
+.utility-footer .footer-legal-links button {
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.78rem;
+  font-weight: 560;
+  text-decoration: none;
+}
+
+.utility-footer .footer-legal-links a:hover,
+.utility-footer .footer-legal-links button:hover {
+  color: #fff;
+}
+
+@media (max-width: 680px) {
+  .utility-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-bottom: 6rem;
+  }
+}

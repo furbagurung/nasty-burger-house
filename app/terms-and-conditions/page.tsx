@@ -1,16 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 
 export default function TermsAndConditionsPage() {
   return (
     <main style={{minHeight:"100vh",background:"#0b0b0b",color:"#f7f4ee",padding:"48px 20px"}}>
       <div style={{maxWidth:900,margin:"0 auto"}}>
-        <Link href="/" style={{display:"inline-flex",alignItems:"center",gap:12,color:"white",textDecoration:"none",fontWeight:800}}>
-          <Image src="/logo.webp" alt="Nasty Burger House" width={56} height={56} />
-          Nasty Burger House
-        </Link>
-
-        <div style={{marginTop:56}}>
+        <div>
           <p style={{color:"#e83b18",fontWeight:900,letterSpacing:"0.14em",textTransform:"uppercase",fontSize:12}}>Legal</p>
           <h1 style={{fontSize:"clamp(3rem,8vw,6rem)",lineHeight:.92,letterSpacing:"-.06em",margin:"12px 0 0"}}>Terms and Conditions</h1>
           <p style={{color:"#aaa",lineHeight:1.7,maxWidth:720}}>These Terms govern your use of the Nasty Burger House website and any pickup order you place through it.</p>

@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ArrowLeft,
   Check,
   Minus,
   Plus,
@@ -174,10 +173,15 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
       </header>
 
       <main className="product-detail product-detail--premium">
-        <Link className="product-back-link" href={`/menu/${item.category}`}>
-          <ArrowLeft size={17} aria-hidden="true" />
-          Back to {category?.label ?? "menu"}
-        </Link>
+        <nav className="product-breadcrumb" aria-label="Breadcrumb">
+          <Link href="/">Home</Link>
+          <span aria-hidden="true">/</span>
+          <Link href="/menu/burgers">Menu</Link>
+          <span aria-hidden="true">/</span>
+          <Link href={`/menu/${item.category}`}>{category?.label ?? "Menu"}</Link>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{item.name}</span>
+        </nav>
 
         <div className="product-detail__layout product-detail__layout--premium">
           <section className="product-detail__visual" aria-label={`${item.name} image`}>
@@ -195,11 +199,11 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               <div>
                 <p className="eyebrow">{category?.label ?? "Nasty Burger House menu"}</p>
                 <h1 id="product-title">{item.name}</h1>
+                <p className="product-detail__price">
+                  {money.format(item.price)}
+                  {item.priceConfirmed === false && <small>Provisional</small>}
+                </p>
               </div>
-              <p className="product-detail__price">
-                {money.format(item.price)}
-                {item.priceConfirmed === false && <small>Provisional</small>}
-              </p>
             </div>
 
             <p className="product-detail__description">{item.description}</p>

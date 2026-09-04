@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { menuPageCategories } from "../data/menu-pages";
+import { menuNavigationCategories } from "../data/menu-pages";
 
 export default function CatalogueMobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,7 +75,7 @@ export default function CatalogueMobileMenu() {
               <Link href="/" onClick={() => setIsOpen(false)}>
                 Home <span aria-hidden="true">→</span>
               </Link>
-              {menuPageCategories.map((category) => (
+              {menuNavigationCategories.map((category) => (
                 <Link
                   href={`/menu/${category.id}`}
                   key={category.id}

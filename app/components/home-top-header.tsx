@@ -109,7 +109,7 @@ export default function HomeTopHeader() {
       </a>
 
       <nav className="home-top-header__nav" aria-label="Primary navigation">
-        <a href={isHome ? "#menu" : "/#menu"}>Menu</a>
+        <a href="/menu/burgers">Menu</a>
         <a href={isHome ? "#beast-month" : "/#beast-month"}>
           Beast of the Month
         </a>

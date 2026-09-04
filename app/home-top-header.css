@@ -1,37 +1,80 @@
-/* Desktop home header inspired by the simple McDonald's logo → nav → account → cart hierarchy. */
+/* Desktop home header inspired by the simple McDonald's logo → nav → account → cart hierarchy,
+   refined with an Apple-style dark glass treatment. */
 .home-top-header {
   position: fixed;
-  inset: 0 0 auto;
+  inset: 0.7rem clamp(0.8rem, 1.5vw, 1.5rem) auto;
   z-index: 60;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: clamp(2rem, 4vw, 4.5rem);
-  min-height: 6.4rem;
-  padding: 0.55rem clamp(1.5rem, 4vw, 4.5rem);
-  border-bottom: 1px solid transparent;
-  background: linear-gradient(180deg, rgba(6, 6, 6, 0.48) 0%, rgba(6, 6, 6, 0.12) 64%, transparent 100%);
+  min-height: 5.85rem;
+  padding: 0.45rem clamp(1.2rem, 3.2vw, 3.5rem);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 1.55rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)),
+    rgba(13, 13, 13, 0.34);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.09) inset,
+    0 -1px 0 rgba(255, 255, 255, 0.025) inset,
+    0 14px 44px rgba(0, 0, 0, 0.2);
+  -webkit-backdrop-filter: blur(26px) saturate(165%);
+  backdrop-filter: blur(26px) saturate(165%);
   color: #fff;
+  isolation: isolate;
   transition:
     min-height 220ms ease,
-    background-color 220ms ease,
+    inset 220ms ease,
+    background 220ms ease,
     border-color 220ms ease,
+    border-radius 220ms ease,
     box-shadow 220ms ease,
     backdrop-filter 220ms ease;
 }
 
+.home-top-header::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% -30%, rgba(255, 255, 255, 0.16), transparent 34%),
+    linear-gradient(110deg, rgba(255, 255, 255, 0.045), transparent 24%, transparent 72%, rgba(255, 255, 255, 0.025));
+  content: "";
+}
+
+.home-top-header::after {
+  position: absolute;
+  right: 1.2rem;
+  bottom: 0;
+  left: 1.2rem;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+  content: "";
+}
+
 .home-top-header.is-scrolled {
-  min-height: 5.45rem;
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-  background: rgba(10, 10, 10, 0.94);
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(18px);
+  inset-top: 0.55rem;
+  min-height: 5.2rem;
+  border-color: rgba(255, 255, 255, 0.17);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
+    rgba(8, 8, 8, 0.66);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.1) inset,
+    0 -1px 0 rgba(255, 255, 255, 0.025) inset,
+    0 18px 50px rgba(0, 0, 0, 0.32);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  backdrop-filter: blur(32px) saturate(180%);
 }
 
 .home-top-header__brand {
   display: inline-grid;
-  width: 5.1rem;
-  height: 5.1rem;
+  width: 4.9rem;
+  height: 4.9rem;
   place-items: center;
   flex: 0 0 auto;
 }
@@ -41,6 +84,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.22));
   transition: transform 180ms ease;
 }
 
@@ -61,12 +105,14 @@
   border: 0;
   padding: 0.65rem 0;
   background: transparent;
-  color: rgba(255, 255, 255, 0.94);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.93rem;
-  font-weight: 760;
-  letter-spacing: -0.01em;
+  font-weight: 720;
+  letter-spacing: -0.012em;
   text-decoration: none;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.18);
   white-space: nowrap;
+  transition: color 160ms ease, opacity 160ms ease;
 }
 
 .home-top-header__nav a::after,
@@ -84,6 +130,11 @@
   transition: transform 180ms ease;
 }
 
+.home-top-header__nav a:hover,
+.home-top-header__nav button:hover {
+  color: #fff;
+}
+
 .home-top-header__nav a:hover::after,
 .home-top-header__nav button:hover::after {
   transform: scaleX(1);
@@ -97,29 +148,45 @@
 
 .home-top-header__account,
 .home-top-header__cart {
+  position: relative;
   display: flex;
-  min-height: 3.25rem;
+  min-height: 3.15rem;
   align-items: center;
   gap: 0.7rem;
-  border-radius: 0.85rem;
-  padding: 0.45rem 0.75rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  padding: 0.42rem 0.72rem;
   color: #fff;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.07) inset;
+  transition:
+    background 170ms ease,
+    border-color 170ms ease,
+    transform 170ms ease,
+    box-shadow 170ms ease;
 }
 
 .home-top-header__account {
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.035);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 
 .home-top-header__cart {
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.075);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
 }
 
 .home-top-header__account:hover,
 .home-top-header__cart:hover {
-  border-color: rgba(255, 255, 255, 0.34);
-  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 8px 22px rgba(0, 0, 0, 0.14);
+  transform: translateY(-1px);
 }
 
 .home-top-header__icon {
@@ -127,17 +194,16 @@
   width: 2rem;
   height: 2rem;
   place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.075);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
 }
 
 .home-top-header__icon svg {
-  width: 1.25rem;
-  height: 1.25rem;
-  stroke: currentColor;
+  width: 1.2rem;
+  height: 1.2rem;
   stroke-width: 1.75;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 .home-top-header__action-copy {
@@ -147,16 +213,16 @@
 }
 
 .home-top-header__action-copy small {
-  color: rgba(255, 255, 255, 0.58);
-  font-size: 0.63rem;
-  font-weight: 650;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.62rem;
+  font-weight: 620;
   letter-spacing: 0.01em;
 }
 
 .home-top-header__action-copy strong {
   margin-top: 0.24rem;
-  font-size: 0.88rem;
-  font-weight: 820;
+  font-size: 0.87rem;
+  font-weight: 780;
 }
 
 /* Keep the existing functional header in the DOM so its cart/loyalty actions still work,
@@ -170,7 +236,7 @@
 @media (max-width: 1050px) {
   .home-top-header {
     gap: 1.6rem;
-    padding-inline: 1.5rem;
+    padding-inline: 1.25rem;
   }
 
   .home-top-header__nav {
@@ -191,8 +257,12 @@
 @media (prefers-reduced-motion: reduce) {
   .home-top-header,
   .home-top-header__brand img,
+  .home-top-header__nav a,
   .home-top-header__nav a::after,
-  .home-top-header__nav button::after {
+  .home-top-header__nav button,
+  .home-top-header__nav button::after,
+  .home-top-header__account,
+  .home-top-header__cart {
     transition: none;
   }
 }

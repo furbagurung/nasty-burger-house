@@ -23,14 +23,25 @@ export default function MenuItemMedia({
   const usesTemporaryImage = Boolean(image && !item.image);
 
   if (image) {
+    const alt = usesTemporaryImage
+      ? `${item.name} temporary food photography`
+      : item.name;
+
+    if (image.startsWith("http://") || image.startsWith("https://")) {
+      return (
+        <img
+          src={image}
+          alt={alt}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+        />
+      );
+    }
+
     return (
       <Image
         src={image}
-          alt={
-            usesTemporaryImage
-              ? `${item.name} temporary food photography`
-              : item.name
-          }
+        alt={alt}
         fill
         sizes={sizes}
         priority={priority}
@@ -39,7 +50,11 @@ export default function MenuItemMedia({
   }
 
   return (
-    <div className="catalogue-product__placeholder" role="img" aria-label={`${item.name} image coming soon`}>
+    <div
+      className="catalogue-product__placeholder"
+      role="img"
+      aria-label={`${item.name} image coming soon`}
+    >
       <span>NBH</span>
       <small>
         {item.category === "drinks" ? "Drink image" : "Food image"} coming soon

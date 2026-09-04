@@ -12,6 +12,7 @@ import "./menu-catalogue-layout.css";
 import "./footer-dark.css";
 import "./product-detail-premium.css";
 import "./product-light-body.css";
+import "./drip-points.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -131,10 +131,10 @@ export default function HomeMenuCategoriesEnhancer() {
 
       .menu-preview__grid {
         display: grid !important;
-        width: min(100%, 1180px);
+        width: min(100%, 1120px);
         grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
         align-items: end;
-        gap: clamp(1.25rem, 2.6vw, 2.5rem) !important;
+        gap: clamp(0.5rem, 1vw, 1rem) !important;
         margin: clamp(4rem, 6.5vw, 5.75rem) auto 0 !important;
       }
 
@@ -173,7 +173,7 @@ export default function HomeMenuCategoriesEnhancer() {
       .menu-preview-card__image {
         display: flex;
         width: 100%;
-        height: clamp(9.5rem, 13.5vw, 12.25rem);
+        height: clamp(7.25rem, 10vw, 9.5rem);
         align-items: center;
         justify-content: center;
         overflow: hidden;
@@ -192,7 +192,7 @@ export default function HomeMenuCategoriesEnhancer() {
         position: static !important;
         display: block;
         max-width: 13rem !important;
-        margin-top: 1.25rem;
+        margin-top: 0.9rem;
         color: #15130f !important;
         font-size: clamp(1rem, 1.3vw, 1.2rem) !important;
         font-weight: 500 !important;
@@ -204,11 +204,11 @@ export default function HomeMenuCategoriesEnhancer() {
       @media (max-width: 980px) {
         .menu-preview__grid {
           grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-          row-gap: 3.75rem !important;
+          row-gap: 2.25rem !important;
         }
 
         .menu-preview-card__image {
-          height: 11rem;
+          height: 8.5rem;
         }
       }
 
@@ -223,7 +223,7 @@ export default function HomeMenuCategoriesEnhancer() {
 
         .menu-preview__grid {
           grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-          gap: 2.75rem 1rem !important;
+          gap: 2rem 0.65rem !important;
           margin-top: 3.5rem !important;
         }
 
@@ -233,11 +233,11 @@ export default function HomeMenuCategoriesEnhancer() {
         }
 
         .menu-preview-card__image {
-          height: 8.75rem;
+          height: 7.25rem;
         }
 
         .menu-preview-card--clean strong {
-          margin-top: 0.8rem;
+          margin-top: 0.65rem;
           font-size: 0.95rem !important;
         }
       }

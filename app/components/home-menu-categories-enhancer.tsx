@@ -2,42 +2,33 @@
 
 import { useEffect } from "react";
 
+const HOME_MENU_PLACEHOLDER = "/images/home-menu/placeholder.svg";
+
 const homeMenuCategories = [
   {
     href: "/product/bbq-beast",
     title: "Beast of the Month",
-    images: ["/images/menu/bbq-beast.jpg"],
+    image: HOME_MENU_PLACEHOLDER,
   },
   {
     href: "/menu/burgers",
     title: "Beast Burgers",
-    images: [
-      "/images/menu/og-nasty.jpg",
-      "/images/menu/peri-beast.jpg",
-      "/images/menu/hooked.jpg",
-    ],
+    image: HOME_MENU_PLACEHOLDER,
   },
   {
     href: "/menu/kids",
     title: "Kids",
-    images: [
-      "/images/menu/monster-cheese.jpg",
-      "/images/menu/dino-nuggets.jpg",
-    ],
+    image: HOME_MENU_PLACEHOLDER,
   },
   {
     href: "/menu/sweet",
     title: "Desserts",
-    images: ["/images/menu/mango-pudding.jpg"],
+    image: HOME_MENU_PLACEHOLDER,
   },
   {
     href: "/menu/drinks",
     title: "Nasty Drinks",
-    images: [
-      "/images/menu/coke.webp",
-      "/images/menu/coke no sugar.webp",
-      "/images/menu/fanta.webp",
-    ],
+    image: HOME_MENU_PLACEHOLDER,
   },
 ] as const;
 
@@ -68,26 +59,17 @@ function enhanceMenuGrid() {
       card.prepend(media);
     }
 
-    media.className = [
-      "menu-preview-card__image",
-      category.images.length > 1 ? "menu-preview-card__image--cluster" : "",
-      `menu-preview-card__image--count-${category.images.length}`,
-    ]
-      .filter(Boolean)
-      .join(" ");
+    media.className = "menu-preview-card__image";
 
-    const expectedImages = category.images.join("|");
-    if (media.dataset.images !== expectedImages) {
+    if (media.dataset.image !== category.image) {
       media.replaceChildren();
-      category.images.forEach((src) => {
-        const image = document.createElement("img");
-        image.src = src;
-        image.alt = "";
-        image.loading = "lazy";
-        image.decoding = "async";
-        media!.appendChild(image);
-      });
-      media.dataset.images = expectedImages;
+      const image = document.createElement("img");
+      image.src = category.image;
+      image.alt = "";
+      image.loading = "lazy";
+      image.decoding = "async";
+      media.appendChild(image);
+      media.dataset.image = category.image;
     }
 
     let title = card.querySelector<HTMLElement>(":scope > strong");
@@ -202,9 +184,9 @@ export default function HomeMenuCategoriesEnhancer() {
         display: flex;
         width: 100%;
         height: clamp(9.5rem, 13.5vw, 12.25rem);
-        align-items: flex-end;
+        align-items: center;
         justify-content: center;
-        overflow: visible;
+        overflow: hidden;
         background: transparent;
       }
 
@@ -212,32 +194,11 @@ export default function HomeMenuCategoriesEnhancer() {
         position: relative !important;
         inset: auto !important;
         display: block;
-        width: min(100%, 12rem) !important;
+        width: 100% !important;
         height: 100% !important;
         padding: 0 !important;
         object-fit: contain !important;
-        object-position: center bottom !important;
-      }
-
-      .menu-preview-card__image--cluster {
-        align-items: flex-end;
-      }
-
-      .menu-preview-card__image--count-2 img {
-        width: 57% !important;
-        height: 88% !important;
-        margin-inline: -7%;
-      }
-
-      .menu-preview-card__image--count-3 img {
-        width: 43% !important;
-        height: 86% !important;
-        margin-inline: -7.5%;
-      }
-
-      .menu-preview-card__image--count-3 img:nth-child(2) {
-        z-index: 2;
-        height: 100% !important;
+        object-position: center !important;
       }
 
       .menu-preview-card--clean strong {

@@ -4,6 +4,7 @@ import FooterLegalLinks from "./components/footer-legal-links";
 import HomeTopHeader from "./components/home-top-header";
 import "./globals.css";
 import "./catalogue-theme.css";
+import "./menu-browse.css";
 import "./mobile-app.css";
 import "./home-top-header.css";
 import "./shared-header-pages.css";

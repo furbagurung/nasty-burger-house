@@ -114,6 +114,7 @@ export default function HomeTopHeader() {
           Beast of the Month
         </a>
         <button
+          className="home-top-header__drip"
           type="button"
           onClick={() =>
             triggerHomeAction(
@@ -122,7 +123,15 @@ export default function HomeTopHeader() {
             )
           }
         >
-          Drip Points
+          <span className="home-top-header__drip-icon" aria-hidden="true">
+            <Image
+              src="/images/drip-points/drip-coin.png"
+              alt=""
+              width={32}
+              height={32}
+            />
+          </span>
+          <span>Drip Points</span>
         </button>
       </nav>
 

@@ -99,7 +99,6 @@ export default function MenuCategoryPage({
           <Link href="/">Home</Link>
           <Link href="/menu/burgers">Menu</Link>
           <Link href="/?loyalty=1">Drip Points</Link>
-          <Link href="/help-support">Help &amp; Support</Link>
         </nav>
       </footer>
 

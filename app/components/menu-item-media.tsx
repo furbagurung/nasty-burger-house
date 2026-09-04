@@ -7,7 +7,21 @@ type MenuItemMediaProps = {
   sizes: string;
 };
 
+const driveMenuImages: Record<string, string> = {
+  hooked:
+    "https://drive.google.com/uc?export=view&id=1FLop-ytWK0YYJL52YdBhnfJopmDtVp5G",
+  "nasty-fries":
+    "https://drive.google.com/uc?export=view&id=1Dq9EW_HnlsTVs6GGx6k8QkVY5veBfQLp",
+  "coca-cola":
+    "https://drive.google.com/uc?export=view&id=1CoZStX2n8UDQHdmKJvfoDvlGK9Tp68CM",
+  "coke-no-sugar":
+    "https://drive.google.com/uc?export=view&id=1CJHCn-fE7l-bXE-0KPksjoPS15hbolVn",
+  fanta:
+    "https://drive.google.com/uc?export=view&id=15Tsd_7K10e1L1VZ2V8U39XWOpw97ske-",
+};
+
 function demoImageFor(item: MenuItem) {
+  if (driveMenuImages[item.id]) return driveMenuImages[item.id];
   if (item.image) return item.image;
   if (item.category === "burgers") return "/images/signature-beast.webp";
   if (item.category === "beast-boxes") return "/images/beast-box-hero.webp";
@@ -20,7 +34,7 @@ export default function MenuItemMedia({
   sizes,
 }: MenuItemMediaProps) {
   const image = demoImageFor(item);
-  const usesTemporaryImage = Boolean(image && !item.image);
+  const usesTemporaryImage = Boolean(image && !item.image && !driveMenuImages[item.id]);
 
   if (image) {
     const alt = usesTemporaryImage

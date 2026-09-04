@@ -6,6 +6,7 @@ import "./catalogue-theme.css";
 import "./mobile-app.css";
 import "./home-top-header.css";
 import "./footer-dark.css";
+import "./product-detail-premium.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

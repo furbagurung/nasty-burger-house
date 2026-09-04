@@ -1,35 +1,33 @@
-/* Desktop home header inspired by the simple McDonald's logo → nav → account → cart hierarchy,
-   refined with an Apple-style dark glass treatment. */
+/* Shared desktop header: logo → nav → account → cart.
+   Full-width Apple-style dark glass treatment used across the site. */
 .home-top-header {
   position: fixed;
-  inset: 0.7rem clamp(0.8rem, 1.5vw, 1.5rem) auto;
+  inset: 0 0 auto;
   z-index: 60;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: clamp(2rem, 4vw, 4.5rem);
   min-height: 5.85rem;
-  padding: 0.45rem clamp(1.2rem, 3.2vw, 3.5rem);
+  padding: 0.45rem clamp(1.5rem, 4vw, 4.5rem);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 1.55rem;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)),
-    rgba(13, 13, 13, 0.34);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.012)),
+    rgba(10, 10, 10, 0.46);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.09) inset,
-    0 -1px 0 rgba(255, 255, 255, 0.025) inset,
-    0 14px 44px rgba(0, 0, 0, 0.2);
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 12px 34px rgba(0, 0, 0, 0.16);
   -webkit-backdrop-filter: blur(26px) saturate(165%);
   backdrop-filter: blur(26px) saturate(165%);
   color: #fff;
   isolation: isolate;
   transition:
     min-height 220ms ease,
-    inset 220ms ease,
     background 220ms ease,
     border-color 220ms ease,
-    border-radius 220ms ease,
     box-shadow 220ms ease,
     backdrop-filter 220ms ease;
 }
@@ -40,33 +38,32 @@
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(circle at 18% -30%, rgba(255, 255, 255, 0.16), transparent 34%),
-    linear-gradient(110deg, rgba(255, 255, 255, 0.045), transparent 24%, transparent 72%, rgba(255, 255, 255, 0.025));
+    radial-gradient(circle at 18% -45%, rgba(255, 255, 255, 0.14), transparent 32%),
+    linear-gradient(110deg, rgba(255, 255, 255, 0.035), transparent 24%, transparent 72%, rgba(255, 255, 255, 0.02));
   content: "";
 }
 
 .home-top-header::after {
   position: absolute;
-  right: 1.2rem;
+  right: 0;
   bottom: 0;
-  left: 1.2rem;
+  left: 0;
   height: 1px;
   pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.14) 18%, rgba(255, 255, 255, 0.14) 82%, transparent 100%);
   content: "";
 }
 
 .home-top-header.is-scrolled {
-  top: 0.55rem;
+  top: 0;
   min-height: 5.2rem;
-  border-color: rgba(255, 255, 255, 0.17);
+  border-bottom-color: rgba(255, 255, 255, 0.15);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
-    rgba(8, 8, 8, 0.66);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012)),
+    rgba(7, 7, 7, 0.76);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.1) inset,
-    0 -1px 0 rgba(255, 255, 255, 0.025) inset,
-    0 18px 50px rgba(0, 0, 0, 0.32);
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 14px 38px rgba(0, 0, 0, 0.26);
   -webkit-backdrop-filter: blur(32px) saturate(180%);
   backdrop-filter: blur(32px) saturate(180%);
 }
@@ -236,7 +233,7 @@
 @media (max-width: 1050px) {
   .home-top-header {
     gap: 1.6rem;
-    padding-inline: 1.25rem;
+    padding-inline: 1.5rem;
   }
 
   .home-top-header__nav {

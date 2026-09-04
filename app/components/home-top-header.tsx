@@ -2,14 +2,23 @@
 
 import Image from "next/image";
 import { ShoppingBag, UserRound } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-function triggerExistingHeaderAction(selector: string) {
+function triggerHomeAction(selector: string, fallbackHref: string) {
   const control = document.querySelector<HTMLButtonElement>(selector);
-  control?.click();
+
+  if (control) {
+    control.click();
+    return;
+  }
+
+  window.location.href = fallbackHref;
 }
 
 export default function HomeTopHeader() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -26,7 +35,7 @@ export default function HomeTopHeader() {
     >
       <a
         className="home-top-header__brand"
-        href="#top"
+        href="/"
         aria-label="Nasty Burger House home"
       >
         <Image
@@ -39,13 +48,16 @@ export default function HomeTopHeader() {
       </a>
 
       <nav className="home-top-header__nav" aria-label="Primary navigation">
-        <a href="#menu">Menu</a>
-        <a href="#beast-month">Beast of the Month</a>
+        <a href={isHome ? "#menu" : "/#menu"}>Menu</a>
+        <a href={isHome ? "#beast-month" : "/#beast-month"}>
+          Beast of the Month
+        </a>
         <button
           type="button"
           onClick={() =>
-            triggerExistingHeaderAction(
+            triggerHomeAction(
               ".site-shell > .site-header .nav-button",
+              "/?loyalty=1",
             )
           }
         >
@@ -58,8 +70,9 @@ export default function HomeTopHeader() {
           className="home-top-header__account"
           type="button"
           onClick={() =>
-            triggerExistingHeaderAction(
+            triggerHomeAction(
               ".site-shell > .site-header .nav-button",
+              "/?loyalty=1",
             )
           }
           aria-label="Account sign in"
@@ -77,8 +90,9 @@ export default function HomeTopHeader() {
           className="home-top-header__cart"
           type="button"
           onClick={() =>
-            triggerExistingHeaderAction(
+            triggerHomeAction(
               ".site-shell > .site-header .cart-button",
+              "/?cart=1",
             )
           }
           aria-label="Open cart or start an order"

@@ -1,0 +1,48 @@
+/* Drip Points loyalty identity */
+.loyalty-modal {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% -8%, rgba(255, 201, 40, 0.2), transparent 34%),
+    #fff;
+}
+
+.loyalty-modal::before {
+  display: block;
+  width: clamp(7.25rem, 18vw, 10.5rem);
+  aspect-ratio: 1;
+  margin: 0 auto 1.15rem;
+  background: url("/images/drip-points/drip-coin.png") center / contain no-repeat;
+  content: "";
+  filter: drop-shadow(0 14px 18px rgba(117, 72, 0, 0.18));
+}
+
+.loyalty-modal > .eyebrow,
+.loyalty-modal > h2,
+.loyalty-modal > p:not(.eyebrow) {
+  text-align: center;
+}
+
+.loyalty-modal > h2 {
+  max-width: 12ch;
+  margin-inline: auto;
+}
+
+.loyalty-modal > p:not(.eyebrow) {
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+.loyalty-modal form {
+  text-align: left;
+}
+
+.loyalty-success {
+  text-align: left;
+}
+
+@media (max-width: 680px) {
+  .loyalty-modal::before {
+    width: 7rem;
+    margin-bottom: 0.85rem;
+  }
+}

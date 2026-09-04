@@ -17,15 +17,15 @@ export const menuPageCategories: MenuPageCategory[] = [
   },
   {
     id: "burgers",
-    label: "Beast Burgers",
-    shortLabel: "BB",
+    label: "Burgers",
+    shortLabel: "B",
     description:
       "Flame-grilled beef, chicken, fish and veggie burgers loaded with Nasty Burger House flavour.",
   },
   {
     id: "loaded-sides",
-    label: "Loaded Sides",
-    shortLabel: "LS",
+    label: "Sides",
+    shortLabel: "S",
     description:
       "Crispy, saucy sides made to share—or keep entirely to yourself.",
   },
@@ -45,17 +45,29 @@ export const menuPageCategories: MenuPageCategory[] = [
   },
   {
     id: "sweet",
-    label: "Sweet",
-    shortLabel: "SW",
+    label: "Desserts",
+    shortLabel: "D",
     description: "Finish the feed with a fresh Nasty Burger House dessert.",
   },
   {
     id: "drinks",
-    label: "Drinks",
-    shortLabel: "DR",
+    label: "Nasty Drinks",
+    shortLabel: "ND",
     description: "Cold drinks and water for your meal, combo or Beast Box.",
   },
 ];
+
+const menuNavigationIds: MenuCategoryId[] = [
+  "burgers",
+  "loaded-sides",
+  "sweet",
+  "drinks",
+];
+
+export const menuNavigationCategories = menuNavigationIds.flatMap((id) => {
+  const category = menuPageCategories.find((entry) => entry.id === id);
+  return category ? [category] : [];
+});
 
 export function findMenuPageCategory(value: string) {
   return menuPageCategories.find((category) => category.id === value);

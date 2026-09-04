@@ -36,6 +36,14 @@ const money = new Intl.NumberFormat("en-AU", {
   maximumFractionDigits: 2,
 });
 
+const modifierThumbnails: Record<string, string> = {
+  "beef-patty": "/images/menu/og-nasty.jpg",
+  "chicken-patty": "/images/menu/peri-beast.jpg",
+  bacon: "/images/menu/BBQ-Beast.jpg",
+  cheese: "/images/menu/monster-cheese.jpg",
+  "house-sauce": "/images/menu/og-nasty.jpg",
+};
+
 function readStoredCart(): CartLine[] {
   try {
     const stored = window.localStorage.getItem(CART_STORAGE_KEY);
@@ -219,7 +227,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             {item.canUpgrade && (
               <section className="product-custom-section">
                 <div className="product-custom-section__heading">
-                  <div><span>01</span><h2>Make it a meal</h2></div>
+                  <div><span>01</span><h2>Make it the Beast Combo</h2></div>
                   <strong>+{money.format(comboUpgradePrice)}</strong>
                 </div>
                 <button
@@ -232,7 +240,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                   }}
                 >
                   <span className="product-choice-card__check"><Check size={16} /></span>
-                  <span><strong>Add Nasty Fries + drink</strong><small>Turn this item into a full meal.</small></span>
+                  <span><strong>Add Nasty Fries + drink</strong><small>Turn this item into a Beast Combo.</small></span>
                 </button>
 
                 {isCombo && (
@@ -302,8 +310,21 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                 </div>
                 <div className="product-stepper-list">
                   {availableModifiers.map((modifier) => (
-                    <div className="product-stepper-row" key={modifier.id}>
-                      <span><strong>{modifier.name}</strong><small>+{money.format(modifier.price)}</small></span>
+                    <div className="product-stepper-row product-stepper-row--extra" key={modifier.id}>
+                      <span className="product-extra-info">
+                        <span className="product-extra-thumb" aria-hidden="true">
+                          <Image
+                            src={modifierThumbnails[modifier.id] ?? "/images/menu/og-nasty.jpg"}
+                            alt=""
+                            width={56}
+                            height={56}
+                          />
+                        </span>
+                        <span className="product-extra-copy">
+                          <strong>{modifier.name}</strong>
+                          <small>+{money.format(modifier.price)}</small>
+                        </span>
+                      </span>
                       <div className="product-stepper">
                         <button type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={(modifierQuantities[modifier.id] ?? 0) === 0} aria-label={`Remove ${modifier.name}`}><Minus size={15} /></button>
                         <strong>{modifierQuantities[modifier.id] ?? 0}</strong>

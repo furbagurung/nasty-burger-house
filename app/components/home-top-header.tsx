@@ -24,18 +24,23 @@ export default function HomeTopHeader() {
   const lastScrollY = useRef(0);
 
   useEffect(() => {
-    lastScrollY.current = window.scrollY;
+    const catalogueScroller = document.querySelector<HTMLElement>(
+      ".catalogue-shell:not(.product-page-shell) .catalogue-content",
+    );
+
+    const readCurrentScroll = () =>
+      catalogueScroller ? catalogueScroller.scrollTop : window.scrollY;
+
+    lastScrollY.current = readCurrentScroll();
     setIsHidden(false);
 
-    const updateHeader = () => {
-      const currentY = window.scrollY;
-
+    const applyScrollState = (currentY: number) => {
       if (isHome) {
         const hero = document.querySelector<HTMLElement>(".hero-carousel");
         const heroBottom = hero
           ? hero.offsetTop + hero.offsetHeight
           : window.innerHeight;
-        setIsHeroTransparent(currentY < heroBottom - 24);
+        setIsHeroTransparent(window.scrollY < heroBottom - 24);
       } else {
         setIsHeroTransparent(false);
       }
@@ -51,13 +56,22 @@ export default function HomeTopHeader() {
       lastScrollY.current = currentY;
     };
 
-    updateHeader();
-    window.addEventListener("scroll", updateHeader, { passive: true });
-    window.addEventListener("resize", updateHeader);
+    const updateWindowHeader = () => applyScrollState(window.scrollY);
+    const updateCatalogueHeader = () => {
+      if (catalogueScroller) applyScrollState(catalogueScroller.scrollTop);
+    };
+
+    updateWindowHeader();
+    window.addEventListener("scroll", updateWindowHeader, { passive: true });
+    window.addEventListener("resize", updateWindowHeader);
+    catalogueScroller?.addEventListener("scroll", updateCatalogueHeader, {
+      passive: true,
+    });
 
     return () => {
-      window.removeEventListener("scroll", updateHeader);
-      window.removeEventListener("resize", updateHeader);
+      window.removeEventListener("scroll", updateWindowHeader);
+      window.removeEventListener("resize", updateWindowHeader);
+      catalogueScroller?.removeEventListener("scroll", updateCatalogueHeader);
     };
   }, [isHome, pathname]);
 

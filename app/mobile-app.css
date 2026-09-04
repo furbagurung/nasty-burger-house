@@ -1278,3 +1278,21 @@ height: 5.15rem;
     padding-inline: 0.35rem;
   }
 }
+/* Premium mobile glass header — final override */
+@media (max-width: 680px) {
+  .site-header,
+  .catalogue-header {
+    min-height: 5.9rem;
+    background: rgba(8, 8, 8, 0.78);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+  }
+
+  .site-header .brand-logo--header,
+  .catalogue-logo {
+    width: 5.2rem;
+    height: 5.2rem;
+  }
+}

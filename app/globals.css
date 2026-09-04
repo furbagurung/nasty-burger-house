@@ -3361,3 +3361,29 @@ a.order-type-option:hover {
     width: auto;
   }
 }
+/* Premium dark glass header — final override */
+.site-header,
+.catalogue-header {
+  min-height: 6.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(8, 8, 8, 0.76);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+
+.brand-logo--header {
+  width: 5.6rem;
+  height: 5.6rem;
+}
+
+.catalogue-logo {
+  width: 5.4rem;
+  height: 5.4rem;
+}
+
+.desktop-nav a,
+.desktop-nav .nav-button,
+.catalogue-desktop-nav a {
+  color: #fffdf8;
+}

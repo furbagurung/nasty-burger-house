@@ -96,6 +96,28 @@
   transition: color 160ms ease;
 }
 
+.home-top-header__nav .home-top-header__drip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.48rem;
+}
+
+.home-top-header__drip-icon {
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.home-top-header__drip-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(255, 193, 36, 0.24));
+}
+
 .home-top-header__nav a::after,
 .home-top-header__nav button::after {
   position: absolute;

@@ -8,6 +8,7 @@ import "./menu-browse.css";
 import "./mobile-app.css";
 import "./home-top-header.css";
 import "./shared-header-pages.css";
+import "./menu-catalogue-layout.css";
 import "./footer-dark.css";
 import "./product-detail-premium.css";
 import "./product-light-body.css";

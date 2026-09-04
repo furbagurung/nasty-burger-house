@@ -1,0 +1,17 @@
+/* Use the same glass home header across all desktop pages.
+   Existing catalogue/app headers remain available on mobile. */
+@media (min-width: 901px) {
+  .catalogue-shell {
+    padding-top: 7.4rem;
+  }
+
+  .catalogue-shell > .catalogue-header,
+  .product-page-shell > .catalogue-header {
+    display: none;
+  }
+
+  /* Legal routes render their main element directly under body. */
+  body > main {
+    padding-top: 9rem !important;
+  }
+}

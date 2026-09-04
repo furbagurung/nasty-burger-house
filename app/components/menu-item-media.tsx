@@ -20,12 +20,17 @@ export default function MenuItemMedia({
   sizes,
 }: MenuItemMediaProps) {
   const image = demoImageFor(item);
+  const usesTemporaryImage = Boolean(image && !item.image);
 
   if (image) {
     return (
       <Image
         src={image}
-        alt={`${item.name} placeholder food photography`}
+          alt={
+            usesTemporaryImage
+              ? `${item.name} temporary food photography`
+              : item.name
+          }
         fill
         sizes={sizes}
         priority={priority}

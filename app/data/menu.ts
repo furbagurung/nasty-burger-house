@@ -49,6 +49,14 @@ export const adultDrinkChoices = [
 // The latest printed menu lists soft drinks or water for the kids' meal upgrade.
 export const kidsDrinkChoices = adultDrinkChoices;
 
+const drinkImages: Record<string, string> = {
+  "Coca-Cola": "/images/menu/coca-cola.webp",
+  "Coke No Sugar": "/images/menu/coke-no-sugar.jpg",
+  Sprite: "/images/menu/sprite.jpg",
+  Fanta: "/images/menu/fanta.jpg",
+  Water: "/images/menu/water.jpg",
+};
+
 // Kept in one configuration block so client-approved pricing can be changed safely.
 export const comboUpgradePrice = 6.99;
 export const pricingNotice =
@@ -72,7 +80,7 @@ export const menuItems: MenuItem[] = [
       "Our signature flame-grilled beef patty with American cheese, crisp lettuce, pickled onion and our house-made NBH Signature Sauce on a toasted milk bun.",
     category: "burgers",
     price: 19,
-    image: "/images/signature-beast.webp",
+    image: "/images/menu/og-nasty.jpg",
     featured: true,
     canUpgrade: true,
     dietaryTags: ["Halal"],
@@ -91,6 +99,7 @@ export const menuItems: MenuItem[] = [
       "Tender flame-grilled peri-peri chicken thigh, marinated in our house-made signature peri-peri sauce, finished with fresh tomato, green cabbage slaw and creamy mayo on a toasted milk bun.",
     category: "burgers",
     price: 19,
+    image: "/images/menu/peri-beast.jpg",
     canUpgrade: true,
     dietaryTags: ["Halal"],
     modifierIds: ["chicken-patty", "bacon", "cheese", "house-sauce"],
@@ -103,6 +112,7 @@ export const menuItems: MenuItem[] = [
       "Golden beer-battered fish fillet with house-made tartare sauce, American cheese, cos lettuce and creamy mayo on a toasted milk bun.",
     category: "burgers",
     price: 21,
+    image: "/images/menu/hooked.jpg",
     canUpgrade: true,
     dietaryTags: ["Halal"],
     modifierIds: ["cheese", "house-sauce"],
@@ -120,6 +130,7 @@ export const menuItems: MenuItem[] = [
       "House-made vegetable patty with house-made jalapeño mint mayo, pickled onion, fresh cabbage slaw and American cheese on a toasted milk bun.",
     category: "burgers",
     price: 17,
+    image: "/images/menu/green-beast.jpg",
     canUpgrade: true,
     dietaryTags: ["Vegetarian"],
     modifierIds: ["cheese", "house-sauce"],
@@ -137,6 +148,7 @@ export const menuItems: MenuItem[] = [
       "Juicy flame-grilled beef patty with crispy bacon, American cheese, house-made Bourbon BBQ sauce and creamy mayo on a toasted milk bun.",
     category: "burgers",
     price: 19,
+    image: "/images/menu/bbq-beast.jpg",
     featured: true,
     canUpgrade: true,
     dietaryTags: ["Halal"],
@@ -155,6 +167,7 @@ export const menuItems: MenuItem[] = [
       "Eight crispy battered eggplant pieces tossed in our house-made Signature NBH Asian dressing, finished with crispy fried onion and fresh coriander.",
     category: "loaded-sides",
     price: 15,
+    image: "/images/menu/dirty-eggplant.jpg",
     canUpgrade: true,
     dietaryTags: ["Vegetarian"],
     modifierIds: ["house-sauce"],
@@ -167,6 +180,7 @@ export const menuItems: MenuItem[] = [
       "Four whole chicken wings tossed in our house-made Buffalo Fury sauce, finished with blue cheese sauce.",
     category: "loaded-sides",
     price: 15,
+    image: "/images/menu/buffalo-fury.jpg",
     canUpgrade: true,
     dietaryTags: ["Halal"],
     modifierIds: ["house-sauce"],
@@ -179,6 +193,7 @@ export const menuItems: MenuItem[] = [
       "Golden crispy fries tossed in house-made NBH seasoning, served with house-made garlic aioli.",
     category: "loaded-sides",
     price: 10,
+    image: "/images/menu/nasty-fries.jpg",
     canUpgrade: true,
     dietaryTags: ["Vegetarian"],
     modifierIds: ["house-sauce"],
@@ -191,6 +206,7 @@ export const menuItems: MenuItem[] = [
       "Flame-grilled beef patty with American cheese, tomato sauce and pickles on a soft milk bun.",
     category: "kids",
     price: 14,
+    image: "/images/menu/monster-cheese.jpg",
     canUpgrade: true,
     isKidsItem: true,
     dietaryTags: ["Halal"],
@@ -254,5 +270,6 @@ export const menuItems: MenuItem[] = [
     category: "drinks" as const,
     price: 4,
     priceConfirmed: false,
+    image: drinkImages[name],
   })),
 ];

@@ -106,6 +106,25 @@
   font-size: 0.78rem;
 }
 
+.site-footer .footer-legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem 1.15rem;
+  margin-left: auto;
+}
+
+.site-footer .footer-legal-links a {
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 0.78rem;
+  font-weight: 560;
+}
+
+.site-footer .footer-legal-links a:hover {
+  color: #fff;
+  transform: none;
+}
+
 @media (max-width: 900px) {
   .site-footer {
     grid-template-columns: 1fr;
@@ -130,6 +149,10 @@
   .site-footer .footer-bottom {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .site-footer .footer-legal-links {
+    margin-left: 0;
   }
 }
 

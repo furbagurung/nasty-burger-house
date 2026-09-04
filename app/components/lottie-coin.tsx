@@ -137,6 +137,7 @@ export default function LottieCoin({ className = "" }: LottieCoinProps) {
     <span
       ref={containerRef}
       className={["lottie-coin", className].filter(Boolean).join(" ")}
+      style={{ display: "block", width: "100%", height: "100%" }}
       aria-hidden="true"
     />
   );

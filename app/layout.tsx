@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import FooterLegalLinks from "./components/footer-legal-links";
+import HomeTopHeader from "./components/home-top-header";
 import "./globals.css";
 import "./catalogue-theme.css";
 import "./mobile-app.css";
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body>
+        <HomeTopHeader />
         {children}
         <FooterLegalLinks />
       </body>

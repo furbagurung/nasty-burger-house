@@ -1187,3 +1187,95 @@
     display: none;
   }
 }
+
+@media (max-width: 680px) {
+  .hero-carousel {
+    min-height: max(41rem, calc(100svh - 4.25rem));
+  }
+
+  .hero-slide__image {
+    object-position: 62% center;
+  }
+
+  .hero-slide__shade {
+    background: linear-gradient(0deg, rgba(5, 4, 4, 0.28), transparent 56%);
+  }
+
+  .hero-slide__copy {
+    right: 0.75rem;
+    bottom: calc(5.1rem + env(safe-area-inset-bottom));
+    left: 0.75rem;
+    display: block;
+    width: auto;
+    min-height: 0;
+    border-radius: 1rem;
+    padding: 1.15rem;
+  }
+
+  .hero-slide__copy h1,
+  .hero-slide__copy h2 {
+    max-width: none;
+    font-size: clamp(2rem, 9vw, 2.65rem);
+    line-height: 0.98;
+  }
+
+  .hero-slide__copy > p:not(.eyebrow) {
+    display: -webkit-box;
+    max-width: none;
+    margin-top: 0.75rem;
+    overflow: hidden;
+    color: #4f4a43;
+    font-size: 0.88rem;
+    line-height: 1.42;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .hero-slide__copy .hero-actions {
+    display: flex;
+    margin-top: 0.9rem;
+  }
+
+  .hero-card__cta {
+    min-height: 2.7rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.86rem;
+  }
+
+  .hero-carousel__controls {
+    position: static;
+    right: auto;
+    bottom: auto;
+    gap: 0.2rem;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    transform: none;
+  }
+
+  .hero-carousel__controls > button {
+    min-width: 2rem;
+    min-height: 2rem;
+    padding: 0 0.35rem;
+    font-size: 0.75rem;
+  }
+
+  .hero-carousel__controls > button:first-child,
+  .hero-carousel__controls > button:last-child {
+    display: inline-flex;
+  }
+
+  .hero-carousel__dots {
+    gap: 0.42rem;
+    padding-inline: 0.1rem;
+  }
+
+  .hero-carousel__control-divider {
+    height: 1.35rem;
+    margin-inline: 0.15rem;
+  }
+
+  .hero-carousel__controls > .hero-carousel__playback {
+    margin-left: auto;
+    padding-inline: 0.35rem;
+  }
+}

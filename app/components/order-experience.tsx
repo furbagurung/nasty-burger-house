@@ -42,35 +42,55 @@ type HeroSlide = {
   description: string;
   image: string;
   imageAlt: string;
+  ctaLabel: string;
+  href?: string;
+  action?: "loyalty" | "monthly";
 };
 
 const heroSlides: HeroSlide[] = [
   {
-    id: "signature",
-    eyebrow: "Signature Beast · $19",
-    title: "Feed the beast.",
+    id: "drip-points",
+    eyebrow: "Nasty rewards",
+    title: "Get Drip Points",
     description:
-      "Flame-grilled, fully loaded and built for pickup. Start with the burger that made Nasty Burger House.",
+      "Join Drip Points, get 500 points to start and unlock rewards made for hungry regulars.",
     image: "/images/signature-beast.webp",
-    imageAlt: "Double flame-grilled burger with cheese, pickles and sauce",
+    imageAlt: "Nasty Burger House signature burger beside a Drip Points promotion",
+    ctaLabel: "Join Drip Points",
+    action: "loyalty",
   },
   {
     id: "monthly",
-    eyebrow: "Beast of the Month · $19",
-    title: "Meet the BBQ Beast.",
+    eyebrow: "Limited-time drop",
+    title: "Beast of the Month",
     description:
-      "Beef, crispy bacon, American cheese and house-made Bourbon BBQ sauce. Smoky, messy and here for a limited run.",
+      "Meet the BBQ Beast: flame-grilled beef, crispy bacon, American cheese and house-made Bourbon BBQ sauce.",
     image: "/images/bbq-beast-hero.webp",
     imageAlt: "BBQ burger with beef patties, bacon, cheese and smoky sauce",
+    ctaLabel: "Order the BBQ Beast",
+    action: "monthly",
   },
   {
-    id: "boxes",
-    eyebrow: "Beast Boxes · From $34.99",
-    title: "Big feeds. Boxed.",
+    id: "beast-burgers",
+    eyebrow: "Flame-grilled favourites",
+    title: "Beast Burgers",
     description:
-      "Choose your burgers and drinks, then load up a Solo, Duo or Family Beast Box for the whole crew.",
+      "From the OG Nasty to the Peri Beast, explore the full lineup and build your pickup order.",
+    image: "/images/signature-beast.webp",
+    imageAlt: "Nasty Burger House signature burger with cheese, pickles and sauce",
+    ctaLabel: "Explore burgers",
+    href: "/menu/burgers",
+  },
+  {
+    id: "save-more",
+    eyebrow: "Beast Boxes · From $34.99",
+    title: "Get More. Save Money.",
+    description:
+      "Go Solo, Duo or Family and get burgers, Nasty Fries, bites, drinks and dessert together in one Beast Box.",
     image: "/images/beast-box-hero.webp",
     imageAlt: "Beast Box with burger, fries, wings, eggplant bites and dessert",
+    ctaLabel: "Explore Beast Boxes",
+    href: "/menu/beast-boxes",
   },
 ];
 
@@ -827,62 +847,89 @@ export default function OrderExperience({
                   )}
                   <p>{slide.description}</p>
                   <div className="hero-actions">
+                    {slide.href ? (
+                      <Link className="hero-card__cta" href={slide.href}>
+                        {slide.ctaLabel}
+                      </Link>
+                    ) : (
+                      <button
+                        className="hero-card__cta"
+                        type="button"
+                        onClick={
+                          slide.action === "loyalty"
+                            ? openLoyalty
+                            : () =>
+                                monthlyItem
+                                  ? beginProduct(monthlyItem)
+                                  : openOrderType()
+                        }
+                      >
+                        {slide.ctaLabel}
+                      </button>
+                    )}
+                  </div>
+                  <div className="hero-carousel__controls">
                     <button
-                      className="primary-button"
                       type="button"
-                      onClick={openOrderType}
+                      onClick={() =>
+                        setActiveHeroSlide(
+                          (current) =>
+                            (current - 1 + heroSlides.length) % heroSlides.length,
+                        )
+                      }
+                      aria-label="Show previous promotion"
                     >
-                      Order now
+                      ←
+                    </button>
+                    <div
+                      className="hero-carousel__dots"
+                      aria-label="Choose promotion"
+                    >
+                      {heroSlides.map((dotSlide, dotIndex) => (
+                        <button
+                          className={
+                            activeHeroSlide === dotIndex ? "is-active" : ""
+                          }
+                          type="button"
+                          onClick={() => setActiveHeroSlide(dotIndex)}
+                          aria-label={`Show promotion ${dotIndex + 1}: ${dotSlide.title}`}
+                          aria-current={
+                            activeHeroSlide === dotIndex ? "true" : undefined
+                          }
+                          key={dotSlide.id}
+                        />
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveHeroSlide(
+                          (current) => (current + 1) % heroSlides.length,
+                        )
+                      }
+                      aria-label="Show next promotion"
+                    >
+                      →
+                    </button>
+                    <span
+                      className="hero-carousel__control-divider"
+                      aria-hidden="true"
+                    />
+                    <button
+                      className="hero-carousel__playback"
+                      type="button"
+                      onClick={() => setIsHeroPaused((current) => !current)}
+                      aria-label={
+                        isHeroPaused ? "Play carousel" : "Pause carousel"
+                      }
+                    >
+                      <span aria-hidden="true">{isHeroPaused ? "▶" : "Ⅱ"}</span>
+                      {isHeroPaused ? "Play" : "Pause"}
                     </button>
                   </div>
                 </div>
               </article>
             ))}
-          </div>
-
-          <div className="hero-carousel__controls">
-            <button
-              type="button"
-              onClick={() =>
-                setActiveHeroSlide(
-                  (current) =>
-                    (current - 1 + heroSlides.length) % heroSlides.length,
-                )
-              }
-              aria-label="Show previous promotion"
-            >
-              ←
-            </button>
-            <div className="hero-carousel__dots" aria-label="Choose promotion">
-              {heroSlides.map((slide, index) => (
-                <button
-                  className={activeHeroSlide === index ? "is-active" : ""}
-                  type="button"
-                  onClick={() => setActiveHeroSlide(index)}
-                  aria-label={`Show promotion ${index + 1}: ${slide.title}`}
-                  aria-current={activeHeroSlide === index ? "true" : undefined}
-                  key={slide.id}
-                />
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsHeroPaused((current) => !current)}
-              aria-label={isHeroPaused ? "Play carousel" : "Pause carousel"}
-            >
-              {isHeroPaused ? "Play" : "Pause"}
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                setActiveHeroSlide(
-                  (current) => (current + 1) % heroSlides.length,
-                )
-              }
-              aria-label="Show next promotion"
-            >
-              →
-            </button>
           </div>
         </section>
 

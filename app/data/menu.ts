@@ -39,18 +39,21 @@ export type MenuItem = {
 };
 
 export const adultDrinkChoices = [
-  "Solo Can",
-  "Coke Can",
-  "Fanta Can",
-  "Mineral Water Bottle",
+  "SOLO",
+  "Coke",
+  "Coke No Sugar",
+  "Fanta",
+  "Water",
 ];
 
 export const kidsDrinkChoices = adultDrinkChoices;
 
 const drinkImages: Partial<Record<string, string>> = {
-  "Coke Can": "/images/menu/coke.webp",
-  "Fanta Can": "/images/menu/fanta.webp",
-  "Mineral Water Bottle": "/images/menu/water.jpg",
+  SOLO: "/images/menu/solo-can.png",
+  Coke: "/images/menu/coke.webp",
+  "Coke No Sugar": "/images/menu/coke no sugar.webp",
+  Fanta: "/images/menu/fanta-can.png",
+  Water: "/images/menu/water.jpg",
 };
 
 // Kept in one configuration block so client-approved pricing can be changed safely.
@@ -281,7 +284,7 @@ export const menuItems: MenuItem[] = [
   ...adultDrinkChoices.map((name) => ({
     id: name.toLowerCase().replaceAll(" ", "-"),
     name,
-    description: name === "Mineral Water Bottle" ? "Chilled mineral water bottle." : "Chilled can.",
+    description: name === "Water" ? "Chilled water bottle." : "Chilled can.",
     category: "drinks" as const,
     price: 4,
     priceConfirmed: false,

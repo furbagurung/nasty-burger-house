@@ -19,6 +19,7 @@ import "./product-page-refinements.css";
 import "./product-extra-thumbnails.css";
 import "./product-combo-drawer.css";
 import "./product-customization-groups.css";
+import "./product-fixed-layout.css";
 import "./drip-points.css";
 import "./cookie-settings.css";
 import "./help-support.css";

@@ -68,7 +68,7 @@ export default function MobileHeroMotion() {
     if (!heroRoot || pathname !== "/") return;
 
     const animateActiveSlide = () => {
-      if (!mobileViewport() || reducedMotion() || !window.gsap) return;
+      if (reducedMotion() || !window.gsap) return;
 
       const activeSlide = heroRoot.querySelector<HTMLElement>(
         ".hero-slide.is-active",
@@ -259,9 +259,10 @@ export default function MobileHeroMotion() {
     const activeSlide = heroRoot.querySelector<HTMLElement>(
       ".hero-slide.is-active",
     );
-    activeSlide
-      ?.querySelectorAll<HTMLButtonElement>(".hero-carousel__dots button")
-      [index]?.click();
+    const dots = activeSlide?.querySelectorAll<HTMLButtonElement>(
+      ".hero-carousel__dots button",
+    );
+    dots?.[index]?.click();
   };
 
   return createPortal(

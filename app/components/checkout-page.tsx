@@ -8,12 +8,13 @@ import { menuItems, modifierChoices } from "../data/menu";
 import {
   awardOrderDripPoints,
   ensureSignupBonus,
-  readCustomerProfile,
+  readSignedInCustomerProfile,
   saveCustomerOrder,
   saveCustomerProfile,
   type CustomerOrderLine,
   type CustomerProfile,
 } from "../lib/customer-store";
+import { DRIP_POINTS_PER_AUD } from "../lib/loyalty";
 import {
   calculateCartSubtotal,
   calculateLineUnitPrice,
@@ -120,7 +121,7 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
     } catch {
       storedCart = [];
     }
-    const customer = readCustomerProfile();
+    const customer = readSignedInCustomerProfile();
     setCart(storedCart);
     setProfile(customer);
     if (customer) {
@@ -189,6 +190,7 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
         status: "received",
         subtotal: result.subtotal,
         earnedDripPoints: earnedPoints,
+        adminNotification: result.adminNotification,
         customerId: activeProfile?.id,
         customerName: name.trim(),
         customerEmail: email.trim().toLowerCase(),
@@ -290,7 +292,7 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
               })}
             </div>
             <div className="checkout-page-review__total"><span>Subtotal</span><strong>{money.format(subtotal)}</strong></div>
-            {profile && <p className="checkout-points-preview">Earn approximately <strong>{Math.floor(subtotal * 10)} Drip Points</strong> with this order.</p>}
+            {profile && <p className="checkout-points-preview">Earn approximately <strong>{Math.floor(subtotal * DRIP_POINTS_PER_AUD)} Drip Points</strong> with this order.</p>}
             {errors.length > 0 && <div className="checkout-errors" role="alert"><strong>Please check your order:</strong><ul>{errors.map((error) => <li key={error}>{error}</li>)}</ul></div>}
             <button className="standalone-primary-button" type="submit" disabled={submitting || !serviceStatus.acceptingOrders}>
               {!serviceStatus.acceptingOrders ? "Ordering unavailable" : submitting ? "Sending order…" : "Place pickup order"}

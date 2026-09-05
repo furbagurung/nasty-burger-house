@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import SocialIcon from "./social-icons";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
@@ -290,22 +291,28 @@ export default function MobileBottomNav({
                   href="https://www.instagram.com/nastyburgerhouse/"
                   target="_blank"
                   rel="noreferrer"
+                  aria-label="Nasty Burger House on Instagram"
                 >
-                  Instagram
+                  <SocialIcon name="instagram" />
+                  <span>Instagram</span>
                 </a>
                 <a
                   href="https://www.tiktok.com/@nastyburgerhouse"
                   target="_blank"
                   rel="noreferrer"
+                  aria-label="Nasty Burger House on TikTok"
                 >
-                  TikTok
+                  <SocialIcon name="tiktok" />
+                  <span>TikTok</span>
                 </a>
                 <a
                   href="https://www.facebook.com/profile.php?id=61590139712227"
                   target="_blank"
                   rel="noreferrer"
+                  aria-label="Nasty Burger House on Facebook"
                 >
-                  Facebook
+                  <SocialIcon name="facebook" />
+                  <span>Facebook</span>
                 </a>
               </div>
             </div>

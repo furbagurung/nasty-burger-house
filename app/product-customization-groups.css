@@ -3,6 +3,30 @@
   gap: 0;
 }
 
+/* Main customisation trigger: one centered label only. */
+.product-extras-trigger {
+  display: flex;
+  width: 100%;
+  min-height: 3.35rem;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #171513;
+  border-radius: 999px;
+  padding: 0.75rem 1.25rem;
+  background: #ffffff;
+  color: #171513;
+  font-size: 0.95rem;
+  font-weight: 850;
+  line-height: 1;
+  text-align: center;
+}
+
+.product-extras-trigger:hover {
+  border-color: #171513;
+  background: #171513;
+  color: #ffffff;
+}
+
 .product-drawer-group {
   display: grid;
   gap: 0.8rem;
@@ -71,26 +95,16 @@
 
 .product-ingredient-drawer__option.is-removed .product-drink-drawer__thumb,
 .product-ingredient-drawer__option.is-removed .product-drink-drawer__copy {
-  opacity: 0.56;
+  opacity: 0.5;
 }
 
-.product-ingredient-drawer__status {
-  min-width: 4.8rem;
-  border: 1px solid #d8d2ca;
-  border-radius: 999px;
-  padding: 0.43rem 0.7rem;
-  background: #ffffff;
-  color: #171513;
-  font-size: 0.68rem;
-  font-weight: 820;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.product-ingredient-drawer__option.is-removed .product-ingredient-drawer__status {
-  border-color: #171513;
-  background: #171513;
-  color: #ffffff;
+.product-ingredient-drawer__checkbox {
+  width: 1.35rem;
+  height: 1.35rem;
+  margin: 0;
+  flex: 0 0 auto;
+  accent-color: #171513;
+  cursor: pointer;
 }
 
 .product-extras-drawer .product-drink-drawer__thumb img {
@@ -99,17 +113,17 @@
 }
 
 @media (max-width: 680px) {
+  .product-extras-trigger {
+    min-height: 3.15rem;
+    padding-inline: 1rem;
+  }
+
   .product-drawer-group + .product-drawer-group {
     margin-top: 1.3rem;
     padding-top: 1.25rem;
   }
 
   .product-ingredient-drawer__option {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .product-ingredient-drawer__status {
-    grid-column: 2;
-    justify-self: start;
+    grid-template-columns: auto minmax(0, 1fr) auto;
   }
 }

@@ -7,8 +7,6 @@ const revealSelectors = [
   ".menu-preview__heading",
   ".menu-preview-card--clean",
   ".home-feature",
-  ".catalogue-heading",
-  ".catalogue-product--browse",
   ".product-detail__description",
   ".product-detail__tags",
   ".product-custom-section",
@@ -29,7 +27,7 @@ const excludedAncestors = [
 function staggerDelay(element: HTMLElement) {
   if (
     element.matches(
-      ".menu-preview-card--clean, .catalogue-product--browse, .site-footer .footer-links > nav",
+      ".menu-preview-card--clean, .site-footer .footer-links > nav",
     )
   ) {
     const siblings = Array.from(element.parentElement?.children ?? []);

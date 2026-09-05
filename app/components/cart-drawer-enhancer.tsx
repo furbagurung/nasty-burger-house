@@ -26,6 +26,48 @@ const productImages: Record<string, string> = {
   Water: "/images/menu/water.jpg",
 };
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function addActionIcon(button: HTMLButtonElement, type: "edit" | "remove") {
+  if (button.dataset.cartIcon === type) return;
+
+  button.textContent = "";
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("stroke-width", "1.8");
+  svg.setAttribute("stroke-linecap", "round");
+  svg.setAttribute("stroke-linejoin", "round");
+  svg.setAttribute("aria-hidden", "true");
+
+  if (type === "edit") {
+    const body = document.createElementNS(SVG_NS, "path");
+    body.setAttribute(
+      "d",
+      "M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z",
+    );
+    const detail = document.createElementNS(SVG_NS, "path");
+    detail.setAttribute("d", "m15 5 4 4");
+    svg.append(body, detail);
+  } else {
+    [
+      "M10 11v6",
+      "M14 11v6",
+      "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6",
+      "M3 6h18",
+      "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
+    ].forEach((pathData) => {
+      const path = document.createElementNS(SVG_NS, "path");
+      path.setAttribute("d", pathData);
+      svg.appendChild(path);
+    });
+  }
+
+  button.appendChild(svg);
+  button.dataset.cartIcon = type;
+}
+
 function enhanceCartDrawer() {
   const drawer = document.querySelector<HTMLElement>(".cart-drawer");
   if (!drawer) return;
@@ -74,11 +116,13 @@ function enhanceCartDrawer() {
         editButton.classList.add("cart-line__icon-action", "is-edit");
         editButton.setAttribute("aria-label", `Edit ${itemName}`);
         editButton.setAttribute("title", "Edit");
+        addActionIcon(editButton, "edit");
       }
       if (removeButton) {
         removeButton.classList.add("cart-line__icon-action", "is-remove");
         removeButton.setAttribute("aria-label", `Remove ${itemName}`);
         removeButton.setAttribute("title", "Remove");
+        addActionIcon(removeButton, "remove");
       }
     }
 
@@ -131,7 +175,6 @@ function enhanceCartDrawer() {
       const chevron = document.createElement("span");
       chevron.className = "cart-line__quantity-chevron";
       chevron.setAttribute("aria-hidden", "true");
-      chevron.textContent = "⌄";
 
       quantityControl.append(select, chevron);
       const main = line.querySelector<HTMLElement>(".cart-line__main");

@@ -26,11 +26,17 @@ export async function verifyAdmin(): Promise<AdminAuthResult> {
 
   const { data, error: claimsError } = await supabase.auth.getClaims();
   const claims = data?.claims;
-  const userId = typeof claims?.sub === "string" ? claims.sub : "";
 
-  if (claimsError || !userId) {
+  if (
+    claimsError ||
+    !claims ||
+    typeof claims.sub !== "string" ||
+    !claims.sub
+  ) {
     return { ok: false, reason: "unauthenticated" };
   }
+
+  const userId = claims.sub;
 
   const { data: membership, error } = await supabase
     .from("admin_users")

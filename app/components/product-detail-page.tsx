@@ -594,13 +594,14 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                 <section className="product-drawer-group product-drawer-group--ingredients" aria-labelledby="product-ingredients-group-title">
                   <div className="product-drawer-group__heading">
                     <h3 id="product-ingredients-group-title">Add it on</h3>
-                    <p>Uncheck an ingredient to remove it.</p>
+                    <p>Use − or + to remove an ingredient or add it back.</p>
                   </div>
                   <div className="product-drawer-group__list">
                     {removableIngredients.map((ingredient) => {
                       const removed = removedIngredients.includes(ingredient);
+                      const ingredientQuantity = removed ? 0 : 1;
                       return (
-                        <label
+                        <div
                           className={`product-ingredient-drawer__option${removed ? " is-removed" : ""}`}
                           key={ingredient}
                         >
@@ -615,14 +616,26 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                           <span className="product-drink-drawer__copy">
                             <strong>{ingredient}</strong>
                           </span>
-                          <input
-                            className="product-ingredient-drawer__checkbox"
-                            type="checkbox"
-                            checked={!removed}
-                            onChange={() => toggleIngredient(ingredient)}
-                            aria-label={`Include ${ingredient}`}
-                          />
-                        </label>
+                          <div className="product-stepper product-extra-drawer__stepper">
+                            <button
+                              type="button"
+                              onClick={() => toggleIngredient(ingredient)}
+                              disabled={removed}
+                              aria-label={`Remove ${ingredient}`}
+                            >
+                              <Minus size={15} />
+                            </button>
+                            <strong>{ingredientQuantity}</strong>
+                            <button
+                              type="button"
+                              onClick={() => toggleIngredient(ingredient)}
+                              disabled={!removed}
+                              aria-label={`Add back ${ingredient}`}
+                            >
+                              <Plus size={15} />
+                            </button>
+                          </div>
+                        </div>
                       );
                     })}
                   </div>

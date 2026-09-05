@@ -91,9 +91,22 @@ export default function HomeTopHeader() {
         const {
           data: { user },
         } = await supabase.auth.getUser();
+
+        let resolvedName = authDisplayName(user) || localProfile?.name || "";
+        if (user && !resolvedName) {
+          const { data: customer } = await supabase
+            .from("customers")
+            .select("name")
+            .eq("id", user.id)
+            .maybeSingle();
+          if (typeof customer?.name === "string") {
+            resolvedName = customer.name.trim();
+          }
+        }
+
         if (active) {
           setIsSignedIn(Boolean(user));
-          setCustomerName(authDisplayName(user) || localProfile?.name || "");
+          setCustomerName(resolvedName);
         }
       } catch {
         if (active) {
@@ -112,6 +125,9 @@ export default function HomeTopHeader() {
       setCustomerName(
         authDisplayName(session?.user) || localProfile?.name || "",
       );
+      if (session?.user && !authDisplayName(session.user) && !localProfile?.name) {
+        void updateAccount();
+      }
     }) ?? { data: { subscription: null } };
 
     const refreshAccount = () => void updateAccount();

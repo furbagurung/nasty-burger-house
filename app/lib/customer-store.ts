@@ -4,6 +4,7 @@ import {
 } from "./loyalty";
 
 export const CUSTOMER_STORAGE_KEY = "nasty-burger-customer-v1";
+export const CUSTOMER_SESSION_KEY = "nasty-burger-customer-session-v1";
 export const ORDER_HISTORY_STORAGE_KEY = "nasty-burger-order-history-v1";
 export const DRIP_LEDGER_STORAGE_KEY = "nasty-burger-drip-ledger-v1";
 export const REVIEWS_STORAGE_KEY = "nasty-burger-reviews-v1";
@@ -35,6 +36,7 @@ export type CustomerOrder = {
   status: "received" | "preparing" | "ready" | "completed" | "cancelled";
   subtotal: number;
   earnedDripPoints: number;
+  adminNotification?: "sent" | "not-configured" | "failed";
   customerId?: string;
   customerName: string;
   customerEmail: string;
@@ -103,6 +105,30 @@ export function readCustomerProfile(): CustomerProfile | null {
   }
 }
 
+export function readSignedInCustomerProfile(): CustomerProfile | null {
+  if (!canUseStorage()) return null;
+  const profile = readCustomerProfile();
+  if (!profile) return null;
+  return window.localStorage.getItem(CUSTOMER_SESSION_KEY) === profile.id
+    ? profile
+    : null;
+}
+
+export function signInCustomerByEmail(email: string) {
+  if (!canUseStorage()) return null;
+  const profile = readCustomerProfile();
+  if (!profile || profile.email !== email.trim().toLowerCase()) return null;
+  window.localStorage.setItem(CUSTOMER_SESSION_KEY, profile.id);
+  window.dispatchEvent(new Event("nasty-customer-updated"));
+  return profile;
+}
+
+export function signOutCustomer() {
+  if (!canUseStorage()) return;
+  window.localStorage.removeItem(CUSTOMER_SESSION_KEY);
+  window.dispatchEvent(new Event("nasty-customer-updated"));
+}
+
 export function saveCustomerProfile(
   input: Pick<CustomerProfile, "name" | "email" | "phone"> &
     Partial<Pick<CustomerProfile, "birthday">>,
@@ -120,6 +146,7 @@ export function saveCustomerProfile(
     updatedAt: now,
   };
   window.localStorage.setItem(CUSTOMER_STORAGE_KEY, JSON.stringify(profile));
+  window.localStorage.setItem(CUSTOMER_SESSION_KEY, profile.id);
   window.dispatchEvent(new Event("nasty-customer-updated"));
   return profile;
 }
@@ -127,6 +154,7 @@ export function saveCustomerProfile(
 export function clearCustomerProfile() {
   if (!canUseStorage()) return;
   window.localStorage.removeItem(CUSTOMER_STORAGE_KEY);
+  window.localStorage.removeItem(CUSTOMER_SESSION_KEY);
   window.dispatchEvent(new Event("nasty-customer-updated"));
 }
 

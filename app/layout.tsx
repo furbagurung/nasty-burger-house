@@ -6,7 +6,6 @@ import FooterLegalLinks from "./components/footer-legal-links";
 import HomeTopHeader from "./components/home-top-header";
 import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
-import ScrollReveal from "./components/scroll-reveal";
 import "./globals.css";
 import "./catalogue-theme.css";
 import "./menu-browse.css";
@@ -28,7 +27,6 @@ import "./drip-points.css";
 import "./cookie-settings.css";
 import "./help-support.css";
 import "./cart-drawer-mcdonalds.css";
-import "./scroll-reveal.css";
 import "./mobile-ux-polish.css";
 import "./hero-motion-controls.css";
 import "./mobile-hero-compact.css";
@@ -61,7 +59,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {children}
         <MobileHomeHeaderOverlay />
         <MobileHeroControls />
-        <ScrollReveal />
         <CartDrawerEnhancer />
         <FooterLegalLinks />
         <CookieSettings />

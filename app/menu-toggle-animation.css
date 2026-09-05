@@ -12,12 +12,34 @@
     height: 1.4rem;
   }
 
-  /* Home mobile button keeps its existing React state but morphs smoothly. */
-  .mobile-menu-button {
+  /* Keep a generous tap target, but make the hamburger visually free-floating. */
+  .mobile-menu-button,
+  .catalogue-menu-trigger {
     position: relative;
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    min-width: 2.75rem !important;
+    min-height: 2.75rem !important;
     overflow: hidden;
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    -webkit-tap-highlight-color: transparent;
   }
 
+  .mobile-menu-button:hover,
+  .mobile-menu-button:active,
+  .catalogue-menu-trigger:hover,
+  .catalogue-menu-trigger:active {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* Home mobile button keeps its existing React state but morphs smoothly. */
   .mobile-menu-button > span {
     position: absolute;
     left: 50%;

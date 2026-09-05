@@ -6,16 +6,7 @@ import { useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 function openDripPoints() {
-  const control = document.querySelector<HTMLButtonElement>(
-    ".site-shell > .site-header .nav-button",
-  );
-
-  if (control) {
-    control.click();
-    return;
-  }
-
-  window.location.href = "/?loyalty=1";
+  window.location.href = "/drip-points";
 }
 
 export default function DripPointsBanner() {

@@ -2,33 +2,21 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import MobileBottomNav from "../components/mobile-bottom-nav";
-import { menuItems } from "../data/menu";
 
 export const metadata: Metadata = {
-  title: "Beast of the Month | Nasty Burger House",
-  description: "Meet the current Nasty Burger House Beast of the Month.",
+  title: "Beast of the Month — Coming Soon | Nasty Burger House",
+  description: "The next Nasty Burger House Beast of the Month is coming soon.",
 };
 
-const money = new Intl.NumberFormat("en-AU", {
-  style: "currency",
-  currency: "AUD",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 2,
-});
-
 export default function BeastOfTheMonthPage() {
-  const beast = menuItems.find((item) => item.id === "bbq-beast");
-
-  if (!beast) return null;
-
   return (
     <div className="standalone-page beast-month-page">
       <main className="standalone-main beast-month-main">
         <section className="beast-month-hero">
           <div className="beast-month-hero__media">
             <Image
-              src="/images/bbq-beast-hero.webp"
-              alt="BBQ Beast burger with beef, bacon, cheese and smoky Bourbon BBQ sauce"
+              src="/images/home-menu/beast-of-the-month.jpg"
+              alt="Nasty Burger House Beast of the Month coming soon"
               fill
               priority
               sizes="100vw"
@@ -37,50 +25,52 @@ export default function BeastOfTheMonthPage() {
           </div>
 
           <div className="beast-month-hero__copy">
-            <p className="standalone-eyebrow">Limited-time drop</p>
+            <p className="standalone-eyebrow">Coming soon</p>
             <h1>Beast of the Month</h1>
-            <h2>{beast.name}</h2>
-            <p>{beast.description}</p>
+            <h2>A new Beast is loading.</h2>
+            <p>
+              The next limited-time Nasty Burger House drop is being cooked up.
+              Watch this space — it&apos;s coming soon.
+            </p>
             <div className="beast-month-hero__actions">
-              <Link className="standalone-primary-button" href={`/product/${beast.id}`}>
-                Order the {beast.name}
+              <Link className="standalone-primary-button" href="/menu/burgers">
+                Explore the current menu
               </Link>
-              <span>{money.format(beast.price)}</span>
             </div>
           </div>
         </section>
 
         <section className="beast-month-details" aria-labelledby="beast-details-title">
           <div>
-            <p className="standalone-eyebrow">This month&apos;s beast</p>
-            <h2 id="beast-details-title">Smoky. Cheesy. Properly nasty.</h2>
+            <p className="standalone-eyebrow">Next drop</p>
+            <h2 id="beast-details-title">Something nasty is on the way.</h2>
           </div>
           <div className="beast-month-detail-grid">
             <article>
               <span>01</span>
-              <strong>Flame-grilled beef</strong>
-              <p>The juicy beef base that keeps the BBQ Beast heavy and satisfying.</p>
+              <strong>New Beast</strong>
+              <p>A fresh limited-time creation is joining the menu.</p>
             </article>
             <article>
               <span>02</span>
-              <strong>Crispy bacon + cheese</strong>
-              <p>American cheese and crispy bacon bring the rich, salty bite.</p>
+              <strong>Limited time</strong>
+              <p>When it drops, it won&apos;t be around forever.</p>
             </article>
             <article>
               <span>03</span>
-              <strong>Bourbon BBQ finish</strong>
-              <p>House-made Bourbon BBQ sauce and creamy mayo finish the stack.</p>
+              <strong>Coming soon</strong>
+              <p>Keep an eye on Nasty Burger House for the reveal.</p>
             </article>
           </div>
         </section>
 
         <section className="beast-month-order-card">
           <div>
-            <p className="standalone-eyebrow">Ready for it?</p>
-            <h2>Make this month&apos;s Beast your next pickup.</h2>
+            <p className="standalone-eyebrow">Hungry now?</p>
+            <h2>The current Beast Burger lineup is ready for pickup.</h2>
           </div>
-          <Link className="standalone-primary-button" href={`/product/${beast.id}`}>
-            View {beast.name}
+          <Link className="standalone-primary-button" href="/menu/burgers">
+            Browse Beast Burgers
           </Link>
         </section>
       </main>

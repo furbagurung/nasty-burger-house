@@ -40,7 +40,7 @@ export function createOrderDispatchPayload(
       estimatedPreparation: serviceStatus.prepTimeLabel,
     },
     payment: {
-      method: "pay_at_pickup",
+      method: order.paymentMethod,
       status: "unpaid",
       amount: order.subtotal,
       currency: "AUD",

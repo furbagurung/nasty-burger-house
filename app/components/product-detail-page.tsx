@@ -38,12 +38,34 @@ const money = new Intl.NumberFormat("en-AU", {
 });
 
 const modifierThumbnails: Record<string, string> = {
-  "beef-patty": "/images/menu/og-nasty.jpg",
-  "chicken-patty": "/images/menu/peri-beast.jpg",
-  bacon: "/images/menu/BBQ-Beast.jpg",
-  cheese: "/images/menu/monster-cheese.jpg",
-  "house-sauce": "/images/menu/og-nasty.jpg",
+  "chicken-patty": "/images/extras/chicken-patty.webp",
+  bacon: "/images/extras/bacon.webp",
+  cheese: "/images/extras/american-cheese.webp",
+  "house-sauce": "/images/extras/sauce.webp",
 };
+
+const ingredientThumbnails: Record<string, string> = {
+  "American cheese": "/images/extras/american-cheese.webp",
+  "Crispy bacon": "/images/extras/bacon.webp",
+  "Cabbage slaw": "/images/extras/cabbage-slaw.webp",
+  "Creamy mayo": "/images/extras/mayo.webp",
+  "Jalapeño mint mayo": "/images/extras/mayo.webp",
+  "Garlic aioli": "/images/extras/mayo.webp",
+  "Tartare sauce": "/images/extras/mayo.webp",
+  "NBH Signature Sauce": "/images/extras/sauce.webp",
+  "Bourbon BBQ sauce": "/images/extras/sauce.webp",
+  "Buffalo Fury sauce": "/images/extras/sauce.webp",
+  "Blue cheese sauce": "/images/extras/sauce.webp",
+  "Tomato sauce": "/images/extras/sauce.webp",
+};
+
+function modifierThumbnail(id: string, item: MenuItem) {
+  return modifierThumbnails[id] ?? item.image ?? "/images/extras/sauce.webp";
+}
+
+function ingredientThumbnail(ingredient: string, item: MenuItem) {
+  return ingredientThumbnails[ingredient] ?? item.image ?? "/images/extras/sauce.webp";
+}
 
 function drinkThumbnail(choice: string) {
   return (
@@ -81,6 +103,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
   const availableModifiers = modifierChoices.filter((modifier) =>
     item.modifierIds?.includes(modifier.id),
   );
+  const removableIngredients = item.removableIngredients ?? [];
   const drinks = item.isKidsItem ? kidsDrinkChoices : adultDrinkChoices;
   const burgerChoices = menuItems.filter((entry) => entry.category === "burgers");
 
@@ -121,6 +144,9 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
     (total, modifier) => total + modifier.price * (modifierQuantities[modifier.id] ?? 0),
     0,
   );
+  const removedIngredientsCount = removedIngredients.length;
+  const hasCustomisations = selectedExtrasCount > 0 || removedIngredientsCount > 0;
+  const hasDrawerOptions = availableModifiers.length > 0 || removableIngredients.length > 0;
 
   function changeModifier(id: string, amount: number) {
     setModifierQuantities((current) => ({
@@ -387,10 +413,10 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               </section>
             )}
 
-            {availableModifiers.length > 0 && (
+            {hasDrawerOptions && (
               <section className="product-custom-section product-custom-section--extras">
                 <button
-                  className={`product-extras-trigger${selectedExtrasCount > 0 ? " has-selection" : ""}`}
+                  className={`product-extras-trigger${hasCustomisations ? " has-selection" : ""}`}
                   type="button"
                   onClick={openExtrasDrawer}
                 >
@@ -399,42 +425,20 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                     <strong>Add extras</strong>
                   </span>
                   <span className="product-extras-trigger__summary">
-                    {selectedExtrasCount > 0 ? (
+                    {hasCustomisations ? (
                       <>
-                        <strong>{selectedExtrasCount} selected</strong>
-                        <small>+{money.format(selectedExtrasPrice)}</small>
+                        <strong>
+                          {selectedExtrasCount > 0 ? `${selectedExtrasCount} extra${selectedExtrasCount === 1 ? "" : "s"}` : "No extras"}
+                          {removedIngredientsCount > 0 ? ` · ${removedIngredientsCount} removed` : ""}
+                        </strong>
+                        {selectedExtrasCount > 0 && <small>+{money.format(selectedExtrasPrice)}</small>}
                       </>
                     ) : (
-                      <strong>Choose extras</strong>
+                      <strong>Customise item</strong>
                     )}
                   </span>
                   <span className="product-extras-trigger__arrow" aria-hidden="true">→</span>
                 </button>
-              </section>
-            )}
-
-            {item.removableIngredients && item.removableIngredients.length > 0 && (
-              <section className="product-custom-section">
-                <div className="product-custom-section__heading">
-                  <div><span>{item.canUpgrade ? "03" : "02"}</span><h2>Make it yours</h2></div>
-                </div>
-                <p className="product-custom-help">Tap an ingredient to remove it.</p>
-                <div className="product-remove-grid">
-                  {item.removableIngredients.map((ingredient) => {
-                    const removed = removedIngredients.includes(ingredient);
-                    return (
-                      <button
-                        className={removed ? "is-removed" : ""}
-                        type="button"
-                        key={ingredient}
-                        onClick={() => toggleIngredient(ingredient)}
-                      >
-                        <span>{removed ? "Removed" : "Included"}</span>
-                        <strong>{ingredient}</strong>
-                      </button>
-                    );
-                  })}
-                </div>
               </section>
             )}
 
@@ -541,63 +545,115 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             <div className="product-drink-drawer__header">
               <div>
                 <p>Customise</p>
-                <h2 id="product-extras-drawer-title">Add extras</h2>
+                <h2 id="product-extras-drawer-title">Customise your item</h2>
               </div>
               <button
                 type="button"
                 onClick={() => setIsExtrasDrawerOpen(false)}
-                aria-label="Close extras selection"
+                aria-label="Close customisation drawer"
               >
                 <X size={22} />
               </button>
             </div>
 
             <div className="product-drink-drawer__options product-extras-drawer__options">
-              {availableModifiers.map((modifier) => {
-                const selectedQuantity = modifierQuantities[modifier.id] ?? 0;
-                return (
-                  <div
-                    className={`product-extra-drawer__option${selectedQuantity > 0 ? " is-selected" : ""}`}
-                    key={modifier.id}
-                  >
-                    <span className="product-drink-drawer__thumb" aria-hidden="true">
-                      <Image
-                        src={modifierThumbnails[modifier.id] ?? "/images/menu/og-nasty.jpg"}
-                        alt=""
-                        width={68}
-                        height={68}
-                      />
-                    </span>
-                    <span className="product-drink-drawer__copy">
-                      <strong>{modifier.name}</strong>
-                      <small>+{money.format(modifier.price)} each</small>
-                    </span>
-                    <div className="product-stepper product-extra-drawer__stepper">
-                      <button
-                        type="button"
-                        onClick={() => changeModifier(modifier.id, -1)}
-                        disabled={selectedQuantity === 0}
-                        aria-label={`Remove ${modifier.name}`}
-                      >
-                        <Minus size={15} />
-                      </button>
-                      <strong>{selectedQuantity}</strong>
-                      <button
-                        type="button"
-                        onClick={() => changeModifier(modifier.id, 1)}
-                        aria-label={`Add ${modifier.name}`}
-                      >
-                        <Plus size={15} />
-                      </button>
-                    </div>
+              {availableModifiers.length > 0 && (
+                <section className="product-drawer-group" aria-labelledby="product-extra-group-title">
+                  <div className="product-drawer-group__heading">
+                    <h3 id="product-extra-group-title">Add extras</h3>
+                    <p>Add more of your favourites.</p>
                   </div>
-                );
-              })}
+                  <div className="product-drawer-group__list">
+                    {availableModifiers.map((modifier) => {
+                      const selectedQuantity = modifierQuantities[modifier.id] ?? 0;
+                      return (
+                        <div
+                          className={`product-extra-drawer__option${selectedQuantity > 0 ? " is-selected" : ""}`}
+                          key={modifier.id}
+                        >
+                          <span className="product-drink-drawer__thumb" aria-hidden="true">
+                            <Image
+                              src={modifierThumbnail(modifier.id, item)}
+                              alt=""
+                              width={68}
+                              height={68}
+                            />
+                          </span>
+                          <span className="product-drink-drawer__copy">
+                            <strong>{modifier.name}</strong>
+                            <small>+{money.format(modifier.price)} each</small>
+                          </span>
+                          <div className="product-stepper product-extra-drawer__stepper">
+                            <button
+                              type="button"
+                              onClick={() => changeModifier(modifier.id, -1)}
+                              disabled={selectedQuantity === 0}
+                              aria-label={`Remove ${modifier.name}`}
+                            >
+                              <Minus size={15} />
+                            </button>
+                            <strong>{selectedQuantity}</strong>
+                            <button
+                              type="button"
+                              onClick={() => changeModifier(modifier.id, 1)}
+                              aria-label={`Add ${modifier.name}`}
+                            >
+                              <Plus size={15} />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
+
+              {removableIngredients.length > 0 && (
+                <section className="product-drawer-group product-drawer-group--ingredients" aria-labelledby="product-ingredients-group-title">
+                  <div className="product-drawer-group__heading">
+                    <h3 id="product-ingredients-group-title">Make it yours</h3>
+                    <p>Tap an ingredient to remove it.</p>
+                  </div>
+                  <div className="product-drawer-group__list">
+                    {removableIngredients.map((ingredient) => {
+                      const removed = removedIngredients.includes(ingredient);
+                      return (
+                        <button
+                          className={`product-ingredient-drawer__option${removed ? " is-removed" : ""}`}
+                          type="button"
+                          key={ingredient}
+                          onClick={() => toggleIngredient(ingredient)}
+                          aria-pressed={removed}
+                        >
+                          <span className="product-drink-drawer__thumb" aria-hidden="true">
+                            <Image
+                              src={ingredientThumbnail(ingredient, item)}
+                              alt=""
+                              width={68}
+                              height={68}
+                            />
+                          </span>
+                          <span className="product-drink-drawer__copy">
+                            <strong>{ingredient}</strong>
+                            <small>{removed ? "Removed from your item" : "Included in your item"}</small>
+                          </span>
+                          <span className="product-ingredient-drawer__status">
+                            {removed ? "Removed" : "Included"}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
             </div>
 
             <div className="product-extras-drawer__footer">
               <span>
-                <small>{selectedExtrasCount} selected</small>
+                <small>
+                  {selectedExtrasCount} extra{selectedExtrasCount === 1 ? "" : "s"}
+                  {removedIngredientsCount > 0 ? ` · ${removedIngredientsCount} removed` : ""}
+                </small>
                 <strong>+{money.format(selectedExtrasPrice)}</strong>
               </span>
               <button type="button" onClick={() => setIsExtrasDrawerOpen(false)}>

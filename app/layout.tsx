@@ -31,6 +31,7 @@ import "./mobile-ux-polish.css";
 import "./hero-motion-controls.css";
 import "./mobile-hero-compact.css";
 import "./mobile-home-header-overlay.css";
+import "./mobile-nav-overlay-fix.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

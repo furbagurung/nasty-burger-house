@@ -24,18 +24,18 @@ export async function verifyAdmin(): Promise<AdminAuthResult> {
     return { ok: false, reason: "not-configured" };
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data, error: claimsError } = await supabase.auth.getClaims();
+  const claims = data?.claims;
+  const userId = typeof claims?.sub === "string" ? claims.sub : "";
 
-  if (!user) {
+  if (claimsError || !userId) {
     return { ok: false, reason: "unauthenticated" };
   }
 
   const { data: membership, error } = await supabase
     .from("admin_users")
     .select("user_id")
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .maybeSingle();
 
   if (error || !membership) {
@@ -44,7 +44,10 @@ export async function verifyAdmin(): Promise<AdminAuthResult> {
 
   return {
     ok: true,
-    user: { id: user.id, email: user.email },
+    user: {
+      id: userId,
+      email: typeof claims.email === "string" ? claims.email : undefined,
+    },
     admin,
   };
 }

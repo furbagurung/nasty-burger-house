@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import CookieSettings from "./components/cookie-settings";
+import DripPointsBanner from "./components/drip-points-banner";
 import FooterLegalLinks from "./components/footer-legal-links";
+import HomeMenuToggleBridge from "./components/home-menu-toggle-bridge";
 import HomeTopHeader from "./components/home-top-header";
 import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
@@ -24,14 +26,17 @@ import "./product-combo-drawer.css";
 import "./product-customization-groups.css";
 import "./product-fixed-layout.css";
 import "./drip-points.css";
+import "./drip-points-banner.css";
 import "./cookie-settings.css";
 import "./help-support.css";
 import "./cart-drawer-mcdonalds.css";
+import "./cart-drawer-motion.css";
 import "./mobile-ux-polish.css";
 import "./hero-motion-controls.css";
 import "./mobile-hero-compact.css";
 import "./mobile-home-header-overlay.css";
 import "./mobile-nav-overlay-fix.css";
+import "./menu-toggle-animation.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,6 +63,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <HomeTopHeader />
         {children}
+        <DripPointsBanner />
+        <HomeMenuToggleBridge />
         <MobileHomeHeaderOverlay />
         <MobileHeroControls />
         <CartDrawerEnhancer />

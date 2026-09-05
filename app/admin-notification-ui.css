@@ -278,12 +278,6 @@
   }
 }
 
-@media (max-width: 760px) {
-  .admin-header__actions form {
-    display: none;
-  }
-}
-
 @media (max-width: 460px) {
   .admin-alert-health__grid {
     grid-template-columns: 1fr 1fr;

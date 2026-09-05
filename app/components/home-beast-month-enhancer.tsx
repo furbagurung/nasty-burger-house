@@ -5,6 +5,10 @@ import { useEffect } from "react";
 const COMING_SOON_DESCRIPTION =
   "A new limited-time Beast is being cooked up. Watch this space — the next Beast of the Month is coming soon.";
 
+function setText(node: HTMLElement | null, value: string) {
+  if (node && node.textContent !== value) node.textContent = value;
+}
+
 function applyComingSoonState() {
   const slides = Array.from(
     document.querySelectorAll<HTMLElement>(".hero-carousel .hero-slide"),
@@ -24,25 +28,22 @@ function applyComingSoonState() {
       ".hero-card__cta",
     );
 
-    if (eyebrow && eyebrow.textContent !== "Coming soon") {
-      eyebrow.textContent = "Coming soon";
-    }
-    if (heading && heading.textContent !== "Beast of the Month") {
-      heading.textContent = "Beast of the Month";
-    }
-    if (description && description.textContent !== COMING_SOON_DESCRIPTION) {
-      description.textContent = COMING_SOON_DESCRIPTION;
-    }
+    setText(eyebrow, "Coming soon");
+    setText(heading, "Beast of the Month");
+    setText(description, COMING_SOON_DESCRIPTION);
+
     if (image && !image.src.endsWith("/images/home-menu/beast-of-the-month.jpg")) {
       image.removeAttribute("srcset");
       image.src = "/images/home-menu/beast-of-the-month.jpg";
       image.alt = "Nasty Burger House Beast of the Month coming soon";
     }
     if (cta) {
-      cta.textContent = "Coming Soon";
-      cta.setAttribute("aria-disabled", "true");
+      setText(cta, "Coming Soon");
       cta.classList.add("is-coming-soon");
-      if (cta instanceof HTMLButtonElement) cta.disabled = true;
+      if (cta instanceof HTMLButtonElement) {
+        cta.disabled = true;
+        cta.setAttribute("aria-disabled", "true");
+      }
       if (cta instanceof HTMLAnchorElement) {
         cta.href = "/beast-of-the-month";
         cta.removeAttribute("aria-disabled");
@@ -54,20 +55,23 @@ function applyComingSoonState() {
   if (feature) {
     const eyebrow = feature.querySelector<HTMLElement>(".eyebrow");
     const heading = feature.querySelector<HTMLElement>("h2");
-    const description = feature.querySelector<HTMLElement>(".home-feature__copy > p:not(.eyebrow)");
+    const description = feature.querySelector<HTMLElement>(
+      ".home-feature__copy > p:not(.eyebrow)",
+    );
     const image = feature.querySelector<HTMLImageElement>(".home-feature__image img");
     const button = feature.querySelector<HTMLButtonElement>("button");
 
-    if (eyebrow) eyebrow.textContent = "Beast of the Month · Coming soon";
-    if (heading) heading.textContent = "A new Beast is loading.";
-    if (description) description.textContent = COMING_SOON_DESCRIPTION;
+    setText(eyebrow, "Beast of the Month · Coming soon");
+    setText(heading, "A new Beast is loading.");
+    setText(description, COMING_SOON_DESCRIPTION);
+
     if (image && !image.src.endsWith("/images/home-menu/beast-of-the-month.jpg")) {
       image.removeAttribute("srcset");
       image.src = "/images/home-menu/beast-of-the-month.jpg";
       image.alt = "Nasty Burger House Beast of the Month coming soon";
     }
     if (button) {
-      button.textContent = "Coming soon";
+      setText(button, "Coming soon");
       button.disabled = true;
       button.setAttribute("aria-disabled", "true");
     }

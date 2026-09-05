@@ -1,0 +1,40 @@
+@media (min-width: 901px) {
+  .drawer-backdrop:has(.cart-drawer--mcd) {
+    animation: nbh-cart-backdrop-in 280ms ease-out both;
+  }
+
+  .cart-drawer--mcd {
+    transform-origin: right center;
+    will-change: transform, opacity;
+    animation: nbh-cart-drawer-in 440ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes nbh-cart-backdrop-in {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+
+  to {
+    background: rgba(0, 0, 0, 0.34);
+  }
+}
+
+@keyframes nbh-cart-drawer-in {
+  from {
+    opacity: 0.7;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer-backdrop:has(.cart-drawer--mcd),
+  .cart-drawer--mcd {
+    animation: none !important;
+  }
+}

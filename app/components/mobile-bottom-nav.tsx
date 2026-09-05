@@ -2,11 +2,28 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import {
+  Cookie,
+  FileText,
+  HelpCircle,
+  Home,
+  MoreHorizontal,
+  ShieldCheck,
+  UtensilsCrossed,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
-type MobileTab = "home" | "menu" | "order" | "cart" | "profile";
+type MobileTab =
+  | "home"
+  | "menu"
+  | "cart"
+  | "drip"
+  | "more"
+  | "order"
+  | "profile";
 
 type MobileBottomNavProps = {
   active: MobileTab;
@@ -15,44 +32,6 @@ type MobileBottomNavProps = {
   onCart?: () => void;
   onProfile?: () => void;
 };
-
-type IconName = "home" | "menu" | "cart" | "profile";
-
-function TabIcon({ name }: { name: IconName }) {
-  if (name === "home") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="m3 11 9-7 9 7" />
-        <path d="M5.5 10v10h13V10M9 20v-6h6v6" />
-      </svg>
-    );
-  }
-
-  if (name === "menu") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M7 3v7M4 3v4c0 1.7 1.3 3 3 3s3-1.3 3-3V3M7 10v11M16 3c-2 3-2 7 0 9h3V3h-3ZM19 12v9" />
-      </svg>
-    );
-  }
-
-  if (name === "cart") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M3 4h2l2 11h10l3-8H6" />
-        <circle cx="9" cy="19" r="1.3" />
-        <circle cx="17" cy="19" r="1.3" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4.5 21c.6-4.2 3.1-6.5 7.5-6.5s6.9 2.3 7.5 6.5" />
-    </svg>
-  );
-}
 
 function getStoredCartCount() {
   try {
@@ -74,18 +53,18 @@ function getStoredCartCount() {
   }
 }
 
-function OrderBag({ count }: { count: number }) {
+function CartBag({ count }: { count: number }) {
   return (
-    <span className="mobile-tab__order-circle" aria-hidden="true">
+    <span className="mobile-tab__primary-cart-circle" aria-hidden="true">
       <Image
-        className="mobile-tab__order-bag"
+        className="mobile-tab__primary-cart-bag"
         src="/images/bag.webp"
         alt=""
         width={80}
         height={80}
       />
       {count > 0 && (
-        <strong className="mobile-tab__order-badge">{count}</strong>
+        <strong className="mobile-tab__primary-cart-badge">{count}</strong>
       )}
     </span>
   );
@@ -94,12 +73,14 @@ function OrderBag({ count }: { count: number }) {
 export default function MobileBottomNav({
   active,
   cartCount,
-  onOrder,
   onCart,
   onProfile,
 }: MobileBottomNavProps) {
   const [storedCartCount, setStoredCartCount] = useState(0);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
   const visibleCartCount = cartCount ?? storedCartCount;
+  const cartActive = active === "cart" || active === "order";
+  const dripActive = active === "drip" || active === "profile";
 
   useEffect(() => {
     if (cartCount !== undefined) return;
@@ -117,96 +98,220 @@ export default function MobileBottomNav({
     };
   }, [cartCount]);
 
+  useEffect(() => {
+    if (!isMoreOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsMoreOpen(false);
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isMoreOpen]);
+
+  const openCookieSettings = () => {
+    setIsMoreOpen(false);
+    window.dispatchEvent(new Event("nasty:open-cookie-settings"));
+  };
+
   return (
-    <nav className="mobile-tab-bar" aria-label="Mobile app navigation">
-      <Link
-        className={`mobile-tab ${active === "home" ? "is-active" : ""}`}
-        href="/"
-        aria-current={active === "home" ? "page" : undefined}
+    <>
+      <nav
+        className="mobile-tab-bar mobile-tab-bar--v2"
+        aria-label="Mobile app navigation"
       >
-        <TabIcon name="home" />
-        <span>Home</span>
-      </Link>
-
-      <Link
-        className={`mobile-tab ${active === "menu" ? "is-active" : ""}`}
-        href="/menu/burgers"
-        aria-current={active === "menu" ? "page" : undefined}
-      >
-        <TabIcon name="menu" />
-        <span>Menu</span>
-      </Link>
-
-      {onOrder ? (
-        <button
-          className={`mobile-tab mobile-tab--order ${active === "order" ? "is-active" : ""}`}
-          type="button"
-          onClick={onOrder}
-          aria-label="Order now"
-        >
-          <OrderBag count={visibleCartCount} />
-        </button>
-      ) : (
         <Link
-          className={`mobile-tab mobile-tab--order ${active === "order" ? "is-active" : ""}`}
-          href="/?order=1"
-          aria-label="Order now"
+          className={`mobile-tab ${active === "home" ? "is-active" : ""}`}
+          href="/"
+          aria-current={active === "home" ? "page" : undefined}
         >
-          <OrderBag count={visibleCartCount} />
+          <Home aria-hidden="true" />
+          <span>Home</span>
         </Link>
-      )}
 
-      {onCart ? (
-        <button
-          className={`mobile-tab ${active === "cart" ? "is-active" : ""}`}
-          type="button"
-          onClick={onCart}
-          aria-label={visibleCartCount > 0 ? `Cart, ${visibleCartCount} items` : "Cart"}
-        >
-          <span className="mobile-tab__icon-wrap">
-            <TabIcon name="cart" />
-            {visibleCartCount > 0 && (
-              <strong className="mobile-tab__badge">{visibleCartCount}</strong>
-            )}
-          </span>
-          <span>Cart</span>
-        </button>
-      ) : (
         <Link
-          className={`mobile-tab ${active === "cart" ? "is-active" : ""}`}
-          href="/?cart=1"
-          aria-label={visibleCartCount > 0 ? `Cart, ${visibleCartCount} items` : "Cart"}
+          className={`mobile-tab ${active === "menu" ? "is-active" : ""}`}
+          href="/menu/burgers"
+          aria-current={active === "menu" ? "page" : undefined}
         >
-          <span className="mobile-tab__icon-wrap">
-            <TabIcon name="cart" />
-            {visibleCartCount > 0 && (
-              <strong className="mobile-tab__badge">{visibleCartCount}</strong>
-            )}
-          </span>
-          <span>Cart</span>
+          <UtensilsCrossed aria-hidden="true" />
+          <span>Menu</span>
         </Link>
-      )}
 
-      {onProfile ? (
+        {onCart ? (
+          <button
+            className={`mobile-tab mobile-tab--primary-cart ${cartActive ? "is-active" : ""}`}
+            type="button"
+            onClick={onCart}
+            aria-label={
+              visibleCartCount > 0
+                ? `Open cart, ${visibleCartCount} item${visibleCartCount === 1 ? "" : "s"}`
+                : "Open cart"
+            }
+          >
+            <CartBag count={visibleCartCount} />
+            <span className="mobile-tab__primary-cart-label">Cart</span>
+          </button>
+        ) : (
+          <Link
+            className={`mobile-tab mobile-tab--primary-cart ${cartActive ? "is-active" : ""}`}
+            href="/?cart=1"
+            aria-label={
+              visibleCartCount > 0
+                ? `Open cart, ${visibleCartCount} item${visibleCartCount === 1 ? "" : "s"}`
+                : "Open cart"
+            }
+          >
+            <CartBag count={visibleCartCount} />
+            <span className="mobile-tab__primary-cart-label">Cart</span>
+          </Link>
+        )}
+
+        {onProfile ? (
+          <button
+            className={`mobile-tab mobile-tab--drip ${dripActive ? "is-active" : ""}`}
+            type="button"
+            onClick={onProfile}
+            aria-label="Drip Points"
+          >
+            <Image
+              className="mobile-tab__drip-coin"
+              src="/images/drip-points/drip-coin.png"
+              alt=""
+              width={32}
+              height={32}
+            />
+            <span>Drip Points</span>
+          </button>
+        ) : (
+          <Link
+            className={`mobile-tab mobile-tab--drip ${dripActive ? "is-active" : ""}`}
+            href="/?loyalty=1"
+            aria-label="Drip Points"
+          >
+            <Image
+              className="mobile-tab__drip-coin"
+              src="/images/drip-points/drip-coin.png"
+              alt=""
+              width={32}
+              height={32}
+            />
+            <span>Drip Points</span>
+          </Link>
+        )}
+
         <button
-          className={`mobile-tab ${active === "profile" ? "is-active" : ""}`}
+          className={`mobile-tab ${isMoreOpen || active === "more" ? "is-active" : ""}`}
           type="button"
-          onClick={onProfile}
-          aria-label="Profile and Drip Points"
+          onClick={() => setIsMoreOpen(true)}
+          aria-expanded={isMoreOpen}
+          aria-controls="mobile-more-sheet"
         >
-          <TabIcon name="profile" />
-          <span>Profile</span>
+          <MoreHorizontal aria-hidden="true" />
+          <span>More</span>
         </button>
-      ) : (
-        <Link
-          className={`mobile-tab ${active === "profile" ? "is-active" : ""}`}
-          href="/?loyalty=1"
-          aria-label="Profile and Drip Points"
+      </nav>
+
+      {isMoreOpen && (
+        <div
+          className="mobile-more-backdrop"
+          role="presentation"
+          onMouseDown={() => setIsMoreOpen(false)}
         >
-          <TabIcon name="profile" />
-          <span>Profile</span>
-        </Link>
+          <aside
+            className="mobile-more-sheet"
+            id="mobile-more-sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-more-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="mobile-more-sheet__heading">
+              <div>
+                <p>More</p>
+                <h2 id="mobile-more-title">Nasty Burger House</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsMoreOpen(false)}
+                aria-label="Close more menu"
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </div>
+
+            <nav className="mobile-more-sheet__links" aria-label="More links">
+              <Link href="/help-support" onClick={() => setIsMoreOpen(false)}>
+                <HelpCircle aria-hidden="true" />
+                <span>
+                  <strong>Help &amp; Support</strong>
+                  <small>Ordering help and contact information</small>
+                </span>
+              </Link>
+
+              <Link href="/privacy-policy" onClick={() => setIsMoreOpen(false)}>
+                <ShieldCheck aria-hidden="true" />
+                <span>
+                  <strong>Privacy Policy</strong>
+                  <small>How your information is handled</small>
+                </span>
+              </Link>
+
+              <Link
+                href="/terms-and-conditions"
+                onClick={() => setIsMoreOpen(false)}
+              >
+                <FileText aria-hidden="true" />
+                <span>
+                  <strong>Terms &amp; Conditions</strong>
+                  <small>Ordering and website terms</small>
+                </span>
+              </Link>
+
+              <button type="button" onClick={openCookieSettings}>
+                <Cookie aria-hidden="true" />
+                <span>
+                  <strong>Cookie settings</strong>
+                  <small>Review your privacy preferences</small>
+                </span>
+              </button>
+            </nav>
+
+            <div className="mobile-more-sheet__socials">
+              <span>Follow Nasty Burger House</span>
+              <div>
+                <a
+                  href="https://www.instagram.com/nastyburgerhouse/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Instagram
+                </a>
+                <a
+                  href="https://www.tiktok.com/@nastyburgerhouse"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  TikTok
+                </a>
+                <a
+                  href="https://www.facebook.com/profile.php?id=61590139712227"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Facebook
+                </a>
+              </div>
+            </div>
+          </aside>
+        </div>
       )}
-    </nav>
+    </>
   );
 }

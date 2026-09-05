@@ -4,6 +4,7 @@ import {
   calculateLineUnitPrice,
   type ValidatedOrder,
 } from "./order";
+import { calculateEarnedDripPoints } from "./loyalty";
 
 type DispatchResult =
   | { ok: true }
@@ -25,9 +26,12 @@ export function createOrderDispatchPayload(
   const notificationEmail =
     process.env.ORDER_NOTIFICATION_EMAIL?.trim() ||
     "vcouncil.furba@gmail.com";
+  const earnedDripPoints = order.dripMember
+    ? calculateEarnedDripPoints(order.subtotal)
+    : 0;
 
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     orderId,
     requestId: order.requestId,
     submittedAt: new Date().toISOString(),
@@ -48,7 +52,14 @@ export function createOrderDispatchPayload(
     notification: {
       email: notificationEmail,
     },
-    customer: order.customer,
+    customer: {
+      ...order.customer,
+      customerId: order.customerId ?? null,
+    },
+    loyalty: {
+      member: order.dripMember,
+      earnedPoints: earnedDripPoints,
+    },
     notes: order.notes,
     lines: order.cart.map((line) => {
       const item = menuItems.find((entry) => entry.id === line.itemId)!;

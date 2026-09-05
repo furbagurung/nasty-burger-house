@@ -261,7 +261,12 @@ export async function loadCustomerOrders(): Promise<CustomerOrder[]> {
 
 export async function loadCustomerOrder(orderId: string) {
   const orders = await loadCustomerOrders();
-  return orders.find((order) => order.orderId === orderId) ?? null;
+  const accountOrder = orders.find((order) => order.orderId === orderId);
+  if (accountOrder) return accountOrder;
+
+  // Guest Supabase orders are intentionally not readable through customer RLS.
+  // Keep the just-submitted same-device receipt as a local convenience only.
+  return readCustomerOrders().find((order) => order.orderId === orderId) ?? null;
 }
 
 export async function loadCustomerReviews(): Promise<CustomerReview[]> {

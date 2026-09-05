@@ -156,16 +156,18 @@
   grid-column: 1;
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.55rem;
   margin-top: 0.9rem;
 }
 
 .cart-drawer--mcd .cart-line__icon-action {
-  display: grid;
-  width: 2.8rem;
-  height: 2.8rem;
-  place-items: center;
-  border: 1px solid #b8b8b8 !important;
+  display: grid !important;
+  width: 2.65rem !important;
+  min-width: 2.65rem !important;
+  height: 2.65rem !important;
+  min-height: 2.65rem !important;
+  place-items: center !important;
+  border: 1px solid #c5c5c5 !important;
   border-radius: 999px !important;
   padding: 0 !important;
   background: #fff !important;
@@ -175,9 +177,12 @@
 }
 
 .cart-drawer--mcd .cart-line__icon-action svg {
-  display: block;
-  width: 1.12rem;
-  height: 1.12rem;
+  display: block !important;
+  width: 0.98rem !important;
+  height: 0.98rem !important;
+  max-width: 0.98rem !important;
+  max-height: 0.98rem !important;
+  pointer-events: none;
 }
 
 .cart-drawer--mcd .cart-line__icon-action:hover {
@@ -185,61 +190,68 @@
   background: #f6f6f6 !important;
 }
 
+/* Use the original functional minus / quantity / plus control in the bag. */
 .cart-drawer--mcd .cart-line__native-quantity {
   position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  margin: -1px !important;
+  right: 2rem !important;
+  bottom: 1.45rem !important;
+  display: inline-flex !important;
+  width: auto !important;
+  min-width: 7.2rem !important;
+  height: 2.65rem !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.08rem !important;
+  margin: 0 !important;
+  border: 1px solid #bcbcbc !important;
+  border-radius: 999px !important;
+  padding: 0.18rem !important;
+  overflow: visible !important;
+  clip: auto !important;
+  clip-path: none !important;
+  background: #fff !important;
+  white-space: normal !important;
+}
+
+.cart-drawer--mcd .cart-line__native-quantity button {
+  display: grid !important;
+  width: 2.15rem !important;
+  min-width: 2.15rem !important;
+  height: 2.15rem !important;
+  min-height: 2.15rem !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 999px !important;
   padding: 0 !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  clip-path: inset(50%) !important;
-  white-space: nowrap !important;
+  background: transparent !important;
+  color: #171513 !important;
+  font-size: 1.2rem !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
 }
 
+.cart-drawer--mcd .cart-line__native-quantity button:hover:not(:disabled) {
+  background: #f3f3f3 !important;
+}
+
+.cart-drawer--mcd .cart-line__native-quantity button:disabled {
+  color: #b8b8b8 !important;
+  opacity: 1 !important;
+}
+
+.cart-drawer--mcd .cart-line__native-quantity span {
+  display: block !important;
+  min-width: 1.45rem !important;
+  color: #171513 !important;
+  font-size: 0.94rem !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+}
+
+/* The old enhanced dropdown is no longer shown. */
 .cart-drawer--mcd .cart-line__quantity-select {
-  position: relative;
-  grid-column: 2;
-  display: flex;
-  min-width: 5.15rem;
-  height: 2.8rem;
-  align-items: center;
-  justify-self: end;
-  align-self: end;
-  margin-top: 0.9rem;
-  border: 1px solid #aaa;
-  border-radius: 999px;
-  padding: 0 0.72rem;
-  background: #fff;
-}
-
-.cart-drawer--mcd .cart-line__quantity-select select {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  border: 0;
-  outline: 0;
-  padding: 0 1.25rem 0 0.35rem;
-  appearance: none;
-  background: transparent;
-  color: #171513;
-  font: inherit;
-  font-size: 0.94rem;
-  font-weight: 850;
-  text-align: center;
-  cursor: pointer;
-}
-
-.cart-drawer--mcd .cart-line__quantity-chevron {
-  position: absolute;
-  right: 0.9rem;
-  top: 50%;
-  width: 0.48rem;
-  height: 0.48rem;
-  border-right: 1.6px solid #222;
-  border-bottom: 1.6px solid #222;
-  pointer-events: none;
-  transform: translateY(-68%) rotate(45deg);
+  display: none !important;
 }
 
 .cart-drawer--mcd .cart-upsell,
@@ -416,13 +428,29 @@
   }
 
   .cart-drawer--mcd .cart-line__icon-action {
-    width: 2.6rem;
-    height: 2.6rem;
+    width: 2.45rem !important;
+    min-width: 2.45rem !important;
+    height: 2.45rem !important;
+    min-height: 2.45rem !important;
   }
 
-  .cart-drawer--mcd .cart-line__quantity-select {
-    min-width: 4.75rem;
-    height: 2.6rem;
+  .cart-drawer--mcd .cart-line__icon-action svg {
+    width: 0.9rem !important;
+    height: 0.9rem !important;
+  }
+
+  .cart-drawer--mcd .cart-line__native-quantity {
+    right: 1.1rem !important;
+    bottom: 1.25rem !important;
+    min-width: 6.7rem !important;
+    height: 2.45rem !important;
+  }
+
+  .cart-drawer--mcd .cart-line__native-quantity button {
+    width: 1.95rem !important;
+    min-width: 1.95rem !important;
+    height: 1.95rem !important;
+    min-height: 1.95rem !important;
   }
 
   .cart-drawer--mcd .checkout-summary--mcd .checkout-total,

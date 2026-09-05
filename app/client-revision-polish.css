@@ -26,8 +26,7 @@
   transform: translateX(1px);
 }
 
-/* Keep the Beast of the Month card unavailable without showing a blocked cursor.
-   Fade only the underlying card content so the Coming Soon sticker stays crisp. */
+/* Keep Beast of the Month fully visible while unavailable for ordering. */
 .menu-preview-card--clean.is-disabled {
   opacity: 1 !important;
   filter: none !important;
@@ -35,12 +34,12 @@
 }
 
 .menu-preview-card--clean.is-disabled .menu-preview-card__image > img:not(.home-menu-card__sticker) {
-  opacity: 0.42 !important;
-  filter: grayscale(0.18) saturate(0.7) !important;
+  opacity: 1 !important;
+  filter: none !important;
 }
 
 .menu-preview-card--clean.is-disabled > strong {
-  opacity: 0.5 !important;
+  opacity: 1 !important;
 }
 
 .menu-preview-card--clean.is-disabled .home-menu-card__sticker {

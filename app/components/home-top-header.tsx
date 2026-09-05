@@ -1,6 +1,15 @@
 "use client";
 
-import { UserIcon } from "@hugeicons/core-free-icons";
+import {
+  Login01Icon,
+  Logout01Icon,
+  LoyaltyCardIcon,
+  ShoppingBag01Icon,
+  StarIcon,
+  UserAdd01Icon,
+  UserCircleIcon,
+  UserIcon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -296,11 +305,36 @@ export default function HomeTopHeader() {
                     <small>Nasty account</small>
                     <strong>{greetingName ? `Hello, ${greetingName}` : "Welcome back"}</strong>
                   </div>
-                  <Link href="/account" role="menuitem">My profile</Link>
-                  <Link href="/account/orders" role="menuitem">My orders</Link>
-                  <Link href="/drip-points" role="menuitem">Drip Points</Link>
-                  <Link href="/reviews" role="menuitem">Reviews</Link>
-                  <button type="button" role="menuitem" onClick={handleSignOut}>Sign out</button>
+                  <Link href="/account" role="menuitem">
+                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
+                      <HugeiconsIcon icon={UserCircleIcon} size={18} color="currentColor" strokeWidth={1.8} />
+                    </span>
+                    <span>My profile</span>
+                  </Link>
+                  <Link href="/account/orders" role="menuitem">
+                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
+                      <HugeiconsIcon icon={ShoppingBag01Icon} size={18} color="currentColor" strokeWidth={1.8} />
+                    </span>
+                    <span>My orders</span>
+                  </Link>
+                  <Link href="/drip-points" role="menuitem">
+                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
+                      <HugeiconsIcon icon={LoyaltyCardIcon} size={18} color="currentColor" strokeWidth={1.8} />
+                    </span>
+                    <span>Drip Points</span>
+                  </Link>
+                  <Link href="/reviews" role="menuitem">
+                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
+                      <HugeiconsIcon icon={StarIcon} size={18} color="currentColor" strokeWidth={1.8} />
+                    </span>
+                    <span>Reviews</span>
+                  </Link>
+                  <button type="button" role="menuitem" onClick={handleSignOut}>
+                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
+                      <HugeiconsIcon icon={Logout01Icon} size={18} color="currentColor" strokeWidth={1.8} />
+                    </span>
+                    <span>Sign out</span>
+                  </button>
                 </>
               ) : (
                 <>
@@ -308,8 +342,18 @@ export default function HomeTopHeader() {
                     <small>Nasty account</small>
                     <strong>Your account</strong>
                   </div>
-                  <Link href="/account/sign-in" role="menuitem">Sign in</Link>
-                  <Link href="/account/create" role="menuitem">Create account</Link>
+                  <Link href="/account/sign-in" role="menuitem">
+                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
+                      <HugeiconsIcon icon={Login01Icon} size={18} color="currentColor" strokeWidth={1.8} />
+                    </span>
+                    <span>Sign in</span>
+                  </Link>
+                  <Link href="/account/create" role="menuitem">
+                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
+                      <HugeiconsIcon icon={UserAdd01Icon} size={18} color="currentColor" strokeWidth={1.8} />
+                    </span>
+                    <span>Create account</span>
+                  </Link>
                 </>
               )}
             </div>

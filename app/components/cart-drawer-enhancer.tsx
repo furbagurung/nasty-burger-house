@@ -45,18 +45,18 @@ function addActionIcon(button: HTMLButtonElement, type: "edit" | "remove") {
     const body = document.createElementNS(SVG_NS, "path");
     body.setAttribute(
       "d",
-      "M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z",
+      "M3 21l3.75-.75L19 8a2.12 2.12 0 0 0-3-3L3.75 17.25 3 21z",
     );
     const detail = document.createElementNS(SVG_NS, "path");
-    detail.setAttribute("d", "m15 5 4 4");
+    detail.setAttribute("d", "M14 5l5 5");
     svg.append(body, detail);
   } else {
     [
       "M10 11v6",
       "M14 11v6",
-      "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6",
+      "M19 6l-1 14H6L5 6",
       "M3 6h18",
-      "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",
+      "M8 6V4h8v2",
     ].forEach((pathData) => {
       const path = document.createElementNS(SVG_NS, "path");
       path.setAttribute("d", pathData);
@@ -177,8 +177,7 @@ function enhanceCartDrawer() {
       chevron.setAttribute("aria-hidden", "true");
 
       quantityControl.append(select, chevron);
-      const main = line.querySelector<HTMLElement>(".cart-line__main");
-      main?.appendChild(quantityControl);
+      line.appendChild(quantityControl);
     }
 
     const select = quantityControl.querySelector<HTMLSelectElement>("select");

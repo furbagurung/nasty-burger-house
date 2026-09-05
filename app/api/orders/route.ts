@@ -1,3 +1,4 @@
+import { calculateEarnedDripPoints } from "../../lib/loyalty";
 import { validateOrderPayload } from "../../lib/order";
 import {
   createOrderDispatchPayload,
@@ -47,6 +48,9 @@ export async function POST(request: Request) {
   }
 
   const orderId = createOrderId(validation.order.requestId);
+  const earnedDripPoints = validation.order.dripMember
+    ? calculateEarnedDripPoints(validation.order.subtotal)
+    : 0;
   const orderPayload = createOrderDispatchPayload(
     validation.order,
     serviceStatus,
@@ -57,7 +61,7 @@ export async function POST(request: Request) {
   if (!dispatch.ok) {
     if (dispatch.reason === "not-configured") {
       // Temporary launch fallback: allow Pay on Pickup checkout to complete
-      // while the kitchen/order webhook is still being connected. The full
+      // while the kitchen/admin webhook is still being connected. The full
       // order is emitted to server logs so test orders remain inspectable.
       console.warn("[NBH temporary order fallback]", orderPayload);
 
@@ -69,6 +73,8 @@ export async function POST(request: Request) {
           subtotal: validation.order.subtotal,
           paymentMethod: validation.order.paymentMethod,
           paymentStatus: "unpaid",
+          earnedDripPoints,
+          adminNotification: "not-configured",
           dispatchMode: "temporary-fallback",
           message: "Pickup order accepted. Pay when you collect.",
         },
@@ -83,6 +89,7 @@ export async function POST(request: Request) {
       {
         ok: false,
         errors: ["We could not send the order to the kitchen. Please try again."],
+        adminNotification: "failed",
       },
       {
         status: 502,
@@ -99,6 +106,8 @@ export async function POST(request: Request) {
       subtotal: validation.order.subtotal,
       paymentMethod: validation.order.paymentMethod,
       paymentStatus: "unpaid",
+      earnedDripPoints,
+      adminNotification: "sent",
       message: "Pickup order received. Pay when you collect.",
     },
     {

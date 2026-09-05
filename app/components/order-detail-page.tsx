@@ -160,12 +160,6 @@ export default function OrderDetailPage() {
               {order.earnedDripPoints === 0 && <small>Sign in before checkout to earn Drip Points.</small>}
             </section>
 
-            <section className="account-card order-detail-notification">
-              <p className="standalone-eyebrow">Order system</p>
-              <h2>{order.adminNotification === "sent" ? "Admin notified" : order.adminNotification === "failed" ? "Notification failed" : "Saved to admin dashboard"}</h2>
-              <p>{order.adminNotification === "sent" ? "The configured kitchen/admin webhook accepted this order." : "The order remains stored in the admin order queue even when an external notification destination is not configured."}</p>
-            </section>
-
             <section className="account-card order-detail-review-card">
               <p className="standalone-eyebrow">Your feedback</p>
               {review ? (

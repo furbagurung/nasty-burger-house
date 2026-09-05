@@ -1,0 +1,74 @@
+/* Mobile app-style header: no hamburger drawer, no duplicate top actions. */
+@media (max-width: 900px) {
+  /* Homepage header */
+  .site-shell > .site-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .site-shell > .site-header .wordmark {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    z-index: 2;
+    display: grid !important;
+    place-items: center !important;
+    margin: 0 !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  .site-shell > .site-header .brand-logo--header {
+    width: 3.35rem !important;
+    height: 3.35rem !important;
+  }
+
+  .site-shell > .site-header .desktop-nav,
+  .site-shell > .site-header .header-actions,
+  .site-shell > .site-header .mobile-menu-button,
+  .site-shell > .site-header .cart-button,
+  .site-shell > .mobile-nav-backdrop {
+    display: none !important;
+  }
+
+  /* Menu and product page headers use the same centred-logo app pattern. */
+  .catalogue-shell > .catalogue-header,
+  .product-page-shell > .catalogue-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .catalogue-shell > .catalogue-header .catalogue-mobile-menu,
+  .product-page-shell > .catalogue-header .catalogue-mobile-menu,
+  .catalogue-shell > .catalogue-header .catalogue-desktop-nav,
+  .product-page-shell > .catalogue-header .catalogue-desktop-nav,
+  .catalogue-shell > .catalogue-header .catalogue-header-actions,
+  .product-page-shell > .catalogue-header .catalogue-header-actions {
+    display: none !important;
+  }
+
+  .catalogue-shell > .catalogue-header .catalogue-logo,
+  .product-page-shell > .catalogue-header .catalogue-logo {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    z-index: 2;
+    display: grid !important;
+    place-items: center !important;
+    margin: 0 !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  .catalogue-shell > .catalogue-header .catalogue-logo img,
+  .product-page-shell > .catalogue-header .catalogue-logo img {
+    width: 3.35rem !important;
+    height: 3.35rem !important;
+    object-fit: contain !important;
+  }
+
+  /* Bottom app navigation is now the only mobile navigation surface. */
+  .mobile-tab-bar {
+    z-index: 90 !important;
+  }
+}

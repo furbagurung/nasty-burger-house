@@ -16,6 +16,7 @@ import {
   kidsDrinkChoices,
   menuItems,
   modifierChoices,
+  sauceModifierIds,
   type MenuItem,
 } from "../data/menu";
 import { findMenuPageCategory } from "../data/menu-pages";
@@ -43,6 +44,11 @@ const modifierThumbnails: Record<string, string> = {
   bacon: "/images/extras/bacon.webp",
   cheese: "/images/extras/american-cheese.webp",
   "house-sauce": "/images/extras/sauce.webp",
+  "signature-sauce": "/images/extras/sauce.webp",
+  "garlic-aioli": "/images/extras/Garlic aioli.webp",
+  "jalapeno-mint-mayo": "/images/extras/Jalapeño mint mayo.webp",
+  "tartare-sauce": "/images/extras/tartare-sauce.webp",
+  "tomato-sauce": "/images/extras/tomato sauce.webp",
 };
 
 const ingredientThumbnails: Record<string, string> = {
@@ -70,8 +76,10 @@ const modifierIngredientAliases: Record<string, string[]> = {
   cheese: ["american cheese"],
   "house-sauce": ["nbh signature sauce", "house sauce"],
   "beef-patty": ["beef patty", "smashed beef patty"],
-  "chicken-patty": ["chicken patty"],
+  "chicken-patty": ["chicken patty", "chicken"],
 };
+
+const sauceModifierSet = new Set<string>(sauceModifierIds);
 
 function modifierThumbnail(id: string, item: MenuItem) {
   return modifierThumbnails[id] ?? item.image ?? "/images/extras/sauce.webp";
@@ -88,11 +96,19 @@ function modifierRepeatsIngredient(id: string, ingredients: string[]) {
 }
 
 function drinkThumbnail(choice: string) {
-  return (
-    menuItems.find(
-      (entry) => entry.category === "drinks" && entry.name === choice,
-    )?.image ?? "/images/menu/coke.webp"
-  );
+  return menuItems.find(
+    (entry) => entry.category === "drinks" && entry.name === choice,
+  )?.image;
+}
+
+function drinkInitials(choice: string) {
+  if (choice === "Solo Can") return "SOLO";
+  return choice
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 4)
+    .toUpperCase();
 }
 
 function readStoredCart(): CartLine[] {
@@ -125,9 +141,15 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
     item.modifierIds?.includes(modifier.id),
   );
   const removableIngredients = item.removableIngredients ?? [];
-  const addOnModifiers = availableModifiers.filter(
-    (modifier) => !modifierRepeatsIngredient(modifier.id, removableIngredients),
+  const foodAddOnModifiers = availableModifiers.filter(
+    (modifier) =>
+      !sauceModifierSet.has(modifier.id) &&
+      !modifierRepeatsIngredient(modifier.id, removableIngredients),
   );
+  const sauceAddOnModifiers = availableModifiers.filter((modifier) =>
+    sauceModifierSet.has(modifier.id),
+  );
+  const addOnModifiers = [...foodAddOnModifiers, ...sauceAddOnModifiers];
   const drinks = item.isKidsItem ? kidsDrinkChoices : adultDrinkChoices;
   const burgerChoices = menuItems.filter((entry) => entry.category === "burgers");
 
@@ -286,6 +308,8 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
     setAddedToCart(true);
   }
 
+  const selectedDrinkImage = drink ? drinkThumbnail(drink) : undefined;
+
   return (
     <div className="catalogue-shell product-page-shell product-page-premium">
       <header className="catalogue-header product-page-header">
@@ -376,7 +400,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                       }}
                     />
                   </span>
-                  <span><strong>Add Nasty Fries + drink</strong><small>Turn this item into a Beast Combo.</small></span>
+                  <span><strong>Add Nasty Fries + drink</strong><small>Upgrade to Beast Combo.</small></span>
                 </button>
 
                 {isCombo && (
@@ -390,8 +414,10 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                     }}
                   >
                     <span className="product-combo-drink-trigger__thumb" aria-hidden="true">
-                      {drink ? (
-                        <Image src={drinkThumbnail(drink)} alt="" width={52} height={52} />
+                      {selectedDrinkImage ? (
+                        <Image src={selectedDrinkImage} alt="" width={52} height={52} />
+                      ) : drink ? (
+                        <span className="product-drink-placeholder">{drinkInitials(drink)}</span>
                       ) : (
                         <ShoppingBag size={20} strokeWidth={1.7} />
                       )}
@@ -422,7 +448,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             {!item.boxConfig && hasDrawerOptions && (
               <section className="product-custom-section product-custom-section--extras">
                 <button className="product-extras-trigger" type="button" onClick={openExtrasDrawer}>
-                  Customize
+                  Customize your food
                 </button>
               </section>
             )}
@@ -471,10 +497,15 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             <div className="product-drink-drawer__options">
               {drinks.map((choice) => {
                 const selected = drink === choice;
+                const choiceImage = drinkThumbnail(choice);
                 return (
                   <button className={`product-drink-drawer__option${selected ? " is-selected" : ""}`} type="button" key={choice} onClick={() => chooseDrink(choice)} aria-pressed={selected}>
                     <span className="product-drink-drawer__thumb" aria-hidden="true">
-                      <Image src={drinkThumbnail(choice)} alt="" width={68} height={68} />
+                      {choiceImage ? (
+                        <Image src={choiceImage} alt="" width={68} height={68} />
+                      ) : (
+                        <span className="product-drink-placeholder">{drinkInitials(choice)}</span>
+                      )}
                     </span>
                     <span className="product-drink-drawer__copy">
                       <strong>{choice}</strong>
@@ -495,7 +526,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             <div className="product-drink-drawer__header">
               <div>
                 <p>Customize</p>
-                <h2 id="product-extras-drawer-title">Customize your item</h2>
+                <h2 id="product-extras-drawer-title">Make it yours</h2>
               </div>
               <button type="button" onClick={() => setIsExtrasDrawerOpen(false)} aria-label="Close customization drawer">
                 <X size={22} />
@@ -506,7 +537,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               {removableIngredients.length > 0 && (
                 <section className="product-drawer-group" aria-labelledby="product-included-group-title">
                   <div className="product-drawer-group__heading">
-                    <h3 id="product-included-group-title">Change what&apos;s included</h3>
+                    <h3 id="product-included-group-title">What&apos;s included</h3>
                     <p>Use − or + to remove an ingredient or add it back.</p>
                   </div>
                   <div className="product-drawer-group__list">
@@ -537,14 +568,48 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                 </section>
               )}
 
-              {addOnModifiers.length > 0 && (
+              {foodAddOnModifiers.length > 0 && (
                 <section className="product-drawer-group product-drawer-group--addons" aria-labelledby="product-addon-group-title">
                   <div className="product-drawer-group__heading">
                     <h3 id="product-addon-group-title">Add it on</h3>
-                    <p>Add something extra without repeating what is already included.</p>
+                    <p>Add something extra to build your perfect feed.</p>
                   </div>
                   <div className="product-drawer-group__list">
-                    {addOnModifiers.map((modifier) => {
+                    {foodAddOnModifiers.map((modifier) => {
+                      const selectedQuantity = modifierQuantities[modifier.id] ?? 0;
+                      return (
+                        <div className={`product-extra-drawer__option${selectedQuantity > 0 ? " is-selected" : ""}`} key={modifier.id}>
+                          <span className="product-drink-drawer__thumb" aria-hidden="true">
+                            <Image src={modifierThumbnail(modifier.id, item)} alt="" width={68} height={68} />
+                          </span>
+                          <span className="product-drink-drawer__copy">
+                            <strong>{modifier.name}</strong>
+                            <small>+{money.format(modifier.price)} each</small>
+                          </span>
+                          <div className="product-stepper product-extra-drawer__stepper">
+                            <button type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={selectedQuantity === 0} aria-label={`Remove ${modifier.name}`}>
+                              <Minus size={15} />
+                            </button>
+                            <strong>{selectedQuantity}</strong>
+                            <button type="button" onClick={() => changeModifier(modifier.id, 1)} aria-label={`Add ${modifier.name}`}>
+                              <Plus size={15} />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              )}
+
+              {sauceAddOnModifiers.length > 0 && (
+                <section className="product-drawer-group product-drawer-group--sauces" aria-labelledby="product-sauce-group-title">
+                  <div className="product-drawer-group__heading">
+                    <h3 id="product-sauce-group-title">Extra sauce</h3>
+                    <p>Pick your sauce and add as many extra portions as you like.</p>
+                  </div>
+                  <div className="product-drawer-group__list">
+                    {sauceAddOnModifiers.map((modifier) => {
                       const selectedQuantity = modifierQuantities[modifier.id] ?? 0;
                       return (
                         <div className={`product-extra-drawer__option${selectedQuantity > 0 ? " is-selected" : ""}`} key={modifier.id}>
@@ -636,10 +701,15 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                 <div className="product-drawer-group__list">
                   {adultDrinkChoices.map((choice) => {
                     const selected = countSelection(boxDrinks, choice);
+                    const choiceImage = drinkThumbnail(choice);
                     return (
                       <div className={`product-extra-drawer__option${selected > 0 ? " is-selected" : ""}`} key={choice}>
                         <span className="product-drink-drawer__thumb" aria-hidden="true">
-                          <Image src={drinkThumbnail(choice)} alt="" width={68} height={68} />
+                          {choiceImage ? (
+                            <Image src={choiceImage} alt="" width={68} height={68} />
+                          ) : (
+                            <span className="product-drink-placeholder">{drinkInitials(choice)}</span>
+                          )}
                         </span>
                         <span className="product-drink-drawer__copy">
                           <strong>{choice}</strong>

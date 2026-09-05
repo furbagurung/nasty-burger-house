@@ -34,6 +34,8 @@ export type PaymentMethod = "pay_at_pickup";
 
 export type ValidatedOrder = {
   requestId: string;
+  customerId?: string;
+  dripMember: boolean;
   customer: CheckoutCustomer;
   notes: string;
   pickupMethod: "asap";
@@ -229,6 +231,14 @@ export function validateOrderPayload(payload: unknown): OrderValidationResult {
     errors.push("The checkout request reference is invalid.");
   }
 
+  const rawCustomerId =
+    typeof payload.customerId === "string" ? payload.customerId.trim() : "";
+  const customerId = rawCustomerId || undefined;
+  if (customerId && !/^[a-zA-Z0-9_-]{8,120}$/.test(customerId)) {
+    errors.push("The customer account reference is invalid.");
+  }
+  const dripMember = payload.dripMember === true && Boolean(customerId);
+
   const customerValue = payload.customer;
   const name =
     isRecord(customerValue) && typeof customerValue.name === "string"
@@ -289,6 +299,8 @@ export function validateOrderPayload(payload: unknown): OrderValidationResult {
     ok: true,
     order: {
       requestId,
+      customerId,
+      dripMember,
       customer: { name, email, phone },
       notes,
       pickupMethod: "asap",

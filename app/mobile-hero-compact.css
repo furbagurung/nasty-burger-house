@@ -21,6 +21,11 @@
     color: #fff !important;
   }
 
+  .hero-slide__copy h1,
+  .hero-slide__copy h2 {
+    color: #fff !important;
+  }
+
   .hero-slide__copy .eyebrow {
     color: var(--gold) !important;
   }

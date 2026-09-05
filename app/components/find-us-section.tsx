@@ -18,11 +18,15 @@ export default function FindUsSection() {
 
     const host = document.createElement("div");
     host.className = "find-us-portal-host";
+    host.id = "find-us";
     parent.insertBefore(host, footer);
     setPortalTarget(host);
 
+    if (window.location.hash === "#find-us") {
+      window.setTimeout(() => host.scrollIntoView({ block: "start" }), 0);
+    }
+
     return () => {
-      setPortalTarget(null);
       host.remove();
     };
   }, []);
@@ -30,7 +34,7 @@ export default function FindUsSection() {
   if (!portalTarget) return null;
 
   return createPortal(
-    <section className="find-us-section" id="find-us" aria-labelledby="find-us-title">
+    <section className="find-us-section" aria-labelledby="find-us-title">
       <div className="find-us-section__inner">
         <div className="find-us-section__copy">
           <p className="eyebrow">Find us</p>

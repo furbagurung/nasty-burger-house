@@ -5,7 +5,6 @@ import {
   menuNavigationCategories,
   type MenuPageCategory,
 } from "../data/menu-pages";
-import CatalogueMobileMenu from "./catalogue-mobile-menu";
 import MenuItemMedia from "./menu-item-media";
 import MobileBottomNav from "./mobile-bottom-nav";
 
@@ -21,7 +20,6 @@ export default function MenuCategoryPage({
   return (
     <div className="catalogue-shell">
       <header className="catalogue-header">
-        <CatalogueMobileMenu />
         <Link className="catalogue-logo" href="/" aria-label="Nasty Burger House home">
           <Image src="/logo.webp" alt="" width={456} height={456} priority />
         </Link>

@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { readSignedInCustomerProfile } from "../lib/customer-store";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
@@ -15,7 +16,6 @@ function readCartCount() {
     if (!stored) return 0;
     const parsed = JSON.parse(stored);
     if (!Array.isArray(parsed)) return 0;
-
     return parsed.reduce((total, line) => {
       if (!line || typeof line !== "object") return total;
       const quantity = "quantity" in line ? Number(line.quantity) : 0;
@@ -34,20 +34,29 @@ export default function HomeTopHeader() {
   const [isHidden, setIsHidden] = useState(false);
   const [isHeroTransparent, setIsHeroTransparent] = useState(isHome);
   const [cartCount, setCartCount] = useState(0);
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
     const updateCartCount = () => setCartCount(readCartCount());
-    updateCartCount();
+    const updateAccount = () => setIsSignedIn(Boolean(readSignedInCustomerProfile()));
+    const updateAll = () => {
+      updateCartCount();
+      updateAccount();
+    };
+
+    updateAll();
     const interval = window.setInterval(updateCartCount, 1200);
-    window.addEventListener("storage", updateCartCount);
-    window.addEventListener("focus", updateCartCount);
+    window.addEventListener("storage", updateAll);
+    window.addEventListener("focus", updateAll);
     window.addEventListener("nasty-cart-updated", updateCartCount);
+    window.addEventListener("nasty-customer-updated", updateAccount);
     return () => {
       window.clearInterval(interval);
-      window.removeEventListener("storage", updateCartCount);
-      window.removeEventListener("focus", updateCartCount);
+      window.removeEventListener("storage", updateAll);
+      window.removeEventListener("focus", updateAll);
       window.removeEventListener("nasty-cart-updated", updateCartCount);
+      window.removeEventListener("nasty-customer-updated", updateAccount);
     };
   }, []);
 
@@ -128,13 +137,13 @@ export default function HomeTopHeader() {
       </nav>
 
       <div className="home-top-header__actions">
-        <Link className="home-top-header__account" href="/account" aria-label="Open customer account">
+        <Link className="home-top-header__account" href={isSignedIn ? "/account" : "/account/sign-in"} aria-label={isSignedIn ? "Open customer profile" : "Sign in to customer account"}>
           <span className="home-top-header__icon" aria-hidden="true">
             <HugeiconsIcon icon={UserIcon} size={22} color="currentColor" strokeWidth={1.9} />
           </span>
           <span className="home-top-header__action-copy">
             <small>Account</small>
-            <strong>Profile</strong>
+            <strong>{isSignedIn ? "Profile" : "Sign in"}</strong>
           </span>
         </Link>
 

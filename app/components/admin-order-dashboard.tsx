@@ -9,6 +9,8 @@ const money = new Intl.NumberFormat("en-AU", {
   currency: "AUD",
 });
 
+const STORE_TIME_ZONE = "Australia/Sydney";
+
 const statusLabels: Record<AdminOrder["status"], string> = {
   received: "Received",
   preparing: "Preparing",
@@ -32,6 +34,16 @@ function formatTime(value: string) {
     month: "short",
     hour: "numeric",
     minute: "2-digit",
+    timeZone: STORE_TIME_ZONE,
+  }).format(new Date(value));
+}
+
+function dateKey(value: string | Date) {
+  return new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: STORE_TIME_ZONE,
   }).format(new Date(value));
 }
 
@@ -41,6 +53,8 @@ function nextPrimaryStatus(status: AdminOrder["status"]) {
   if (status === "ready") return "completed" as const;
   return null;
 }
+
+type BrowserNotificationState = NotificationPermission | "checking" | "unsupported";
 
 export default function AdminOrderDashboard({
   initialOrders,
@@ -59,6 +73,8 @@ export default function AdminOrderDashboard({
   const [busyOrderId, setBusyOrderId] = useState("");
   const [error, setError] = useState("");
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [notificationPermission, setNotificationPermission] =
+    useState<BrowserNotificationState>("checking");
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [newOrderIds, setNewOrderIds] = useState<Set<string>>(() => new Set());
   const seenOrderIds = useRef(new Set(initialOrders.map((order) => order.id)));
@@ -76,6 +92,10 @@ export default function AdminOrderDashboard({
 
   const activeCount = orders.filter((order) =>
     ["received", "preparing", "ready"].includes(order.status),
+  ).length;
+  const currentStoreDay = dateKey(new Date());
+  const completedTodayCount = orders.filter(
+    (order) => order.status === "completed" && dateKey(order.submittedAt) === currentStoreDay,
   ).length;
   const recentExternalFailure = orders
     .slice(0, 10)
@@ -100,6 +120,17 @@ export default function AdminOrderDashboard({
       oscillator.stop(now + offset + 0.15);
     });
   }
+
+  useEffect(() => {
+    if (typeof Notification === "undefined") {
+      setNotificationPermission("unsupported");
+      setNotificationsEnabled(false);
+      return;
+    }
+
+    setNotificationPermission(Notification.permission);
+    setNotificationsEnabled(Notification.permission === "granted");
+  }, []);
 
   useEffect(() => {
     document.title =
@@ -182,11 +213,14 @@ export default function AdminOrderDashboard({
     }
 
     if (typeof Notification === "undefined") {
+      setNotificationPermission("unsupported");
+      setNotificationsEnabled(false);
       setError("Order sound is enabled, but browser notifications are not supported on this device.");
       return;
     }
 
     const permission = await Notification.requestPermission();
+    setNotificationPermission(permission);
     setNotificationsEnabled(permission === "granted");
     if (permission !== "granted") {
       setError("Order sound is enabled, but browser notification permission was not granted.");
@@ -228,15 +262,15 @@ export default function AdminOrderDashboard({
     }
   }
 
-  const notificationPermission =
-    typeof Notification === "undefined" ? "unsupported" : Notification.permission;
   const browserAlertLabel = notificationsEnabled
     ? "On"
-    : notificationPermission === "denied"
-      ? "Blocked"
-      : notificationPermission === "unsupported"
-        ? "Unsupported"
-        : "Off";
+    : notificationPermission === "checking"
+      ? "Checking…"
+      : notificationPermission === "denied"
+        ? "Blocked"
+        : notificationPermission === "unsupported"
+          ? "Unsupported"
+          : "Off";
 
   return (
     <div className="admin-shell">
@@ -262,7 +296,7 @@ export default function AdminOrderDashboard({
           <article><span>Active orders</span><strong>{activeCount}</strong></article>
           <article><span>Waiting to start</span><strong>{orders.filter((order) => order.status === "received").length}</strong></article>
           <article><span>Ready for pickup</span><strong>{orders.filter((order) => order.status === "ready").length}</strong></article>
-          <article><span>Completed today</span><strong>{orders.filter((order) => order.status === "completed" && new Date(order.submittedAt).toDateString() === new Date().toDateString()).length}</strong></article>
+          <article><span>Completed today</span><strong>{completedTodayCount}</strong></article>
         </section>
 
         <section className="admin-alert-health" aria-label="Order notification health">

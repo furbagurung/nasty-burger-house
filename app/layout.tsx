@@ -5,6 +5,7 @@ import CookieSettings from "./components/cookie-settings";
 import FooterLegalLinks from "./components/footer-legal-links";
 import HomeTopHeader from "./components/home-top-header";
 import MobileHeroMotion from "./components/mobile-hero-motion";
+import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
 import ScrollReveal from "./components/scroll-reveal";
 import "./globals.css";
 import "./catalogue-theme.css";
@@ -31,6 +32,7 @@ import "./scroll-reveal.css";
 import "./mobile-ux-polish.css";
 import "./hero-motion-controls.css";
 import "./mobile-hero-compact.css";
+import "./mobile-home-header-overlay.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,6 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <HomeTopHeader />
         {children}
+        <MobileHomeHeaderOverlay />
         <MobileHeroMotion />
         <ScrollReveal />
         <CartDrawerEnhancer />

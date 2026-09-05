@@ -72,3 +72,22 @@
     z-index: 90 !important;
   }
 }
+
+/* Menu tab: the bottom navigation already identifies the current section,
+   so the catalogue header is unnecessary on phone layouts. Product pages
+   keep their own top header for context/navigation. */
+@media (max-width: 680px) {
+  .catalogue-shell:not(.product-page-shell) > .catalogue-header {
+    display: none !important;
+  }
+
+  .catalogue-shell:not(.product-page-shell) > .catalogue-main {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .catalogue-shell:not(.product-page-shell) .catalogue-categories {
+    top: 0 !important;
+    height: calc(100svh - 4.75rem - env(safe-area-inset-bottom)) !important;
+  }
+}

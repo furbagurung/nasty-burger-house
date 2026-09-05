@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import {
   ensureSignupBonus,
@@ -12,7 +12,6 @@ import MobileBottomNav from "./mobile-bottom-nav";
 
 export default function AccountCreatePage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -46,7 +45,7 @@ export default function AccountCreatePage() {
 
     saveCustomerProfile({ name, email, phone, birthday });
     ensureSignupBonus();
-    const destination = searchParams.get("return");
+    const destination = new URLSearchParams(window.location.search).get("return");
     router.push(destination?.startsWith("/") ? destination : "/account");
   }
 

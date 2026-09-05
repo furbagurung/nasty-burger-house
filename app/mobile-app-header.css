@@ -90,4 +90,17 @@
     top: 0 !important;
     height: calc(100svh - 4.75rem - env(safe-area-inset-bottom)) !important;
   }
+
+  /* Keep the current menu category title visible while its products scroll. */
+  .catalogue-shell:not(.product-page-shell) .catalogue-heading {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 35 !important;
+    margin: 0 0 1.05rem !important;
+    padding: 0.8rem 0.15rem 0.75rem !important;
+    border-bottom: 1px solid rgba(23, 21, 19, 0.08);
+    background: rgba(255, 255, 255, 0.97) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+  }
 }

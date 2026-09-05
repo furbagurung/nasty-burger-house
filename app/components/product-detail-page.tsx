@@ -7,8 +7,9 @@ import {
   Minus,
   Plus,
   ShoppingBag,
+  X,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   adultDrinkChoices,
   comboUpgradePrice,
@@ -44,6 +45,14 @@ const modifierThumbnails: Record<string, string> = {
   "house-sauce": "/images/menu/og-nasty.jpg",
 };
 
+function drinkThumbnail(choice: string) {
+  return (
+    menuItems.find(
+      (entry) => entry.category === "drinks" && entry.name === choice,
+    )?.image ?? "/images/menu/coke.webp"
+  );
+}
+
 function readStoredCart(): CartLine[] {
   try {
     const stored = window.localStorage.getItem(CART_STORAGE_KEY);
@@ -60,6 +69,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
   const [quantity, setQuantity] = useState(1);
   const [isCombo, setIsCombo] = useState(false);
   const [drink, setDrink] = useState("");
+  const [isDrinkDrawerOpen, setIsDrinkDrawerOpen] = useState(false);
   const [modifierQuantities, setModifierQuantities] = useState<Record<string, number>>({});
   const [removedIngredients, setRemovedIngredients] = useState<string[]>([]);
   const [boxBurgers, setBoxBurgers] = useState<string[]>([]);
@@ -72,6 +82,23 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
   );
   const drinks = item.isKidsItem ? kidsDrinkChoices : adultDrinkChoices;
   const burgerChoices = menuItems.filter((entry) => entry.category === "burgers");
+
+  useEffect(() => {
+    if (!isDrinkDrawerOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsDrinkDrawerOpen(false);
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isDrinkDrawerOpen]);
 
   const unitPrice = useMemo(() => {
     const extras = availableModifiers.reduce(
@@ -122,9 +149,30 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
     return values.filter((entry) => entry === value).length;
   }
 
+  function toggleCombo() {
+    if (isCombo) {
+      setIsCombo(false);
+      setDrink("");
+      setIsDrinkDrawerOpen(false);
+    } else {
+      setIsCombo(true);
+      setIsDrinkDrawerOpen(true);
+    }
+    setSelectionError("");
+    setAddedToCart(false);
+  }
+
+  function chooseDrink(choice: string) {
+    setDrink(choice);
+    setSelectionError("");
+    setAddedToCart(false);
+    setIsDrinkDrawerOpen(false);
+  }
+
   function addToCart() {
     if (isCombo && !drink) {
-      setSelectionError("Choose a drink for your meal before adding it to the cart.");
+      setSelectionError("Choose a drink for your Beast Combo before adding it to the cart.");
+      setIsDrinkDrawerOpen(true);
       return;
     }
 
@@ -233,30 +281,44 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                 <button
                   className={`product-choice-card${isCombo ? " is-selected" : ""}`}
                   type="button"
-                  onClick={() => {
-                    setIsCombo((current) => !current);
-                    if (isCombo) setDrink("");
-                    setAddedToCart(false);
-                  }}
+                  onClick={toggleCombo}
                 >
-                  <span className="product-choice-card__check"><Check size={16} /></span>
+                  <span className="product-choice-card__bag" aria-hidden="true">
+                    <ShoppingBag className="product-choice-card__bag-fallback" size={19} strokeWidth={1.8} />
+                    <Image
+                      src="/images/bag.webp"
+                      alt=""
+                      width={48}
+                      height={48}
+                      onError={(event) => {
+                        event.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </span>
                   <span><strong>Add Nasty Fries + drink</strong><small>Turn this item into a Beast Combo.</small></span>
                 </button>
 
                 {isCombo && (
-                  <div className="product-select-grid" aria-label="Choose a drink">
-                    {drinks.map((choice) => (
-                      <button
-                        className={drink === choice ? "is-selected" : ""}
-                        type="button"
-                        key={choice}
-                        onClick={() => { setDrink(choice); setSelectionError(""); setAddedToCart(false); }}
-                      >
-                        {choice}
-                        {drink === choice && <Check size={15} aria-hidden="true" />}
-                      </button>
-                    ))}
-                  </div>
+                  <button
+                    className={`product-combo-drink-trigger${drink ? " has-selection" : ""}`}
+                    type="button"
+                    onClick={() => setIsDrinkDrawerOpen(true)}
+                  >
+                    <span className="product-combo-drink-trigger__thumb" aria-hidden="true">
+                      {drink ? (
+                        <Image src={drinkThumbnail(drink)} alt="" width={52} height={52} />
+                      ) : (
+                        <ShoppingBag size={20} strokeWidth={1.7} />
+                      )}
+                    </span>
+                    <span className="product-combo-drink-trigger__copy">
+                      <small>Beast Combo drink</small>
+                      <strong>{drink || "Choose your drink"}</strong>
+                    </span>
+                    <span className="product-combo-drink-trigger__action">
+                      {drink ? "Change" : "Choose"} →
+                    </span>
+                  </button>
                 )}
               </section>
             )}
@@ -388,6 +450,65 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
           </section>
         </div>
       </main>
+
+      {isDrinkDrawerOpen && (
+        <div
+          className="product-drink-drawer-backdrop"
+          role="presentation"
+          onMouseDown={() => setIsDrinkDrawerOpen(false)}
+        >
+          <aside
+            className="product-drink-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="product-drink-drawer-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="product-drink-drawer__header">
+              <div>
+                <p>Beast Combo</p>
+                <h2 id="product-drink-drawer-title">Choose your drink</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsDrinkDrawerOpen(false)}
+                aria-label="Close drink selection"
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            <div className="product-drink-drawer__options">
+              {drinks.map((choice) => {
+                const selected = drink === choice;
+                return (
+                  <button
+                    className={`product-drink-drawer__option${selected ? " is-selected" : ""}`}
+                    type="button"
+                    key={choice}
+                    onClick={() => chooseDrink(choice)}
+                    aria-pressed={selected}
+                  >
+                    <span className="product-drink-drawer__thumb" aria-hidden="true">
+                      <Image
+                        src={drinkThumbnail(choice)}
+                        alt=""
+                        width={68}
+                        height={68}
+                      />
+                    </span>
+                    <span className="product-drink-drawer__copy">
+                      <strong>{choice}</strong>
+                      <small>Included with Beast Combo</small>
+                    </span>
+                    {selected && <Check size={19} aria-hidden="true" />}
+                  </button>
+                );
+              })}
+            </div>
+          </aside>
+        </div>
+      )}
 
       <footer className="catalogue-footer product-detail__footer">
         <div>

@@ -16,6 +16,7 @@ import "./footer-utility.css";
 import "./product-detail-premium.css";
 import "./product-light-body.css";
 import "./product-page-refinements.css";
+import "./product-extra-thumbnails.css";
 import "./drip-points.css";
 import "./cookie-settings.css";
 import "./help-support.css";

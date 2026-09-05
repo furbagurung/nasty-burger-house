@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
-  readCustomerOrders,
-  readCustomerReviews,
-  saveCustomerReview,
-  type CustomerOrder,
-  type CustomerReview,
-} from "../lib/customer-store";
+  loadCurrentCustomer,
+  loadCustomerOrders,
+  loadCustomerReviews,
+  saveReview,
+} from "../lib/customer-backend";
+import type { CustomerOrder, CustomerReview } from "../lib/customer-store";
 import MobileBottomNav from "./mobile-bottom-nav";
 
 export default function ReviewsPage() {
@@ -19,23 +19,53 @@ export default function ReviewsPage() {
   const [message, setMessage] = useState("");
   const [saved, setSaved] = useState(false);
   const [ready, setReady] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const storedOrders = readCustomerOrders();
-    const storedReviews = readCustomerReviews();
-    const requested = new URLSearchParams(window.location.search).get("order") ?? "";
-    const initialOrder = storedOrders.some((order) => order.orderId === requested)
-      ? requested
-      : storedOrders[0]?.orderId ?? "";
-    const existing = storedReviews.find((review) => review.orderId === initialOrder);
-    setOrders(storedOrders);
-    setReviews(storedReviews);
-    setOrderId(initialOrder);
-    if (existing) {
-      setRating(existing.rating);
-      setMessage(existing.message);
+    let active = true;
+    async function load() {
+      try {
+        const [customer, storedOrders, storedReviews] = await Promise.all([
+          loadCurrentCustomer(),
+          loadCustomerOrders(),
+          loadCustomerReviews(),
+        ]);
+        if (!active) return;
+
+        const reviewableOrders = storedOrders.filter(
+          (order) => order.status === "completed",
+        );
+        const requested =
+          new URLSearchParams(window.location.search).get("order") ?? "";
+        const initialOrder = reviewableOrders.some(
+          (order) => order.orderId === requested,
+        )
+          ? requested
+          : reviewableOrders[0]?.orderId ?? "";
+        const existing = storedReviews.find(
+          (review) => review.orderId === initialOrder,
+        );
+
+        setSignedIn(Boolean(customer));
+        setOrders(reviewableOrders);
+        setReviews(storedReviews);
+        setOrderId(initialOrder);
+        if (existing) {
+          setRating(existing.rating);
+          setMessage(existing.message);
+        }
+      } catch (loadError) {
+        if (!active) return;
+        setError(loadError instanceof Error ? loadError.message : "Could not load reviews.");
+      } finally {
+        if (active) setReady(true);
+      }
     }
-    setReady(true);
+    void load();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const selectedOrder = useMemo(
@@ -49,14 +79,20 @@ export default function ReviewsPage() {
     setRating(existing?.rating ?? 5);
     setMessage(existing?.message ?? "");
     setSaved(false);
+    setError("");
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!orderId) return;
-    saveCustomerReview({ orderId, rating, message });
-    setReviews(readCustomerReviews());
-    setSaved(true);
+    setError("");
+    try {
+      await saveReview({ orderId, rating, message });
+      setReviews(await loadCustomerReviews());
+      setSaved(true);
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : "Could not save your review.");
+    }
   }
 
   if (!ready) {
@@ -69,15 +105,24 @@ export default function ReviewsPage() {
         <div className="standalone-page-heading">
           <p className="standalone-eyebrow">Customer feedback</p>
           <div><h1>Reviews</h1><span>{reviews.length} saved</span></div>
-          <p>Rate your Nasty Burger House orders and keep your feedback attached to the receipt.</p>
+          <p>Reviews unlock after an order is completed, so every rating is tied to a real purchase.</p>
         </div>
+
+        {!signedIn && (
+          <div className="account-inline-notice">
+            <span>Sign in to leave a verified order review.</span>
+            <Link href="/account/sign-in?return=/reviews">Sign in</Link>
+          </div>
+        )}
+
+        {error && <div className="account-inline-notice"><span>{error}</span></div>}
 
         {orders.length === 0 ? (
           <section className="account-empty-card">
-            <p className="standalone-eyebrow">No order to review</p>
-            <h2>Place an order first.</h2>
-            <p>Your review form unlocks once an order has been saved to your history.</p>
-            <Link className="standalone-primary-button" href="/menu/burgers">Explore the menu</Link>
+            <p className="standalone-eyebrow">No completed order to review</p>
+            <h2>Your review form unlocks after pickup.</h2>
+            <p>When an order is marked completed by the team, it becomes eligible for a 1–5 star review.</p>
+            <Link className="standalone-primary-button" href="/account/orders">View order history</Link>
           </section>
         ) : (
           <div className="reviews-layout">
@@ -88,7 +133,7 @@ export default function ReviewsPage() {
               </div>
 
               <label>
-                Order
+                Completed order
                 <select value={orderId} onChange={(event) => chooseOrder(event.target.value)}>
                   {orders.map((order) => <option key={order.orderId} value={order.orderId}>{order.orderId} · {order.lines.map((line) => line.name).slice(0, 2).join(", ")}</option>)}
                 </select>

@@ -4,9 +4,12 @@ import { useEffect } from "react";
 
 const homeMenuCategories = [
   {
-    href: "/beast-of-the-month",
+    id: "beast-of-the-month",
     title: "Beast of the Month",
+    href: "/beast-of-the-month",
     image: "/images/home-menu/beast-of-the-month.jpg",
+    disabled: true,
+    sticker: "/images/coming-soon.png",
   },
   {
     href: "/menu/burgers",
@@ -42,15 +45,19 @@ function enhanceMenuGrid() {
   }
 
   const cards = Array.from(
-    grid.querySelectorAll<HTMLAnchorElement>(":scope > a.menu-preview-card"),
+    grid.querySelectorAll<HTMLElement>(":scope > .menu-preview-card"),
   );
 
   homeMenuCategories.forEach((category, index) => {
     const card = cards[index];
     if (!card) return;
 
-    card.href = category.href;
+    if (card instanceof HTMLAnchorElement) card.href = category.href;
     card.className = "menu-preview-card menu-preview-card--clean";
+    const disabled = "disabled" in category && category.disabled;
+    card.classList.toggle("is-disabled", disabled);
+    if (disabled) card.setAttribute("aria-disabled", "true");
+    else card.removeAttribute("aria-disabled");
     card.setAttribute("aria-label", category.title);
     card.querySelectorAll(":scope > span").forEach((node) => node.remove());
 
@@ -80,13 +87,22 @@ function enhanceMenuGrid() {
       if (image) image.draggable = false;
     }
 
+    if ("sticker" in category && !media.querySelector(".home-menu-card__sticker")) {
+      const sticker = document.createElement("img");
+      sticker.src = category.sticker;
+      sticker.alt = "Coming soon";
+      sticker.className = "home-menu-card__sticker";
+      sticker.draggable = false;
+      media.appendChild(sticker);
+    }
+
     let title = card.querySelector<HTMLElement>(":scope > strong");
     if (!title) {
       title = document.createElement("strong");
       card.appendChild(title);
     }
 
-    title.textContent = category.title;
+    if (title.textContent !== category.title) title.textContent = category.title;
   });
 }
 
@@ -148,7 +164,10 @@ function bindResponsiveDrag(grid: HTMLElement) {
     if (pointerId === null) return;
 
     if (dragging) {
-      if (maxRawOverdrag >= overdragThreshold && Math.abs(overdragOffset) > 0.2) {
+      if (
+        maxRawOverdrag >= overdragThreshold &&
+        Math.abs(overdragOffset) > 0.2
+      ) {
         springOverdragBack();
       } else {
         setOverdrag(0);
@@ -362,6 +381,7 @@ export default function HomeMenuCategoriesEnhancer() {
       }
 
       .menu-preview-card__image {
+        position: relative;
         display: flex;
         width: 100%;
         height: clamp(7.25rem, 10vw, 9.5rem);
@@ -371,7 +391,7 @@ export default function HomeMenuCategoriesEnhancer() {
         background: transparent;
       }
 
-      .menu-preview-card__image img {
+      .menu-preview-card__image img:not(.home-menu-card__sticker) {
         display: block;
         width: 100% !important;
         height: 100% !important;
@@ -381,6 +401,35 @@ export default function HomeMenuCategoriesEnhancer() {
         -webkit-user-select: none !important;
         -webkit-user-drag: none !important;
         pointer-events: none;
+      }
+
+      .menu-preview-card--clean.is-disabled {
+        opacity: 0.5;
+        filter: grayscale(0.15);
+        cursor: not-allowed;
+      }
+
+      .menu-preview-card--clean.is-disabled > * {
+        pointer-events: none;
+      }
+
+      .home-menu-card__sticker {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        width: 5.5rem;
+        height: auto;
+        z-index: 3;
+        object-fit: contain;
+        pointer-events: none;
+      }
+
+      @media (max-width: 768px) {
+        .home-menu-card__sticker {
+          width: 4.25rem;
+          top: 0.5rem;
+          right: 0.5rem;
+        }
       }
 
       .menu-preview-card--clean strong {

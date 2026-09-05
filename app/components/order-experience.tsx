@@ -940,10 +940,10 @@ export default function OrderExperience({
             <Link className="outline-button" href="/menu/burgers">View menu</Link>
           </div>
           <div className="menu-preview__grid">
-            <Link className="menu-preview-card menu-preview-card--featured" href="/menu/featured">
+            <div className="menu-preview-card menu-preview-card--featured is-disabled" aria-disabled="true">
               <span>01</span>
-              <strong>Featured</strong>
-            </Link>
+              <strong>Beast of the Month</strong>
+            </div>
             <Link className="menu-preview-card menu-preview-card--burgers" href="/menu/burgers">
               <span>02</span>
               <strong>Beast Burgers</strong>

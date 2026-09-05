@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import CookieSettings from "./components/cookie-settings";
 import FooterLegalLinks from "./components/footer-legal-links";
 import HomeTopHeader from "./components/home-top-header";
@@ -23,6 +24,7 @@ import "./product-fixed-layout.css";
 import "./drip-points.css";
 import "./cookie-settings.css";
 import "./help-support.css";
+import "./cart-drawer-mcdonalds.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <HomeTopHeader />
         {children}
+        <CartDrawerEnhancer />
         <FooterLegalLinks />
         <CookieSettings />
       </body>

@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { ShoppingBag, UserRound } from "lucide-react";
+import { UserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+
+const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
 function triggerHomeAction(selector: string, fallbackHref: string) {
   const control = document.querySelector<HTMLButtonElement>(selector);
@@ -16,6 +18,23 @@ function triggerHomeAction(selector: string, fallbackHref: string) {
   window.location.href = fallbackHref;
 }
 
+function readCartCount() {
+  try {
+    const stored = window.localStorage.getItem(CART_STORAGE_KEY);
+    if (!stored) return 0;
+    const parsed = JSON.parse(stored);
+    if (!Array.isArray(parsed)) return 0;
+
+    return parsed.reduce((total, line) => {
+      if (!line || typeof line !== "object") return total;
+      const quantity = "quantity" in line ? Number(line.quantity) : 0;
+      return total + (Number.isFinite(quantity) ? Math.max(0, Math.floor(quantity)) : 0);
+    }, 0);
+  } catch {
+    return 0;
+  }
+}
+
 export default function HomeTopHeader() {
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -23,7 +42,25 @@ export default function HomeTopHeader() {
   const isProductPage = pathname.startsWith("/product/");
   const [isHidden, setIsHidden] = useState(false);
   const [isHeroTransparent, setIsHeroTransparent] = useState(isHome);
+  const [cartCount, setCartCount] = useState(0);
   const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const updateCartCount = () => setCartCount(readCartCount());
+
+    updateCartCount();
+    const interval = window.setInterval(updateCartCount, 1200);
+    window.addEventListener("storage", updateCartCount);
+    window.addEventListener("focus", updateCartCount);
+    window.addEventListener("nasty-cart-updated", updateCartCount);
+
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("storage", updateCartCount);
+      window.removeEventListener("focus", updateCartCount);
+      window.removeEventListener("nasty-cart-updated", updateCartCount);
+    };
+  }, []);
 
   useEffect(() => {
     const catalogueScroller = document.querySelector<HTMLElement>(
@@ -158,7 +195,7 @@ export default function HomeTopHeader() {
         </button>
 
         <button
-          className="home-top-header__cart"
+          className="home-top-header__cart home-top-header__cart--bag"
           type="button"
           onClick={() =>
             triggerHomeAction(
@@ -166,15 +203,12 @@ export default function HomeTopHeader() {
               "/?cart=1",
             )
           }
-          aria-label="Open cart or start an order"
+          aria-label={`Open cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}
         >
-          <span className="home-top-header__icon" aria-hidden="true">
-            <ShoppingBag size={22} strokeWidth={1.9} />
+          <span className="home-top-header__bag-mark" aria-hidden="true">
+            <Image src="/images/bag.webp" alt="" width={48} height={48} />
           </span>
-          <span className="home-top-header__action-copy">
-            <small>Your order</small>
-            <strong>Cart</strong>
-          </span>
+          <strong className="home-top-header__cart-count">{cartCount}</strong>
         </button>
       </div>
     </header>

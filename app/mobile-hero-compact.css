@@ -1,0 +1,37 @@
+@media (max-width: 680px) {
+  .hero-slide__copy {
+    position: relative !important;
+    inset: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    display: flex !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    height: clamp(29rem, 68svh, 35rem) !important;
+    max-height: 35rem !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 1.25rem 1rem 4.9rem !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #fff !important;
+  }
+
+  .hero-slide__copy .eyebrow {
+    color: var(--gold) !important;
+  }
+
+  .hero-slide__copy > p:not(.eyebrow) {
+    color: #e5ded5 !important;
+  }
+
+  .hero-slide__shade {
+    background:
+      linear-gradient(0deg, rgba(5, 4, 4, 0.88) 0%, rgba(5, 4, 4, 0.38) 48%, rgba(5, 4, 4, 0.08) 76%),
+      linear-gradient(90deg, rgba(5, 4, 4, 0.44) 0%, rgba(5, 4, 4, 0.05) 72%) !important;
+  }
+}

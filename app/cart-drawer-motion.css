@@ -1,9 +1,9 @@
 @media (min-width: 901px) {
-  .drawer-backdrop:has(.cart-drawer--mcd) {
+  .drawer-backdrop:has(.cart-drawer) {
     animation: nbh-cart-backdrop-in 280ms ease-out both;
   }
 
-  .cart-drawer--mcd {
+  .drawer-backdrop .cart-drawer {
     transform-origin: right center;
     will-change: transform, opacity;
     animation: nbh-cart-drawer-in 440ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -22,7 +22,7 @@
 
 @keyframes nbh-cart-drawer-in {
   from {
-    opacity: 0.7;
+    opacity: 0.72;
     transform: translateX(100%);
   }
 
@@ -33,8 +33,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .drawer-backdrop:has(.cart-drawer--mcd),
-  .cart-drawer--mcd {
+  .drawer-backdrop:has(.cart-drawer),
+  .drawer-backdrop .cart-drawer {
     animation: none !important;
   }
 }

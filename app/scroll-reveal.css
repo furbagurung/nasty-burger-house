@@ -14,8 +14,7 @@
   translate: 0 0;
 }
 
-/* Slightly softer movement for dense product grids. */
-.catalogue-product--browse.scroll-reveal,
+/* Slightly softer movement for homepage menu cards. */
 .menu-preview-card--clean.scroll-reveal {
   translate: 0 0.9rem;
 }
@@ -29,6 +28,16 @@
   translate: 0 0.8rem;
 }
 
+/* The catalogue uses its own independently scrollable desktop pane.
+   Menu headings/items must never depend on viewport reveal state. */
+.catalogue-shell:not(.product-page-shell) .catalogue-heading.scroll-reveal,
+.catalogue-shell:not(.product-page-shell) .catalogue-product--browse.scroll-reveal,
+.catalogue-shell:not(.product-page-shell) .catalogue-heading,
+.catalogue-shell:not(.product-page-shell) .catalogue-product--browse {
+  opacity: 1 !important;
+  translate: none !important;
+}
+
 @media (max-width: 680px) {
   .scroll-reveal {
     translate: 0 0.9rem;
@@ -39,7 +48,6 @@
 @media (prefers-reduced-motion: reduce) {
   .scroll-reveal,
   .scroll-reveal.is-revealed,
-  .catalogue-product--browse.scroll-reveal,
   .menu-preview-card--clean.scroll-reveal,
   .home-feature.scroll-reveal,
   .product-custom-section.scroll-reveal,

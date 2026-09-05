@@ -36,6 +36,7 @@ export type CustomerOrder = {
   status: "received" | "preparing" | "ready" | "completed" | "cancelled";
   subtotal: number;
   earnedDripPoints: number;
+  dripPointsStatus?: "pending" | "available" | "void";
   adminNotification?: "sent" | "not-configured" | "failed";
   customerId?: string;
   customerName: string;
@@ -49,6 +50,7 @@ export type DripLedgerEntry = {
   id: string;
   type: "signup" | "order" | "redeem" | "adjustment";
   points: number;
+  status?: "pending" | "available" | "void";
   description: string;
   createdAt: string;
   orderId?: string;
@@ -196,7 +198,13 @@ export function readDripLedger() {
 }
 
 export function dripBalance(entries = readDripLedger()) {
-  return entries.reduce((total, entry) => total + Number(entry.points || 0), 0);
+  return entries.reduce(
+    (total, entry) =>
+      entry.status && entry.status !== "available"
+        ? total
+        : total + Number(entry.points || 0),
+    0,
+  );
 }
 
 export function ensureSignupBonus() {
@@ -211,6 +219,7 @@ export function ensureSignupBonus() {
     id: makeId("drip"),
     type: "signup",
     points: DRIP_SIGNUP_BONUS,
+    status: "available",
     description: "Welcome to Drip Points",
     createdAt: new Date().toISOString(),
   };
@@ -237,6 +246,7 @@ export function awardOrderDripPoints(orderId: string, subtotal: number) {
     id: makeId("drip"),
     type: "order",
     points,
+    status: "available",
     description: `Earned from order ${orderId}`,
     orderId,
     createdAt: new Date().toISOString(),

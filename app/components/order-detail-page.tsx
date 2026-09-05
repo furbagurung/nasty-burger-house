@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
-  readCustomerOrders,
-  readCustomerReviews,
-  type CustomerOrder,
-  type CustomerReview,
-} from "../lib/customer-store";
+  customerBackendMode,
+  loadCustomerOrder,
+  loadCustomerReviews,
+} from "../lib/customer-backend";
+import type { CustomerOrder, CustomerReview } from "../lib/customer-store";
 import MobileBottomNav from "./mobile-bottom-nav";
 
 const money = new Intl.NumberFormat("en-AU", {
@@ -26,18 +26,47 @@ function formatDate(value: string) {
 
 export default function OrderDetailPage() {
   const params = useParams<{ orderId: string }>();
+  const backendMode = customerBackendMode();
   const [order, setOrder] = useState<CustomerOrder | null>(null);
   const [review, setReview] = useState<CustomerReview | null>(null);
   const [ready, setReady] = useState(false);
   const [justPlaced, setJustPlaced] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
+    let active = true;
     const orderId = decodeURIComponent(String(params.orderId ?? ""));
-    setOrder(readCustomerOrders().find((entry) => entry.orderId === orderId) ?? null);
-    setReview(readCustomerReviews().find((entry) => entry.orderId === orderId) ?? null);
     setJustPlaced(new URLSearchParams(window.location.search).get("new") === "1");
-    setReady(true);
-  }, [params.orderId]);
+
+    async function load() {
+      try {
+        const [nextOrder, reviews] = await Promise.all([
+          loadCustomerOrder(orderId),
+          loadCustomerReviews(),
+        ]);
+        if (!active) return;
+        setOrder(nextOrder);
+        setReview(reviews.find((entry) => entry.orderId === orderId) ?? null);
+        setError("");
+      } catch (loadError) {
+        if (!active) return;
+        setError(loadError instanceof Error ? loadError.message : "Could not load this order.");
+      } finally {
+        if (active) setReady(true);
+      }
+    }
+
+    void load();
+    const interval =
+      backendMode === "supabase"
+        ? window.setInterval(() => void load(), 12_000)
+        : 0;
+
+    return () => {
+      active = false;
+      if (interval) window.clearInterval(interval);
+    };
+  }, [backendMode, params.orderId]);
 
   if (!ready) {
     return <div className="standalone-page"><main className="standalone-main"><div className="cart-page-loading">Loading order…</div></main></div>;
@@ -49,7 +78,8 @@ export default function OrderDetailPage() {
         <main className="standalone-main account-empty-main">
           <section className="account-empty-card">
             <p className="standalone-eyebrow">Order not found</p>
-            <h1>We can&apos;t find that order on this device.</h1>
+            <h1>We can&apos;t find that order in your account.</h1>
+            {error && <p className="account-form-error" role="alert">{error}</p>}
             <Link className="standalone-primary-button" href="/account/orders">Order history</Link>
           </section>
         </main>
@@ -58,13 +88,15 @@ export default function OrderDetailPage() {
     );
   }
 
+  const canReview = order.status === "completed";
+
   return (
     <div className="standalone-page account-page">
       <main className="standalone-main order-detail-main">
         {justPlaced && (
           <div className="order-success-banner">
             <strong>Order received.</strong>
-            <span>Your pickup order has been accepted. Pay when you collect.</span>
+            <span>Your pickup order is in the system. Pay when you collect.</span>
           </div>
         )}
 
@@ -76,6 +108,12 @@ export default function OrderDetailPage() {
           </div>
           <span className={`order-status order-status--${order.status}`}>{order.status}</span>
         </header>
+
+        {backendMode === "supabase" && order.status !== "completed" && order.status !== "cancelled" && (
+          <div className="account-inline-notice">
+            <span>Live order status refreshes automatically while this page is open.</span>
+          </div>
+        )}
 
         <div className="order-detail-layout">
           <section className="account-card order-detail-items">
@@ -108,22 +146,34 @@ export default function OrderDetailPage() {
 
             <section className="account-card order-detail-points-card">
               <Image src="/images/drip-points/drip-coin.png" alt="" width={60} height={60} />
-              <div><span>Drip Points earned</span><strong>+{order.earnedDripPoints}</strong></div>
-              {order.earnedDripPoints === 0 && <small>Create/sign in to an account before checkout to earn points.</small>}
+              <div>
+                <span>
+                  {order.dripPointsStatus === "pending"
+                    ? "Drip Points pending"
+                    : order.dripPointsStatus === "void"
+                      ? "Drip Points voided"
+                      : "Drip Points earned"}
+                </span>
+                <strong>{order.earnedDripPoints > 0 ? `+${order.earnedDripPoints}` : "0"}</strong>
+              </div>
+              {order.dripPointsStatus === "pending" && <small>Points become available when the order is completed.</small>}
+              {order.earnedDripPoints === 0 && <small>Sign in before checkout to earn Drip Points.</small>}
             </section>
 
             <section className="account-card order-detail-notification">
-              <p className="standalone-eyebrow">Admin notification</p>
-              <h2>{order.adminNotification === "sent" ? "Sent to the order system" : order.adminNotification === "failed" ? "Delivery failed" : "Webhook setup pending"}</h2>
-              <p>{order.adminNotification === "sent" ? "The configured kitchen/admin webhook accepted this order." : "The order was accepted by the development fallback, but the production notification destination still needs configuration."}</p>
+              <p className="standalone-eyebrow">Order system</p>
+              <h2>{order.adminNotification === "sent" ? "Admin notified" : order.adminNotification === "failed" ? "Notification failed" : "Saved to admin dashboard"}</h2>
+              <p>{order.adminNotification === "sent" ? "The configured kitchen/admin webhook accepted this order." : "The order remains stored in the admin order queue even when an external notification destination is not configured."}</p>
             </section>
 
             <section className="account-card order-detail-review-card">
               <p className="standalone-eyebrow">Your feedback</p>
               {review ? (
                 <><h2>{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</h2><p>{review.message || "Thanks for rating your order."}</p><Link href={`/reviews?order=${encodeURIComponent(order.orderId)}`}>Edit review</Link></>
+              ) : canReview ? (
+                <><h2>How was it?</h2><p>Rate this completed order and leave a short review.</p><Link className="standalone-primary-button" href={`/reviews?order=${encodeURIComponent(order.orderId)}`}>Leave a review</Link></>
               ) : (
-                <><h2>How was it?</h2><p>Rate this order and leave a short review.</p><Link className="standalone-primary-button" href={`/reviews?order=${encodeURIComponent(order.orderId)}`}>Leave a review</Link></>
+                <><h2>Review after pickup.</h2><p>The review form unlocks when this order is marked completed.</p></>
               )}
             </section>
           </aside>

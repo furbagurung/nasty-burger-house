@@ -180,12 +180,7 @@ export default function CartPage() {
                 return (
                   <article className="cart-page-line" key={line.lineId}>
                     <Link className="cart-page-line__media" href={`/product/${item.id}`}>
-                      <Image
-                        src={item.image ?? "/logo.webp"}
-                        alt={item.name}
-                        width={180}
-                        height={180}
-                      />
+                      <Image src={item.image ?? "/logo.webp"} alt={item.name} width={180} height={180} />
                     </Link>
 
                     <div className="cart-page-line__copy">
@@ -199,39 +194,17 @@ export default function CartPage() {
 
                       {details.length > 0 && (
                         <div className="cart-page-line__details">
-                          {details.map((detail) => (
-                            <span key={detail}>{detail}</span>
-                          ))}
+                          {details.map((detail) => <span key={detail}>{detail}</span>)}
                         </div>
                       )}
 
                       <div className="cart-page-line__actions">
                         <div className="cart-page-quantity" aria-label={`Quantity for ${item.name}`}>
-                          <button
-                            type="button"
-                            onClick={() => changeQuantity(line.lineId, -1)}
-                            disabled={line.quantity === 1}
-                            aria-label={`Decrease ${item.name} quantity`}
-                          >
-                            −
-                          </button>
+                          <button type="button" onClick={() => changeQuantity(line.lineId, -1)} disabled={line.quantity === 1} aria-label={`Decrease ${item.name} quantity`}>−</button>
                           <strong>{line.quantity}</strong>
-                          <button
-                            type="button"
-                            onClick={() => changeQuantity(line.lineId, 1)}
-                            disabled={line.quantity === 20}
-                            aria-label={`Increase ${item.name} quantity`}
-                          >
-                            +
-                          </button>
+                          <button type="button" onClick={() => changeQuantity(line.lineId, 1)} disabled={line.quantity === 20} aria-label={`Increase ${item.name} quantity`}>+</button>
                         </div>
-                        <button
-                          className="cart-page-remove"
-                          type="button"
-                          onClick={() => removeLine(line.lineId)}
-                        >
-                          Remove
-                        </button>
+                        <button className="cart-page-remove" type="button" onClick={() => removeLine(line.lineId)}>Remove</button>
                       </div>
                     </div>
                   </article>
@@ -245,20 +218,13 @@ export default function CartPage() {
                 <span>Subtotal</span>
                 <strong>{money.format(subtotal)}</strong>
               </div>
-              <p className="cart-page-summary__note">
-                Pickup only. You&apos;ll pay when you collect your order.
-              </p>
-              <Link className="standalone-primary-button" href="/?cart=1">
-                Continue to checkout
-              </Link>
-              <Link className="standalone-secondary-link" href="/menu/burgers">
-                Add more items
-              </Link>
+              <p className="cart-page-summary__note">Pickup only. You&apos;ll pay when you collect your order.</p>
+              <Link className="standalone-primary-button" href="/checkout">Continue to checkout</Link>
+              <Link className="standalone-secondary-link" href="/menu/burgers">Add more items</Link>
             </aside>
           </div>
         )}
       </main>
-
       <MobileBottomNav active="cart" cartCount={cartCount} />
     </div>
   );

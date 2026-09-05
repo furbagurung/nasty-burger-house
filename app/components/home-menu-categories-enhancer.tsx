@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 const homeMenuCategories = [
   {
-    href: "/product/bbq-beast",
+    href: "/beast-of-the-month",
     title: "Beast of the Month",
     image: "/images/home-menu/beast-of-the-month.jpg",
   },
@@ -20,12 +20,12 @@ const homeMenuCategories = [
   },
   {
     href: "/menu/sweet",
-    title: "Desserts",
+    title: "Dessert",
     image: "/images/home-menu/desserts.jpg",
   },
   {
     href: "/menu/drinks",
-    title: "Nasty Drinks",
+    title: "Drinks",
     image: "/images/home-menu/nasty-drinks.jpg",
   },
 ] as const;

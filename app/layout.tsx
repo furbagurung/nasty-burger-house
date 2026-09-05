@@ -40,6 +40,7 @@ import "./standalone-pages.css";
 import "./customer-account.css";
 import "./customer-header-overrides.css";
 import "./admin-dashboard.css";
+import "./admin-notification-ui.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

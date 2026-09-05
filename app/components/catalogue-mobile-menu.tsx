@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { menuNavigationCategories } from "../data/menu-pages";
+import { MenuToggleIcon } from "./menu-toggle-icon";
 
 export default function CatalogueMobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,14 +31,12 @@ export default function CatalogueMobileMenu() {
       <button
         className="catalogue-menu-trigger"
         type="button"
-        onClick={() => setIsOpen(true)}
-        aria-label="Open navigation"
+        onClick={() => setIsOpen((current) => !current)}
+        aria-label={isOpen ? "Close navigation" : "Open navigation"}
         aria-expanded={isOpen}
         aria-controls="catalogue-navigation"
       >
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
-        <span aria-hidden="true" />
+        <MenuToggleIcon open={isOpen} aria-hidden="true" />
       </button>
 
       {isOpen && (
@@ -62,7 +61,7 @@ export default function CatalogueMobileMenu() {
                 onClick={() => setIsOpen(false)}
                 aria-label="Close navigation"
               >
-                ×
+                <MenuToggleIcon open aria-hidden="true" />
               </button>
             </div>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -15,7 +16,7 @@ type MobileBottomNavProps = {
   onProfile?: () => void;
 };
 
-type IconName = "home" | "menu" | "bag" | "cart" | "profile";
+type IconName = "home" | "menu" | "cart" | "profile";
 
 function TabIcon({ name }: { name: IconName }) {
   if (name === "home") {
@@ -31,15 +32,6 @@ function TabIcon({ name }: { name: IconName }) {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M7 3v7M4 3v4c0 1.7 1.3 3 3 3s3-1.3 3-3V3M7 10v11M16 3c-2 3-2 7 0 9h3V3h-3ZM19 12v9" />
-      </svg>
-    );
-  }
-
-  if (name === "bag") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 8h14l-1 13H6L5 8Z" />
-        <path d="M9 9V6a3 3 0 0 1 6 0v3" />
       </svg>
     );
   }
@@ -82,6 +74,23 @@ function getStoredCartCount() {
   }
 }
 
+function OrderBag({ count }: { count: number }) {
+  return (
+    <span className="mobile-tab__order-circle" aria-hidden="true">
+      <Image
+        className="mobile-tab__order-bag"
+        src="/images/bag.webp"
+        alt=""
+        width={80}
+        height={80}
+      />
+      {count > 0 && (
+        <strong className="mobile-tab__order-badge">{count}</strong>
+      )}
+    </span>
+  );
+}
+
 export default function MobileBottomNav({
   active,
   cartCount,
@@ -99,10 +108,12 @@ export default function MobileBottomNav({
     refreshCount();
     window.addEventListener("storage", refreshCount);
     window.addEventListener("pageshow", refreshCount);
+    window.addEventListener("nasty-cart-updated", refreshCount);
 
     return () => {
       window.removeEventListener("storage", refreshCount);
       window.removeEventListener("pageshow", refreshCount);
+      window.removeEventListener("nasty-cart-updated", refreshCount);
     };
   }, [cartCount]);
 
@@ -133,10 +144,7 @@ export default function MobileBottomNav({
           onClick={onOrder}
           aria-label="Order now"
         >
-          <span className="mobile-tab__order-circle">
-            <TabIcon name="bag" />
-          </span>
-          <span>Order Now</span>
+          <OrderBag count={visibleCartCount} />
         </button>
       ) : (
         <Link
@@ -144,10 +152,7 @@ export default function MobileBottomNav({
           href="/?order=1"
           aria-label="Order now"
         >
-          <span className="mobile-tab__order-circle">
-            <TabIcon name="bag" />
-          </span>
-          <span>Order Now</span>
+          <OrderBag count={visibleCartCount} />
         </Link>
       )}
 

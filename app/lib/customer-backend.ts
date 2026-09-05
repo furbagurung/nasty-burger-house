@@ -299,17 +299,31 @@ export async function saveReview(input: {
   if (!supabase) return saveCustomerReview(input);
   if (!user) throw new Error("Sign in to leave a review.");
 
-  const { data, error } = await supabase
+  const rating = Math.max(1, Math.min(5, Math.round(input.rating)));
+  const message = input.message.trim().slice(0, 1000);
+
+  const { data: existing, error: lookupError } = await supabase
     .from("reviews")
-    .upsert(
-      {
+    .select("id")
+    .eq("customer_id", user.id)
+    .eq("order_id", input.orderId)
+    .maybeSingle();
+
+  if (lookupError) throw lookupError;
+
+  const query = existing
+    ? supabase
+        .from("reviews")
+        .update({ rating, message })
+        .eq("id", existing.id)
+    : supabase.from("reviews").insert({
         customer_id: user.id,
         order_id: input.orderId,
-        rating: Math.max(1, Math.min(5, Math.round(input.rating))),
-        message: input.message.trim().slice(0, 1000),
-      },
-      { onConflict: "customer_id,order_id" },
-    )
+        rating,
+        message,
+      });
+
+  const { data, error } = await query
     .select("id,order_id,rating,message,created_at")
     .single();
 

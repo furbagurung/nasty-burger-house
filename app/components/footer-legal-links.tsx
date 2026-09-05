@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import SocialIcon from "./social-icons";
 
 function FooterUtilityLinks() {
   const openCookieSettings = () => {
@@ -12,27 +13,37 @@ function FooterUtilityLinks() {
   return (
     <nav className="footer-legal-links" aria-label="Support, social and legal links">
       <Link href="/help-support">Help &amp; Support</Link>
-      <a
-        href="https://www.instagram.com/nastyburgerhouse/"
-        target="_blank"
-        rel="noreferrer"
-      >
-        Instagram
-      </a>
-      <a
-        href="https://www.tiktok.com/@nastyburgerhouse"
-        target="_blank"
-        rel="noreferrer"
-      >
-        TikTok
-      </a>
-      <a
-        href="https://www.facebook.com/profile.php?id=61590139712227"
-        target="_blank"
-        rel="noreferrer"
-      >
-        Facebook
-      </a>
+
+      <span className="footer-social-links" aria-label="Nasty Burger House social media">
+        <a
+          href="https://www.instagram.com/nastyburgerhouse/"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Nasty Burger House on Instagram"
+          title="Instagram"
+        >
+          <SocialIcon name="instagram" />
+        </a>
+        <a
+          href="https://www.tiktok.com/@nastyburgerhouse"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Nasty Burger House on TikTok"
+          title="TikTok"
+        >
+          <SocialIcon name="tiktok" />
+        </a>
+        <a
+          href="https://www.facebook.com/profile.php?id=61590139712227"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Nasty Burger House on Facebook"
+          title="Facebook"
+        >
+          <SocialIcon name="facebook" />
+        </a>
+      </span>
+
       <Link href="/privacy-policy">Privacy Policy</Link>
       <Link href="/terms-and-conditions">Terms and Conditions</Link>
       <button type="button" onClick={openCookieSettings}>

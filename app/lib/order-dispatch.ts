@@ -1,10 +1,10 @@
 import { menuItems, modifierChoices } from "../data/menu";
-import type { ServiceStatus } from "./service";
+import { calculateEarnedDripPoints } from "./loyalty";
 import {
   calculateLineUnitPrice,
   type ValidatedOrder,
 } from "./order";
-import { calculateEarnedDripPoints } from "./loyalty";
+import type { ServiceStatus } from "./service";
 
 type DispatchResult =
   | { ok: true }
@@ -24,8 +24,7 @@ export function createOrderDispatchPayload(
   orderId: string,
 ) {
   const notificationEmail =
-    process.env.ORDER_NOTIFICATION_EMAIL?.trim() ||
-    "vcouncil.furba@gmail.com";
+    process.env.ORDER_NOTIFICATION_EMAIL?.trim() || null;
   const earnedDripPoints = order.dripMember
     ? calculateEarnedDripPoints(order.subtotal)
     : 0;

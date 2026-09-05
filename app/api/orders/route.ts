@@ -1,3 +1,4 @@
+import { sendAdminOrderEmail } from "../../lib/admin-notifications";
 import { calculateEarnedDripPoints } from "../../lib/loyalty";
 import { validateOrderPayload } from "../../lib/order";
 import {
@@ -106,7 +107,7 @@ export async function POST(request: Request) {
   );
 
   // Supabase is the production source of truth. Once an order is written there,
-  // a notification delivery failure must not make the stored order disappear.
+  // alert delivery failures must never make the stored order disappear.
   const persistence = await persistOrderToSupabase(orderPayload, customerId);
   if (!persistence.ok && persistence.reason === "write-failed") {
     console.error("[NBH Supabase order persistence failed]", persistence.detail);
@@ -122,20 +123,29 @@ export async function POST(request: Request) {
     );
   }
 
-  const dispatch = await dispatchOrder(orderPayload);
-  const adminNotification = dispatch.ok
+  const [webhookDispatch, emailDispatch] = await Promise.all([
+    dispatchOrder(orderPayload),
+    sendAdminOrderEmail(orderPayload),
+  ]);
+
+  const alertSent = webhookDispatch.ok || emailDispatch.ok;
+  const alertConfigured =
+    (webhookDispatch.ok || webhookDispatch.reason !== "not-configured") ||
+    (emailDispatch.ok || emailDispatch.reason !== "not-configured");
+  const adminNotification = alertSent
     ? "sent"
-    : dispatch.reason === "not-configured"
-      ? "not-configured"
-      : "failed";
+    : alertConfigured
+      ? "failed"
+      : "not-configured";
 
   if (persistence.ok) {
     await updateOrderNotificationStatus(orderId, adminNotification);
 
-    if (!dispatch.ok) {
-      console.warn("[NBH order notification unavailable]", {
+    if (!alertSent) {
+      console.warn("[NBH external order alert unavailable]", {
         orderId,
-        reason: dispatch.reason,
+        webhook: webhookDispatch.ok ? "sent" : webhookDispatch.reason,
+        email: emailDispatch.ok ? "sent" : emailDispatch.reason,
       });
     }
 
@@ -161,8 +171,8 @@ export async function POST(request: Request) {
   }
 
   // Local/preview fallback while Supabase credentials are not configured.
-  if (!dispatch.ok) {
-    if (dispatch.reason === "not-configured") {
+  if (!alertSent) {
+    if (!alertConfigured) {
       console.warn("[NBH temporary order fallback]", orderPayload);
 
       return Response.json(
@@ -189,7 +199,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         ok: false,
-        errors: ["We could not send the order to the kitchen. Please try again."],
+        errors: ["We could not send the order alert. Please try again."],
         adminNotification: "failed",
       },
       {

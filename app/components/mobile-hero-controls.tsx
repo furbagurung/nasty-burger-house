@@ -1,11 +1,12 @@
 "use client";
 
 import {
-  ChevronLeft,
-  ChevronRight,
-  Pause,
-  Play,
-} from "lucide-react";
+  ArrowLeft01Icon,
+  ArrowRight01Icon,
+  PauseIcon,
+  PlayIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -182,7 +183,13 @@ export default function MobileHeroControls() {
         onClick={() => triggerControl("previous")}
         aria-label="Previous promotion"
       >
-        <ChevronLeft aria-hidden="true" />
+        <HugeiconsIcon
+          icon={ArrowLeft01Icon}
+          size={20}
+          color="currentColor"
+          strokeWidth={1.8}
+          aria-hidden="true"
+        />
       </button>
 
       <div className="mobile-hero-motion-dots" aria-label="Choose promotion">
@@ -203,7 +210,13 @@ export default function MobileHeroControls() {
         onClick={() => triggerControl("playback")}
         aria-label={isPaused ? "Play promotions" : "Pause promotions"}
       >
-        {isPaused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
+        <HugeiconsIcon
+          icon={isPaused ? PlayIcon : PauseIcon}
+          size={19}
+          color="currentColor"
+          strokeWidth={1.8}
+          aria-hidden="true"
+        />
       </button>
 
       <button
@@ -211,7 +224,13 @@ export default function MobileHeroControls() {
         onClick={() => triggerControl("next")}
         aria-label="Next promotion"
       >
-        <ChevronRight aria-hidden="true" />
+        <HugeiconsIcon
+          icon={ArrowRight01Icon}
+          size={20}
+          color="currentColor"
+          strokeWidth={1.8}
+          aria-hidden="true"
+        />
       </button>
     </div>,
     heroRoot,

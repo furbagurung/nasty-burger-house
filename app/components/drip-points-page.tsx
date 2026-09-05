@@ -81,7 +81,7 @@ export default function DripPointsPage() {
           <div className="drip-page-signup__copy">
             <p className="standalone-eyebrow">Join Drip Points</p>
             <h2 id="drip-signup-title">
-              {joined ? "You&apos;re in." : "Start with 500 Drip Points."}
+              {joined ? "You're in." : "Start with 500 Drip Points."}
             </h2>
             <p>
               {joined

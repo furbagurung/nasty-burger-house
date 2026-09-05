@@ -3,21 +3,41 @@
   .mobile-nav-backdrop {
     position: fixed !important;
     inset: 0 !important;
-    z-index: 120 !important;
+    z-index: 140 !important;
   }
 
   .mobile-nav-drawer {
     position: relative;
-    z-index: 121 !important;
+    z-index: 141 !important;
   }
 
-  /* Homepage drawer is a sibling of the header, so hide that header entirely
-     while the navigation drawer is open. This prevents the centred logo from
-     appearing through the drawer. */
+  /* Homepage: keep only the hamburger above the drawer so it can morph into
+     the close state. Hide the underlying logo/cart to avoid duplicate branding. */
   .site-shell:has(> .mobile-nav-backdrop) > .site-header {
+    z-index: 150 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+    border-bottom-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .site-shell:has(> .mobile-nav-backdrop) > .site-header .wordmark,
+  .site-shell:has(> .mobile-nav-backdrop) > .site-header .cart-button {
     visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
+  }
+
+  .site-shell:has(> .mobile-nav-backdrop) > .site-header .mobile-menu-button {
+    position: relative !important;
+    z-index: 151 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 
   /* Catalogue/product drawers are rendered from inside their header.

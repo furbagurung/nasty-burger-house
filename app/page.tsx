@@ -1,3 +1,4 @@
+import HomeBeastMonthEnhancer from "./components/home-beast-month-enhancer";
 import HomeMenuCategoriesEnhancer from "./components/home-menu-categories-enhancer";
 import OrderExperience from "./components/order-experience";
 import { menuItems } from "./data/menu";
@@ -10,6 +11,7 @@ export default function Home() {
         items={menuItems}
         initialServiceStatus={getServiceStatus()}
       />
+      <HomeBeastMonthEnhancer />
       <HomeMenuCategoriesEnhancer />
     </>
   );

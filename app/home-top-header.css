@@ -225,6 +225,55 @@
   font-weight: 780;
 }
 
+.home-top-header__cart--bag {
+  min-width: 5.75rem;
+  min-height: 3.45rem;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem 0.3rem 0.5rem;
+  background: #ffffff;
+  color: #171513;
+}
+
+.home-top-header.is-dark .home-top-header__cart--bag,
+.home-top-header.is-hero-transparent .home-top-header__cart--bag {
+  background: #ffffff;
+  color: #171513;
+}
+
+.home-top-header__cart--bag:hover,
+.home-top-header.is-dark .home-top-header__cart--bag:hover {
+  border-color: #d8d3cd;
+  background: #f7f7f7;
+  color: #171513;
+}
+
+.home-top-header__bag-mark {
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+
+.home-top-header__bag-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.home-top-header__cart-count {
+  min-width: 1.2rem;
+  color: currentColor;
+  font-size: 0.96rem;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+}
+
 /* Existing functional home header remains in the DOM for ordering actions,
    while this shared header owns the desktop UI. */
 @media (min-width: 901px) {

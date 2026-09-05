@@ -6,9 +6,12 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { menuItems, modifierChoices } from "../data/menu";
 import {
+  customerBackendMode,
+  loadCurrentCustomer,
+} from "../lib/customer-backend";
+import {
   awardOrderDripPoints,
   ensureSignupBonus,
-  readSignedInCustomerProfile,
   saveCustomerOrder,
   saveCustomerProfile,
   type CustomerOrderLine,
@@ -102,35 +105,58 @@ type CheckoutPageProps = {
 
 export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
   const router = useRouter();
+  const backendMode = customerBackendMode();
   const [cart, setCart] = useState<CartLine[]>([]);
   const [profile, setProfile] = useState<CustomerProfile | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
-  const [createAccount, setCreateAccount] = useState(true);
+  const [createLocalAccount, setCreateLocalAccount] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    let storedCart: CartLine[] = [];
-    try {
-      const raw = window.localStorage.getItem(CART_STORAGE_KEY);
-      storedCart = raw ? normaliseCart(JSON.parse(raw)) : [];
-    } catch {
-      storedCart = [];
+    let active = true;
+
+    async function load() {
+      let storedCart: CartLine[] = [];
+      try {
+        const raw = window.localStorage.getItem(CART_STORAGE_KEY);
+        storedCart = raw ? normaliseCart(JSON.parse(raw)) : [];
+      } catch {
+        storedCart = [];
+      }
+
+      try {
+        const customer = await loadCurrentCustomer();
+        if (!active) return;
+        setCart(storedCart);
+        setProfile(customer);
+        if (customer) {
+          setName(customer.name);
+          setEmail(customer.email);
+          setPhone(customer.phone);
+          setCreateLocalAccount(false);
+        }
+      } catch (loadError) {
+        if (!active) return;
+        setCart(storedCart);
+        setErrors([
+          loadError instanceof Error
+            ? loadError.message
+            : "We could not load your account details.",
+        ]);
+      } finally {
+        if (active) setHydrated(true);
+      }
     }
-    const customer = readSignedInCustomerProfile();
-    setCart(storedCart);
-    setProfile(customer);
-    if (customer) {
-      setName(customer.name);
-      setEmail(customer.email);
-      setPhone(customer.phone);
-      setCreateAccount(false);
-    }
-    setHydrated(true);
+
+    void load();
+    return () => {
+      active = false;
+    };
   }, []);
 
   const subtotal = useMemo(() => calculateCartSubtotal(cart), [cart]);
@@ -143,7 +169,7 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
     setErrors([]);
 
     let activeProfile = profile;
-    if (!activeProfile && createAccount) {
+    if (!activeProfile && backendMode === "local-fallback" && createLocalAccount) {
       activeProfile = saveCustomerProfile({ name, email, phone });
       ensureSignupBonus();
       setProfile(activeProfile);
@@ -156,8 +182,6 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           requestId,
-          customerId: activeProfile?.id,
-          dripMember: Boolean(activeProfile),
           customer: { name, email, phone },
           notes,
           pickupMethod: "asap",
@@ -172,7 +196,9 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
         orderId?: string;
         subtotal?: number;
         earnedDripPoints?: number;
+        dripPointsStatus?: "pending" | "available" | null;
         adminNotification?: "sent" | "not-configured" | "failed";
+        storageMode?: "supabase" | "local-fallback";
       };
 
       if (!response.ok || !result.ok || !result.orderId || typeof result.subtotal !== "number") {
@@ -180,24 +206,30 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
         return;
       }
 
-      const earnedPoints = activeProfile
-        ? awardOrderDripPoints(result.orderId, result.subtotal)
-        : 0;
+      // Local persistence is only the preview fallback, plus a same-device guest
+      // receipt when a Supabase order was submitted without an authenticated user.
+      if (result.storageMode !== "supabase" || !activeProfile) {
+        const earnedPoints =
+          activeProfile && result.storageMode !== "supabase"
+            ? awardOrderDripPoints(result.orderId, result.subtotal)
+            : result.earnedDripPoints ?? 0;
 
-      saveCustomerOrder({
-        orderId: result.orderId,
-        submittedAt: new Date().toISOString(),
-        status: "received",
-        subtotal: result.subtotal,
-        earnedDripPoints: earnedPoints,
-        adminNotification: result.adminNotification,
-        customerId: activeProfile?.id,
-        customerName: name.trim(),
-        customerEmail: email.trim().toLowerCase(),
-        customerPhone: phone.trim(),
-        pickupLabel: `${serviceStatus.locationName} · ASAP pickup`,
-        lines: snapshotLines(cart),
-      });
+        saveCustomerOrder({
+          orderId: result.orderId,
+          submittedAt: new Date().toISOString(),
+          status: "received",
+          subtotal: result.subtotal,
+          earnedDripPoints: earnedPoints,
+          dripPointsStatus: result.dripPointsStatus ?? undefined,
+          adminNotification: result.adminNotification,
+          customerId: activeProfile?.id,
+          customerName: name.trim(),
+          customerEmail: email.trim().toLowerCase(),
+          customerPhone: phone.trim(),
+          pickupLabel: `${serviceStatus.locationName} · ASAP pickup`,
+          lines: snapshotLines(cart),
+        });
+      }
 
       window.localStorage.setItem(CART_STORAGE_KEY, "[]");
       window.dispatchEvent(new Event("nasty-cart-updated"));
@@ -236,7 +268,7 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
         <div className="standalone-page-heading">
           <p className="standalone-eyebrow">ASAP pickup · Pay at pickup</p>
           <div><h1>Checkout</h1><span>{count} item{count === 1 ? "" : "s"}</span></div>
-          <p>Confirm your pickup details, account and order before sending it to Nasty Burger House.</p>
+          <p>Confirm your pickup details and send the order to Nasty Burger House.</p>
         </div>
 
         <form className="checkout-page-layout" onSubmit={submit}>
@@ -264,13 +296,28 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
                 <label>Mobile number<input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} minLength={8} maxLength={24} required /></label>
                 <label className="account-form-grid__full">Order notes <small>Optional</small><textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={3} maxLength={300} /></label>
               </div>
-              {!profile && (
+
+              {!profile && backendMode === "supabase" && (
+                <div className="checkout-account-prompt">
+                  <div>
+                    <strong>Want Drip Points on this order?</strong>
+                    <small>Sign in before placing it. Points are linked to the verified account session, not an email typed at checkout.</small>
+                  </div>
+                  <div>
+                    <Link href="/account/sign-in?return=/checkout">Sign in</Link>
+                    <Link href="/account/create?return=/checkout">Create account</Link>
+                  </div>
+                </div>
+              )}
+
+              {!profile && backendMode === "local-fallback" && (
                 <label className="checkout-account-toggle">
-                  <input type="checkbox" checked={createAccount} onChange={(event) => setCreateAccount(event.target.checked)} />
-                  <span><strong>Create my Nasty account</strong><small>Save your details, order history and earn Drip Points. You&apos;ll also get the 500-point signup bonus.</small></span>
+                  <input type="checkbox" checked={createLocalAccount} onChange={(event) => setCreateLocalAccount(event.target.checked)} />
+                  <span><strong>Create my preview account</strong><small>Local fallback only. Production accounts use Supabase Auth.</small></span>
                 </label>
               )}
-              {profile && <p className="checkout-member-note">Ordering as <strong>{profile.name}</strong> · Drip Points will be earned on this order.</p>}
+
+              {profile && <p className="checkout-member-note">Ordering as <strong>{profile.name}</strong> · Drip Points will be pending until this order is completed.</p>}
             </section>
 
             <section className="account-card checkout-panel">
@@ -292,12 +339,12 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
               })}
             </div>
             <div className="checkout-page-review__total"><span>Subtotal</span><strong>{money.format(subtotal)}</strong></div>
-            {profile && <p className="checkout-points-preview">Earn approximately <strong>{Math.floor(subtotal * DRIP_POINTS_PER_AUD)} Drip Points</strong> with this order.</p>}
+            {profile && <p className="checkout-points-preview">Earn <strong>{Math.floor(subtotal * DRIP_POINTS_PER_AUD)} pending Drip Points</strong>. They become available when the order is completed.</p>}
             {errors.length > 0 && <div className="checkout-errors" role="alert"><strong>Please check your order:</strong><ul>{errors.map((error) => <li key={error}>{error}</li>)}</ul></div>}
             <button className="standalone-primary-button" type="submit" disabled={submitting || !serviceStatus.acceptingOrders}>
               {!serviceStatus.acceptingOrders ? "Ordering unavailable" : submitting ? "Sending order…" : "Place pickup order"}
             </button>
-            <small>By placing the order, it will be sent to the configured kitchen/admin notification webhook when connected.</small>
+            <small>The database is the production source of truth. External admin/kitchen notifications run after the order is safely stored.</small>
           </aside>
         </form>
       </main>

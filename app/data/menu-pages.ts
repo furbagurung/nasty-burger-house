@@ -45,9 +45,17 @@ export const menuPageCategories: MenuPageCategory[] = [
     id: "beast-boxes",
     label: "Beast Boxes",
     shortLabel: "BX",
-    image: "/images/beast-box-hero.webp",
+    image: "/images/beast-boxes/Solo Beast Box.jpg",
     description:
       "Choose your burgers and drinks, then feed one, two or the whole family.",
+  },
+  {
+    id: "veg",
+    label: "Veg",
+    shortLabel: "V",
+    image: "/images/menu/green-beast.jpg",
+    description:
+      "Vegetarian burgers, sides and desserts from across the Nasty Burger House menu.",
   },
   {
     id: "sweet",
@@ -70,6 +78,7 @@ const menuNavigationIds: MenuCategoryId[] = [
   "burgers",
   "loaded-sides",
   "kids",
+  "veg",
   "sweet",
   "drinks",
 ];

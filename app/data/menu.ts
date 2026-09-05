@@ -4,6 +4,7 @@ export type MenuCategoryId =
   | "loaded-sides"
   | "kids"
   | "beast-boxes"
+  | "veg"
   | "sweet"
   | "drinks";
 
@@ -24,7 +25,7 @@ export type MenuItem = {
   id: string;
   name: string;
   description: string;
-  category: Exclude<MenuCategoryId, "featured">;
+  category: Exclude<MenuCategoryId, "featured" | "veg">;
   price: number;
   priceConfirmed?: boolean;
   image?: string;
@@ -235,6 +236,7 @@ export const menuItems: MenuItem[] = [
       "Any Beast Burger · Nasty Fries · 2 Buffalo Fury Wings · 2 Dirty Eggplant Pieces · 1 soft drink or water · Mango Pudding with Lychee Granita & Lychee Pearls.",
     category: "beast-boxes",
     price: 34.99,
+    image: "/images/beast-boxes/Solo Beast Box.jpg",
     featured: true,
     boxConfig: { burgerCount: 1, drinkCount: 1 },
   },
@@ -245,6 +247,7 @@ export const menuItems: MenuItem[] = [
       "Any 2 Beast Burgers · Nasty Fries · 4 Buffalo Fury Wings · 4 Dirty Eggplant Pieces · 2 soft drinks or waters · Mango Pudding with Lychee Granita & Lychee Pearls.",
     category: "beast-boxes",
     price: 59.99,
+    image: "/images/beast-boxes/Duo Beast Box.jpg",
     boxConfig: { burgerCount: 2, drinkCount: 2 },
   },
   {
@@ -254,6 +257,7 @@ export const menuItems: MenuItem[] = [
       "Any 2 Beast Burgers · 1 Monster Cheese · 2 Nasty Fries · 4 Buffalo Fury Wings · 4 Dirty Eggplant Pieces · 6 Dino Nuggets · 3 soft drinks or waters · Mango Pudding with Lychee Granita & Lychee Pearls.",
     category: "beast-boxes",
     price: 79.99,
+    image: "/images/beast-boxes/Family Beast Box.jpg",
     boxConfig: { burgerCount: 2, drinkCount: 3 },
   },
   {

@@ -1,0 +1,24 @@
+@media (max-width: 900px) {
+  .site-shell > .site-header {
+    transition:
+      background-color 220ms ease,
+      border-color 220ms ease,
+      box-shadow 220ms ease,
+      -webkit-backdrop-filter 220ms ease,
+      backdrop-filter 220ms ease;
+  }
+
+  .site-shell > .site-header.is-mobile-hero-transparent {
+    border-bottom-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-shell > .site-header {
+    transition: none !important;
+  }
+}

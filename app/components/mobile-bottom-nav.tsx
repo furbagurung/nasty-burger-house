@@ -110,8 +110,6 @@ function CartBag({ count }: { count: number }) {
 export default function MobileBottomNav({
   active,
   cartCount,
-  onCart,
-  onProfile,
 }: MobileBottomNavProps) {
   const [storedCartCount, setStoredCartCount] = useState(0);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
@@ -181,65 +179,34 @@ export default function MobileBottomNav({
           <span>Menu</span>
         </Link>
 
-        {onCart ? (
-          <button
-            className={`mobile-tab mobile-tab--primary-cart ${cartActive ? "is-active" : ""}`}
-            type="button"
-            onClick={onCart}
-            aria-label={
-              visibleCartCount > 0
-                ? `Open cart, ${visibleCartCount} item${visibleCartCount === 1 ? "" : "s"}`
-                : "Open cart"
-            }
-          >
-            <CartBag count={visibleCartCount} />
-          </button>
-        ) : (
-          <Link
-            className={`mobile-tab mobile-tab--primary-cart ${cartActive ? "is-active" : ""}`}
-            href="/?cart=1"
-            aria-label={
-              visibleCartCount > 0
-                ? `Open cart, ${visibleCartCount} item${visibleCartCount === 1 ? "" : "s"}`
-                : "Open cart"
-            }
-          >
-            <CartBag count={visibleCartCount} />
-          </Link>
-        )}
+        <Link
+          className={`mobile-tab mobile-tab--primary-cart ${cartActive ? "is-active" : ""}`}
+          href="/cart"
+          aria-label={
+            visibleCartCount > 0
+              ? `Open cart, ${visibleCartCount} item${visibleCartCount === 1 ? "" : "s"}`
+              : "Open cart"
+          }
+          aria-current={cartActive ? "page" : undefined}
+        >
+          <CartBag count={visibleCartCount} />
+        </Link>
 
-        {onProfile ? (
-          <button
-            className={`mobile-tab mobile-tab--drip ${dripActive ? "is-active" : ""}`}
-            type="button"
-            onClick={onProfile}
-            aria-label="Drip Points"
-          >
-            <Image
-              className="mobile-tab__drip-coin"
-              src="/images/drip-points/drip-coin.png"
-              alt=""
-              width={32}
-              height={32}
-            />
-            <span>Drip Points</span>
-          </button>
-        ) : (
-          <Link
-            className={`mobile-tab mobile-tab--drip ${dripActive ? "is-active" : ""}`}
-            href="/?loyalty=1"
-            aria-label="Drip Points"
-          >
-            <Image
-              className="mobile-tab__drip-coin"
-              src="/images/drip-points/drip-coin.png"
-              alt=""
-              width={32}
-              height={32}
-            />
-            <span>Drip Points</span>
-          </Link>
-        )}
+        <Link
+          className={`mobile-tab mobile-tab--drip ${dripActive ? "is-active" : ""}`}
+          href="/drip-points"
+          aria-label="Drip Points"
+          aria-current={dripActive ? "page" : undefined}
+        >
+          <Image
+            className="mobile-tab__drip-coin"
+            src="/images/drip-points/drip-coin.png"
+            alt=""
+            width={32}
+            height={32}
+          />
+          <span>Drip Points</span>
+        </Link>
 
         <button
           className={`mobile-tab ${isMoreOpen || active === "more" ? "is-active" : ""}`}

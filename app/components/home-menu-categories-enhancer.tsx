@@ -214,31 +214,76 @@ export default function HomeMenuCategoriesEnhancer() {
 
       @media (max-width: 680px) {
         .menu-preview {
-          padding: 4.25rem 1rem 4.75rem !important;
+          overflow: hidden !important;
+          padding: 2.65rem 0 3.1rem !important;
+        }
+
+        .menu-preview__heading {
+          align-items: flex-start !important;
+          padding: 0 1rem;
+          text-align: left !important;
+        }
+
+        .menu-preview__heading .eyebrow {
+          margin-bottom: 0.35rem;
+          font-size: 0.62rem;
         }
 
         .menu-preview__heading h2 {
-          font-size: clamp(2.75rem, 12vw, 4rem) !important;
+          font-size: clamp(2rem, 9vw, 2.65rem) !important;
+          letter-spacing: -0.055em !important;
+        }
+
+        .menu-preview__heading .outline-button {
+          min-height: 2.45rem;
+          margin-top: 0.85rem;
+          padding: 0.55rem 0.95rem;
+          font-size: 0.76rem;
         }
 
         .menu-preview__grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-          gap: 2rem 0.65rem !important;
-          margin-top: 3.5rem !important;
+          display: flex !important;
+          width: 100% !important;
+          grid-template-columns: none !important;
+          align-items: flex-start;
+          gap: 0.45rem !important;
+          margin: 1.55rem 0 0 !important;
+          overflow-x: auto !important;
+          overflow-y: hidden !important;
+          padding: 0 1rem 0.5rem !important;
+          scroll-padding-inline: 1rem;
+          scroll-snap-type: x mandatory;
+          overscroll-behavior-x: contain;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
         }
 
+        .menu-preview__grid::-webkit-scrollbar {
+          display: none;
+        }
+
+        .menu-preview-card--clean,
         .menu-preview-card--clean:first-child {
+          width: clamp(6.35rem, 27vw, 7.5rem) !important;
+          min-width: clamp(6.35rem, 27vw, 7.5rem) !important;
+          flex: 0 0 clamp(6.35rem, 27vw, 7.5rem) !important;
           grid-column: auto !important;
           min-height: 0 !important;
+          scroll-snap-align: start;
+          scroll-snap-stop: always;
         }
 
         .menu-preview-card__image {
-          height: 7.25rem;
+          width: 100%;
+          height: clamp(5.4rem, 23vw, 6.4rem);
         }
 
         .menu-preview-card--clean strong {
-          margin-top: 0.65rem;
-          font-size: 0.95rem !important;
+          max-width: 7.5rem !important;
+          margin-top: 0.38rem;
+          font-size: clamp(0.7rem, 3vw, 0.8rem) !important;
+          font-weight: 650 !important;
+          line-height: 1.2 !important;
         }
       }
     `}</style>

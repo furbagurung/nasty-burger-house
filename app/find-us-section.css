@@ -1,5 +1,6 @@
 .find-us-portal-host {
   display: block;
+  scroll-margin-top: 6.25rem;
 }
 
 .find-us-section {
@@ -106,6 +107,10 @@
 }
 
 @media (max-width: 760px) {
+  .find-us-portal-host {
+    scroll-margin-top: 4.75rem;
+  }
+
   .find-us-section {
     padding: 3.5rem 1rem;
   }

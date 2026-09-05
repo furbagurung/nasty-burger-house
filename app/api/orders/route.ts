@@ -78,7 +78,9 @@ export async function POST(request: Request) {
       status: "submitted",
       orderId,
       subtotal: validation.order.subtotal,
-      message: "Pickup order received. Payment is due when you collect.",
+      paymentMethod: validation.order.paymentMethod,
+      paymentStatus: "unpaid",
+      message: "Pickup order received. Pay when you collect.",
     },
     {
       status: 201,

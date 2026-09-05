@@ -593,7 +593,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               {removableIngredients.length > 0 && (
                 <section className="product-drawer-group product-drawer-group--ingredients" aria-labelledby="product-ingredients-group-title">
                   <div className="product-drawer-group__heading">
-                    <h3 id="product-ingredients-group-title">Make it yours</h3>
+                    <h3 id="product-ingredients-group-title">Add it on</h3>
                     <p>Uncheck an ingredient to remove it.</p>
                   </div>
                   <div className="product-drawer-group__list">

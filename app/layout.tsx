@@ -4,11 +4,13 @@ import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import CookieSettings from "./components/cookie-settings";
 import FooterLegalLinks from "./components/footer-legal-links";
 import HomeTopHeader from "./components/home-top-header";
+import MobileHeroHeader from "./components/mobile-hero-header";
 import ScrollReveal from "./components/scroll-reveal";
 import "./globals.css";
 import "./catalogue-theme.css";
 import "./menu-browse.css";
 import "./mobile-app.css";
+import "./mobile-hero-header.css";
 import "./home-top-header.css";
 import "./nav-marker.css";
 import "./shared-header-pages.css";
@@ -53,6 +55,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <HomeTopHeader />
         {children}
+        <MobileHeroHeader />
         <ScrollReveal />
         <CartDrawerEnhancer />
         <FooterLegalLinks />

@@ -38,6 +38,7 @@ import "./mobile-app-header.css";
 import "./mobile-bottom-nav-v2.css";
 import "./standalone-pages.css";
 import "./customer-account.css";
+import "./customer-header-overrides.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

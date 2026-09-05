@@ -55,18 +55,37 @@ export async function POST(request: Request) {
   const dispatch = await dispatchOrder(orderPayload);
 
   if (!dispatch.ok) {
-    const notConfigured = dispatch.reason === "not-configured";
+    if (dispatch.reason === "not-configured") {
+      // Temporary launch fallback: allow Pay on Pickup checkout to complete
+      // while the kitchen/order webhook is still being connected. The full
+      // order is emitted to server logs so test orders remain inspectable.
+      console.warn("[NBH temporary order fallback]", orderPayload);
+
+      return Response.json(
+        {
+          ok: true,
+          status: "accepted-temporarily",
+          orderId,
+          subtotal: validation.order.subtotal,
+          paymentMethod: validation.order.paymentMethod,
+          paymentStatus: "unpaid",
+          dispatchMode: "temporary-fallback",
+          message: "Pickup order accepted. Pay when you collect.",
+        },
+        {
+          status: 201,
+          headers: { "Cache-Control": "no-store" },
+        },
+      );
+    }
+
     return Response.json(
       {
         ok: false,
-        errors: [
-          notConfigured
-            ? "Online ordering is being connected. Please try again later."
-            : "We could not send the order to the kitchen. Please try again.",
-        ],
+        errors: ["We could not send the order to the kitchen. Please try again."],
       },
       {
-        status: notConfigured ? 503 : 502,
+        status: 502,
         headers: { "Cache-Control": "no-store" },
       },
     );

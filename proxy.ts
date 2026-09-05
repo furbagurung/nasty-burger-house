@@ -34,9 +34,10 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  // Validate/refresh the cookie-backed user session. Access control is handled
-  // by the page/API itself so the public restaurant site remains public.
-  await supabase.auth.getUser();
+  // Refresh and cryptographically validate the cookie-backed auth token. The
+  // public restaurant site stays public; protected pages/APIs verify their own
+  // customer/admin authorization before reading data.
+  await supabase.auth.getClaims();
 
   return supabaseResponse;
 }

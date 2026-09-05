@@ -1,7 +1,8 @@
 import "server-only";
 
-import { getAdminClientOrNull } from "./supabase/admin";
+import { menuItems } from "../data/menu";
 import type { createOrderDispatchPayload } from "./order-dispatch";
+import { getAdminClientOrNull } from "./supabase/admin";
 
 type OrderPayload = ReturnType<typeof createOrderDispatchPayload>;
 
@@ -91,7 +92,8 @@ export async function persistOrderToSupabase(
     order_id: payload.orderId,
     item_id: line.itemId,
     item_name: line.name,
-    image_path: null,
+    image_path:
+      menuItems.find((item) => item.id === line.itemId)?.image ?? null,
     quantity: line.quantity,
     unit_price_cents: cents(line.unitPrice),
     line_total_cents: cents(line.lineTotal),

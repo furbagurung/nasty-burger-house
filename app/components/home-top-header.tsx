@@ -6,7 +6,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { readSignedInCustomerProfile } from "../lib/customer-store";
+import {
+  readSignedInCustomerProfile,
+  signOutCustomer,
+} from "../lib/customer-store";
 import { getBrowserClientOrNull } from "../lib/supabase/client";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
@@ -27,6 +30,17 @@ function readCartCount() {
   }
 }
 
+function firstName(name: string) {
+  return name.trim().split(/\s+/)[0] ?? "";
+}
+
+function authDisplayName(
+  user: { user_metadata?: Record<string, unknown> } | null | undefined,
+) {
+  const name = user?.user_metadata?.name;
+  return typeof name === "string" ? name.trim() : "";
+}
+
 export default function HomeTopHeader() {
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -36,7 +50,10 @@ export default function HomeTopHeader() {
   const [isHeroTransparent, setIsHeroTransparent] = useState(isHome);
   const [cartCount, setCartCount] = useState(0);
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
   const lastScrollY = useRef(0);
+  const accountMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const updateCartCount = () => setCartCount(readCartCount());
@@ -60,8 +77,13 @@ export default function HomeTopHeader() {
     const supabase = getBrowserClientOrNull();
 
     async function updateAccount() {
+      const localProfile = readSignedInCustomerProfile();
+
       if (!supabase) {
-        if (active) setIsSignedIn(Boolean(readSignedInCustomerProfile()));
+        if (active) {
+          setIsSignedIn(Boolean(localProfile));
+          setCustomerName(localProfile?.name ?? "");
+        }
         return;
       }
 
@@ -69,16 +91,27 @@ export default function HomeTopHeader() {
         const {
           data: { user },
         } = await supabase.auth.getUser();
-        if (active) setIsSignedIn(Boolean(user));
+        if (active) {
+          setIsSignedIn(Boolean(user));
+          setCustomerName(authDisplayName(user) || localProfile?.name || "");
+        }
       } catch {
-        if (active) setIsSignedIn(false);
+        if (active) {
+          setIsSignedIn(Boolean(localProfile));
+          setCustomerName(localProfile?.name ?? "");
+        }
       }
     }
 
     void updateAccount();
 
     const { data: authState } = supabase?.auth.onAuthStateChange((_event, session) => {
-      if (active) setIsSignedIn(Boolean(session?.user));
+      if (!active) return;
+      const localProfile = readSignedInCustomerProfile();
+      setIsSignedIn(Boolean(session?.user));
+      setCustomerName(
+        authDisplayName(session?.user) || localProfile?.name || "",
+      );
     }) ?? { data: { subscription: null } };
 
     const refreshAccount = () => void updateAccount();
@@ -94,6 +127,32 @@ export default function HomeTopHeader() {
       window.removeEventListener("nasty-customer-updated", refreshAccount);
     };
   }, []);
+
+  useEffect(() => {
+    function closeAccountMenu(event: MouseEvent) {
+      if (
+        accountMenuRef.current &&
+        !accountMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsAccountOpen(false);
+      }
+    }
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setIsAccountOpen(false);
+    }
+
+    document.addEventListener("mousedown", closeAccountMenu);
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("mousedown", closeAccountMenu);
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
+
+  useEffect(() => {
+    setIsAccountOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const catalogueScroller = document.querySelector<HTMLElement>(
@@ -148,8 +207,23 @@ export default function HomeTopHeader() {
     };
   }, [isHome, isMenuPage, isProductPage, pathname]);
 
+  async function handleSignOut() {
+    const supabase = getBrowserClientOrNull();
+    try {
+      await supabase?.auth.signOut();
+    } finally {
+      signOutCustomer();
+      setIsSignedIn(false);
+      setCustomerName("");
+      setIsAccountOpen(false);
+      window.location.assign("/");
+    }
+  }
+
+  const greetingName = firstName(customerName);
   const headerClassName = [
     "home-top-header",
+    isHome ? "is-home-route" : "is-inner-route",
     isHome && isHeroTransparent ? "is-hero-transparent" : "is-dark",
     isHidden ? "is-hidden" : "is-visible",
   ].join(" ");
@@ -163,6 +237,7 @@ export default function HomeTopHeader() {
       <nav className="home-top-header__nav" aria-label="Primary navigation">
         <Link href="/menu/burgers">Menu</Link>
         <Link href="/beast-of-the-month">Beast of the Month</Link>
+        <Link href={isHome ? "#find-us" : "/#find-us"}>Find Us</Link>
         <Link className="home-top-header__drip" href="/drip-points">
           <span className="home-top-header__drip-icon" aria-hidden="true">
             <Image src="/images/drip-points/drip-coin.png" alt="" width={32} height={32} />
@@ -172,15 +247,58 @@ export default function HomeTopHeader() {
       </nav>
 
       <div className="home-top-header__actions">
-        <Link className="home-top-header__account" href={isSignedIn ? "/account" : "/account/sign-in"} aria-label={isSignedIn ? "Open customer profile" : "Sign in to customer account"}>
-          <span className="home-top-header__icon" aria-hidden="true">
-            <HugeiconsIcon icon={UserIcon} size={22} color="currentColor" strokeWidth={1.9} />
-          </span>
-          <span className="home-top-header__action-copy">
-            <small>Account</small>
-            <strong>{isSignedIn ? "Profile" : "Sign in"}</strong>
-          </span>
-        </Link>
+        <div className="home-top-header__account-menu" ref={accountMenuRef}>
+          <button
+            className="home-top-header__account"
+            type="button"
+            aria-haspopup="menu"
+            aria-expanded={isAccountOpen}
+            aria-label={isSignedIn ? `Account menu${greetingName ? ` for ${greetingName}` : ""}` : "Account menu"}
+            onClick={() => setIsAccountOpen((current) => !current)}
+          >
+            <span className="home-top-header__icon" aria-hidden="true">
+              <HugeiconsIcon icon={UserIcon} size={22} color="currentColor" strokeWidth={1.9} />
+            </span>
+            <span className="home-top-header__action-copy">
+              <small>Account</small>
+              <strong>
+                {isSignedIn
+                  ? greetingName
+                    ? `Hello, ${greetingName}`
+                    : "My account"
+                  : "Sign in"}
+              </strong>
+            </span>
+            <span className="home-top-header__account-chevron" aria-hidden="true">⌄</span>
+          </button>
+
+          {isAccountOpen && (
+            <div className="home-top-header__account-dropdown" role="menu">
+              {isSignedIn ? (
+                <>
+                  <div className="home-top-header__account-greeting">
+                    <small>Nasty account</small>
+                    <strong>{greetingName ? `Hello, ${greetingName}` : "Welcome back"}</strong>
+                  </div>
+                  <Link href="/account" role="menuitem">My profile</Link>
+                  <Link href="/account/orders" role="menuitem">My orders</Link>
+                  <Link href="/drip-points" role="menuitem">Drip Points</Link>
+                  <Link href="/reviews" role="menuitem">Reviews</Link>
+                  <button type="button" role="menuitem" onClick={handleSignOut}>Sign out</button>
+                </>
+              ) : (
+                <>
+                  <div className="home-top-header__account-greeting">
+                    <small>Nasty account</small>
+                    <strong>Your account</strong>
+                  </div>
+                  <Link href="/account/sign-in" role="menuitem">Sign in</Link>
+                  <Link href="/account/create" role="menuitem">Create account</Link>
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
         <Link className="home-top-header__cart home-top-header__cart--bag" href="/cart" aria-label={`Open cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}>
           <span className="home-top-header__bag-mark" aria-hidden="true">

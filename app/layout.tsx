@@ -29,6 +29,7 @@ import "./help-support.css";
 import "./cart-drawer-mcdonalds.css";
 import "./scroll-reveal.css";
 import "./mobile-ux-polish.css";
+import "./hero-motion-controls.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

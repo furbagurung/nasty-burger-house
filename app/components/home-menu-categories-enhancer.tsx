@@ -26,7 +26,7 @@ const homeMenuCategories = [
   {
     href: "/menu/drinks",
     title: "Drinks",
-    image: "/images/home-menu/nasty-drinks.jpg",
+    image: "/images/home-menu/drinks.webp",
   },
 ] as const;
 

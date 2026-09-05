@@ -44,7 +44,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         ? menuItems.filter(
             (item) => item.category === "burgers" || item.id === "monster-cheese",
           )
-        : menuItems.filter((item) => item.category === category.id);
+        : category.id === "veg"
+          ? menuItems.filter((item) => item.dietaryTags?.includes("Vegetarian"))
+          : menuItems.filter((item) => item.category === category.id);
 
   return <MenuCategoryPage category={category} items={items} />;
 }

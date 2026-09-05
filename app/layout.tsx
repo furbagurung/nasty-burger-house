@@ -4,7 +4,6 @@ import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import CookieSettings from "./components/cookie-settings";
 import DripPointsBanner from "./components/drip-points-banner";
 import FooterLegalLinks from "./components/footer-legal-links";
-import HomeMenuToggleBridge from "./components/home-menu-toggle-bridge";
 import HomeTopHeader from "./components/home-top-header";
 import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
@@ -35,8 +34,7 @@ import "./mobile-ux-polish.css";
 import "./hero-motion-controls.css";
 import "./mobile-hero-compact.css";
 import "./mobile-home-header-overlay.css";
-import "./mobile-nav-overlay-fix.css";
-import "./menu-toggle-animation.css";
+import "./mobile-app-header.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,7 +62,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <HomeTopHeader />
         {children}
         <DripPointsBanner />
-        <HomeMenuToggleBridge />
         <MobileHomeHeaderOverlay />
         <MobileHeroControls />
         <CartDrawerEnhancer />

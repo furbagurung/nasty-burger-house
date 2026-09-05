@@ -30,11 +30,14 @@ export type CheckoutCustomer = {
   phone: string;
 };
 
+export type PaymentMethod = "pay_at_pickup";
+
 export type ValidatedOrder = {
   requestId: string;
   customer: CheckoutCustomer;
   notes: string;
   pickupMethod: "asap";
+  paymentMethod: PaymentMethod;
   cart: CartLine[];
   subtotal: number;
 };
@@ -256,6 +259,12 @@ export function validateOrderPayload(payload: unknown): OrderValidationResult {
     errors.push("Only ASAP pickup is available in this build.");
   }
 
+  const paymentMethod =
+    payload.paymentMethod === undefined ? "pay_at_pickup" : payload.paymentMethod;
+  if (paymentMethod !== "pay_at_pickup") {
+    errors.push("Only Pay on Pickup is available right now.");
+  }
+
   const cartValues = Array.isArray(payload.cart) ? payload.cart : [];
   if (cartValues.length < 1 || cartValues.length > 50) {
     errors.push("Your order must contain between 1 and 50 items.");
@@ -283,6 +292,7 @@ export function validateOrderPayload(payload: unknown): OrderValidationResult {
       customer: { name, email, phone },
       notes,
       pickupMethod: "asap",
+      paymentMethod: "pay_at_pickup",
       cart,
       subtotal,
     },

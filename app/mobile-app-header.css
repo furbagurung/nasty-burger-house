@@ -1,26 +1,10 @@
-/* Mobile app-style header: no hamburger drawer, no duplicate top actions. */
+/* Mobile app-style header: homepage uses the shared top header; menu/product
+   pages keep their dedicated compact headers. */
 @media (max-width: 900px) {
-  /* Homepage header */
+  /* Homepage header is replaced by HomeTopHeader so the logo can sit left
+     with the profile icon on the right. */
   .site-shell > .site-header {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  .site-shell > .site-header .wordmark {
-    position: absolute !important;
-    left: 50% !important;
-    top: 50% !important;
-    z-index: 2;
-    display: grid !important;
-    place-items: center !important;
-    margin: 0 !important;
-    transform: translate(-50%, -50%) !important;
-  }
-
-  .site-shell > .site-header .brand-logo--header {
-    width: 3.35rem !important;
-    height: 3.35rem !important;
+    display: none !important;
   }
 
   .site-shell > .site-header .desktop-nav,
@@ -31,7 +15,7 @@
     display: none !important;
   }
 
-  /* Menu and product page headers use the same centred-logo app pattern. */
+  /* Menu and product page headers keep the compact centred-logo app pattern. */
   .catalogue-shell > .catalogue-header,
   .product-page-shell > .catalogue-header {
     display: flex !important;

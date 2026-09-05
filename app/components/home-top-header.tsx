@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { readSignedInCustomerProfile } from "../lib/customer-store";
+import { getBrowserClientOrNull } from "../lib/supabase/client";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
@@ -39,24 +40,58 @@ export default function HomeTopHeader() {
 
   useEffect(() => {
     const updateCartCount = () => setCartCount(readCartCount());
-    const updateAccount = () => setIsSignedIn(Boolean(readSignedInCustomerProfile()));
-    const updateAll = () => {
-      updateCartCount();
-      updateAccount();
-    };
+    updateCartCount();
 
-    updateAll();
     const interval = window.setInterval(updateCartCount, 1200);
-    window.addEventListener("storage", updateAll);
-    window.addEventListener("focus", updateAll);
+    window.addEventListener("storage", updateCartCount);
+    window.addEventListener("focus", updateCartCount);
     window.addEventListener("nasty-cart-updated", updateCartCount);
-    window.addEventListener("nasty-customer-updated", updateAccount);
+
     return () => {
       window.clearInterval(interval);
-      window.removeEventListener("storage", updateAll);
-      window.removeEventListener("focus", updateAll);
+      window.removeEventListener("storage", updateCartCount);
+      window.removeEventListener("focus", updateCartCount);
       window.removeEventListener("nasty-cart-updated", updateCartCount);
-      window.removeEventListener("nasty-customer-updated", updateAccount);
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const supabase = getBrowserClientOrNull();
+
+    async function updateAccount() {
+      if (!supabase) {
+        if (active) setIsSignedIn(Boolean(readSignedInCustomerProfile()));
+        return;
+      }
+
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (active) setIsSignedIn(Boolean(user));
+      } catch {
+        if (active) setIsSignedIn(false);
+      }
+    }
+
+    void updateAccount();
+
+    const { data: authState } = supabase?.auth.onAuthStateChange((_event, session) => {
+      if (active) setIsSignedIn(Boolean(session?.user));
+    }) ?? { data: { subscription: null } };
+
+    const refreshAccount = () => void updateAccount();
+    window.addEventListener("storage", refreshAccount);
+    window.addEventListener("focus", refreshAccount);
+    window.addEventListener("nasty-customer-updated", refreshAccount);
+
+    return () => {
+      active = false;
+      authState.subscription?.unsubscribe();
+      window.removeEventListener("storage", refreshAccount);
+      window.removeEventListener("focus", refreshAccount);
+      window.removeEventListener("nasty-customer-updated", refreshAccount);
     };
   }, []);
 

@@ -603,7 +603,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               <section className="product-drawer-group" aria-labelledby="product-box-burgers-title">
                 <div className="product-drawer-group__heading">
                   <h3 id="product-box-burgers-title">Choose your Beast Burgers</h3>
-                  <p>{boxBurgers.length} of {item.boxConfig.burgerCount} selected.</p>
+                  <p>{boxBurgers.length} of {item.boxConfig!.burgerCount} selected.</p>
                 </div>
                 <div className="product-drawer-group__list">
                   {burgerChoices.map((burger) => {
@@ -620,7 +620,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                         <div className="product-stepper product-extra-drawer__stepper">
                           <button type="button" onClick={() => changeBoxSelection("burger", burger.id, -1)} disabled={selected === 0} aria-label={`Remove ${burger.name}`}><Minus size={15} /></button>
                           <strong>{selected}</strong>
-                          <button type="button" onClick={() => changeBoxSelection("burger", burger.id, 1)} disabled={boxBurgers.length >= item.boxConfig.burgerCount} aria-label={`Add ${burger.name}`}><Plus size={15} /></button>
+                          <button type="button" onClick={() => changeBoxSelection("burger", burger.id, 1)} disabled={boxBurgers.length >= item.boxConfig!.burgerCount} aria-label={`Add ${burger.name}`}><Plus size={15} /></button>
                         </div>
                       </div>
                     );
@@ -631,7 +631,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               <section className="product-drawer-group" aria-labelledby="product-box-drinks-title">
                 <div className="product-drawer-group__heading">
                   <h3 id="product-box-drinks-title">Choose your drinks</h3>
-                  <p>{boxDrinks.length} of {item.boxConfig.drinkCount} selected.</p>
+                  <p>{boxDrinks.length} of {item.boxConfig!.drinkCount} selected.</p>
                 </div>
                 <div className="product-drawer-group__list">
                   {adultDrinkChoices.map((choice) => {
@@ -648,7 +648,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                         <div className="product-stepper product-extra-drawer__stepper">
                           <button type="button" onClick={() => changeBoxSelection("drink", choice, -1)} disabled={selected === 0} aria-label={`Remove ${choice}`}><Minus size={15} /></button>
                           <strong>{selected}</strong>
-                          <button type="button" onClick={() => changeBoxSelection("drink", choice, 1)} disabled={boxDrinks.length >= item.boxConfig.drinkCount} aria-label={`Add ${choice}`}><Plus size={15} /></button>
+                          <button type="button" onClick={() => changeBoxSelection("drink", choice, 1)} disabled={boxDrinks.length >= item.boxConfig!.drinkCount} aria-label={`Add ${choice}`}><Plus size={15} /></button>
                         </div>
                       </div>
                     );
@@ -659,7 +659,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
 
             <div className="product-extras-drawer__footer">
               <span>
-                <small>{boxBurgers.length}/{item.boxConfig.burgerCount} burgers · {boxDrinks.length}/{item.boxConfig.drinkCount} drinks</small>
+                <small>{boxBurgers.length}/{item.boxConfig!.burgerCount} burgers · {boxDrinks.length}/{item.boxConfig!.drinkCount} drinks</small>
                 <strong>{money.format(item.price)}</strong>
               </span>
               <button type="button" onClick={() => setIsBoxDrawerOpen(false)}>Done</button>

@@ -3,28 +3,81 @@
   gap: 0;
 }
 
-/* Main customization trigger: one centered label only. */
+.product-custom-section--extras {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #f1d8d0;
+  border-radius: 1.15rem;
+  padding: 0.75rem;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(239, 61, 29, 0.12), transparent 42%),
+    #fff9f6;
+}
+
+.product-custom-section--extras::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: #ef3d1d;
+  content: "";
+}
+
 .product-extras-trigger {
+  position: relative;
   display: flex;
   width: 100%;
-  min-height: 3.35rem;
+  min-height: 3.65rem;
   align-items: center;
-  justify-content: center;
-  border: 1.5px solid #171513;
-  border-radius: 999px;
-  padding: 0.75rem 1.25rem;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  border: 1px solid #ef3d1d;
+  border-radius: 0.95rem;
+  padding: 0.8rem 3.2rem 0.8rem 1rem;
   background: #ffffff;
   color: #171513;
   font-size: 0.95rem;
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: left;
+  box-shadow: 0 8px 22px rgba(74, 31, 20, 0.06);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.product-extras-trigger::before {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  place-items: center;
+  border-radius: 0.65rem;
+  background: #ef3d1d;
+  color: #ffffff;
+  content: "+";
+  font-size: 1.25rem;
   font-weight: 850;
-  line-height: 1;
-  text-align: center;
+}
+
+.product-extras-trigger::after {
+  position: absolute;
+  right: 1rem;
+  color: #ef3d1d;
+  content: "→";
+  font-size: 1.1rem;
 }
 
 .product-extras-trigger:hover {
-  border-color: #171513;
   background: #171513;
   color: #ffffff;
+  box-shadow: 0 12px 28px rgba(23, 21, 19, 0.14);
+  transform: translateY(-1px);
+}
+
+.product-extras-trigger:hover::after {
+  color: #ff6a49;
 }
 
 .product-drawer-group {
@@ -38,6 +91,14 @@
   padding-top: 1.45rem;
 }
 
+.product-drawer-group--sauces {
+  margin-inline: -0.2rem;
+  border: 1px solid #f2d9d1 !important;
+  border-radius: 1rem;
+  padding: 1rem !important;
+  background: #fff8f5;
+}
+
 .product-drawer-group__heading {
   display: grid;
   gap: 0.25rem;
@@ -46,9 +107,13 @@
 .product-drawer-group__heading h3 {
   margin: 0;
   color: #171513;
-  font-size: 1.05rem;
-  font-weight: 900;
-  letter-spacing: -0.025em;
+  font-size: 1.08rem;
+  font-weight: 950;
+  letter-spacing: -0.03em;
+}
+
+.product-drawer-group--sauces .product-drawer-group__heading h3 {
+  color: #d53519;
 }
 
 .product-drawer-group__heading p {
@@ -71,7 +136,7 @@
   align-items: center;
   gap: 0.85rem;
   border: 1px solid #e7e7e7;
-  border-radius: 0.85rem;
+  border-radius: 0.9rem;
   padding: 0.68rem 0.78rem;
   background: #f8f8f8;
   color: #171513;
@@ -103,21 +168,63 @@
   box-shadow: none;
 }
 
+.product-extras-drawer .product-extra-drawer__option.is-selected {
+  border-color: rgba(239, 61, 29, 0.58);
+  background: #fff5f1;
+  box-shadow: inset 3px 0 0 #ef3d1d;
+}
+
 .product-extras-drawer .product-drink-drawer__thumb img,
 .product-box-drawer .product-drink-drawer__thumb img {
   object-fit: contain;
   padding: 0.15rem;
 }
 
-@media (max-width: 680px) {
+.product-drink-placeholder {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  border-radius: 0.7rem;
+  background: #ffe95b;
+  color: #171513;
+  font-size: 0.62rem;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
   .product-extras-trigger {
-    min-height: 3.15rem;
-    padding-inline: 1rem;
+    transition: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .product-custom-section--extras {
+    border-radius: 1rem;
+    padding: 0.58rem;
+  }
+
+  .product-extras-trigger {
+    min-height: 3.4rem;
+    padding: 0.72rem 2.8rem 0.72rem 0.8rem;
+    font-size: 0.88rem;
+  }
+
+  .product-extras-trigger::before {
+    width: 1.8rem;
+    height: 1.8rem;
+    flex-basis: 1.8rem;
   }
 
   .product-drawer-group + .product-drawer-group {
     margin-top: 1.3rem;
     padding-top: 1.25rem;
+  }
+
+  .product-drawer-group--sauces {
+    margin-inline: 0;
+    padding: 0.8rem !important;
   }
 
   .product-ingredient-drawer__option {

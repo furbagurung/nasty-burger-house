@@ -38,7 +38,7 @@ export default function DripPointsBanner() {
     if (!portalHost) {
       portalHost = document.createElement("div");
       portalHost.className = "drip-points-banner-host";
-      menuPreview.parentElement.insertBefore(portalHost, menuPreview);
+      menuPreview.parentElement.insertBefore(portalHost, menuPreview.nextSibling);
     }
 
     setHost(portalHost);

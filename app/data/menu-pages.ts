@@ -15,7 +15,7 @@ export const menuPageCategories: MenuPageCategory[] = [
     shortLabel: "★",
     image: "/images/menu/BBQ-Beast.jpg",
     description:
-      "Start with the Nasty favourites, monthly specials and boxes built for a bigger feed.",
+      "Start with the Nasty favourites, featured picks and boxes built for a bigger feed.",
   },
   {
     id: "burgers",
@@ -55,21 +55,21 @@ export const menuPageCategories: MenuPageCategory[] = [
     shortLabel: "V",
     image: "/images/menu/green-beast.jpg",
     description:
-      "Vegetarian burgers, sides and desserts from across the Nasty Burger House menu.",
+      "Green Beast, Nasty Fries and Dirty Eggplant — the vegetarian Nasty favourites.",
   },
   {
     id: "sweet",
-    label: "Desserts",
+    label: "Dessert",
     shortLabel: "D",
     image: "/images/menu/mango-pudding.jpg",
     description: "Finish the feed with a fresh Nasty Burger House dessert.",
   },
   {
     id: "drinks",
-    label: "Nasty Drinks",
-    shortLabel: "ND",
+    label: "Drinks",
+    shortLabel: "DR",
     image: "/images/menu/coke.webp",
-    description: "Cold drinks and water for your meal, combo or Beast Box.",
+    description: "Solo, Coke, Fanta and mineral water for your meal, combo or Beast Box.",
   },
 ];
 

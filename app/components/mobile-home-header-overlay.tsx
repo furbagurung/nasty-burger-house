@@ -17,19 +17,42 @@ export default function MobileHomeHeaderOverlay() {
 
     if (!header || !hero) return;
 
+    let lastScrollY = window.scrollY;
+    let isHidden = false;
+
     const updateHeader = () => {
       if (!mobileQuery.matches) {
-        header.classList.remove("is-mobile-hero-overlay");
+        header.classList.remove(
+          "is-mobile-hero-overlay",
+          "is-mobile-scroll-hidden",
+        );
+        isHidden = false;
+        lastScrollY = window.scrollY;
         return;
       }
 
+      const currentY = Math.max(0, window.scrollY);
       const heroBottom = hero.getBoundingClientRect().bottom;
       const headerHeight = header.getBoundingClientRect().height;
+      const mobileDrawerOpen = Boolean(
+        document.querySelector(".site-shell > .mobile-nav-backdrop"),
+      );
 
       header.classList.toggle(
         "is-mobile-hero-overlay",
         heroBottom > headerHeight + 8,
       );
+
+      if (mobileDrawerOpen || currentY <= 14) {
+        isHidden = false;
+      } else if (currentY > lastScrollY + 4 && currentY > 52) {
+        isHidden = true;
+      } else if (currentY < lastScrollY - 4) {
+        isHidden = false;
+      }
+
+      header.classList.toggle("is-mobile-scroll-hidden", isHidden);
+      lastScrollY = currentY;
     };
 
     updateHeader();
@@ -38,7 +61,10 @@ export default function MobileHomeHeaderOverlay() {
     mobileQuery.addEventListener("change", updateHeader);
 
     return () => {
-      header.classList.remove("is-mobile-hero-overlay");
+      header.classList.remove(
+        "is-mobile-hero-overlay",
+        "is-mobile-scroll-hidden",
+      );
       window.removeEventListener("scroll", updateHeader);
       window.removeEventListener("resize", updateHeader);
       mobileQuery.removeEventListener("change", updateHeader);

@@ -1,0 +1,71 @@
+.home-top-header__account-dropdown > a,
+.home-top-header__account-dropdown > button {
+  gap: 0.7rem;
+}
+
+.home-top-header__dropdown-icon {
+  display: grid;
+  width: 1.9rem;
+  height: 1.9rem;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 0.58rem;
+  background: #f3f0eb;
+  color: currentColor;
+  opacity: 0.78;
+  transition:
+    background-color 140ms ease,
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+.home-top-header__account-dropdown > a:hover .home-top-header__dropdown-icon,
+.home-top-header__account-dropdown > button:hover .home-top-header__dropdown-icon {
+  background: #ffffff;
+  opacity: 1;
+  transform: translateX(1px);
+}
+
+/* Keep the Beast of the Month card unavailable without showing a blocked cursor.
+   Fade only the underlying card content so the Coming Soon sticker stays crisp. */
+.menu-preview-card--clean.is-disabled {
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: default !important;
+}
+
+.menu-preview-card--clean.is-disabled .menu-preview-card__image > img:not(.home-menu-card__sticker) {
+  opacity: 0.42 !important;
+  filter: grayscale(0.18) saturate(0.7) !important;
+}
+
+.menu-preview-card--clean.is-disabled > strong {
+  opacity: 0.5 !important;
+}
+
+.menu-preview-card--clean.is-disabled .home-menu-card__sticker {
+  opacity: 1 !important;
+  filter: none !important;
+  animation: nasty-coming-soon-float 2.35s ease-in-out infinite alternate !important;
+  will-change: transform;
+}
+
+@keyframes nasty-coming-soon-float {
+  from {
+    transform: translate3d(0, 4px, 0);
+  }
+  to {
+    transform: translate3d(0, -7px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-preview-card--clean.is-disabled .home-menu-card__sticker {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .home-top-header__dropdown-icon {
+    transition: none;
+  }
+}

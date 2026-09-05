@@ -1,3 +1,4 @@
+import FindUsSection from "./components/find-us-section";
 import HomeBeastMonthEnhancer from "./components/home-beast-month-enhancer";
 import HomeMenuCategoriesEnhancer from "./components/home-menu-categories-enhancer";
 import OrderExperience from "./components/order-experience";
@@ -11,6 +12,7 @@ export default function Home() {
         items={menuItems}
         initialServiceStatus={getServiceStatus()}
       />
+      <FindUsSection />
       <HomeBeastMonthEnhancer />
       <HomeMenuCategoriesEnhancer />
     </>

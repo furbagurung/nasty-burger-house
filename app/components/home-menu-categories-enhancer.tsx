@@ -404,7 +404,7 @@ export default function HomeMenuCategoriesEnhancer() {
       }
 
       .menu-preview-card--clean.is-disabled {
-        opacity: 0.5;
+        opacity: 1;
         filter: grayscale(0.15);
         cursor: not-allowed;
       }
@@ -417,7 +417,7 @@ export default function HomeMenuCategoriesEnhancer() {
         position: absolute;
         top: 0.75rem;
         right: 0.75rem;
-        width: 5.5rem;
+        width: 7rem;
         height: auto;
         z-index: 3;
         object-fit: contain;
@@ -426,7 +426,7 @@ export default function HomeMenuCategoriesEnhancer() {
 
       @media (max-width: 768px) {
         .home-menu-card__sticker {
-          width: 4.25rem;
+          width: 5.5rem;
           top: 0.5rem;
           right: 0.5rem;
         }

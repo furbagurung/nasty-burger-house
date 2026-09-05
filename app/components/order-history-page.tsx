@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
-  readCustomerOrders,
-  readSignedInCustomerProfile,
-  type CustomerOrder,
-} from "../lib/customer-store";
+  loadCurrentCustomer,
+  loadCustomerOrders,
+} from "../lib/customer-backend";
+import type { CustomerOrder } from "../lib/customer-store";
 import MobileBottomNav from "./mobile-bottom-nav";
 
 const money = new Intl.NumberFormat("en-AU", {
@@ -32,11 +32,30 @@ export default function OrderHistoryPage() {
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
   const [ready, setReady] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    setSignedIn(Boolean(readSignedInCustomerProfile()));
-    setOrders(readCustomerOrders());
-    setReady(true);
+    let active = true;
+    async function load() {
+      try {
+        const [customer, customerOrders] = await Promise.all([
+          loadCurrentCustomer(),
+          loadCustomerOrders(),
+        ]);
+        if (!active) return;
+        setSignedIn(Boolean(customer));
+        setOrders(customerOrders);
+      } catch (loadError) {
+        if (!active) return;
+        setError(loadError instanceof Error ? loadError.message : "Could not load order history.");
+      } finally {
+        if (active) setReady(true);
+      }
+    }
+    void load();
+    return () => {
+      active = false;
+    };
   }, []);
 
   if (!ready) {
@@ -49,21 +68,23 @@ export default function OrderHistoryPage() {
         <div className="standalone-page-heading">
           <p className="standalone-eyebrow">Nasty account</p>
           <div><h1>Order history</h1><span>{orders.length} order{orders.length === 1 ? "" : "s"}</span></div>
-          <p>Track what you ordered, how many Drip Points you earned and leave feedback.</p>
+          <p>Track your order status, receipts, Drip Points and completed-order reviews.</p>
         </div>
 
         {!signedIn && (
           <div className="account-inline-notice">
-            <span>This device has order history, but you&apos;re not signed in.</span>
-            <Link href="/account/sign-in">Sign in</Link>
+            <span>Sign in to sync your order history across devices.</span>
+            <Link href="/account/sign-in?return=/account/orders">Sign in</Link>
           </div>
         )}
+
+        {error && <div className="account-inline-notice"><span>{error}</span></div>}
 
         {orders.length === 0 ? (
           <section className="account-empty-card account-empty-card--orders">
             <p className="standalone-eyebrow">No orders yet</p>
             <h2>Your first Nasty order will show here.</h2>
-            <p>Order from the menu and your receipt, points and review link will be saved to this device.</p>
+            <p>Place an order while signed in and its live status, receipt and points will stay attached to your account.</p>
             <Link className="standalone-primary-button" href="/menu/burgers">Start an order</Link>
           </section>
         ) : (
@@ -79,14 +100,18 @@ export default function OrderHistoryPage() {
                   <strong>{money.format(order.subtotal)}</strong>
                 </div>
                 <div className="order-history-card__items">
-                  {order.lines.slice(0, 3).map((line) => (
-                    <span key={`${order.orderId}-${line.itemId}-${line.name}`}>{line.quantity}× {line.name}</span>
+                  {order.lines.slice(0, 3).map((line, index) => (
+                    <span key={`${order.orderId}-${line.itemId}-${index}`}>{line.quantity}× {line.name}</span>
                   ))}
                   {order.lines.length > 3 && <span>+{order.lines.length - 3} more</span>}
                 </div>
                 <div className="order-history-card__bottom">
                   <span>{order.pickupLabel}</span>
-                  <strong>{order.earnedDripPoints > 0 ? `+${order.earnedDripPoints} Drip Points` : "View order"}</strong>
+                  <strong>
+                    {order.earnedDripPoints > 0
+                      ? `${order.dripPointsStatus === "pending" ? "Pending " : "+"}${order.earnedDripPoints} Drip Points`
+                      : "View order"}
+                  </strong>
                 </div>
               </Link>
             ))}

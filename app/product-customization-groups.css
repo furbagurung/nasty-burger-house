@@ -1,0 +1,115 @@
+.product-extras-drawer__options {
+  display: block;
+  gap: 0;
+}
+
+.product-drawer-group {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.product-drawer-group + .product-drawer-group {
+  margin-top: 1.55rem;
+  border-top: 1px solid #ececec;
+  padding-top: 1.45rem;
+}
+
+.product-drawer-group__heading {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.product-drawer-group__heading h3 {
+  margin: 0;
+  color: #171513;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+
+.product-drawer-group__heading p {
+  margin: 0;
+  color: #817a72;
+  font-size: 0.73rem;
+  line-height: 1.45;
+}
+
+.product-drawer-group__list {
+  display: grid;
+  gap: 0.72rem;
+}
+
+.product-ingredient-drawer__option {
+  display: grid;
+  width: 100%;
+  min-height: 5.5rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  border: 1px solid #e7e7e7;
+  border-radius: 0.85rem;
+  padding: 0.68rem 0.78rem;
+  background: #f8f8f8;
+  color: #171513;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    opacity 140ms ease;
+}
+
+.product-ingredient-drawer__option:hover {
+  border-color: #bdbdbd;
+  background: #ffffff;
+}
+
+.product-ingredient-drawer__option.is-removed {
+  border-color: #d9d3cc;
+  background: #ffffff;
+}
+
+.product-ingredient-drawer__option.is-removed .product-drink-drawer__thumb,
+.product-ingredient-drawer__option.is-removed .product-drink-drawer__copy {
+  opacity: 0.56;
+}
+
+.product-ingredient-drawer__status {
+  min-width: 4.8rem;
+  border: 1px solid #d8d2ca;
+  border-radius: 999px;
+  padding: 0.43rem 0.7rem;
+  background: #ffffff;
+  color: #171513;
+  font-size: 0.68rem;
+  font-weight: 820;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.product-ingredient-drawer__option.is-removed .product-ingredient-drawer__status {
+  border-color: #171513;
+  background: #171513;
+  color: #ffffff;
+}
+
+.product-extras-drawer .product-drink-drawer__thumb img {
+  object-fit: contain;
+  padding: 0.15rem;
+}
+
+@media (max-width: 680px) {
+  .product-drawer-group + .product-drawer-group {
+    margin-top: 1.3rem;
+    padding-top: 1.25rem;
+  }
+
+  .product-ingredient-drawer__option {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .product-ingredient-drawer__status {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

@@ -73,9 +73,8 @@
   }
 }
 
-/* Menu tab: the bottom navigation already identifies the current section,
-   so the catalogue header is unnecessary on phone layouts. Product pages
-   keep their own top header for context/navigation. */
+/* Menu tab: hide the top app header. Keep the left category rail in its
+   existing kiosk layout; only the right browsing pane gets a pinned heading. */
 @media (max-width: 680px) {
   .catalogue-shell:not(.product-page-shell) > .catalogue-header {
     display: none !important;
@@ -86,12 +85,27 @@
     padding-top: 0 !important;
   }
 
+  /* Preserve the existing left category rail layout. */
   .catalogue-shell:not(.product-page-shell) .catalogue-categories {
     top: 0 !important;
     height: calc(100svh - 4.75rem - env(safe-area-inset-bottom)) !important;
   }
 
-  /* Keep the current menu category title visible while its products scroll. */
+  /* Right-side browsing pane scrolls independently so its title stays put. */
+  .catalogue-shell:not(.product-page-shell) .catalogue-content {
+    height: calc(100svh - 4.75rem - env(safe-area-inset-bottom)) !important;
+    min-height: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain;
+    padding-top: 0 !important;
+    scrollbar-width: none;
+  }
+
+  .catalogue-shell:not(.product-page-shell) .catalogue-content::-webkit-scrollbar {
+    display: none;
+  }
+
   .catalogue-shell:not(.product-page-shell) .catalogue-heading {
     position: sticky !important;
     top: 0 !important;

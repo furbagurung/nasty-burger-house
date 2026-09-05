@@ -84,7 +84,6 @@ export default function HomeTopHeader() {
         setIsHeroTransparent(false);
       }
 
-      // Menu and product pages keep the shared desktop header permanently visible.
       if (isMenuPage || isProductPage) {
         setIsHidden(false);
         lastScrollY.current = currentY;
@@ -148,19 +147,8 @@ export default function HomeTopHeader() {
 
       <nav className="home-top-header__nav" aria-label="Primary navigation">
         <a href="/menu/burgers">Menu</a>
-        <a href={isHome ? "#beast-month" : "/#beast-month"}>
-          Beast of the Month
-        </a>
-        <button
-          className="home-top-header__drip"
-          type="button"
-          onClick={() =>
-            triggerHomeAction(
-              ".site-shell > .site-header .nav-button",
-              "/?loyalty=1",
-            )
-          }
-        >
+        <a href="/beast-of-the-month">Beast of the Month</a>
+        <a className="home-top-header__drip" href="/drip-points">
           <span className="home-top-header__drip-icon" aria-hidden="true">
             <Image
               src="/images/drip-points/drip-coin.png"
@@ -170,7 +158,7 @@ export default function HomeTopHeader() {
             />
           </span>
           <span>Drip Points</span>
-        </button>
+        </a>
       </nav>
 
       <div className="home-top-header__actions">
@@ -180,7 +168,7 @@ export default function HomeTopHeader() {
           onClick={() =>
             triggerHomeAction(
               ".site-shell > .site-header .nav-button",
-              "/?loyalty=1",
+              "/drip-points",
             )
           }
           aria-label="Account sign in"
@@ -197,12 +185,9 @@ export default function HomeTopHeader() {
         <button
           className="home-top-header__cart home-top-header__cart--bag"
           type="button"
-          onClick={() =>
-            triggerHomeAction(
-              ".site-shell > .site-header .cart-button",
-              "/?cart=1",
-            )
-          }
+          onClick={() => {
+            window.location.href = "/cart";
+          }}
           aria-label={`Open cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}
         >
           <span className="home-top-header__bag-mark" aria-hidden="true">

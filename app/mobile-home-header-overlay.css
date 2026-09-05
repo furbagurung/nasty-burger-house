@@ -1,0 +1,43 @@
+/* Homepage mobile header overlays the hero instead of reserving vertical space. */
+@media (max-width: 900px) {
+  .site-shell {
+    position: relative;
+  }
+
+  .site-shell > .site-header {
+    position: fixed !important;
+    inset: 0 0 auto !important;
+    z-index: 70 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    transition:
+      background-color 220ms ease,
+      border-color 220ms ease,
+      box-shadow 220ms ease,
+      -webkit-backdrop-filter 220ms ease,
+      backdrop-filter 220ms ease;
+  }
+
+  .site-shell > .site-header.is-mobile-hero-overlay {
+    border-bottom-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .site-shell > .home-main {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel {
+    margin-top: 0 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-shell > .site-header {
+    transition: none !important;
+  }
+}

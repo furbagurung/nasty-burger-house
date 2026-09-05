@@ -15,15 +15,16 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3001
 
 `SUPABASE_SECRET_KEY` is server-only. Never expose it in a `NEXT_PUBLIC_` variable or send it to the browser.
 
-## 2. Apply the database migration
+## 2. Apply the database migrations
 
-Run the canonical migration:
+Apply the SQL files in `supabase/migrations/` in filename order:
 
 ```text
 supabase/migrations/202609050001_customer_platform.sql
+supabase/migrations/202609050002_permission_hardening.sql
 ```
 
-For the first setup, it can be pasted into the Supabase SQL Editor and run once. It creates:
+For the first setup, the files can be pasted into the Supabase SQL Editor and run in that order. They create and secure:
 
 - customer profiles tied to `auth.users`
 - admin membership
@@ -32,6 +33,7 @@ For the first setup, it can be pasted into the Supabase SQL Editor and run once.
 - reward-redemption records
 - verified-order reviews
 - Row Level Security policies
+- column-level write restrictions
 - the 500-point signup trigger
 - the order-points lifecycle trigger
 

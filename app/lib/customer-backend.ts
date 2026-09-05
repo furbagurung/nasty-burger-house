@@ -150,13 +150,22 @@ function mapOrder(row: OrderRow, ledgers: LedgerRow[]): CustomerOrder {
   };
 }
 
-export async function loadCurrentCustomer() {
+async function getAuthenticatedSupabase() {
   const supabase = getBrowserClientOrNull();
-  if (!supabase) return readSignedInCustomerProfile();
+  if (!supabase) return { supabase: null, user: null };
 
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser();
+
+  if (error) return { supabase, user: null };
+  return { supabase, user };
+}
+
+export async function loadCurrentCustomer() {
+  const { supabase, user } = await getAuthenticatedSupabase();
+  if (!supabase) return readSignedInCustomerProfile();
   if (!user) return null;
 
   const { data, error } = await supabase
@@ -175,7 +184,7 @@ export async function updateCurrentCustomer(input: {
   birthday?: string;
   email?: string;
 }) {
-  const supabase = getBrowserClientOrNull();
+  const { supabase, user } = await getAuthenticatedSupabase();
   if (!supabase) {
     const current = readSignedInCustomerProfile();
     return saveCustomerProfile({
@@ -185,10 +194,6 @@ export async function updateCurrentCustomer(input: {
       birthday: input.birthday,
     });
   }
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
   if (!user) return null;
 
   const { data, error } = await supabase
@@ -217,11 +222,12 @@ export async function signOutCurrentCustomer() {
 }
 
 export async function loadDripActivity() {
-  const supabase = getBrowserClientOrNull();
+  const { supabase, user } = await getAuthenticatedSupabase();
   if (!supabase) {
     const entries = readDripLedger();
     return { entries, balance: dripBalance(entries) };
   }
+  if (!user) return { entries: [] as DripLedgerEntry[], balance: 0 };
 
   const { data, error } = await supabase
     .from("drip_ledger")
@@ -234,8 +240,9 @@ export async function loadDripActivity() {
 }
 
 export async function loadCustomerOrders(): Promise<CustomerOrder[]> {
-  const supabase = getBrowserClientOrNull();
+  const { supabase, user } = await getAuthenticatedSupabase();
   if (!supabase) return readCustomerOrders();
+  if (!user) return [];
 
   const [ordersResult, ledgerResult] = await Promise.all([
     supabase
@@ -270,8 +277,9 @@ export async function loadCustomerOrder(orderId: string) {
 }
 
 export async function loadCustomerReviews(): Promise<CustomerReview[]> {
-  const supabase = getBrowserClientOrNull();
+  const { supabase, user } = await getAuthenticatedSupabase();
   if (!supabase) return readCustomerReviews();
+  if (!user) return [];
 
   const { data, error } = await supabase
     .from("reviews")
@@ -287,12 +295,8 @@ export async function saveReview(input: {
   rating: number;
   message: string;
 }) {
-  const supabase = getBrowserClientOrNull();
+  const { supabase, user } = await getAuthenticatedSupabase();
   if (!supabase) return saveCustomerReview(input);
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
   if (!user) throw new Error("Sign in to leave a review.");
 
   const { data, error } = await supabase

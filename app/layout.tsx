@@ -4,6 +4,7 @@ import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import CookieSettings from "./components/cookie-settings";
 import FooterLegalLinks from "./components/footer-legal-links";
 import HomeTopHeader from "./components/home-top-header";
+import ScrollReveal from "./components/scroll-reveal";
 import "./globals.css";
 import "./catalogue-theme.css";
 import "./menu-browse.css";
@@ -25,6 +26,7 @@ import "./drip-points.css";
 import "./cookie-settings.css";
 import "./help-support.css";
 import "./cart-drawer-mcdonalds.css";
+import "./scroll-reveal.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,6 +53,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <HomeTopHeader />
         {children}
+        <ScrollReveal />
         <CartDrawerEnhancer />
         <FooterLegalLinks />
         <CookieSettings />

@@ -81,10 +81,18 @@ export default function AccountCreatePage() {
 
     setSubmitting(true);
     try {
+      const siteUrl = (
+        process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin
+      ).replace(/\/$/, "");
+      const emailRedirectTo = `${siteUrl}/auth/callback?next=${encodeURIComponent(
+        safeDestination,
+      )}`;
+
       const { data, error: authError } = await supabase.auth.signUp({
         email: email.trim().toLowerCase(),
         password,
         options: {
+          emailRedirectTo,
           data: {
             name: name.trim(),
             phone: phone.trim(),

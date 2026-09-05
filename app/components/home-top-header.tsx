@@ -1,22 +1,13 @@
 "use client";
 
+import { UserIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
-import { UserRound } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
-
-function triggerHomeAction(selector: string, fallbackHref: string) {
-  const control = document.querySelector<HTMLButtonElement>(selector);
-
-  if (control) {
-    control.click();
-    return;
-  }
-
-  window.location.href = fallbackHref;
-}
 
 function readCartCount() {
   try {
@@ -47,13 +38,11 @@ export default function HomeTopHeader() {
 
   useEffect(() => {
     const updateCartCount = () => setCartCount(readCartCount());
-
     updateCartCount();
     const interval = window.setInterval(updateCartCount, 1200);
     window.addEventListener("storage", updateCartCount);
     window.addEventListener("focus", updateCartCount);
     window.addEventListener("nasty-cart-updated", updateCartCount);
-
     return () => {
       window.clearInterval(interval);
       window.removeEventListener("storage", updateCartCount);
@@ -66,7 +55,6 @@ export default function HomeTopHeader() {
     const catalogueScroller = document.querySelector<HTMLElement>(
       ".catalogue-shell:not(.product-page-shell) .catalogue-content",
     );
-
     const readCurrentScroll = () =>
       catalogueScroller ? catalogueScroller.scrollTop : window.scrollY;
 
@@ -97,7 +85,6 @@ export default function HomeTopHeader() {
       } else if (currentY < lastScrollY.current - 3) {
         setIsHidden(false);
       }
-
       lastScrollY.current = currentY;
     };
 
@@ -109,10 +96,7 @@ export default function HomeTopHeader() {
     updateWindowHeader();
     window.addEventListener("scroll", updateWindowHeader, { passive: true });
     window.addEventListener("resize", updateWindowHeader);
-    catalogueScroller?.addEventListener("scroll", updateCatalogueHeader, {
-      passive: true,
-    });
-
+    catalogueScroller?.addEventListener("scroll", updateCatalogueHeader, { passive: true });
     return () => {
       window.removeEventListener("scroll", updateWindowHeader);
       window.removeEventListener("resize", updateWindowHeader);
@@ -127,74 +111,39 @@ export default function HomeTopHeader() {
   ].join(" ");
 
   return (
-    <header
-      className={headerClassName}
-      aria-label="Nasty Burger House header"
-    >
-      <a
-        className="home-top-header__brand"
-        href="/"
-        aria-label="Nasty Burger House home"
-      >
-        <Image
-          src="/logo.webp"
-          alt="Nasty Burger House"
-          width={256}
-          height={256}
-          priority
-        />
-      </a>
+    <header className={headerClassName} aria-label="Nasty Burger House header">
+      <Link className="home-top-header__brand" href="/" aria-label="Nasty Burger House home">
+        <Image src="/logo.webp" alt="Nasty Burger House" width={256} height={256} priority />
+      </Link>
 
       <nav className="home-top-header__nav" aria-label="Primary navigation">
-        <a href="/menu/burgers">Menu</a>
-        <a href="/beast-of-the-month">Beast of the Month</a>
-        <a className="home-top-header__drip" href="/drip-points">
+        <Link href="/menu/burgers">Menu</Link>
+        <Link href="/beast-of-the-month">Beast of the Month</Link>
+        <Link className="home-top-header__drip" href="/drip-points">
           <span className="home-top-header__drip-icon" aria-hidden="true">
-            <Image
-              src="/images/drip-points/drip-coin.png"
-              alt=""
-              width={32}
-              height={32}
-            />
+            <Image src="/images/drip-points/drip-coin.png" alt="" width={32} height={32} />
           </span>
           <span>Drip Points</span>
-        </a>
+        </Link>
       </nav>
 
       <div className="home-top-header__actions">
-        <button
-          className="home-top-header__account"
-          type="button"
-          onClick={() =>
-            triggerHomeAction(
-              ".site-shell > .site-header .nav-button",
-              "/drip-points",
-            )
-          }
-          aria-label="Account sign in"
-        >
+        <Link className="home-top-header__account" href="/account" aria-label="Open customer account">
           <span className="home-top-header__icon" aria-hidden="true">
-            <UserRound size={22} strokeWidth={1.9} />
+            <HugeiconsIcon icon={UserIcon} size={22} color="currentColor" strokeWidth={1.9} />
           </span>
           <span className="home-top-header__action-copy">
             <small>Account</small>
-            <strong>Sign in</strong>
+            <strong>Profile</strong>
           </span>
-        </button>
+        </Link>
 
-        <button
-          className="home-top-header__cart home-top-header__cart--bag"
-          type="button"
-          onClick={() => {
-            window.location.href = "/cart";
-          }}
-          aria-label={`Open cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}
-        >
+        <Link className="home-top-header__cart home-top-header__cart--bag" href="/cart" aria-label={`Open cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}>
           <span className="home-top-header__bag-mark" aria-hidden="true">
             <Image src="/images/bag.webp" alt="" width={48} height={48} />
           </span>
           <strong className="home-top-header__cart-count">{cartCount}</strong>
-        </button>
+        </Link>
       </div>
     </header>
   );

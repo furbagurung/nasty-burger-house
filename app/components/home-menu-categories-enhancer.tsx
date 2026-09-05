@@ -90,21 +90,27 @@ function enhanceMenuGrid() {
   });
 }
 
-function bindSpringDrag(grid: HTMLElement) {
+function bindResponsiveDrag(grid: HTMLElement) {
   const mobileQuery = window.matchMedia("(max-width: 680px)");
+  const overdragThreshold = 34;
 
   let pointerId: number | null = null;
   let startX = 0;
   let startY = 0;
   let startScrollLeft = 0;
-  let lastX = 0;
-  let lastTime = 0;
-  let velocity = 0;
   let dragging = false;
   let suppressClick = false;
+  let overdragOffset = 0;
+  let maxRawOverdrag = 0;
   let animationFrame = 0;
 
-  const stopSpring = () => {
+  const setOverdrag = (value: number) => {
+    overdragOffset = value;
+    grid.style.setProperty("--menu-overdrag-offset", `${value}px`);
+    grid.classList.toggle("is-overdragging", Math.abs(value) > 0.2);
+  };
+
+  const stopBounce = () => {
     if (animationFrame) {
       window.cancelAnimationFrame(animationFrame);
       animationFrame = 0;
@@ -112,39 +118,21 @@ function bindSpringDrag(grid: HTMLElement) {
     grid.classList.remove("is-springing");
   };
 
-  const getSnapPoints = () => {
-    const cards = Array.from(
-      grid.querySelectorAll<HTMLElement>(":scope > .menu-preview-card--clean"),
-    );
-    const gridRect = grid.getBoundingClientRect();
-    const paddingLeft = Number.parseFloat(
-      window.getComputedStyle(grid).paddingLeft || "0",
-    );
-    const maxScroll = Math.max(0, grid.scrollWidth - grid.clientWidth);
-
-    return cards.map((card) => {
-      const cardRect = card.getBoundingClientRect();
-      const point =
-        cardRect.left - gridRect.left + grid.scrollLeft - paddingLeft;
-      return Math.max(0, Math.min(maxScroll, point));
-    });
-  };
-
-  const springTo = (target: number, initialVelocity: number) => {
-    stopSpring();
+  const springOverdragBack = () => {
+    stopBounce();
     grid.classList.add("is-springing");
 
-    let position = grid.scrollLeft;
-    let springVelocity = initialVelocity * 16;
+    let position = overdragOffset;
+    let springVelocity = 0;
 
     const tick = () => {
-      const distance = target - position;
-      springVelocity = (springVelocity + distance * 0.105) * 0.8;
+      const distance = -position;
+      springVelocity = (springVelocity + distance * 0.16) * 0.74;
       position += springVelocity;
-      grid.scrollLeft = position;
+      setOverdrag(position);
 
-      if (Math.abs(distance) < 0.45 && Math.abs(springVelocity) < 0.35) {
-        grid.scrollLeft = target;
+      if (Math.abs(position) < 0.35 && Math.abs(springVelocity) < 0.3) {
+        setOverdrag(0);
         grid.classList.remove("is-springing");
         animationFrame = 0;
         return;
@@ -160,46 +148,36 @@ function bindSpringDrag(grid: HTMLElement) {
     if (pointerId === null) return;
 
     if (dragging) {
-      const maxScroll = Math.max(0, grid.scrollWidth - grid.clientWidth);
-      const projected = Math.max(
-        0,
-        Math.min(maxScroll, grid.scrollLeft + velocity * 170),
-      );
-      const snapPoints = getSnapPoints();
-      const target = snapPoints.reduce(
-        (closest, point) =>
-          Math.abs(point - projected) < Math.abs(closest - projected)
-            ? point
-            : closest,
-        snapPoints[0] ?? projected,
-      );
+      if (maxRawOverdrag >= overdragThreshold && Math.abs(overdragOffset) > 0.2) {
+        springOverdragBack();
+      } else {
+        setOverdrag(0);
+      }
 
-      springTo(target, velocity);
       suppressClick = true;
       window.setTimeout(() => {
         suppressClick = false;
-      }, 180);
+      }, 160);
     }
 
     grid.classList.remove("is-dragging");
     pointerId = null;
     dragging = false;
-    velocity = 0;
+    maxRawOverdrag = 0;
   };
 
   const onPointerDown = (event: PointerEvent) => {
     if (!mobileQuery.matches || !event.isPrimary) return;
     if (event.pointerType === "mouse" && event.button !== 0) return;
 
-    stopSpring();
+    stopBounce();
+    setOverdrag(0);
     pointerId = event.pointerId;
     startX = event.clientX;
     startY = event.clientY;
     startScrollLeft = grid.scrollLeft;
-    lastX = event.clientX;
-    lastTime = performance.now();
-    velocity = 0;
     dragging = false;
+    maxRawOverdrag = 0;
   };
 
   const onPointerMove = (event: PointerEvent) => {
@@ -221,14 +199,28 @@ function bindSpringDrag(grid: HTMLElement) {
     }
 
     event.preventDefault();
-    grid.scrollLeft = startScrollLeft - dx;
 
-    const now = performance.now();
-    const elapsed = Math.max(1, now - lastTime);
-    const instantVelocity = -(event.clientX - lastX) / elapsed;
-    velocity = velocity * 0.7 + instantVelocity * 0.3;
-    lastX = event.clientX;
-    lastTime = now;
+    const maxScroll = Math.max(0, grid.scrollWidth - grid.clientWidth);
+    const rawTarget = startScrollLeft - dx;
+
+    if (rawTarget < 0) {
+      const rawOverdrag = Math.abs(rawTarget);
+      maxRawOverdrag = Math.max(maxRawOverdrag, rawOverdrag);
+      grid.scrollLeft = 0;
+      setOverdrag(Math.min(28, rawOverdrag * 0.22));
+      return;
+    }
+
+    if (rawTarget > maxScroll) {
+      const rawOverdrag = rawTarget - maxScroll;
+      maxRawOverdrag = Math.max(maxRawOverdrag, rawOverdrag);
+      grid.scrollLeft = maxScroll;
+      setOverdrag(-Math.min(28, rawOverdrag * 0.22));
+      return;
+    }
+
+    setOverdrag(0);
+    grid.scrollLeft = rawTarget;
   };
 
   const onPointerUp = (event: PointerEvent) => {
@@ -262,7 +254,9 @@ function bindSpringDrag(grid: HTMLElement) {
   grid.addEventListener("click", onClickCapture, true);
 
   return () => {
-    stopSpring();
+    stopBounce();
+    setOverdrag(0);
+    grid.style.removeProperty("--menu-overdrag-offset");
     grid.removeEventListener("pointerdown", onPointerDown);
     grid.removeEventListener("pointermove", onPointerMove);
     grid.removeEventListener("pointerup", onPointerUp);
@@ -279,7 +273,7 @@ export default function HomeMenuCategoriesEnhancer() {
     const grid = document.querySelector<HTMLElement>(".menu-preview__grid");
     if (!grid) return;
 
-    const unbindSpringDrag = bindSpringDrag(grid);
+    const unbindDrag = bindResponsiveDrag(grid);
     const observer = new MutationObserver(() => {
       window.requestAnimationFrame(enhanceMenuGrid);
     });
@@ -287,7 +281,7 @@ export default function HomeMenuCategoriesEnhancer() {
     observer.observe(grid, { childList: true, subtree: true });
     return () => {
       observer.disconnect();
-      unbindSpringDrag();
+      unbindDrag();
     };
   }, []);
 
@@ -463,14 +457,15 @@ export default function HomeMenuCategoriesEnhancer() {
           -webkit-user-select: none;
         }
 
-        .menu-preview__grid.is-dragging,
-        .menu-preview__grid.is-springing {
+        .menu-preview__grid.is-dragging {
           scroll-snap-type: none !important;
           scroll-behavior: auto !important;
+          cursor: grabbing;
         }
 
-        .menu-preview__grid.is-dragging {
-          cursor: grabbing;
+        .menu-preview__grid.is-overdragging .menu-preview-card--clean,
+        .menu-preview__grid.is-springing .menu-preview-card--clean {
+          transform: translate3d(var(--menu-overdrag-offset, 0px), 0, 0) !important;
         }
 
         .menu-preview__grid::-webkit-scrollbar {

@@ -149,6 +149,10 @@
   gap: 0.6rem;
 }
 
+.home-top-header__account-menu {
+  position: relative;
+}
+
 .home-top-header__account,
 .home-top-header__cart {
   position: relative;
@@ -159,6 +163,7 @@
   border-radius: 1rem;
   padding: 0.42rem 0.72rem;
   color: #fff;
+  text-decoration: none;
   transition:
     background-color 170ms ease,
     border-color 170ms ease,
@@ -168,6 +173,8 @@
 .home-top-header__account {
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(20, 20, 20, 0.72);
+  cursor: pointer;
+  font: inherit;
 }
 
 .home-top-header__cart {
@@ -184,7 +191,8 @@
 }
 
 .home-top-header__account:hover,
-.home-top-header__cart:hover {
+.home-top-header__cart:hover,
+.home-top-header__account[aria-expanded="true"] {
   border-color: rgba(255, 255, 255, 0.3);
   background: #2b2926;
   transform: translateY(-1px);
@@ -223,6 +231,87 @@
   margin-top: 0.24rem;
   font-size: 0.87rem;
   font-weight: 780;
+}
+
+.home-top-header__account-chevron {
+  display: inline-grid;
+  place-items: center;
+  width: 1rem;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.92rem;
+  line-height: 1;
+  transform: translateY(-0.08rem);
+}
+
+.home-top-header__account-dropdown {
+  position: absolute;
+  top: calc(100% + 0.7rem);
+  right: 0;
+  z-index: 90;
+  display: grid;
+  width: 17.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(23, 21, 19, 0.1);
+  border-radius: 1.15rem;
+  padding: 0.55rem;
+  background: #fff;
+  color: #171513;
+  box-shadow: 0 24px 65px rgba(0, 0, 0, 0.28);
+}
+
+.home-top-header__account-greeting {
+  display: grid;
+  gap: 0.22rem;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid #ece8e2;
+  padding: 0.75rem 0.8rem 0.85rem;
+}
+
+.home-top-header__account-greeting small {
+  color: #8b8379;
+  font-size: 0.67rem;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-top-header__account-greeting strong {
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+
+.home-top-header__account-dropdown > a,
+.home-top-header__account-dropdown > button {
+  display: flex;
+  width: 100%;
+  min-height: 2.8rem;
+  align-items: center;
+  border: 0;
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  background: transparent;
+  color: #171513;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 760;
+  text-align: left;
+  text-decoration: none;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.home-top-header__account-dropdown > a:hover,
+.home-top-header__account-dropdown > button:hover {
+  background: #f3f0eb;
+  color: #0c0b0a;
+}
+
+.home-top-header__account-dropdown > button:last-child {
+  margin-top: 0.3rem;
+  border-top: 1px solid #ece8e2;
+  border-radius: 0.4rem 0.4rem 0.75rem 0.75rem;
+  color: #9f241d;
 }
 
 .home-top-header__cart--bag {
@@ -283,7 +372,7 @@
   }
 }
 
-@media (max-width: 1050px) {
+@media (max-width: 1050px) and (min-width: 901px) {
   .home-top-header {
     gap: 1.6rem;
     padding-inline: 1.5rem;
@@ -298,9 +387,72 @@
   }
 }
 
+/* Homepage mobile header: logo left, profile icon right. Other mobile pages
+   continue using their existing dedicated app headers. */
 @media (max-width: 900px) {
   .home-top-header {
     display: none;
+  }
+
+  .home-top-header.is-home-route {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.55rem;
+    min-height: 4.35rem;
+    padding: 0.35rem max(0.85rem, env(safe-area-inset-left)) 0.35rem max(0.85rem, env(safe-area-inset-right));
+  }
+
+  .home-top-header.is-home-route .home-top-header__brand {
+    width: 3.45rem;
+    height: 3.45rem;
+    justify-self: start;
+  }
+
+  .home-top-header.is-home-route .home-top-header__nav {
+    display: none;
+  }
+
+  .home-top-header.is-home-route .home-top-header__actions {
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  .home-top-header.is-home-route .home-top-header__cart {
+    display: none;
+  }
+
+  .home-top-header.is-home-route .home-top-header__account {
+    width: 2.95rem;
+    min-width: 2.95rem;
+    min-height: 2.95rem;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0.25rem;
+    background: rgba(15, 14, 13, 0.64);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .home-top-header.is-home-route.is-dark .home-top-header__account {
+    background: #171615;
+  }
+
+  .home-top-header.is-home-route .home-top-header__icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .home-top-header.is-home-route .home-top-header__action-copy,
+  .home-top-header.is-home-route .home-top-header__account-chevron {
+    display: none;
+  }
+
+  .home-top-header.is-home-route .home-top-header__account-dropdown {
+    top: calc(100% + 0.6rem);
+    right: 0;
+    width: min(17.5rem, calc(100vw - 1.7rem));
   }
 }
 

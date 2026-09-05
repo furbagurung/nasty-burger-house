@@ -145,7 +145,6 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
     0,
   );
   const removedIngredientsCount = removedIngredients.length;
-  const hasCustomisations = selectedExtrasCount > 0 || removedIngredientsCount > 0;
   const hasDrawerOptions = availableModifiers.length > 0 || removableIngredients.length > 0;
 
   function changeModifier(id: string, amount: number) {
@@ -416,28 +415,11 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             {hasDrawerOptions && (
               <section className="product-custom-section product-custom-section--extras">
                 <button
-                  className={`product-extras-trigger${hasCustomisations ? " has-selection" : ""}`}
+                  className="product-extras-trigger"
                   type="button"
                   onClick={openExtrasDrawer}
                 >
-                  <span className="product-extras-trigger__copy">
-                    <small>Customise</small>
-                    <strong>Add extras</strong>
-                  </span>
-                  <span className="product-extras-trigger__summary">
-                    {hasCustomisations ? (
-                      <>
-                        <strong>
-                          {selectedExtrasCount > 0 ? `${selectedExtrasCount} extra${selectedExtrasCount === 1 ? "" : "s"}` : "No extras"}
-                          {removedIngredientsCount > 0 ? ` · ${removedIngredientsCount} removed` : ""}
-                        </strong>
-                        {selectedExtrasCount > 0 && <small>+{money.format(selectedExtrasPrice)}</small>}
-                      </>
-                    ) : (
-                      <strong>Customise item</strong>
-                    )}
-                  </span>
-                  <span className="product-extras-trigger__arrow" aria-hidden="true">→</span>
+                  Add more
                 </button>
               </section>
             )}
@@ -612,18 +594,15 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                 <section className="product-drawer-group product-drawer-group--ingredients" aria-labelledby="product-ingredients-group-title">
                   <div className="product-drawer-group__heading">
                     <h3 id="product-ingredients-group-title">Make it yours</h3>
-                    <p>Tap an ingredient to remove it.</p>
+                    <p>Uncheck an ingredient to remove it.</p>
                   </div>
                   <div className="product-drawer-group__list">
                     {removableIngredients.map((ingredient) => {
                       const removed = removedIngredients.includes(ingredient);
                       return (
-                        <button
+                        <label
                           className={`product-ingredient-drawer__option${removed ? " is-removed" : ""}`}
-                          type="button"
                           key={ingredient}
-                          onClick={() => toggleIngredient(ingredient)}
-                          aria-pressed={removed}
                         >
                           <span className="product-drink-drawer__thumb" aria-hidden="true">
                             <Image
@@ -635,12 +614,15 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                           </span>
                           <span className="product-drink-drawer__copy">
                             <strong>{ingredient}</strong>
-                            <small>{removed ? "Removed from your item" : "Included in your item"}</small>
                           </span>
-                          <span className="product-ingredient-drawer__status">
-                            {removed ? "Removed" : "Included"}
-                          </span>
-                        </button>
+                          <input
+                            className="product-ingredient-drawer__checkbox"
+                            type="checkbox"
+                            checked={!removed}
+                            onChange={() => toggleIngredient(ingredient)}
+                            aria-label={`Include ${ingredient}`}
+                          />
+                        </label>
                       );
                     })}
                   </div>

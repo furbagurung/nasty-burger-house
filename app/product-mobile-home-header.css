@@ -16,6 +16,20 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
     background: #0e0d0c !important;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2) !important;
+    transition:
+      opacity 180ms ease,
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 180ms ease !important;
+  }
+
+  /* Keep the customization, drink and Beast Box drawers visually full-screen.
+     Their backdrop is rendered as a direct child of the product shell, so the
+     header can hide only while one of those drawers is actually open. */
+  .product-page-shell:has(> .product-drink-drawer-backdrop) > .catalogue-header {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(-100%) !important;
   }
 
   .product-page-shell > .catalogue-header .catalogue-mobile-menu,
@@ -66,5 +80,11 @@
   .product-page-shell > .catalogue-header .catalogue-logo img {
     width: 3.05rem !important;
     height: 3.05rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-page-shell > .catalogue-header {
+    transition: none !important;
   }
 }

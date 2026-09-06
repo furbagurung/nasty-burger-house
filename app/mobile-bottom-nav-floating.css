@@ -1,0 +1,58 @@
+/* ========================================
+   MOBILE FLOATING BOTTOM NAV
+======================================== */
+@media (max-width: 768px) {
+  .mobile-tab-bar.mobile-tab-bar--v2 {
+    position: fixed;
+    right: auto;
+    left: 50%;
+    bottom: max(14px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    box-sizing: border-box;
+    width: calc(100% - 28px);
+    max-width: 420px;
+    min-height: 0 !important;
+    padding: 8px 10px !important;
+    background: rgba(20, 19, 18, 0.96) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 22px;
+    box-shadow:
+      0 12px 35px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    /* Keep the More sheet and other modal overlays above the navigation. */
+    z-index: 90 !important;
+    overflow: hidden;
+  }
+
+  .mobile-tab-bar--v2 .mobile-tab {
+    border-radius: 16px;
+    color: rgba(255, 255, 255, 0.75) !important;
+  }
+
+  .mobile-tab-bar--v2 .mobile-tab.is-active {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff !important;
+  }
+
+  .mobile-tab-bar--v2 .mobile-tab:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+  }
+
+  /* Fit the existing cart button inside the pill without clipping its badge. */
+  .mobile-tab-bar--v2 .mobile-tab__primary-cart-circle {
+    width: 2.8rem;
+    height: 2.8rem;
+    margin-top: 0;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+}
+
+/* The app currently shows its bottom navigation up to 680px. */
+@media (max-width: 680px) {
+  body:has(.mobile-tab-bar) {
+    padding-bottom: calc(100px + env(safe-area-inset-bottom));
+  }
+}

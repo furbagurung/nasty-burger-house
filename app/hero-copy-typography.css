@@ -1,0 +1,282 @@
+/* Hero copy treatment for Nasty Burger House photography.
+   Geist now carries the hero display typography for a cleaner, more premium
+   brand system while the CTA gets a richer, tactile interaction treatment. */
+
+.hero-carousel .hero-slide__copy {
+  top: 52% !important;
+  left: clamp(1.4rem, 5vw, 5.25rem) !important;
+  width: min(39rem, 42vw) !important;
+  max-width: 42vw !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #fff !important;
+  transform: translateY(-46%) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.28);
+}
+
+.hero-carousel .hero-slide__copy::before,
+.hero-carousel .hero-slide__copy::after {
+  display: none !important;
+  content: none !important;
+}
+
+.hero-carousel .hero-slide__copy .eyebrow {
+  margin: 0 0 clamp(0.65rem, 1vw, 0.95rem) !important;
+  color: #ff6a00 !important;
+  font-family: var(--font-geist-sans), Arial, sans-serif !important;
+  font-size: clamp(0.72rem, 1.05vw, 1rem) !important;
+  font-weight: 900 !important;
+  letter-spacing: clamp(0.18em, 0.28vw, 0.34em) !important;
+  line-height: 1.2 !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.42);
+}
+
+.hero-carousel .hero-slide__copy h1,
+.hero-carousel .hero-slide__copy h2 {
+  max-width: 9.8ch !important;
+  margin: 0 !important;
+  color: #fff !important;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif !important;
+  font-size: clamp(3.9rem, 6.2vw, 6.7rem) !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.07em !important;
+  line-height: 0.88 !important;
+  text-transform: uppercase !important;
+  text-wrap: balance;
+  text-shadow:
+    0 3px 0 rgba(0, 0, 0, 0.12),
+    0 12px 34px rgba(0, 0, 0, 0.34);
+}
+
+.hero-carousel .hero-slide__copy > p:not(.eyebrow) {
+  max-width: 29rem !important;
+  margin: clamp(0.9rem, 1.3vw, 1.25rem) 0 0 !important;
+  color: rgba(255, 255, 255, 0.82) !important;
+  font-family: var(--font-geist-sans), Arial, sans-serif !important;
+  font-size: clamp(1rem, 1.45vw, 1.35rem) !important;
+  font-weight: 520 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.28 !important;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.48);
+}
+
+.hero-carousel .hero-slide__copy .hero-actions {
+  margin-top: clamp(1.2rem, 1.8vw, 1.65rem) !important;
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex !important;
+  min-width: clamp(13.25rem, 17.5vw, 19rem) !important;
+  min-height: clamp(3.55rem, 4.5vw, 4.65rem) !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1.1rem !important;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 999px !important;
+  padding: 0.72rem 0.72rem 0.72rem clamp(1.35rem, 2vw, 2rem) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 46%),
+    linear-gradient(110deg, #f52f16 0%, #ff4920 52%, #ff5a24 100%) !important;
+  color: #fff !important;
+  font-family: var(--font-geist-sans), Arial, sans-serif !important;
+  font-size: clamp(0.98rem, 1.22vw, 1.16rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  box-shadow:
+    0 16px 36px rgba(232, 59, 24, 0.26),
+    0 5px 14px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(111, 13, 3, 0.18) !important;
+  text-shadow: none !important;
+  cursor: pointer;
+  transform: translateZ(0);
+  transition:
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 260ms ease,
+    border-color 260ms ease,
+    filter 260ms ease !important;
+}
+
+/* Soft moving highlight keeps the CTA feeling dimensional without becoming flashy. */
+.hero-carousel .hero-slide__copy .hero-card__cta::before {
+  position: absolute;
+  top: -65%;
+  bottom: -65%;
+  left: -38%;
+  z-index: -1;
+  width: 30%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  content: "";
+  pointer-events: none;
+  transform: rotate(14deg) translateX(0);
+  transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta::after {
+  display: grid;
+  width: clamp(2.35rem, 3vw, 3rem);
+  height: clamp(2.35rem, 3vw, 3rem);
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(14, 10, 8, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.12);
+  color: #fff;
+  content: "→";
+  font-size: 1.05em;
+  font-weight: 700;
+  line-height: 1;
+  transition:
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 260ms ease;
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta:hover {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow:
+    0 20px 44px rgba(232, 59, 24, 0.34),
+    0 7px 18px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  filter: saturate(1.06) brightness(1.03);
+  transform: translateY(-3px) !important;
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta:hover::before {
+  transform: rotate(14deg) translateX(460%);
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta:hover::after {
+  background: rgba(14, 10, 8, 0.28);
+  transform: translateX(3px) rotate(-4deg);
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta:active {
+  box-shadow:
+    0 10px 24px rgba(232, 59, 24, 0.24),
+    inset 0 2px 5px rgba(93, 12, 4, 0.18) !important;
+  transform: translateY(0) scale(0.985) !important;
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta:focus-visible {
+  outline: 3px solid #ffc928 !important;
+  outline-offset: 4px !important;
+}
+
+/* Add a very subtle left-side readability falloff over photography, not a card. */
+.hero-carousel .hero-slide::after {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(7, 6, 5, 0.54) 0%,
+    rgba(7, 6, 5, 0.26) 29%,
+    rgba(7, 6, 5, 0.06) 47%,
+    transparent 61%
+  );
+  content: "";
+}
+
+.hero-carousel .hero-slide__copy {
+  z-index: 7 !important;
+}
+
+@media (max-width: 980px) {
+  .hero-carousel .hero-slide__copy {
+    width: min(34rem, 48vw) !important;
+    max-width: 48vw !important;
+  }
+
+  .hero-carousel .hero-slide__copy h1,
+  .hero-carousel .hero-slide__copy h2 {
+    font-size: clamp(3.25rem, 7vw, 5.2rem) !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .hero-carousel .hero-slide::after {
+    background: linear-gradient(
+      180deg,
+      rgba(7, 6, 5, 0.04) 0%,
+      rgba(7, 6, 5, 0.08) 44%,
+      rgba(7, 6, 5, 0.72) 73%,
+      rgba(7, 6, 5, 0.94) 100%
+    );
+  }
+
+  .hero-carousel .hero-slide__copy {
+    top: auto !important;
+    right: 1rem !important;
+    bottom: 4.7rem !important;
+    left: 1rem !important;
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  .hero-carousel .hero-slide__copy .eyebrow {
+    margin-bottom: 0.5rem !important;
+    font-size: 0.64rem !important;
+    letter-spacing: 0.24em !important;
+  }
+
+  .hero-carousel .hero-slide__copy h1,
+  .hero-carousel .hero-slide__copy h2 {
+    max-width: 9ch !important;
+    font-size: clamp(2.85rem, 13vw, 4.4rem) !important;
+    letter-spacing: -0.065em !important;
+    line-height: 0.9 !important;
+  }
+
+  .hero-carousel .hero-slide__copy > p:not(.eyebrow) {
+    max-width: 24rem !important;
+    margin-top: 0.72rem !important;
+    font-size: 0.96rem !important;
+    line-height: 1.32 !important;
+  }
+
+  .hero-carousel .hero-slide__copy .hero-actions {
+    margin-top: 1rem !important;
+  }
+
+  .hero-carousel .hero-slide__copy .hero-card__cta {
+    min-width: min(16rem, 82vw) !important;
+    min-height: 3.5rem !important;
+    padding: 0.55rem 0.58rem 0.55rem 1.25rem !important;
+    font-size: 0.95rem !important;
+  }
+
+  .hero-carousel .hero-slide__copy .hero-card__cta::after {
+    width: 2.45rem;
+    height: 2.45rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-carousel .hero-slide__copy .hero-card__cta,
+  .hero-carousel .hero-slide__copy .hero-card__cta::before,
+  .hero-carousel .hero-slide__copy .hero-card__cta::after {
+    transition: none !important;
+  }
+}

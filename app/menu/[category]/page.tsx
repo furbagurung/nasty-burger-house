@@ -37,15 +37,15 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   if (!category) notFound();
 
+  const vegItemIds = new Set(["green-beast", "nasty-fries", "dirty-eggplant"]);
+
   const items =
     category.id === "featured"
       ? menuItems.filter((item) => item.featured)
       : category.id === "burgers"
-        ? menuItems.filter(
-            (item) => item.category === "burgers" || item.id === "monster-cheese",
-          )
+        ? menuItems.filter((item) => item.category === "burgers")
         : category.id === "veg"
-          ? menuItems.filter((item) => item.dietaryTags?.includes("Vegetarian"))
+          ? menuItems.filter((item) => vegItemIds.has(item.id))
           : menuItems.filter((item) => item.category === category.id);
 
   return <MenuCategoryPage category={category} items={items} />;

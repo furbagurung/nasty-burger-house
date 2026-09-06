@@ -3,10 +3,14 @@ import { Geist, Geist_Mono } from "next/font/google";
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import CookieSettings from "./components/cookie-settings";
 import DripPointsBanner from "./components/drip-points-banner";
+import FindStyleNavigation from "./components/find-style-navigation";
 import FooterLegalLinks from "./components/footer-legal-links";
+import HomepageTestimonials from "./components/homepage-testimonials";
 import HomeTopHeader from "./components/home-top-header";
 import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
+import MobileHomeLocation from "./components/mobile-home-location";
+import ToastProvider from "./components/toast-provider";
 import "./globals.css";
 import "./catalogue-theme.css";
 import "./menu-browse.css";
@@ -17,6 +21,7 @@ import "./shared-header-pages.css";
 import "./menu-catalogue-layout.css";
 import "./footer-dark.css";
 import "./footer-utility.css";
+import "./find-us-section.css";
 import "./product-detail-premium.css";
 import "./product-light-body.css";
 import "./product-page-refinements.css";
@@ -39,8 +44,26 @@ import "./mobile-bottom-nav-v2.css";
 import "./standalone-pages.css";
 import "./customer-account.css";
 import "./customer-header-overrides.css";
+import "./client-revision-polish.css";
+import "./hero-real-photography.css";
+import "./hero-copy-typography.css";
+import "./mobile-hero-premium-card.css";
+import "./mobile-home-location.css";
+import "./homepage-testimonials.css";
+import "./review-stories.css";
 import "./admin-dashboard.css";
 import "./admin-notification-ui.css";
+import "./mobile-header-always-dark.css";
+import "./homepage-spacing-tight.css";
+import "./find-style-navigation.css";
+import "./menu-mobile-header-polish.css";
+import "./menu-mobile-layout.css";
+import "./product-mobile-home-header.css";
+import "./product-combo-upgrade-card.css";
+import "./product-description-order.css";
+import "./toast.css";
+import "./loading.css";
+import "./cart-page-redesign.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,13 +89,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body>
         <HomeTopHeader />
+        <MobileHomeLocation />
+        <FindStyleNavigation />
         {children}
+        <HomepageTestimonials />
         <DripPointsBanner />
         <MobileHomeHeaderOverlay />
         <MobileHeroControls />
         <CartDrawerEnhancer />
         <FooterLegalLinks />
         <CookieSettings />
+        <ToastProvider />
       </body>
     </html>
   );

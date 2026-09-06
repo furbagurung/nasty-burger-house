@@ -1,0 +1,390 @@
+/* Nasty Burger House mobile navigation inspired by the interaction pattern of
+   Find Real Estate: two-line burger, top-origin full-screen reveal, staggered
+   menu items and an expandable menu group. */
+
+.nasty-find-burger,
+.nasty-find-drawer {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .site-shell > .site-header {
+    z-index: 130 !important;
+    transition:
+      background-color 280ms ease,
+      border-color 280ms ease,
+      box-shadow 280ms ease !important;
+  }
+
+  .site-shell > .site-header .mobile-menu-button {
+    display: none !important;
+  }
+
+  .nasty-find-burger {
+    position: relative;
+    display: block;
+    width: 3rem;
+    height: 3rem;
+    margin: 0;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    padding: 0;
+    background: #171615;
+    color: #fff;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background-color 220ms ease,
+      border-color 220ms ease,
+      transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nasty-find-burger::before {
+    position: absolute;
+    inset: -0.28rem;
+    border: 1px solid rgba(232, 59, 24, 0);
+    border-radius: inherit;
+    content: "";
+    transition: border-color 240ms ease;
+  }
+
+  .nasty-find-burger:hover {
+    border-color: rgba(255, 201, 40, 0.38);
+    background: #211e1b;
+  }
+
+  .nasty-find-burger:active {
+    transform: scale(0.96);
+  }
+
+  .nasty-find-burger[aria-expanded="true"] {
+    border-color: rgba(255, 201, 40, 0.34);
+    background: #0f0e0d;
+  }
+
+  .nasty-find-burger[aria-expanded="true"]::before {
+    border-color: rgba(232, 59, 24, 0.32);
+  }
+
+  .nasty-find-burger > span {
+    position: relative;
+    top: 0;
+    display: block;
+    width: 1.18rem;
+    height: 2px;
+    margin: 0.32rem auto;
+    border-radius: 999px;
+    background: currentColor;
+    transform: translateZ(0);
+    transition:
+      top 180ms 180ms ease,
+      transform 280ms 0ms cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 220ms ease;
+  }
+
+  .nasty-find-burger[aria-expanded="true"] > span {
+    background: #ffc928;
+    transition:
+      top 180ms 0ms ease,
+      transform 280ms 160ms cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 220ms ease;
+  }
+
+  .nasty-find-burger[aria-expanded="true"] > span:first-child {
+    top: 0.34rem;
+    transform: rotate(45deg);
+  }
+
+  .nasty-find-burger[aria-expanded="true"] > span:last-child {
+    top: -0.34rem;
+    transform: rotate(-45deg);
+  }
+
+  html.nasty-find-nav-open .site-shell > .site-header {
+    border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+    background: #0b0a09 !important;
+    box-shadow: none !important;
+  }
+
+  .nasty-find-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    display: block;
+    overflow: hidden;
+    visibility: hidden;
+    color: #fff;
+    pointer-events: none;
+    transition: visibility 0s linear 720ms;
+  }
+
+  .nasty-find-drawer.is-open {
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+
+  .nasty-find-drawer__surface {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 95% 14%, rgba(232, 59, 24, 0.16), transparent 25rem),
+      radial-gradient(circle at 5% 92%, rgba(255, 201, 40, 0.09), transparent 22rem),
+      #0b0a09;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 680ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nasty-find-drawer__surface::after {
+    position: absolute;
+    inset: auto 0 0;
+    height: 3px;
+    background: linear-gradient(90deg, #e83b18 0 48%, #ffc928 48% 72%, #171513 72% 100%);
+    content: "";
+    opacity: 0.9;
+  }
+
+  .nasty-find-drawer.is-open .nasty-find-drawer__surface {
+    transform: scaleY(1);
+  }
+
+  .nasty-find-drawer__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    height: 100dvh;
+    min-height: 100%;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding:
+      calc(5.25rem + env(safe-area-inset-top))
+      max(1.15rem, env(safe-area-inset-right))
+      calc(1rem + env(safe-area-inset-bottom))
+      max(1.15rem, env(safe-area-inset-left));
+    scrollbar-width: none;
+  }
+
+  .nasty-find-drawer__content::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nasty-find-drawer__link,
+  .nasty-find-drawer__actions {
+    opacity: 0;
+    transform: translateY(1.35rem);
+    transition:
+      opacity 340ms ease,
+      transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: 0ms;
+  }
+
+  .nasty-find-drawer.is-open .nasty-find-drawer__link,
+  .nasty-find-drawer.is-open .nasty-find-drawer__actions {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: calc(145ms + (var(--nasty-nav-index, 0) * 56ms));
+  }
+
+  .nasty-find-drawer__nav {
+    display: grid;
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nasty-find-drawer__link {
+    display: grid;
+    width: 100%;
+    min-height: 4.05rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.8rem;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.62rem 0;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .nasty-find-drawer__label {
+    overflow: hidden;
+    font-size: clamp(1.6rem, 7vw, 2.3rem);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+
+  .nasty-find-drawer__arrow,
+  .nasty-find-drawer__plus {
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 50%;
+  }
+
+  .nasty-find-drawer__arrow {
+    display: grid;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.78rem;
+    transition:
+      color 220ms ease,
+      border-color 220ms ease,
+      transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nasty-find-drawer__link:hover .nasty-find-drawer__arrow {
+    border-color: rgba(255, 201, 40, 0.5);
+    color: #ffc928;
+    transform: rotate(45deg);
+  }
+
+  .nasty-find-drawer__menu-group {
+    overflow: hidden;
+  }
+
+  .nasty-find-drawer__menu-trigger {
+    opacity: 0;
+    transform: translateY(1.35rem);
+  }
+
+  .nasty-find-drawer.is-open .nasty-find-drawer__menu-trigger {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: calc(145ms + (var(--nasty-nav-index, 1) * 56ms));
+  }
+
+  .nasty-find-drawer__plus {
+    position: relative;
+    display: block;
+  }
+
+  .nasty-find-drawer__plus i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.68rem;
+    height: 1.5px;
+    border-radius: 999px;
+    background: #ffc928;
+    transform: translate(-50%, -50%);
+    transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nasty-find-drawer__plus i:last-child {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .nasty-find-drawer__menu-trigger[aria-expanded="true"] .nasty-find-drawer__plus i:last-child {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  .nasty-find-drawer__submenu {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 240ms ease;
+  }
+
+  .nasty-find-drawer__menu-group.is-expanded .nasty-find-drawer__submenu {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+
+  .nasty-find-drawer__submenu-inner {
+    display: grid;
+    min-height: 0;
+    overflow: hidden;
+    padding-left: 0.6rem;
+  }
+
+  .nasty-find-drawer__submenu a {
+    display: flex;
+    min-height: 2.55rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.86rem;
+    font-weight: 720;
+    text-decoration: none;
+    transition:
+      color 180ms ease,
+      padding-left 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nasty-find-drawer__submenu a:hover {
+    padding-left: 0.3rem;
+    color: #ffc928;
+  }
+
+  .nasty-find-drawer__submenu a span {
+    color: #e83b18;
+  }
+
+  .nasty-find-drawer__actions {
+    margin-top: auto;
+    padding-top: 1.2rem;
+  }
+
+  .nasty-find-drawer__utility {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1rem 0.15rem 0.2rem;
+  }
+
+  .nasty-find-drawer__utility a {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7rem;
+    font-weight: 760;
+    text-decoration: none;
+  }
+
+  .nasty-find-drawer__utility a:hover {
+    color: #fff;
+  }
+}
+
+@media (max-width: 370px) {
+  .nasty-find-burger {
+    width: 2.7rem;
+    height: 2.7rem;
+  }
+
+  .nasty-find-drawer__content {
+    padding-top: calc(4.85rem + env(safe-area-inset-top));
+  }
+
+  .nasty-find-drawer__link {
+    min-height: 3.7rem;
+  }
+
+  .nasty-find-drawer__label {
+    font-size: clamp(1.45rem, 7vw, 1.95rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nasty-find-burger,
+  .nasty-find-burger > span,
+  .nasty-find-drawer,
+  .nasty-find-drawer__surface,
+  .nasty-find-drawer__link,
+  .nasty-find-drawer__actions,
+  .nasty-find-drawer__submenu,
+  .nasty-find-drawer__plus i {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}

@@ -1,0 +1,92 @@
+- generic [active] [ref=e1]:
+  - banner "Nasty Burger House header" [ref=e2]:
+    - link "Nasty Burger House home" [ref=e3] [cursor=pointer]:
+      - /url: /
+      - img "Nasty Burger House" [ref=e4]
+    - navigation "Primary navigation" [ref=e5]:
+      - link "Menu" [ref=e6] [cursor=pointer]:
+        - /url: /menu/burgers
+      - link "Beast of the Month" [ref=e7] [cursor=pointer]:
+        - /url: /beast-of-the-month
+      - link "Find Us" [ref=e8] [cursor=pointer]:
+        - /url: /#find-us
+      - link "Drip Points" [ref=e9] [cursor=pointer]:
+        - /url: /drip-points
+    - generic [ref=e12]:
+      - button "Account menu" [ref=e14] [cursor=pointer]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Account
+          - strong [ref=e21]: Sign in
+        - generic [aria-hidden] [ref=e22]: ⌄
+      - link "Open cart, 0 items" [ref=e23] [cursor=pointer]:
+        - /url: /cart
+        - strong [ref=e25]: "0"
+  - generic [ref=e26]:
+    - main [ref=e27]:
+      - complementary "Menu categories" [ref=e28]:
+        - paragraph [ref=e29]: Our menu
+        - navigation [ref=e30]:
+          - link "Beast Boxes" [ref=e31] [cursor=pointer]:
+            - /url: /menu/beast-boxes
+          - link "Burgers" [ref=e34] [cursor=pointer]:
+            - /url: /menu/burgers
+          - link "Sides" [ref=e37] [cursor=pointer]:
+            - /url: /menu/loaded-sides
+          - link "Kids" [ref=e40] [cursor=pointer]:
+            - /url: /menu/kids
+          - link "Veg" [ref=e43] [cursor=pointer]:
+            - /url: /menu/veg
+          - link "Dessert" [ref=e46] [cursor=pointer]:
+            - /url: /menu/sweet
+          - link "Drinks" [ref=e49] [cursor=pointer]:
+            - /url: /menu/drinks
+      - region [ref=e52]:
+        - heading "Burgers" [level=1] [ref=e54]
+        - generic [ref=e55]:
+          - link "View The OG Nasty" [ref=e56] [cursor=pointer]:
+            - /url: /product/og-nasty
+            - img "The OG Nasty" [ref=e58]
+            - heading "The OG Nasty" [level=2] [ref=e59]
+          - link "View Peri Beast" [ref=e60] [cursor=pointer]:
+            - /url: /product/peri-beast
+            - img "Peri Beast" [ref=e62]
+            - heading "Peri Beast" [level=2] [ref=e63]
+          - link "View Hooked" [ref=e64] [cursor=pointer]:
+            - /url: /product/hooked
+            - img "Hooked" [ref=e66]
+            - heading "Hooked" [level=2] [ref=e67]
+          - link "View Green Beast" [ref=e68] [cursor=pointer]:
+            - /url: /product/green-beast
+            - img "Green Beast" [ref=e70]
+            - heading "Green Beast" [level=2] [ref=e71]
+          - link "View BBQ Beast" [ref=e72] [cursor=pointer]:
+            - /url: /product/bbq-beast
+            - img "BBQ Beast" [ref=e74]
+            - heading "BBQ Beast" [level=2] [ref=e75]
+    - contentinfo [ref=e76]:
+      - generic [ref=e77]:
+        - img "Nasty Burger House" [ref=e78]
+        - paragraph [ref=e79]: Order online and collect from Nasty Burger House.
+      - navigation "Footer navigation" [ref=e80]:
+        - link "Home" [ref=e81] [cursor=pointer]:
+          - /url: /
+        - link "Menu" [ref=e82] [cursor=pointer]:
+          - /url: /menu/burgers
+        - link "Drip Points" [ref=e83] [cursor=pointer]:
+          - /url: /?loyalty=1
+      - navigation "Support, social and legal links" [ref=e84]:
+        - link "Help & Support" [ref=e85] [cursor=pointer]:
+          - /url: /help-support
+        - generic "Nasty Burger House social media" [ref=e86]:
+          - link "Nasty Burger House on Instagram" [ref=e87] [cursor=pointer]:
+            - /url: https://www.instagram.com/nastyburgerhouse/
+          - link "Nasty Burger House on TikTok" [ref=e92] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@nastyburgerhouse
+          - link "Nasty Burger House on Facebook" [ref=e96] [cursor=pointer]:
+            - /url: https://www.facebook.com/profile.php?id=61590139712227
+        - link "Privacy Policy" [ref=e100] [cursor=pointer]:
+          - /url: /privacy-policy
+        - link "Terms and Conditions" [ref=e101] [cursor=pointer]:
+          - /url: /terms-and-conditions
+        - button "Cookie Settings" [ref=e102] [cursor=pointer]
+  - alert [ref=e103]

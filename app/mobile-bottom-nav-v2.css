@@ -1,12 +1,11 @@
 /* Mobile bottom navigation v2: Home · Menu · Cart · Drip Points · More */
 
 @media (max-width: 680px) {
-  /* Original edge-to-edge bottom bar. Keep this explicit so later mobile
-     polish cannot turn the navigation into a floating rounded tab. */
-  .mobile-tab-bar.mobile-tab-bar--v2,
   .mobile-tab-bar--v2 {
     position: fixed !important;
-    inset: auto 0 0 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
     z-index: 72 !important;
     width: 100% !important;
     max-width: none !important;
@@ -14,24 +13,34 @@
     grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
     min-height: calc(4.85rem + env(safe-area-inset-bottom)) !important;
     padding: 0.42rem 0.2rem calc(0.34rem + env(safe-area-inset-bottom)) !important;
-    overflow: visible !important;
     border: 0 !important;
     border-top: 1px solid rgba(21, 19, 15, 0.08) !important;
     border-radius: 0 !important;
-    background: rgba(255, 255, 255, 0.985) !important;
-    box-shadow: 0 -10px 34px rgba(25, 21, 16, 0.11) !important;
-    -webkit-backdrop-filter: blur(24px) !important;
-    backdrop-filter: blur(24px) !important;
+    background: #ffffff !important;
+    box-shadow: 0 -8px 24px rgba(25, 21, 16, 0.08) !important;
+    color-scheme: light !important;
     transform: none !important;
+  }
+
+  /* Keep the app tab bar visible and interactive while the More section is open. */
+  .mobile-tab-bar--v2.is-more-open {
+    z-index: 220 !important;
   }
 
   .mobile-tab-bar--v2 .mobile-tab {
     min-height: 3.85rem !important;
     gap: 0.28rem !important;
     padding: 0.2rem 0.12rem !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #746d65 !important;
     font-size: clamp(0.62rem, 2.8vw, 0.75rem) !important;
     font-weight: 760 !important;
     letter-spacing: -0.015em;
+  }
+
+  .mobile-tab-bar--v2 .mobile-tab.is-active {
+    color: var(--hot) !important;
   }
 
   .mobile-tab-bar--v2 .mobile-tab > svg {
@@ -101,42 +110,51 @@
 
   .mobile-more-backdrop {
     position: fixed;
-    inset: 0;
+    inset: 0 0 calc(4.85rem + env(safe-area-inset-bottom)) 0;
     z-index: 180;
     display: flex;
-    align-items: flex-end;
-    background: rgba(11, 10, 9, 0.52);
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter: blur(4px);
+    align-items: stretch;
+    background: #fff;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   .mobile-more-sheet {
     width: 100%;
-    max-height: min(78svh, 42rem);
+    height: 100%;
+    max-height: 100%;
     overflow-y: auto;
-    border-radius: 1.4rem 1.4rem 0 0;
-    padding: 0.8rem 1rem calc(1rem + env(safe-area-inset-bottom));
+    overscroll-behavior: contain;
+    border-radius: 0;
+    padding:
+      calc(0.75rem + env(safe-area-inset-top))
+      1rem
+      1.25rem;
     background: #fff;
-    box-shadow: 0 -22px 60px rgba(0, 0, 0, 0.22);
+    box-shadow: none;
   }
 
   .mobile-more-sheet::before {
-    display: block;
-    width: 2.5rem;
-    height: 0.27rem;
-    margin: 0.08rem auto 0.9rem;
-    border-radius: 999px;
-    background: #d8d4ce;
-    content: "";
+    display: none;
   }
 
   .mobile-more-sheet__heading {
+    position: sticky;
+    top: calc(-0.75rem - env(safe-area-inset-top));
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.2rem 0 1rem;
+    margin-inline: -1rem;
+    padding:
+      calc(0.95rem + env(safe-area-inset-top))
+      1rem
+      1rem;
     border-bottom: 1px solid #ece8e2;
+    background: rgba(255, 255, 255, 0.97);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
   }
 
   .mobile-more-sheet__heading p {

@@ -39,23 +39,20 @@ export type MenuItem = {
 };
 
 export const adultDrinkChoices = [
-  "Coca-Cola",
+  "SOLO",
+  "Coke",
   "Coke No Sugar",
-  "Sprite",
   "Fanta",
-  "Lift",
   "Water",
 ];
 
-// The latest printed menu lists soft drinks or water for the kids' meal upgrade.
 export const kidsDrinkChoices = adultDrinkChoices;
 
-const drinkImages: Record<string, string> = {
-  "Coca-Cola": "/images/menu/coke.webp",
+const drinkImages: Partial<Record<string, string>> = {
+  SOLO: "/images/menu/solo-can.png",
+  Coke: "/images/menu/Coke.webp",
   "Coke No Sugar": "/images/menu/coke no sugar.webp",
-  Sprite: "/images/menu/sprite.jpg",
-  Fanta: "/images/menu/fanta.webp",
-  Lift: "/images/menu/lift.avif",
+  Fanta: "/images/menu/fanta-can.png",
   Water: "/images/menu/water.jpg",
 };
 
@@ -64,15 +61,30 @@ export const comboUpgradePrice = 6.99;
 export const pricingNotice =
   "Standalone drink and modifier prices remain provisional. All printed menu item prices and the $6.99 meal upgrade are confirmed.";
 
+export const sauceModifierIds = [
+  "signature-sauce",
+  "garlic-aioli",
+  "jalapeno-mint-mayo",
+  "tartare-sauce",
+  "tomato-sauce",
+] as const;
+
 export const modifierChoices: ModifierChoice[] = [
   { id: "beef-patty", name: "Extra smashed beef patty", price: 4 },
-  { id: "chicken-patty", name: "Extra chicken patty", price: 4 },
+  { id: "chicken-patty", name: "Extra chicken", price: 4 },
   { id: "bacon", name: "Crispy bacon", price: 3 },
   { id: "cheese", name: "Extra American cheese", price: 2 },
+  // Legacy modifier retained so existing saved carts still price correctly.
   { id: "house-sauce", name: "Extra house sauce", price: 1.5 },
+  { id: "signature-sauce", name: "NBH Signature Sauce", price: 1.5 },
+  { id: "garlic-aioli", name: "Garlic Aioli", price: 1.5 },
+  { id: "jalapeno-mint-mayo", name: "Jalapeño Mint Mayo", price: 1.5 },
+  { id: "tartare-sauce", name: "Tartare Sauce", price: 1.5 },
+  { id: "tomato-sauce", name: "Tomato Sauce", price: 1.5 },
 ];
 
-const burgerModifierIds = ["beef-patty", "bacon", "cheese", "house-sauce"];
+const sauceAddOns = [...sauceModifierIds];
+const burgerModifierIds = ["beef-patty", "bacon", "cheese", ...sauceAddOns];
 
 export const menuItems: MenuItem[] = [
   {
@@ -98,31 +110,30 @@ export const menuItems: MenuItem[] = [
     id: "peri-beast",
     name: "Peri Beast",
     description:
-      "Tender flame-grilled peri-peri chicken thigh, marinated in our house-made signature peri-peri sauce, finished with fresh tomato, green cabbage slaw and creamy mayo on a toasted milk bun.",
+      "Tender flame-grilled peri-peri chicken, marinated in our house-made signature peri-peri sauce, finished with fresh tomato, green cabbage slaw and creamy mayo on a toasted milk bun.",
     category: "burgers",
     price: 19,
     image: "/images/menu/peri-beast.jpg",
     canUpgrade: true,
     dietaryTags: ["Halal"],
-    modifierIds: ["chicken-patty", "bacon", "cheese", "house-sauce"],
+    modifierIds: ["chicken-patty", "bacon", ...sauceAddOns],
     removableIngredients: ["Tomato", "Cabbage slaw", "Creamy mayo"],
   },
   {
     id: "hooked",
     name: "Hooked",
     description:
-      "Golden beer-battered fish fillet with house-made tartare sauce, American cheese, cos lettuce and creamy mayo on a toasted milk bun.",
+      "Golden beer-battered fish fillet with house-made tartare sauce, American cheese and cos lettuce on a toasted milk bun.",
     category: "burgers",
     price: 21,
     image: "/images/menu/hooked.jpg",
     canUpgrade: true,
     dietaryTags: ["Halal"],
-    modifierIds: ["cheese", "house-sauce"],
+    modifierIds: sauceAddOns,
     removableIngredients: [
       "Tartare sauce",
       "American cheese",
       "Cos lettuce",
-      "Creamy mayo",
     ],
   },
   {
@@ -135,7 +146,7 @@ export const menuItems: MenuItem[] = [
     image: "/images/menu/green-beast.jpg",
     canUpgrade: true,
     dietaryTags: ["Vegetarian"],
-    modifierIds: ["cheese", "house-sauce"],
+    modifierIds: ["cheese", ...sauceAddOns],
     removableIngredients: [
       "Jalapeño mint mayo",
       "Pickled onion",
@@ -172,7 +183,7 @@ export const menuItems: MenuItem[] = [
     image: "/images/menu/dirty-eggplant.jpg",
     canUpgrade: true,
     dietaryTags: ["Vegetarian"],
-    modifierIds: ["house-sauce"],
+    modifierIds: sauceAddOns,
     removableIngredients: ["Crispy fried onion", "Fresh coriander"],
   },
   {
@@ -185,7 +196,7 @@ export const menuItems: MenuItem[] = [
     image: "/images/menu/buffalo-fury.jpg",
     canUpgrade: true,
     dietaryTags: ["Halal"],
-    modifierIds: ["house-sauce"],
+    modifierIds: sauceAddOns,
     removableIngredients: ["Buffalo Fury sauce", "Blue cheese sauce"],
   },
   {
@@ -198,7 +209,7 @@ export const menuItems: MenuItem[] = [
     image: "/images/menu/nasty-fries.jpg",
     canUpgrade: true,
     dietaryTags: ["Vegetarian"],
-    modifierIds: ["house-sauce"],
+    modifierIds: sauceAddOns,
     removableIngredients: ["NBH seasoning", "Garlic aioli"],
   },
   {
@@ -212,7 +223,7 @@ export const menuItems: MenuItem[] = [
     canUpgrade: true,
     isKidsItem: true,
     dietaryTags: ["Halal"],
-    modifierIds: ["beef-patty", "cheese", "house-sauce"],
+    modifierIds: ["beef-patty", "cheese", ...sauceAddOns],
     removableIngredients: ["American cheese", "Tomato sauce", "Pickles"],
   },
   {
@@ -226,7 +237,7 @@ export const menuItems: MenuItem[] = [
     canUpgrade: true,
     isKidsItem: true,
     dietaryTags: ["Halal"],
-    modifierIds: ["house-sauce"],
+    modifierIds: sauceAddOns,
     removableIngredients: ["Tomato sauce"],
   },
   {
@@ -273,7 +284,7 @@ export const menuItems: MenuItem[] = [
   ...adultDrinkChoices.map((name) => ({
     id: name.toLowerCase().replaceAll(" ", "-"),
     name,
-    description: name === "Water" ? "Chilled bottle." : "Chilled can.",
+    description: name === "Water" ? "Chilled water bottle." : "Chilled can.",
     category: "drinks" as const,
     price: 4,
     priceConfirmed: false,

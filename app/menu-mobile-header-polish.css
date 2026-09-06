@@ -1,0 +1,24 @@
+/* Final mobile menu-header alignment: Location — Logo — Hamburger. */
+@media (max-width: 900px) {
+  .catalogue-shell:not(.product-page-shell) > .catalogue-header > .mobile-home-location {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-self: start !important;
+    margin: 0 !important;
+  }
+
+  .catalogue-shell:not(.product-page-shell) > .catalogue-header > .nasty-find-burger {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+    margin: 0 !important;
+  }
+
+  html.nasty-find-nav-open .catalogue-shell:not(.product-page-shell) > .catalogue-header {
+    transform: translateY(0) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+    background: #0b0a09 !important;
+    box-shadow: none !important;
+    pointer-events: auto !important;
+  }
+}

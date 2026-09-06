@@ -1,18 +1,14 @@
 import { sendAdminOrderEmail } from "../../lib/admin-notifications";
-import { calculateEarnedDripPoints } from "../../lib/loyalty";
 import { validateOrderPayload } from "../../lib/order";
 import {
   createOrderDispatchPayload,
   createOrderId,
   dispatchOrder,
 } from "../../lib/order-dispatch";
-import {
-  persistOrderToSupabase,
-  updateOrderNotificationStatus,
-} from "../../lib/order-persistence";
 import { getServiceStatus } from "../../lib/service";
-import { getAdminClientOrNull } from "../../lib/supabase/admin";
-import { getServerClientOrNull } from "../../lib/supabase/server";
+import { SquareApiError, squareConfigurationState } from "../../lib/square/api";
+import { createSquareCheckout } from "../../lib/square/checkout";
+import { findOrCreateSquareCustomer } from "../../lib/square/customers";
 
 const MAX_REQUEST_BYTES = 50_000;
 
@@ -23,6 +19,23 @@ export async function POST(request: Request) {
       { ok: false, errors: [serviceStatus.notice] },
       {
         status: 409,
+        headers: { "Cache-Control": "no-store" },
+      },
+    );
+  }
+
+  const squareState = squareConfigurationState();
+  if (!squareState.configured) {
+    return Response.json(
+      {
+        ok: false,
+        errors: [
+          "Secure online checkout is being connected. Please try again shortly.",
+        ],
+        square: squareState,
+      },
+      {
+        status: 503,
         headers: { "Cache-Control": "no-store" },
       },
     );
@@ -54,177 +67,81 @@ export async function POST(request: Request) {
     });
   }
 
-  // Membership and customer ownership are derived from the verified Supabase
-  // session. Client-supplied customerId/dripMember values are never trusted.
-  let customerId: string | null = null;
-  const serverSupabase = await getServerClientOrNull();
-  if (serverSupabase) {
-    const {
-      data: { user },
-    } = await serverSupabase.auth.getUser();
-
-    if (user) {
-      customerId = user.id;
-
-      // The auth trigger normally creates the row. This upsert only repairs a
-      // missing profile if the migration was applied after a user already existed.
-      const admin = getAdminClientOrNull();
-      if (admin) {
-        const { data: existingProfile } = await admin
-          .from("customers")
-          .select("id")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        if (!existingProfile) {
-          await admin.from("customers").upsert(
-            {
-              id: user.id,
-              name: validation.order.customer.name,
-              email: user.email ?? validation.order.customer.email,
-              phone: validation.order.customer.phone,
-            },
-            { onConflict: "id" },
-          );
-        }
-      }
-    }
-  }
-
   const orderId = createOrderId(validation.order.requestId);
-  const authenticatedOrder = {
+  const squareOrder = {
     ...validation.order,
-    customerId: customerId ?? undefined,
-    dripMember: Boolean(customerId),
+    customerId: undefined,
+    dripMember: false,
   };
-  const earnedDripPoints = customerId
-    ? calculateEarnedDripPoints(authenticatedOrder.subtotal)
-    : 0;
   const orderPayload = createOrderDispatchPayload(
-    authenticatedOrder,
+    squareOrder,
     serviceStatus,
     orderId,
   );
 
-  // Supabase is the production source of truth. Once an order is written there,
-  // alert delivery failures must never make the stored order disappear.
-  const persistence = await persistOrderToSupabase(orderPayload, customerId);
-  if (!persistence.ok && persistence.reason === "write-failed") {
-    console.error("[NBH Supabase order persistence failed]", persistence.detail);
-    return Response.json(
-      {
-        ok: false,
-        errors: ["We could not save the order. Please try again."],
-      },
-      {
-        status: 503,
-        headers: { "Cache-Control": "no-store" },
-      },
-    );
-  }
+  try {
+    const customer = await findOrCreateSquareCustomer({
+      ...validation.order.customer,
+      requestId: validation.order.requestId,
+    });
+    const checkout = await createSquareCheckout(orderPayload, customer);
 
-  const [webhookDispatch, emailDispatch] = await Promise.all([
-    dispatchOrder(orderPayload),
-    sendAdminOrderEmail(orderPayload),
-  ]);
-
-  const alertSent = webhookDispatch.ok || emailDispatch.ok;
-  const alertConfigured =
-    (webhookDispatch.ok || webhookDispatch.reason !== "not-configured") ||
-    (emailDispatch.ok || emailDispatch.reason !== "not-configured");
-  const adminNotification = alertSent
-    ? "sent"
-    : alertConfigured
-      ? "failed"
-      : "not-configured";
-
-  if (persistence.ok) {
-    await updateOrderNotificationStatus(orderId, adminNotification);
-
-    if (!alertSent) {
-      console.warn("[NBH external order alert unavailable]", {
-        orderId,
-        webhook: webhookDispatch.ok ? "sent" : webhookDispatch.reason,
-        email: emailDispatch.ok ? "sent" : emailDispatch.reason,
-      });
-    }
+    // Square is the commerce source of truth. Existing email/webhook alerts are
+    // retained only as optional operational notifications and never block checkout.
+    void Promise.all([
+      dispatchOrder(orderPayload),
+      sendAdminOrderEmail(orderPayload),
+    ]).then(([webhookDispatch, emailDispatch]) => {
+      if (!webhookDispatch.ok && !emailDispatch.ok) {
+        console.warn("[NBH optional order alert unavailable]", {
+          orderId,
+          webhook: webhookDispatch.reason,
+          email: emailDispatch.reason,
+        });
+      }
+    });
 
     return Response.json(
       {
         ok: true,
-        status: persistence.existing ? "already-submitted" : "submitted",
+        status: "payment-required",
         orderId,
-        subtotal: authenticatedOrder.subtotal,
-        paymentMethod: authenticatedOrder.paymentMethod,
-        paymentStatus: "unpaid",
-        earnedDripPoints,
-        dripPointsStatus: customerId ? "pending" : null,
-        adminNotification,
-        storageMode: "supabase",
-        message: "Pickup order received. Pay when you collect.",
+        squareOrderId: checkout.squareOrderId,
+        squareCustomerId: customer.id,
+        paymentLinkId: checkout.paymentLinkId,
+        checkoutUrl: checkout.checkoutUrl,
+        subtotal: validation.order.subtotal,
+        paymentMethod: "square_checkout",
+        paymentStatus: "pending",
+        earnedDripPoints: 0,
+        dripPointsStatus: null,
+        storageMode: "square",
+        message: "Continue to Square to securely pay for your pickup order.",
       },
       {
-        status: persistence.existing ? 200 : 201,
+        status: 201,
         headers: { "Cache-Control": "no-store" },
       },
     );
-  }
+  } catch (error) {
+    console.error("[NBH Square checkout failed]", error);
 
-  // Local/preview fallback while Supabase credentials are not configured.
-  if (!alertSent) {
-    if (!alertConfigured) {
-      console.warn("[NBH temporary order fallback]", orderPayload);
-
-      return Response.json(
-        {
-          ok: true,
-          status: "accepted-temporarily",
-          orderId,
-          subtotal: authenticatedOrder.subtotal,
-          paymentMethod: authenticatedOrder.paymentMethod,
-          paymentStatus: "unpaid",
-          earnedDripPoints,
-          adminNotification: "not-configured",
-          dispatchMode: "temporary-fallback",
-          storageMode: "local-fallback",
-          message: "Pickup order accepted in preview mode. Pay when you collect.",
-        },
-        {
-          status: 201,
-          headers: { "Cache-Control": "no-store" },
-        },
-      );
-    }
+    const status =
+      error instanceof SquareApiError && error.status >= 400 && error.status < 500
+        ? 502
+        : 503;
 
     return Response.json(
       {
         ok: false,
-        errors: ["We could not send the order alert. Please try again."],
-        adminNotification: "failed",
+        errors: [
+          "We could not start the secure Square checkout. Please try again.",
+        ],
       },
       {
-        status: 502,
+        status,
         headers: { "Cache-Control": "no-store" },
       },
     );
   }
-
-  return Response.json(
-    {
-      ok: true,
-      status: "submitted",
-      orderId,
-      subtotal: authenticatedOrder.subtotal,
-      paymentMethod: authenticatedOrder.paymentMethod,
-      paymentStatus: "unpaid",
-      earnedDripPoints,
-      adminNotification: "sent",
-      storageMode: "local-fallback",
-      message: "Pickup order received. Pay when you collect.",
-    },
-    {
-      status: 201,
-      headers: { "Cache-Control": "no-store" },
-    },
-  );
 }

@@ -1,0 +1,89 @@
+/* ========================================
+   MOBILE HEADER — ALWAYS DARK
+======================================== */
+@media (max-width: 768px) {
+  .catalogue-header,
+  .catalogue-shell > .catalogue-header,
+  .product-page-shell > .catalogue-header,
+  .site-shell > .site-header,
+  .site-shell > .site-header.is-mobile-hero-overlay,
+  .site-shell > .site-header.is-mobile-hero-transparent {
+    background: #0e0d0c !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  /* Override transparent / hero / scroll states. */
+  .catalogue-header.transparent,
+  .catalogue-header.scrolled,
+  .catalogue-header.is-scrolled,
+  .home .catalogue-header,
+  body:not(.home) .catalogue-header {
+    background: #0e0d0c !important;
+  }
+
+  /* Header navigation/icons. */
+  .catalogue-header a,
+  .catalogue-header button,
+  .catalogue-header .nav-link,
+  .site-shell > .site-header a,
+  .site-shell > .site-header button {
+    color: #fff;
+  }
+
+  /* Homepage mobile header: Location — Logo — Hamburger.
+     Keep it fixed so the scroll-direction controller can slide the complete
+     header out while scrolling down and reveal it again while scrolling up. */
+  .site-shell > .site-header {
+    position: fixed !important;
+    inset: 0 0 auto !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 5.1rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    will-change: transform;
+  }
+
+  .site-shell > .site-header .mobile-home-location {
+    position: absolute !important;
+    top: 50% !important;
+    left: max(0.75rem, env(safe-area-inset-left)) !important;
+    z-index: 3 !important;
+    margin: 0 !important;
+    transform: translateY(-50%) !important;
+  }
+
+  .site-shell > .site-header .mobile-home-location:active {
+    transform: translateY(-50%) scale(0.97) !important;
+  }
+
+  .site-shell > .site-header .wordmark {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    z-index: 2 !important;
+    display: block !important;
+    margin: 0 !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  .site-shell > .site-header .header-actions {
+    position: absolute !important;
+    top: 50% !important;
+    right: max(0.75rem, env(safe-area-inset-right)) !important;
+    z-index: 3 !important;
+    display: flex !important;
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    transform: translateY(-50%) !important;
+  }
+
+  .site-shell > .site-header .mobile-menu-button {
+    margin: 0 !important;
+  }
+}

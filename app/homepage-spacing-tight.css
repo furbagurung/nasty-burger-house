@@ -1,0 +1,38 @@
+/* Tighten homepage spacing between the hero and Explore our menu section. */
+.home-main > .hero-carousel + .menu-preview {
+  margin-top: 0 !important;
+}
+
+.home-main > .menu-preview {
+  min-height: 0 !important;
+  padding-top: clamp(1.75rem, 3vw, 2.75rem) !important;
+  padding-bottom: clamp(2.5rem, 4vw, 3.75rem) !important;
+}
+
+.home-main > .menu-preview .menu-preview__heading {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.home-main > .menu-preview .outline-button {
+  margin-top: 0.8rem !important;
+}
+
+.home-main > .menu-preview .menu-preview__grid {
+  margin-top: clamp(1.35rem, 2.2vw, 2rem) !important;
+}
+
+@media (max-width: 760px) {
+  .home-main > .menu-preview {
+    padding-top: 1.4rem !important;
+    padding-bottom: 2.25rem !important;
+  }
+
+  .home-main > .menu-preview .outline-button {
+    margin-top: 0.65rem !important;
+  }
+
+  .home-main > .menu-preview .menu-preview__grid {
+    margin-top: 1.05rem !important;
+  }
+}

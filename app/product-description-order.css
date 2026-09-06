@@ -1,0 +1,164 @@
+/* Product-page content order: keep product details compact and show the description
+   after combo/customization controls. */
+.product-page-premium .product-detail__content--premium {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.product-page-premium .product-detail__content--premium > .product-detail__heading-row {
+  order: 1;
+}
+
+.product-page-premium .product-detail__content--premium > .product-detail__tags {
+  order: 2;
+}
+
+.product-page-premium .product-detail__content--premium > .product-custom-section {
+  order: 3;
+}
+
+.product-page-premium .product-detail__content--premium > .product-detail__description {
+  order: 4;
+  margin-top: 1.25rem;
+}
+
+.product-page-premium .product-detail__content--premium > .product-purchase-panel {
+  order: 5;
+}
+
+.product-page-premium .product-detail__content--premium > .product-selection-error {
+  order: 6;
+}
+
+.product-page-premium .product-detail__content--premium > .product-added-actions {
+  order: 7;
+}
+
+.product-page-premium .product-detail__content--premium > .product-detail__notice {
+  order: 8;
+}
+
+/* Remove the step number from product option headings. */
+.product-page-premium .product-custom-section__heading span {
+  display: none !important;
+}
+
+/* Beast Combo heading: black lead-in + heavier Nasty-red product name. */
+.product-page-premium
+  .product-custom-section:not(.product-custom-section--extras)
+  .product-custom-section__heading h2 {
+  display: inline-flex;
+  width: fit-content;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin: 0;
+  color: transparent !important;
+  font-size: 0 !important;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  white-space: nowrap;
+}
+
+.product-page-premium
+  .product-custom-section:not(.product-custom-section--extras)
+  .product-custom-section__heading h2::before {
+  color: #171513;
+  content: "Make it the";
+  font-size: 1rem;
+  font-weight: 720;
+  letter-spacing: -0.025em;
+}
+
+.product-page-premium
+  .product-custom-section:not(.product-custom-section--extras)
+  .product-custom-section__heading h2::after {
+  display: inline-block;
+  padding-bottom: 0.04em;
+  color: #a62212;
+  content: "Beast Combo";
+  font-size: 1.1rem;
+  font-weight: 950;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  text-decoration-line: underline;
+  text-decoration-color: #741428;
+  text-decoration-thickness: 0.16rem;
+  text-underline-offset: 0.17em;
+  text-decoration-skip-ink: none;
+  transform: rotate(-0.35deg);
+}
+
+/* Visually group Beast Combo + Customize into one dedicated order-options panel. */
+.product-page-premium
+  .product-detail__content--premium
+  > .product-custom-section:not(.product-custom-section--extras) {
+  margin-top: 1.45rem !important;
+  border: 1px solid #ece5df !important;
+  border-bottom: 0 !important;
+  border-radius: 1.2rem 1.2rem 0 0 !important;
+  padding: 1rem 1rem 0.78rem !important;
+  background: #fcfaf8;
+  box-shadow: 0 -4px 20px rgba(45, 30, 20, 0.035);
+}
+
+.product-page-premium
+  .product-detail__content--premium
+  > .product-custom-section:not(.product-custom-section--extras)
+  + .product-custom-section--extras {
+  position: relative;
+  margin-top: 0 !important;
+  border: 1px solid #ece5df !important;
+  border-top: 1px solid #f0e9e4 !important;
+  border-radius: 0 0 1.2rem 1.2rem !important;
+  padding: 0.8rem 1rem 1rem !important;
+  background: #fcfaf8;
+  box-shadow: 0 12px 28px rgba(45, 30, 20, 0.055);
+}
+
+.product-page-premium
+  .product-custom-section:not(.product-custom-section--extras)
+  .product-custom-section__heading {
+  margin-bottom: 0.9rem;
+}
+
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__content--premium > .product-detail__description {
+    margin-top: 1rem;
+  }
+
+  .product-page-premium
+    .product-custom-section:not(.product-custom-section--extras)
+    .product-custom-section__heading h2 {
+    gap: 0.55rem;
+  }
+
+  .product-page-premium
+    .product-custom-section:not(.product-custom-section--extras)
+    .product-custom-section__heading h2::before {
+    font-size: 0.96rem;
+  }
+
+  .product-page-premium
+    .product-custom-section:not(.product-custom-section--extras)
+    .product-custom-section__heading h2::after {
+    font-size: 1.04rem;
+    text-decoration-thickness: 0.14rem;
+    text-underline-offset: 0.16em;
+  }
+
+  .product-page-premium
+    .product-detail__content--premium
+    > .product-custom-section:not(.product-custom-section--extras) {
+    margin-top: 1.15rem !important;
+    border-radius: 1rem 1rem 0 0 !important;
+    padding: 0.9rem 0.78rem 0.7rem !important;
+  }
+
+  .product-page-premium
+    .product-detail__content--premium
+    > .product-custom-section:not(.product-custom-section--extras)
+    + .product-custom-section--extras {
+    border-radius: 0 0 1rem 1rem !important;
+    padding: 0.72rem 0.78rem 0.85rem !important;
+  }
+}

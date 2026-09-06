@@ -20,9 +20,10 @@ export type ServiceConfiguration = {
 // object without changing the customer-facing components.
 export const serviceConfiguration: ServiceConfiguration = {
   mode: "preview",
-  locationName: "Franklin Woolworths Carpark",
-  address: "Franklin, ACT",
-  mapUrl: null,
+  locationName: "Belconnen",
+  address: "Belconnen ACT 2617",
+  mapUrl:
+    "https://www.google.com/maps/place/35%C2%B014%2714.5%22S+149%C2%B003%2753.4%22E/@-35.2373611,149.0648333,17z/data=!3m1!4b1!4m4!3m3!8m2!3d-35.2373611!4d149.0648333!18m1!1e1?entry=ttu",
   tradingHours: "12 PM–10 PM · awaiting confirmation",
   prepTimeMinutes: {
     minimum: 10,

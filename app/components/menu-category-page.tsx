@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useLayoutEffect, useRef } from "react";
 import type { MenuItem } from "../data/menu";
 import {
   menuNavigationCategories,
@@ -17,8 +20,44 @@ export default function MenuCategoryPage({
   category,
   items,
 }: MenuCategoryPageProps) {
+  const categoryRailRef = useRef<HTMLElement | null>(null);
+
+  useLayoutEffect(() => {
+    const rail = categoryRailRef.current;
+    if (!rail) return;
+
+    const activeLink = rail.querySelector<HTMLElement>('a[aria-current="page"]');
+    if (!activeLink) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      const railRect = rail.getBoundingClientRect();
+      const activeRect = activeLink.getBoundingClientRect();
+      const edgePadding = 10;
+
+      if (activeRect.bottom > railRect.bottom - edgePadding) {
+        rail.scrollTo({
+          top:
+            rail.scrollTop +
+            (activeRect.bottom - railRect.bottom) +
+            edgePadding,
+          behavior: "auto",
+        });
+      } else if (activeRect.top < railRect.top + edgePadding) {
+        rail.scrollTo({
+          top:
+            rail.scrollTop -
+            (railRect.top - activeRect.top) -
+            edgePadding,
+          behavior: "auto",
+        });
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [category.id]);
+
   return (
-    <div className="catalogue-shell">
+    <div className="catalogue-shell menu-catalogue-shell">
       <header className="catalogue-header">
         <Link className="catalogue-logo" href="/" aria-label="Nasty Burger House home">
           <Image src="/logo.webp" alt="" width={456} height={456} priority />
@@ -41,7 +80,12 @@ export default function MenuCategoryPage({
       </header>
 
       <main className="catalogue-main">
-        <aside className="catalogue-categories" aria-label="Menu categories">
+        <aside
+          ref={categoryRailRef}
+          className="catalogue-categories"
+          aria-label="Menu categories"
+          tabIndex={0}
+        >
           <p>Our menu</p>
           <nav>
             {menuNavigationCategories.map((menuCategory) => (
@@ -66,11 +110,9 @@ export default function MenuCategoryPage({
           </nav>
         </aside>
 
-        <section className="catalogue-content" aria-labelledby="catalogue-title">
+        <section className="catalogue-content" aria-labelledby="catalogue-title" tabIndex={0}>
           <div className="catalogue-heading">
-            <p className="eyebrow">Nasty Burger House menu</p>
             <h1 id="catalogue-title">{category.label}</h1>
-            <p>{category.description}</p>
           </div>
 
           <div className="catalogue-product-grid catalogue-product-grid--browse">
@@ -84,7 +126,7 @@ export default function MenuCategoryPage({
                 <div className="catalogue-product__media catalogue-product__media--browse">
                   <MenuItemMedia
                     item={item}
-                    sizes="(max-width: 680px) 44vw, (max-width: 1100px) 28vw, 22vw"
+                    sizes="(max-width: 680px) calc((100vw - 8rem) / 2), (max-width: 900px) 172px, (max-width: 1120px) 156px, 172px"
                   />
                 </div>
                 <h2>{item.name}</h2>

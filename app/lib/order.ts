@@ -30,7 +30,7 @@ export type CheckoutCustomer = {
   phone: string;
 };
 
-export type PaymentMethod = "pay_at_pickup";
+export type PaymentMethod = "square_checkout";
 
 export type ValidatedOrder = {
   requestId: string;
@@ -270,9 +270,9 @@ export function validateOrderPayload(payload: unknown): OrderValidationResult {
   }
 
   const paymentMethod =
-    payload.paymentMethod === undefined ? "pay_at_pickup" : payload.paymentMethod;
-  if (paymentMethod !== "pay_at_pickup") {
-    errors.push("Only Pay on Pickup is available right now.");
+    payload.paymentMethod === undefined ? "square_checkout" : payload.paymentMethod;
+  if (paymentMethod !== "square_checkout") {
+    errors.push("Secure Square checkout is required for online orders.");
   }
 
   const cartValues = Array.isArray(payload.cart) ? payload.cart : [];
@@ -304,7 +304,7 @@ export function validateOrderPayload(payload: unknown): OrderValidationResult {
       customer: { name, email, phone },
       notes,
       pickupMethod: "asap",
-      paymentMethod: "pay_at_pickup",
+      paymentMethod: "square_checkout",
       cart,
       subtotal,
     },

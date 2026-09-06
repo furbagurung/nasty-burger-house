@@ -63,6 +63,7 @@ import "./product-combo-upgrade-card.css";
 import "./product-description-order.css";
 import "./toast.css";
 import "./loading.css";
+import "./cart-page-redesign.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

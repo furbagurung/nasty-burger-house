@@ -25,16 +25,24 @@ const testimonials = [
 
 const reviewVideos = [
   {
-    src: "/videos/nasty-reel-01.mp4",
-    poster: "/images/signature-beast.webp",
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto/v1788706765/review-02.mp4",
+    poster:
+      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706765/review-02.jpg",
   },
   {
-    src: "/videos/nasty-reel-02.mp4",
-    poster: "/images/bbq-beast-hero.webp",
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto/v1788706753/review-03.mp4",
+    poster:
+      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706753/review-03.jpg",
   },
   {
-    src: "/videos/nasty-reel-03.mp4",
-    poster: "/images/beast-box-hero.webp",
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto/v1788706744/review-01.mp4",
+    poster:
+      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706744/review-01.jpg",
+  },
+  {
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto/v1788706738/review-04.mp4",
+    poster:
+      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706738/review-04.jpg",
   },
 ];
 

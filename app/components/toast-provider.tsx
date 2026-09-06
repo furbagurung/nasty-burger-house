@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, CircleAlert, Info, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import {
   type CSSProperties,
   useCallback,
@@ -26,6 +27,7 @@ function ToastIcon({ variant }: { variant: NastyToastVariant }) {
 }
 
 export default function ToastProvider() {
+  const pathname = usePathname();
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const timers = useRef<Map<string, number>>(new Map());
 
@@ -62,12 +64,18 @@ export default function ToastProvider() {
   );
 
   useEffect(() => {
+    if (pathname === "/cart") dismissToast("cart-updated");
+  }, [pathname, dismissToast]);
+
+  useEffect(() => {
     function handleToast(event: Event) {
       const customEvent = event as CustomEvent<NastyToastPayload>;
       addToast(customEvent.detail);
     }
 
     function handleCartUpdated() {
+      if (window.location.pathname === "/cart") return;
+
       addToast({
         id: "cart-updated",
         title: "Added to your order",

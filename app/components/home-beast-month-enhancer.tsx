@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 const COMING_SOON_DESCRIPTION =
   "A new limited-time Beast is being cooked up. Watch this space — the next Beast of the Month is coming soon.";
+const MONTHLY_HERO_IMAGE = "/images/hero-slider/hero-1.jpg";
 
 function setText(node: HTMLElement | null, value: string) {
   if (node && node.textContent !== value) node.textContent = value;
@@ -32,10 +33,11 @@ function applyComingSoonState() {
     setText(heading, "Beast of the Month");
     setText(description, COMING_SOON_DESCRIPTION);
 
-    if (image && !image.src.endsWith("/images/home-menu/beast-of-the-month.jpg")) {
+    if (image && !image.src.endsWith(MONTHLY_HERO_IMAGE)) {
       image.removeAttribute("srcset");
-      image.src = "/images/home-menu/beast-of-the-month.jpg";
-      image.alt = "Nasty Burger House Beast of the Month coming soon";
+      image.removeAttribute("sizes");
+      image.src = MONTHLY_HERO_IMAGE;
+      image.alt = "Nasty Burger House Beast of the Month coming soon promotion";
     }
     if (cta) {
       setText(cta, "Coming Soon");
@@ -113,7 +115,7 @@ export default function HomeBeastMonthEnhancer() {
       }
 
       .hero-slide:has(.hero-card__cta.is-coming-soon) .hero-slide__shade {
-        background: linear-gradient(90deg, rgba(9, 8, 7, 0.82), rgba(9, 8, 7, 0.36)) !important;
+        background: linear-gradient(90deg, rgba(9, 8, 7, 0.5), rgba(9, 8, 7, 0.08)) !important;
       }
     `}</style>
   );

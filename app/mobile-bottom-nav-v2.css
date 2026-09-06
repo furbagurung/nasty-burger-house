@@ -13,8 +13,12 @@
     grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
     min-height: calc(4.85rem + env(safe-area-inset-bottom)) !important;
     padding: 0.42rem 0.2rem calc(0.34rem + env(safe-area-inset-bottom)) !important;
+    border: 0 !important;
+    border-top: 1px solid rgba(21, 19, 15, 0.08) !important;
     border-radius: 0 !important;
-    background: rgba(255, 255, 255, 0.985) !important;
+    background: #ffffff !important;
+    box-shadow: 0 -8px 24px rgba(25, 21, 16, 0.08) !important;
+    color-scheme: light !important;
     transform: none !important;
   }
 
@@ -22,9 +26,16 @@
     min-height: 3.85rem !important;
     gap: 0.28rem !important;
     padding: 0.2rem 0.12rem !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #746d65 !important;
     font-size: clamp(0.62rem, 2.8vw, 0.75rem) !important;
     font-weight: 760 !important;
     letter-spacing: -0.015em;
+  }
+
+  .mobile-tab-bar--v2 .mobile-tab.is-active {
+    color: var(--hot) !important;
   }
 
   .mobile-tab-bar--v2 .mobile-tab > svg {

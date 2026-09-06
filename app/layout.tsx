@@ -42,6 +42,7 @@ import "./customer-account.css";
 import "./customer-header-overrides.css";
 import "./client-revision-polish.css";
 import "./hero-real-photography.css";
+import "./hero-copy-typography.css";
 import "./admin-dashboard.css";
 import "./admin-notification-ui.css";
 

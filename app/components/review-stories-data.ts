@@ -19,5 +19,14 @@ export const reviewVideos = [
     poster:
       "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708128/review-04.jpg",
   },
+  {
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788713272/review-05.mp4",
+    poster:
+      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788713272/review-05.jpg",
+  },
+  {
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788713233/review-06.mp4",
+    poster:
+      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788713233/review-06.jpg",
+  },
 ];
-

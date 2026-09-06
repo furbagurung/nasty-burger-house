@@ -71,7 +71,8 @@
 
 @media (max-width: 680px) {
   .mobile-hero-motion-controls {
-    right: 0.8rem;
+    left: 0.8rem;
+    right: auto;
     bottom: 0.8rem;
     gap: 0.2rem;
     padding: 0.22rem;

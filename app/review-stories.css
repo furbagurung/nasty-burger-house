@@ -1,7 +1,29 @@
 .home-story-highlights {
+  position: relative;
+  isolation: isolate;
+  margin-bottom: 3.4rem;
   padding: 3rem 1rem 4rem;
   background: #11100f;
   color: #fff;
+}
+
+/* Nasty Burger sauce-drip transition between Customer Stories and the next
+   homepage section. Kept on the review block only so the global header stays
+   clean. */
+.home-story-highlights::after {
+  position: absolute;
+  right: 0;
+  bottom: -3.35rem;
+  left: 0;
+  z-index: 2;
+  display: block;
+  height: 3.55rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 76' preserveAspectRatio='none'%3E%3Cpath fill='%23e83b18' d='M0 0H360V15C350 15 348 24 338 24C326 24 329 11 316 14C302 17 309 58 294 63C278 68 284 16 269 16C254 16 257 34 243 35C229 36 231 15 216 18C201 21 208 49 193 54C177 59 183 17 168 18C153 19 157 40 142 40C127 40 131 18 116 20C101 22 107 65 91 69C73 73 81 21 65 21C51 21 54 43 40 44C26 45 31 18 17 19C9 20 5 24 0 28Z'/%3E%3C/svg%3E");
+  background-position: top left;
+  background-repeat: repeat-x;
+  background-size: 22rem 3.55rem;
+  content: "";
+  pointer-events: none;
 }
 
 .home-story-highlights__heading {
@@ -302,6 +324,18 @@
   .story-viewer__close {
     top: max(0.5rem, env(safe-area-inset-top));
     right: max(0.75rem, env(safe-area-inset-right));
+  }
+}
+
+@media (max-width: 680px) {
+  .home-story-highlights {
+    margin-bottom: 2.45rem;
+  }
+
+  .home-story-highlights::after {
+    bottom: -2.4rem;
+    height: 2.55rem;
+    background-size: 14rem 2.55rem;
   }
 }
 

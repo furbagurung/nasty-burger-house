@@ -1,29 +1,43 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 export default function MobileHomeLocation() {
   const pathname = usePathname();
   const [headerTarget, setHeaderTarget] = useState<HTMLElement | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (pathname !== "/") {
       setHeaderTarget(null);
       return;
     }
 
     const findHeader = () => {
-      const header = document.querySelector<HTMLElement>(
-        ".home-top-header.is-home-route",
-      );
+      const header =
+        document.querySelector<HTMLElement>(".site-shell > .site-header") ??
+        document.querySelector<HTMLElement>(".home-top-header.is-home-route");
       setHeaderTarget(header);
+      return Boolean(header);
     };
 
-    findHeader();
-    const timer = window.setTimeout(findHeader, 60);
-    return () => window.clearTimeout(timer);
+    if (findHeader()) return;
+
+    const observer = new MutationObserver(() => {
+      if (findHeader()) observer.disconnect();
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+    const timer = window.setTimeout(() => {
+      findHeader();
+      observer.disconnect();
+    }, 500);
+
+    return () => {
+      window.clearTimeout(timer);
+      observer.disconnect();
+    };
   }, [pathname]);
 
   if (pathname !== "/" || !headerTarget) return null;

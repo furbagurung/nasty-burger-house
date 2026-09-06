@@ -10,6 +10,7 @@ import HomeTopHeader from "./components/home-top-header";
 import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
 import MobileHomeLocation from "./components/mobile-home-location";
+import ToastProvider from "./components/toast-provider";
 import "./globals.css";
 import "./catalogue-theme.css";
 import "./menu-browse.css";
@@ -58,6 +59,7 @@ import "./find-style-navigation.css";
 import "./menu-mobile-header-polish.css";
 import "./menu-mobile-layout.css";
 import "./product-mobile-home-header.css";
+import "./toast.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -93,6 +95,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <CartDrawerEnhancer />
         <FooterLegalLinks />
         <CookieSettings />
+        <ToastProvider />
       </body>
     </html>
   );

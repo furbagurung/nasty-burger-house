@@ -1,0 +1,94 @@
+/* Mobile homepage hero: compact app-style card treatment that mirrors the
+   spacing/radius language used by the Drip Points reward banner. */
+@media (max-width: 680px) {
+  .site-shell > .home-main {
+    padding-top: 4.95rem !important;
+    background: #ffffff;
+  }
+
+  .site-shell > .home-main > .hero-carousel {
+    width: auto !important;
+    min-height: clamp(30rem, 62svh, 34rem) !important;
+    height: clamp(30rem, 62svh, 34rem) !important;
+    max-height: 34rem !important;
+    margin: 0.85rem 0.9rem 1.1rem !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.35rem !important;
+    background: #0b0a09;
+    box-shadow: 0 18px 44px rgba(24, 18, 12, 0.16);
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide,
+  .site-shell > .home-main > .hero-carousel .hero-slide__image,
+  .site-shell > .home-main > .hero-carousel .hero-slide__shade {
+    border-radius: inherit;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide {
+    min-height: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__image {
+    object-position: 66% center !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy {
+    right: 1rem !important;
+    bottom: 3.75rem !important;
+    left: 1rem !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy .eyebrow {
+    margin-bottom: 0.42rem !important;
+    font-size: 0.58rem !important;
+    letter-spacing: 0.22em !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy h1,
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy h2 {
+    max-width: 9.25ch !important;
+    font-size: clamp(2.35rem, 11vw, 3.35rem) !important;
+    line-height: 0.9 !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy > p:not(.eyebrow) {
+    max-width: 20rem !important;
+    margin-top: 0.62rem !important;
+    font-size: 0.82rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-actions {
+    margin-top: 0.82rem !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta {
+    min-width: min(13.5rem, 72vw) !important;
+    min-height: 2.85rem !important;
+    padding: 0.66rem 1rem !important;
+    font-size: 0.84rem !important;
+    box-shadow: 0 10px 24px rgba(255, 47, 22, 0.2) !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .mobile-hero-motion-controls {
+    right: 0.65rem;
+    bottom: 0.65rem;
+    transform: scale(0.92);
+    transform-origin: right bottom;
+  }
+}
+
+@media (max-width: 390px) {
+  .site-shell > .home-main > .hero-carousel {
+    min-height: 29rem !important;
+    height: 29rem !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy h1,
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy h2 {
+    font-size: clamp(2.18rem, 11.5vw, 3rem) !important;
+  }
+}

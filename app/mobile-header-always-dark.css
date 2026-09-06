@@ -1,0 +1,35 @@
+/* ========================================
+   MOBILE HEADER — ALWAYS DARK
+======================================== */
+@media (max-width: 768px) {
+  .catalogue-header,
+  .catalogue-shell > .catalogue-header,
+  .product-page-shell > .catalogue-header,
+  .site-shell > .site-header,
+  .site-shell > .site-header.is-mobile-hero-overlay,
+  .site-shell > .site-header.is-mobile-hero-transparent {
+    background: #0e0d0c !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  /* Override transparent / hero / scroll states. */
+  .catalogue-header.transparent,
+  .catalogue-header.scrolled,
+  .catalogue-header.is-scrolled,
+  .home .catalogue-header,
+  body:not(.home) .catalogue-header {
+    background: #0e0d0c !important;
+  }
+
+  /* Header navigation/icons. */
+  .catalogue-header a,
+  .catalogue-header button,
+  .catalogue-header .nav-link,
+  .site-shell > .site-header a,
+  .site-shell > .site-header button {
+    color: #fff;
+  }
+}

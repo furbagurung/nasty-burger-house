@@ -48,6 +48,8 @@ import "./mobile-hero-premium-card.css";
 import "./mobile-home-location.css";
 import "./admin-dashboard.css";
 import "./admin-notification-ui.css";
+import "./mobile-header-always-dark.css";
+import "./mobile-bottom-nav-floating.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

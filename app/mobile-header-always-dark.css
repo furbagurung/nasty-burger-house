@@ -34,15 +34,18 @@
   }
 
   /* Homepage mobile header: Location — Logo — Hamburger.
-     Pin each item to the full viewport header so the hamburger always sits
-     in the true right corner regardless of legacy grid/flex rules. */
+     Keep it fixed so the scroll-direction controller can slide the complete
+     header out while scrolling down and reveal it again while scrolling up. */
   .site-shell > .site-header {
-    position: relative !important;
+    position: fixed !important;
+    inset: 0 0 auto !important;
     display: block !important;
     width: 100% !important;
     max-width: none !important;
     min-height: 5.1rem !important;
+    margin: 0 !important;
     padding: 0 !important;
+    will-change: transform;
   }
 
   .site-shell > .site-header .mobile-home-location {

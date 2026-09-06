@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import ReviewStories from "./review-stories";
 
 const testimonials = [
   {
@@ -23,37 +24,14 @@ const testimonials = [
   },
 ];
 
-const reviewVideos = [
-  {
-    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708127/review-01.mp4",
-    poster:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708127/review-01.jpg",
-  },
-  {
-    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708134/review-02.mp4",
-    poster:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708134/review-02.jpg",
-  },
-  {
-    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708146/review-03.mp4",
-    poster:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708146/review-03.jpg",
-  },
-  {
-    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708128/review-04.mp4",
-    poster:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708128/review-04.jpg",
-  },
-];
-
 export default function HomepageTestimonials() {
   const pathname = usePathname();
   const [target, setTarget] = useState<HTMLElement | null>(null);
-  const [playingReels, setPlayingReels] = useState<Record<number, boolean>>({});
-  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
 
   useLayoutEffect(() => {
     if (pathname !== "/") {
+      // The portal target belongs to the previous route's external DOM.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTarget(null);
       return;
     }
@@ -81,17 +59,6 @@ export default function HomepageTestimonials() {
       observer.disconnect();
     };
   }, [pathname]);
-
-  async function playReviewVideo(index: number) {
-    const video = videoRefs.current[index];
-    if (!video) return;
-
-    try {
-      await video.play();
-    } catch {
-      video.controls = true;
-    }
-  }
 
   if (pathname !== "/" || !target) return null;
 
@@ -138,55 +105,7 @@ export default function HomepageTestimonials() {
         </div>
       </section>
 
-      <section className="home-reels" aria-labelledby="home-reels-title">
-        <div className="home-reels__heading">
-          <div>
-            <p className="home-reels__eyebrow">Customer stories</p>
-            <h2 id="home-reels-title">Video reviews.</h2>
-            <p>Watch real customer review videos in a vertical reel format.</p>
-          </div>
-          <span className="home-reels__hint">Swipe to watch →</span>
-        </div>
-
-        <div className="home-reels__track" aria-label="Customer video reviews">
-          {reviewVideos.map((reel, index) => (
-            <article className="home-reel-card" key={reel.src}>
-              <div className="home-reel-card__media">
-                <video
-                  ref={(element) => {
-                    videoRefs.current[index] = element;
-                  }}
-                  controls
-                  playsInline
-                  preload="metadata"
-                  poster={reel.poster}
-                  src={reel.src}
-                  aria-label={`Customer review video ${index + 1}`}
-                  onPlay={() =>
-                    setPlayingReels((current) => ({ ...current, [index]: true }))
-                  }
-                  onPause={() =>
-                    setPlayingReels((current) => ({ ...current, [index]: false }))
-                  }
-                  onEnded={() =>
-                    setPlayingReels((current) => ({ ...current, [index]: false }))
-                  }
-                />
-                {!playingReels[index] && (
-                  <button
-                    className="home-reel-card__native-play"
-                    type="button"
-                    onClick={() => void playReviewVideo(index)}
-                    aria-label={`Play customer review video ${index + 1}`}
-                  >
-                    <span aria-hidden="true">▶</span>
-                  </button>
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+      <ReviewStories />
     </>,
     target,
   );

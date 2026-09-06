@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useLayoutEffect, useRef } from "react";
 import type { MenuItem } from "../data/menu";
 import {
   menuNavigationCategories,
@@ -17,6 +20,42 @@ export default function MenuCategoryPage({
   category,
   items,
 }: MenuCategoryPageProps) {
+  const categoryRailRef = useRef<HTMLElement | null>(null);
+
+  useLayoutEffect(() => {
+    const rail = categoryRailRef.current;
+    if (!rail) return;
+
+    const activeLink = rail.querySelector<HTMLElement>('a[aria-current="page"]');
+    if (!activeLink) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      const railRect = rail.getBoundingClientRect();
+      const activeRect = activeLink.getBoundingClientRect();
+      const edgePadding = 10;
+
+      if (activeRect.bottom > railRect.bottom - edgePadding) {
+        rail.scrollTo({
+          top:
+            rail.scrollTop +
+            (activeRect.bottom - railRect.bottom) +
+            edgePadding,
+          behavior: "auto",
+        });
+      } else if (activeRect.top < railRect.top + edgePadding) {
+        rail.scrollTo({
+          top:
+            rail.scrollTop -
+            (railRect.top - activeRect.top) -
+            edgePadding,
+          behavior: "auto",
+        });
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [category.id]);
+
   return (
     <div className="catalogue-shell menu-catalogue-shell">
       <header className="catalogue-header">
@@ -41,7 +80,12 @@ export default function MenuCategoryPage({
       </header>
 
       <main className="catalogue-main">
-        <aside className="catalogue-categories" aria-label="Menu categories" tabIndex={0}>
+        <aside
+          ref={categoryRailRef}
+          className="catalogue-categories"
+          aria-label="Menu categories"
+          tabIndex={0}
+        >
           <p>Our menu</p>
           <nav>
             {menuNavigationCategories.map((menuCategory) => (

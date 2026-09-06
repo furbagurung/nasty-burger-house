@@ -19,14 +19,10 @@
     border-top: 1px solid rgba(21, 19, 15, 0.08) !important;
     border-radius: 0 !important;
     background: rgba(255, 255, 255, 0.985) !important;
-<<<<<<< HEAD
-    overflow: visible !important;
-=======
     box-shadow: 0 -10px 34px rgba(25, 21, 16, 0.11) !important;
     -webkit-backdrop-filter: blur(24px) !important;
     backdrop-filter: blur(24px) !important;
     transform: none !important;
->>>>>>> 8fe5c19 (Revert mobile bottom nav to original full-width design)
   }
 
   .mobile-tab-bar--v2 .mobile-tab {
@@ -51,89 +47,56 @@
     object-fit: contain;
   }
 
-  /* Oversized raised cart action: circular cutout sitting above the nav like a native app FAB. */
-  .mobile-tab-bar--v2 .mobile-tab--primary-cart {
-    position: relative !important;
-    z-index: 6 !important;
-    justify-content: flex-start !important;
+  .mobile-tab--primary-cart {
+    justify-content: center !important;
     overflow: visible !important;
-    padding: 0 !important;
+    padding-top: 0 !important;
     color: #171513 !important;
   }
 
-  .mobile-tab-bar--v2 .mobile-tab__primary-cart-circle {
-    position: absolute !important;
-    top: -1.95rem !important;
-    left: 50% !important;
-    display: grid !important;
-    width: clamp(5.15rem, 22vw, 5.75rem) !important;
-    height: clamp(5.15rem, 22vw, 5.75rem) !important;
-    margin: 0 !important;
-    place-items: center !important;
-    border: 0.34rem solid #ffffff !important;
-    border-radius: 50% !important;
-    background:
-      radial-gradient(circle at 34% 26%, #2c2926 0%, #171513 46%, #0d0c0b 100%) !important;
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.24) inset,
-      0 -2px 0 rgba(0, 0, 0, 0.26) inset,
-      0 9px 18px rgba(20, 16, 12, 0.24),
-      0 18px 34px rgba(20, 16, 12, 0.18) !important;
-    transform: translateX(-50%) !important;
-    isolation: isolate;
-  }
-
-  .mobile-tab-bar--v2 .mobile-tab__primary-cart-circle::before {
-    position: absolute;
-    inset: 0.22rem;
-    z-index: -1;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+  .mobile-tab__primary-cart-circle {
+    position: relative;
+    display: grid;
+    width: clamp(4.25rem, 18vw, 4.75rem);
+    height: clamp(4.25rem, 18vw, 4.75rem);
+    margin-top: -1.4rem;
+    place-items: center;
+    border: 0.28rem solid #fff;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.07), transparent 48%);
-    content: "";
+    background: #11100f;
+    box-shadow: 0 8px 24px rgba(22, 18, 14, 0.25);
   }
 
-  .mobile-tab-bar--v2 .mobile-tab__primary-cart-bag {
-    display: block !important;
-    width: 69% !important;
-    height: 69% !important;
-    object-fit: contain !important;
-    filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.36));
-    transform: translateY(-0.03rem) !important;
+  .mobile-tab__primary-cart-bag {
+    display: block;
+    width: 62% !important;
+    height: 62% !important;
+    object-fit: contain;
   }
 
-  .mobile-tab-bar--v2 .mobile-tab__primary-cart-badge {
-    position: absolute !important;
-    top: 0.02rem !important;
-    right: -0.12rem !important;
-    display: grid !important;
-    min-width: 1.28rem !important;
-    height: 1.28rem !important;
-    place-items: center !important;
-    border: 2px solid #fff !important;
-    border-radius: 999px !important;
-    padding-inline: 0.18rem !important;
-    background: var(--hot) !important;
-    color: #fff !important;
-    box-shadow: 0 4px 10px rgba(232, 59, 24, 0.34) !important;
-    font-size: 0.64rem !important;
-    font-weight: 900 !important;
-    line-height: 1 !important;
+  .mobile-tab__primary-cart-badge {
+    position: absolute;
+    top: 0.06rem;
+    right: -0.08rem;
+    display: grid;
+    min-width: 1.2rem;
+    height: 1.2rem;
+    place-items: center;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    padding-inline: 0.18rem;
+    background: var(--hot);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 900;
+    line-height: 1;
   }
 
-  .mobile-tab-bar--v2 .mobile-tab--primary-cart.is-active .mobile-tab__primary-cart-circle {
-    background:
-      radial-gradient(circle at 34% 26%, #312d29 0%, #181614 46%, #0c0b0a 100%) !important;
+  .mobile-tab--primary-cart.is-active .mobile-tab__primary-cart-circle {
+    background: #11100f !important;
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.26) inset,
-      0 -2px 0 rgba(0, 0, 0, 0.28) inset,
-      0 10px 20px rgba(20, 16, 12, 0.28),
-      0 20px 38px rgba(20, 16, 12, 0.2),
-      0 0 0 2px rgba(240, 56, 22, 0.12) !important;
-  }
-
-  .mobile-tab-bar--v2 .mobile-tab--primary-cart:active .mobile-tab__primary-cart-circle {
-    transform: translateX(-50%) translateY(1px) scale(0.97) !important;
+      0 8px 24px rgba(22, 18, 14, 0.26),
+      0 0 0 2px rgba(240, 56, 22, 0.16);
   }
 
   .mobile-more-backdrop {
@@ -302,21 +265,9 @@
   }
 }
 
-@media (max-width: 360px) {
-  .mobile-tab-bar--v2 .mobile-tab__primary-cart-circle {
-    width: 5rem !important;
-    height: 5rem !important;
-    top: -1.8rem !important;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .mobile-more-backdrop,
   .mobile-more-sheet {
     scroll-behavior: auto !important;
-  }
-
-  .mobile-tab-bar--v2 .mobile-tab--primary-cart:active .mobile-tab__primary-cart-circle {
-    transform: translateX(-50%) !important;
   }
 }

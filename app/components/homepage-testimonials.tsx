@@ -26,19 +26,23 @@ const testimonials = [
 const reviewVideos = [
   {
     src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708127/review-01.mp4",
-    poster: "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708127/review-01.jpg",
+    poster:
+      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708127/review-01.jpg",
   },
   {
     src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708134/review-02.mp4",
-    poster: "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708134/review-02.jpg",
+    poster:
+      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708134/review-02.jpg",
   },
   {
     src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708146/review-03.mp4",
-    poster: "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708146/review-03.jpg",
+    poster:
+      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708146/review-03.jpg",
   },
   {
     src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708128/review-04.mp4",
-    poster: "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708128/review-04.jpg",
+    poster:
+      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708128/review-04.jpg",
   },
 ];
 
@@ -146,7 +150,7 @@ export default function HomepageTestimonials() {
 
         <div className="home-reels__track" aria-label="Customer video reviews">
           {reviewVideos.map((reel, index) => (
-            <article className="home-reel-card" key={reel.original}>
+            <article className="home-reel-card" key={reel.src}>
               <div className="home-reel-card__media">
                 <video
                   ref={(element) => {
@@ -156,6 +160,7 @@ export default function HomepageTestimonials() {
                   playsInline
                   preload="metadata"
                   poster={reel.poster}
+                  src={reel.src}
                   aria-label={`Customer review video ${index + 1}`}
                   onPlay={() =>
                     setPlayingReels((current) => ({ ...current, [index]: true }))
@@ -166,10 +171,7 @@ export default function HomepageTestimonials() {
                   onEnded={() =>
                     setPlayingReels((current) => ({ ...current, [index]: false }))
                   }
-                >
-                  <source src={reel.mp4} type="video/mp4" />
-                  <source src={reel.original} type="video/quicktime" />
-                </video>
+                />
                 {!playingReels[index] && (
                   <button
                     className="home-reel-card__native-play"

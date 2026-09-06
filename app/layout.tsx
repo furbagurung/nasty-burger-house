@@ -7,6 +7,7 @@ import FooterLegalLinks from "./components/footer-legal-links";
 import HomeTopHeader from "./components/home-top-header";
 import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
+import MobileHomeLocation from "./components/mobile-home-location";
 import "./globals.css";
 import "./catalogue-theme.css";
 import "./menu-browse.css";
@@ -44,6 +45,7 @@ import "./client-revision-polish.css";
 import "./hero-real-photography.css";
 import "./hero-copy-typography.css";
 import "./mobile-hero-premium-card.css";
+import "./mobile-home-location.css";
 import "./admin-dashboard.css";
 import "./admin-notification-ui.css";
 
@@ -71,6 +73,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body>
         <HomeTopHeader />
+        <MobileHomeLocation />
         {children}
         <DripPointsBanner />
         <MobileHomeHeaderOverlay />

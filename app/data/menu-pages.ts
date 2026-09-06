@@ -68,7 +68,7 @@ export const menuPageCategories: MenuPageCategory[] = [
     id: "drinks",
     label: "Drinks",
     shortLabel: "DR",
-    image: "/images/menu/coke.webp",
+    image: "/images/menu/Coke.webp",
     description: "Solo, Coke, Fanta and mineral water for your meal, combo or Beast Box.",
   },
 ];

@@ -18,7 +18,7 @@ const productImages: Record<string, string> = {
   "Family Beast Box": "/images/beast-boxes/Family Beast Box.jpg",
   "Mango Pudding with Lychee Granita & Lychee Pearls":
     "/images/menu/mango-pudding.jpg",
-  "Coca-Cola": "/images/menu/coke.webp",
+  "Coca-Cola": "/images/menu/Coke.webp",
   "Coke No Sugar": "/images/menu/coke no sugar.webp",
   Sprite: "/images/menu/sprite.jpg",
   Fanta: "/images/menu/fanta.webp",

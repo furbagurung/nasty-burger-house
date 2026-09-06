@@ -18,7 +18,7 @@ export default function MenuCategoryPage({
   items,
 }: MenuCategoryPageProps) {
   return (
-    <div className="catalogue-shell">
+    <div className="catalogue-shell menu-catalogue-shell">
       <header className="catalogue-header">
         <Link className="catalogue-logo" href="/" aria-label="Nasty Burger House home">
           <Image src="/logo.webp" alt="" width={456} height={456} priority />
@@ -41,7 +41,7 @@ export default function MenuCategoryPage({
       </header>
 
       <main className="catalogue-main">
-        <aside className="catalogue-categories" aria-label="Menu categories">
+        <aside className="catalogue-categories" aria-label="Menu categories" tabIndex={0}>
           <p>Our menu</p>
           <nav>
             {menuNavigationCategories.map((menuCategory) => (
@@ -66,7 +66,7 @@ export default function MenuCategoryPage({
           </nav>
         </aside>
 
-        <section className="catalogue-content" aria-labelledby="catalogue-title">
+        <section className="catalogue-content" aria-labelledby="catalogue-title" tabIndex={0}>
           <div className="catalogue-heading">
             <h1 id="catalogue-title">{category.label}</h1>
           </div>
@@ -82,7 +82,7 @@ export default function MenuCategoryPage({
                 <div className="catalogue-product__media catalogue-product__media--browse">
                   <MenuItemMedia
                     item={item}
-                    sizes="(max-width: 680px) 44vw, (max-width: 1100px) 28vw, 22vw"
+                    sizes="(max-width: 680px) calc((100vw - 8rem) / 2), (max-width: 900px) 172px, (max-width: 1120px) 156px, 172px"
                   />
                 </div>
                 <h2>{item.name}</h2>

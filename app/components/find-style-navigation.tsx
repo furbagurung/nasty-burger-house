@@ -73,7 +73,7 @@ export default function FindStyleNavigation() {
       window.clearTimeout(timer);
       observer.disconnect();
     };
-  }, [isMenuPage, supportsDrawer]);
+  }, [isMenuPage, supportsDrawer, pathname]);
 
   useEffect(() => {
     setIsOpen(false);
@@ -241,7 +241,7 @@ export default function FindStyleNavigation() {
         <div className="nasty-find-drawer__actions" style={staggerStyle(5)}>
           <div className="nasty-find-drawer__utility">
             <Link href="/account" onClick={() => closeDrawer()}>Account</Link>
-            <Link href="/help" onClick={() => closeDrawer()}>Help</Link>
+            <Link href="/help-support" onClick={() => closeDrawer()}>Help</Link>
           </div>
         </div>
       </div>

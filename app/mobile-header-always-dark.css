@@ -32,4 +32,35 @@
   .site-shell > .site-header button {
     color: #fff;
   }
+
+  /* Homepage mobile header: Location — centered Logo — Hamburger. */
+  .site-shell > .site-header {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-width: none !important;
+    justify-content: stretch !important;
+  }
+
+  .site-shell > .site-header .mobile-home-location {
+    grid-column: 1 !important;
+    justify-self: start !important;
+  }
+
+  .site-shell > .site-header .wordmark {
+    grid-column: 2 !important;
+    justify-self: center !important;
+  }
+
+  .site-shell > .site-header .header-actions {
+    grid-column: 3 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    justify-self: end !important;
+    justify-content: flex-end !important;
+    margin-left: 0 !important;
+  }
+
+  .site-shell > .site-header .mobile-menu-button {
+    margin-left: auto !important;
+  }
 }

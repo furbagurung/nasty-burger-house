@@ -27,86 +27,115 @@ const testimonials = [
 export default function HomepageTestimonials() {
   const pathname = usePathname();
   const [target, setTarget] = useState<HTMLElement | null>(null);
+  const [storiesTarget, setStoriesTarget] = useState<HTMLDivElement | null>(null);
 
   useLayoutEffect(() => {
     if (pathname !== "/") {
-      // The portal target belongs to the previous route's external DOM.
+      // Portal targets belong to the previous route's external DOM.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setTarget(null);
+      setStoriesTarget(null);
       return;
     }
 
-    const findTarget = () => {
+    let storiesHost: HTMLDivElement | null = null;
+
+    const findTargets = () => {
       const main = document.querySelector<HTMLElement>(".site-shell > .home-main");
-      setTarget(main);
-      return Boolean(main);
+      const features = document.querySelector<HTMLElement>(".home-features");
+
+      if (main) setTarget(main);
+
+      if (features?.parentElement) {
+        storiesHost = document.querySelector<HTMLDivElement>(
+          ".review-stories-home-host",
+        );
+
+        if (!storiesHost) {
+          storiesHost = document.createElement("div");
+          storiesHost.className = "review-stories-home-host";
+          features.parentElement.insertBefore(storiesHost, features);
+        }
+
+        setStoriesTarget(storiesHost);
+      }
+
+      return Boolean(main && storiesHost);
     };
 
-    if (findTarget()) return;
+    if (findTargets()) {
+      return () => {
+        storiesHost?.remove();
+      };
+    }
 
     const observer = new MutationObserver(() => {
-      if (findTarget()) observer.disconnect();
+      if (findTargets()) observer.disconnect();
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
     const timer = window.setTimeout(() => {
-      findTarget();
+      findTargets();
       observer.disconnect();
     }, 500);
 
     return () => {
       window.clearTimeout(timer);
       observer.disconnect();
+      storiesHost?.remove();
     };
   }, [pathname]);
 
-  if (pathname !== "/" || !target) return null;
+  if (pathname !== "/") return null;
 
-  return createPortal(
+  return (
     <>
-      <section className="home-testimonials" aria-labelledby="home-testimonials-title">
-        <div className="home-testimonials__heading">
-          <div>
-            <p className="home-testimonials__eyebrow">The Nasty crowd</p>
-            <h2 id="home-testimonials-title">What people are saying.</h2>
-            <p>
-              A dedicated review area for customer feedback, backed by the verified-order review flow already built into the site.
-            </p>
-          </div>
-          <Link className="home-testimonials__cta" href="/reviews">
-            Leave a verified review
-          </Link>
-        </div>
-
-        <div className="home-testimonials__grid" aria-label="Sample testimonial cards">
-          {testimonials.map((testimonial) => (
-            <article className="home-testimonial-card" key={testimonial.detail}>
-              <div className="home-testimonial-card__topline">
-                <span className="home-testimonial-card__stars" aria-label="Five star sample review">
-                  ★★★★★
-                </span>
-                <span className="home-testimonial-card__sample">Sample review</span>
+      {target &&
+        createPortal(
+          <section className="home-testimonials" aria-labelledby="home-testimonials-title">
+            <div className="home-testimonials__heading">
+              <div>
+                <p className="home-testimonials__eyebrow">The Nasty crowd</p>
+                <h2 id="home-testimonials-title">What people are saying.</h2>
+                <p>
+                  A dedicated review area for customer feedback, backed by the verified-order review flow already built into the site.
+                </p>
               </div>
-              <blockquote>“{testimonial.quote}”</blockquote>
-              <div className="home-testimonial-card__footer">
-                <span className="home-testimonial-card__avatar" aria-hidden="true">N</span>
-                <div>
-                  <strong>Customer testimonial</strong>
-                  <span>{testimonial.detail}</span>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+              <Link className="home-testimonials__cta" href="/reviews">
+                Leave a verified review
+              </Link>
+            </div>
 
-        <div className="home-testimonials__trust">
-          <strong>Real review system, real completed orders.</strong>
-          <span>The cards above are sample copy for the homepage layout and can be replaced with published customer reviews.</span>
-        </div>
-      </section>
+            <div className="home-testimonials__grid" aria-label="Sample testimonial cards">
+              {testimonials.map((testimonial) => (
+                <article className="home-testimonial-card" key={testimonial.detail}>
+                  <div className="home-testimonial-card__topline">
+                    <span className="home-testimonial-card__stars" aria-label="Five star sample review">
+                      ★★★★★
+                    </span>
+                    <span className="home-testimonial-card__sample">Sample review</span>
+                  </div>
+                  <blockquote>“{testimonial.quote}”</blockquote>
+                  <div className="home-testimonial-card__footer">
+                    <span className="home-testimonial-card__avatar" aria-hidden="true">N</span>
+                    <div>
+                      <strong>Customer testimonial</strong>
+                      <span>{testimonial.detail}</span>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
 
-      <ReviewStories />
-    </>,
-    target,
+            <div className="home-testimonials__trust">
+              <strong>Real review system, real completed orders.</strong>
+              <span>The cards above are sample copy for the homepage layout and can be replaced with published customer reviews.</span>
+            </div>
+          </section>,
+          target,
+        )}
+
+      {storiesTarget && createPortal(<ReviewStories />, storiesTarget)}
+    </>
   );
 }

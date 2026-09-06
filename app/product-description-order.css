@@ -50,7 +50,7 @@
   display: inline-flex;
   width: fit-content;
   align-items: baseline;
-  gap: 0.46em;
+  gap: 0.65rem;
   margin: 0;
   color: transparent !important;
   font-size: 0 !important;
@@ -129,7 +129,7 @@
   .product-page-premium
     .product-custom-section:not(.product-custom-section--extras)
     .product-custom-section__heading h2 {
-    gap: 0.5em;
+    gap: 0.55rem;
   }
 
   .product-page-premium

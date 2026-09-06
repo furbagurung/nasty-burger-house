@@ -4,6 +4,39 @@
 }
 
 @media (max-width: 900px) {
+  /* The homepage's visible mobile header is the site header rendered by OrderExperience. */
+  .site-shell > .site-header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 0.45rem !important;
+    padding-inline: max(0.75rem, env(safe-area-inset-left)) max(0.75rem, env(safe-area-inset-right)) !important;
+  }
+
+  .site-shell > .site-header .wordmark {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    justify-self: center !important;
+    margin: 0 !important;
+  }
+
+  .site-shell > .site-header .brand-logo--header {
+    width: 3.35rem !important;
+    height: 3.35rem !important;
+  }
+
+  .site-shell > .site-header .header-actions {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+    margin: 0 !important;
+  }
+
+  .site-shell > .site-header > nav {
+    display: none !important;
+  }
+
+  /* Keep the shared mobile header correct as a fallback on route transitions. */
   .home-top-header.is-home-route {
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
     gap: 0.45rem !important;
@@ -26,16 +59,18 @@
   .mobile-home-location {
     grid-column: 1;
     grid-row: 1;
-    display: inline-flex;
+    display: inline-flex !important;
     min-width: 0;
     max-width: 8.8rem;
     align-items: center;
     justify-self: start;
-    gap: 0.48rem;
+    gap: 0.45rem;
     border-radius: 999px;
-    padding: 0.38rem 0.48rem 0.38rem 0.38rem;
+    padding: 0.34rem 0.42rem 0.34rem 0.34rem;
+    background: rgba(255, 255, 255, 0.035);
     color: #ffffff;
     text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
     transition: background-color 150ms ease, transform 150ms ease;
   }
 
@@ -53,7 +88,7 @@
     height: 2rem;
     place-items: center;
     flex: 0 0 auto;
-    border: 1px solid rgba(255, 255, 255, 0.11);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.07);
     color: #ff5a2f;
@@ -94,19 +129,20 @@
 }
 
 @media (max-width: 370px) {
+  .site-shell > .site-header,
   .home-top-header.is-home-route {
-    padding-inline: 0.65rem !important;
+    padding-inline: 0.6rem !important;
   }
 
   .mobile-home-location {
     max-width: 7.1rem;
-    gap: 0.35rem;
-    padding-right: 0.25rem;
+    gap: 0.32rem;
+    padding-right: 0.22rem;
   }
 
   .mobile-home-location__icon {
-    width: 1.85rem;
-    height: 1.85rem;
+    width: 1.82rem;
+    height: 1.82rem;
   }
 
   .mobile-home-location__copy small {
@@ -118,9 +154,10 @@
     font-size: 0.7rem;
   }
 
+  .site-shell > .site-header .brand-logo--header,
   .home-top-header.is-home-route .home-top-header__brand {
-    width: 3.1rem !important;
-    height: 3.1rem !important;
+    width: 3.05rem !important;
+    height: 3.05rem !important;
   }
 }
 

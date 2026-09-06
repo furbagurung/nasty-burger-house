@@ -1,28 +1,12 @@
 /* Mobile bottom navigation v2: Home · Menu · Cart · Drip Points · More */
 
 @media (max-width: 680px) {
-  /* Original edge-to-edge bottom bar. Keep this explicit so later mobile
-     polish cannot turn the navigation into a floating rounded tab. */
-  .mobile-tab-bar.mobile-tab-bar--v2,
   .mobile-tab-bar--v2 {
-    position: fixed !important;
-    inset: auto 0 0 0 !important;
     z-index: 72 !important;
-    width: 100% !important;
-    max-width: none !important;
-    margin: 0 !important;
     grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
     min-height: calc(4.85rem + env(safe-area-inset-bottom)) !important;
     padding: 0.42rem 0.2rem calc(0.34rem + env(safe-area-inset-bottom)) !important;
-    overflow: visible !important;
-    border: 0 !important;
-    border-top: 1px solid rgba(21, 19, 15, 0.08) !important;
-    border-radius: 0 !important;
     background: rgba(255, 255, 255, 0.985) !important;
-    box-shadow: 0 -10px 34px rgba(25, 21, 16, 0.11) !important;
-    -webkit-backdrop-filter: blur(24px) !important;
-    backdrop-filter: blur(24px) !important;
-    transform: none !important;
   }
 
   .mobile-tab-bar--v2 .mobile-tab {

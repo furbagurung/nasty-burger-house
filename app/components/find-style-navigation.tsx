@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   type CSSProperties,
-  type MouseEvent as ReactMouseEvent,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -16,7 +15,7 @@ const primaryLinks = [
   { label: "Home", href: "/" },
   { label: "Beast of the Month", href: "/beast-of-the-month" },
   { label: "Drip Points", href: "/drip-points" },
-  { label: "Find Us", href: "#find-us" },
+  { label: "Find Us", href: "/#find-us" },
 ];
 
 const menuLinks = [
@@ -35,22 +34,24 @@ function staggerStyle(index: number) {
 export default function FindStyleNavigation() {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const isMenuPage = pathname.startsWith("/menu/");
+  const supportsDrawer = isHome || isMenuPage;
   const [buttonHost, setButtonHost] = useState<HTMLElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const burgerRef = useRef<HTMLButtonElement | null>(null);
 
   useLayoutEffect(() => {
-    if (!isHome) {
-      // The portal host belongs to the homepage-only OrderExperience header.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!supportsDrawer) {
       setButtonHost(null);
       return;
     }
 
     const findHost = () => {
       const host = document.querySelector<HTMLElement>(
-        ".site-shell > .site-header .header-actions",
+        isMenuPage
+          ? ".catalogue-shell > .catalogue-header"
+          : ".site-shell > .site-header .header-actions",
       );
       setButtonHost(host);
       return Boolean(host);
@@ -72,18 +73,15 @@ export default function FindStyleNavigation() {
       window.clearTimeout(timer);
       observer.disconnect();
     };
-  }, [isHome]);
+  }, [isMenuPage, supportsDrawer]);
 
   useEffect(() => {
-    // Route changes should never leave an external portal drawer open.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsOpen(false);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    if (!isHome) return;
+    if (!supportsDrawer) return;
 
     const root = document.documentElement;
     const previousOverflow = document.body.style.overflow;
@@ -101,7 +99,46 @@ export default function FindStyleNavigation() {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [isHome, isOpen]);
+  }, [isOpen, supportsDrawer]);
+
+  useEffect(() => {
+    if (!isMenuPage || !buttonHost) return;
+
+    const header = buttonHost.matches(".catalogue-header")
+      ? buttonHost
+      : buttonHost.closest<HTMLElement>(".catalogue-header");
+    const scroller = document.querySelector<HTMLElement>(
+      ".catalogue-shell:not(.product-page-shell) .catalogue-content",
+    );
+
+    if (!header || !scroller) return;
+
+    let lastScrollY = scroller.scrollTop;
+    let isHidden = false;
+
+    const updateHeader = () => {
+      const currentY = Math.max(0, scroller.scrollTop);
+
+      if (isOpen || currentY <= 12) {
+        isHidden = false;
+      } else if (currentY > lastScrollY + 4 && currentY > 40) {
+        isHidden = true;
+      } else if (currentY < lastScrollY - 4) {
+        isHidden = false;
+      }
+
+      header.classList.toggle("is-mobile-scroll-hidden", isHidden);
+      lastScrollY = currentY;
+    };
+
+    updateHeader();
+    scroller.addEventListener("scroll", updateHeader, { passive: true });
+
+    return () => {
+      header.classList.remove("is-mobile-scroll-hidden");
+      scroller.removeEventListener("scroll", updateHeader);
+    };
+  }, [buttonHost, isMenuPage, isOpen]);
 
   function closeDrawer({ restoreFocus = false } = {}) {
     setIsOpen(false);
@@ -111,18 +148,7 @@ export default function FindStyleNavigation() {
     }
   }
 
-  function handleFindUs(event: ReactMouseEvent<HTMLAnchorElement>) {
-    event.preventDefault();
-    closeDrawer();
-    window.setTimeout(() => {
-      document.querySelector("#find-us")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 360);
-  }
-
-  if (!isHome || !buttonHost) return null;
+  if (!supportsDrawer || !buttonHost) return null;
 
   const burgerButton = createPortal(
     <button
@@ -202,7 +228,7 @@ export default function FindStyleNavigation() {
             <Link
               className="nasty-find-drawer__link"
               href={link.href}
-              onClick={link.href === "#find-us" ? handleFindUs : () => closeDrawer()}
+              onClick={() => closeDrawer()}
               style={staggerStyle(index + 2)}
               key={link.href}
             >

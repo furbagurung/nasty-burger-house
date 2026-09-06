@@ -68,9 +68,7 @@ export default function MenuCategoryPage({
 
         <section className="catalogue-content" aria-labelledby="catalogue-title">
           <div className="catalogue-heading">
-            <p className="eyebrow">Nasty Burger House menu</p>
             <h1 id="catalogue-title">{category.label}</h1>
-            <p>{category.description}</p>
           </div>
 
           <div className="catalogue-product-grid catalogue-product-grid--browse">

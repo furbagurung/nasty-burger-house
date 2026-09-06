@@ -6,17 +6,21 @@ import { createPortal } from "react-dom";
 
 export default function MobileHomeLocation() {
   const pathname = usePathname();
+  const isHome = pathname === "/";
+  const isMenuPage = pathname.startsWith("/menu/");
   const [headerTarget, setHeaderTarget] = useState<HTMLElement | null>(null);
 
   useLayoutEffect(() => {
-    if (pathname !== "/") {
+    if (!isHome && !isMenuPage) {
       setHeaderTarget(null);
       return;
     }
 
     const findHeader = () => {
       const header = document.querySelector<HTMLElement>(
-        ".site-shell > .site-header",
+        isMenuPage
+          ? ".catalogue-shell > .catalogue-header"
+          : ".site-shell > .site-header",
       );
       setHeaderTarget(header);
       return Boolean(header);
@@ -38,14 +42,14 @@ export default function MobileHomeLocation() {
       window.clearTimeout(timer);
       observer.disconnect();
     };
-  }, [pathname]);
+  }, [isHome, isMenuPage, pathname]);
 
-  if (pathname !== "/" || !headerTarget) return null;
+  if ((!isHome && !isMenuPage) || !headerTarget) return null;
 
   return createPortal(
     <a
       className="mobile-home-location"
-      href="#find-us"
+      href={isHome ? "#find-us" : "/#find-us"}
       aria-label="Pickup location: Belconnen ACT 2617. Jump to Find Us."
     >
       <span className="mobile-home-location__icon" aria-hidden="true">

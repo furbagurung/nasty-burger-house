@@ -170,6 +170,178 @@
   text-align: right;
 }
 
+.home-reels {
+  padding: clamp(4rem, 7vw, 6.5rem) clamp(1rem, 5vw, 5rem);
+  background: #11100f;
+  color: #fff;
+}
+
+.home-reels__heading {
+  display: flex;
+  max-width: 78rem;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin: 0 auto 2rem;
+}
+
+.home-reels__heading > div {
+  max-width: 43rem;
+}
+
+.home-reels__eyebrow {
+  margin: 0 0 0.7rem;
+  color: var(--hot);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.home-reels__heading h2 {
+  margin: 0;
+  font-size: clamp(2.6rem, 5vw, 5.4rem);
+  font-weight: 950;
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+}
+
+.home-reels__heading > div > p:last-child {
+  max-width: 38rem;
+  margin: 1rem 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.96rem;
+  line-height: 1.55;
+}
+
+.home-reels__hint {
+  flex: 0 0 auto;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.home-reels__track {
+  display: grid;
+  max-width: 78rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0 auto;
+}
+
+.home-reel-card {
+  min-width: 0;
+}
+
+.home-reel-card__media {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.35rem;
+  background: #050505;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.26);
+}
+
+.home-reel-card__media::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 42%;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.82));
+  content: "";
+  pointer-events: none;
+}
+
+.home-reel-card video,
+.home-reel-card__fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-reel-card video {
+  background: #050505;
+}
+
+.home-reel-card__fallback {
+  position: relative;
+  background-position: center;
+  background-size: cover;
+}
+
+.home-reel-card__fallback::after {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.12);
+  content: "";
+}
+
+.home-reel-card__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  width: 4rem;
+  height: 4rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  background: rgba(12, 11, 10, 0.68);
+  color: #fff;
+  font-size: 1.05rem;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(10px);
+}
+
+.home-reel-card__number {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  z-index: 3;
+  display: grid;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(10, 9, 8, 0.58);
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 900;
+  backdrop-filter: blur(10px);
+}
+
+.home-reel-card__copy {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 3;
+  display: grid;
+  gap: 0.34rem;
+  pointer-events: none;
+}
+
+.home-reel-card__copy span {
+  color: #ff6a45;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.home-reel-card__copy strong {
+  max-width: 13ch;
+  color: #fff;
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  font-weight: 920;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
 @media (max-width: 760px) {
   .home-testimonials {
     padding: 3.25rem 0 3.5rem;
@@ -232,5 +404,55 @@
 
   .home-testimonials__trust span {
     text-align: left;
+  }
+
+  .home-reels {
+    padding: 3.5rem 0 4rem;
+  }
+
+  .home-reels__heading {
+    display: grid;
+    gap: 0.85rem;
+    margin-bottom: 1.35rem;
+    padding: 0 1rem;
+  }
+
+  .home-reels__heading h2 {
+    max-width: 8ch;
+    font-size: clamp(2.65rem, 13vw, 4rem);
+  }
+
+  .home-reels__heading > div > p:last-child {
+    margin-top: 0.75rem;
+    font-size: 0.84rem;
+    line-height: 1.48;
+  }
+
+  .home-reels__track {
+    display: flex;
+    max-width: none;
+    gap: 0.78rem;
+    overflow-x: auto;
+    padding: 0 1rem 0.55rem;
+    scroll-padding-inline: 1rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .home-reels__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home-reel-card {
+    min-width: min(72vw, 18.25rem);
+    scroll-snap-align: start;
+  }
+
+  .home-reel-card__media {
+    border-radius: 1.15rem;
+  }
+
+  .home-reel-card__copy strong {
+    font-size: 1.28rem;
   }
 }

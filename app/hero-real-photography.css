@@ -18,8 +18,13 @@
   display: block !important;
   object-fit: cover !important;
   object-position: center center !important;
+  opacity: 0;
   transform: scale(1.012);
-  transition: transform 7s ease;
+  transition: opacity 180ms ease, transform 7s ease;
+}
+
+.hero-slide[data-hero-photography] .hero-slide__image {
+  opacity: 1;
 }
 
 .hero-slide.is-active .hero-slide__image {

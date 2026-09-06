@@ -4,6 +4,7 @@ import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import CookieSettings from "./components/cookie-settings";
 import DripPointsBanner from "./components/drip-points-banner";
 import FooterLegalLinks from "./components/footer-legal-links";
+import HomepageTestimonials from "./components/homepage-testimonials";
 import HomeTopHeader from "./components/home-top-header";
 import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
@@ -46,6 +47,7 @@ import "./hero-real-photography.css";
 import "./hero-copy-typography.css";
 import "./mobile-hero-premium-card.css";
 import "./mobile-home-location.css";
+import "./homepage-testimonials.css";
 import "./admin-dashboard.css";
 import "./admin-notification-ui.css";
 import "./mobile-header-always-dark.css";
@@ -76,6 +78,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <HomeTopHeader />
         <MobileHomeLocation />
         {children}
+        <HomepageTestimonials />
         <DripPointsBanner />
         <MobileHomeHeaderOverlay />
         <MobileHeroControls />

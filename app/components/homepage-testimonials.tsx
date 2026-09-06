@@ -25,32 +25,20 @@ const testimonials = [
 
 const reviewVideos = [
   {
-    mp4: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,vc_h264,ac_aac/v1788706765/review-02.mov",
-    original:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788706765/review-02.mov",
-    poster:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706765/review-02.jpg",
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708127/review-01.mp4",
+    poster: "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708127/review-01.jpg",
   },
   {
-    mp4: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,vc_h264,ac_aac/v1788706753/review-03.mov",
-    original:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788706753/review-03.mov",
-    poster:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706753/review-03.jpg",
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708134/review-02.mp4",
+    poster: "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708134/review-02.jpg",
   },
   {
-    mp4: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,vc_h264,ac_aac/v1788706744/review-01.mov",
-    original:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788706744/review-01.mov",
-    poster:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706744/review-01.jpg",
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708146/review-03.mp4",
+    poster: "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708146/review-03.jpg",
   },
   {
-    mp4: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,vc_h264,ac_aac/v1788706738/review-04.mov",
-    original:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788706738/review-04.mov",
-    poster:
-      "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706738/review-04.jpg",
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/v1788708128/review-04.mp4",
+    poster: "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788708128/review-04.jpg",
   },
 ];
 

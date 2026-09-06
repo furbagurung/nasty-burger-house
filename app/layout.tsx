@@ -57,6 +57,7 @@ import "./homepage-spacing-tight.css";
 import "./find-style-navigation.css";
 import "./menu-mobile-header-polish.css";
 import "./menu-mobile-layout.css";
+import "./product-mobile-home-header.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronLeft, Minus, Plus, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -147,21 +148,26 @@ export default function CartPage() {
   };
 
   return (
-    <div className="standalone-page standalone-cart-page">
-      <main className="standalone-main cart-page-main">
-        <div className="standalone-page-heading cart-page-heading">
-          <p className="standalone-eyebrow">Your pickup order</p>
-          <div>
-            <h1>Cart</h1>
-            <span>{cartCount} item{cartCount === 1 ? "" : "s"}</span>
+    <div className="standalone-page standalone-cart-page cart-redesign-page">
+      <main className="cart-redesign-main">
+        <header className="cart-redesign-header">
+          <Link className="cart-redesign-back" href="/menu/burgers" aria-label="Back to menu">
+            <ChevronLeft size={24} strokeWidth={2.3} aria-hidden="true" />
+          </Link>
+
+          <div className="cart-redesign-title-wrap">
+            <p>Your pickup order</p>
+            <div className="cart-redesign-title-row">
+              <h1>Cart</h1>
+              <span>{cartCount} item{cartCount === 1 ? "" : "s"}</span>
+            </div>
           </div>
-          <p>Review your Nasty Burger House order before checkout.</p>
-        </div>
+        </header>
 
         {!hydrated ? (
-          <div className="cart-page-loading">Loading your cart…</div>
+          <div className="cart-page-loading cart-redesign-loading">Loading your cart…</div>
         ) : cart.length === 0 ? (
-          <section className="cart-empty-state">
+          <section className="cart-empty-state cart-redesign-empty">
             <Image src="/images/bag.webp" alt="" width={140} height={140} />
             <p className="standalone-eyebrow">Nothing nasty yet</p>
             <h2>Your cart is empty.</h2>
@@ -169,42 +175,75 @@ export default function CartPage() {
             <Link href="/menu/burgers">Explore the menu</Link>
           </section>
         ) : (
-          <div className="cart-page-layout">
-            <section className="cart-page-lines" aria-label="Cart items">
+          <div className="cart-redesign-layout">
+            <section className="cart-redesign-items" aria-label="Cart items">
               {cart.map((line) => {
                 const item = menuItems.find((entry) => entry.id === line.itemId);
                 if (!item) return null;
+
                 const details = lineDetails(line);
-                const lineTotal = calculateLineUnitPrice(line, item) * line.quantity;
+                const unitPrice = calculateLineUnitPrice(line, item);
+                const lineTotal = unitPrice * line.quantity;
 
                 return (
-                  <article className="cart-page-line" key={line.lineId}>
-                    <Link className="cart-page-line__media" href={`/product/${item.id}`}>
-                      <Image src={item.image ?? "/logo.webp"} alt={item.name} width={180} height={180} />
+                  <article className="cart-redesign-item" key={line.lineId}>
+                    <Link className="cart-redesign-item__media" href={`/product/${item.id}`}>
+                      <Image
+                        src={item.image ?? "/logo.webp"}
+                        alt={item.name}
+                        width={180}
+                        height={180}
+                      />
                     </Link>
 
-                    <div className="cart-page-line__copy">
-                      <div className="cart-page-line__title">
-                        <div>
+                    <div className="cart-redesign-item__content">
+                      <div className="cart-redesign-item__top">
+                        <div className="cart-redesign-item__name">
                           <Link href={`/product/${item.id}`}>{item.name}</Link>
-                          <span>{money.format(calculateLineUnitPrice(line, item))} each</span>
+                          <span>{money.format(unitPrice)} each</span>
                         </div>
-                        <strong>{money.format(lineTotal)}</strong>
+
+                        <button
+                          className="cart-redesign-remove"
+                          type="button"
+                          onClick={() => removeLine(line.lineId)}
+                          aria-label={`Remove ${item.name}`}
+                        >
+                          <X size={17} strokeWidth={2.2} aria-hidden="true" />
+                        </button>
                       </div>
 
                       {details.length > 0 && (
-                        <div className="cart-page-line__details">
-                          {details.map((detail) => <span key={detail}>{detail}</span>)}
+                        <div className="cart-redesign-item__details">
+                          {details.map((detail) => (
+                            <span key={detail}>{detail}</span>
+                          ))}
                         </div>
                       )}
 
-                      <div className="cart-page-line__actions">
-                        <div className="cart-page-quantity" aria-label={`Quantity for ${item.name}`}>
-                          <button type="button" onClick={() => changeQuantity(line.lineId, -1)} disabled={line.quantity === 1} aria-label={`Decrease ${item.name} quantity`}>−</button>
+                      <div className="cart-redesign-item__footer">
+                        <div className="cart-redesign-quantity" aria-label={`Quantity for ${item.name}`}>
+                          <button
+                            type="button"
+                            onClick={() => changeQuantity(line.lineId, -1)}
+                            disabled={line.quantity === 1}
+                            aria-label={`Decrease ${item.name} quantity`}
+                          >
+                            <Minus size={16} strokeWidth={2.2} aria-hidden="true" />
+                          </button>
                           <strong>{line.quantity}</strong>
-                          <button type="button" onClick={() => changeQuantity(line.lineId, 1)} disabled={line.quantity === 20} aria-label={`Increase ${item.name} quantity`}>+</button>
+                          <button
+                            className="cart-redesign-quantity__plus"
+                            type="button"
+                            onClick={() => changeQuantity(line.lineId, 1)}
+                            disabled={line.quantity === 20}
+                            aria-label={`Increase ${item.name} quantity`}
+                          >
+                            <Plus size={16} strokeWidth={2.3} aria-hidden="true" />
+                          </button>
                         </div>
-                        <button className="cart-page-remove" type="button" onClick={() => removeLine(line.lineId)}>Remove</button>
+
+                        <strong className="cart-redesign-item__total">{money.format(lineTotal)}</strong>
                       </div>
                     </div>
                   </article>
@@ -212,19 +251,48 @@ export default function CartPage() {
               })}
             </section>
 
-            <aside className="cart-page-summary">
-              <p className="standalone-eyebrow">Order summary</p>
-              <div className="cart-page-summary__row">
-                <span>Subtotal</span>
+            <aside className="cart-redesign-summary">
+              <div className="cart-redesign-summary__heading">
+                <div>
+                  <p>Order summary</p>
+                  <h2>Ready for pickup</h2>
+                </div>
+                <span>{cartCount} item{cartCount === 1 ? "" : "s"}</span>
+              </div>
+
+              <div className="cart-redesign-summary__rows">
+                <div>
+                  <span>Subtotal</span>
+                  <strong>{money.format(subtotal)}</strong>
+                </div>
+                <div>
+                  <span>Pickup</span>
+                  <strong>Free</strong>
+                </div>
+              </div>
+
+              <div className="cart-redesign-summary__total">
+                <span>Total</span>
                 <strong>{money.format(subtotal)}</strong>
               </div>
-              <p className="cart-page-summary__note">Pickup only. You&apos;ll pay when you collect your order.</p>
-              <Link className="standalone-primary-button" href="/checkout">Continue to checkout</Link>
-              <Link className="standalone-secondary-link" href="/menu/burgers">Add more items</Link>
+
+              <p className="cart-redesign-summary__note">
+                Pickup only. You&apos;ll pay when you collect your order.
+              </p>
+
+              <Link className="cart-redesign-checkout" href="/checkout">
+                Continue to checkout
+                <span>{money.format(subtotal)}</span>
+              </Link>
+
+              <Link className="cart-redesign-add-more" href="/menu/burgers">
+                + Add more items
+              </Link>
             </aside>
           </div>
         )}
       </main>
+
       <MobileBottomNav active="cart" cartCount={cartCount} />
     </div>
   );

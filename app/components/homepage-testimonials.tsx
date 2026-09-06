@@ -10,17 +10,26 @@ const testimonials = [
   {
     quote:
       "The burger is stacked, juicy and properly messy — exactly the kind of feed you order when you are seriously hungry.",
-    detail: "Burger order",
+    name: "Sample customer A",
+    initial: "A",
+    detail: "Burger order preview",
+    avatarTone: "red",
   },
   {
     quote:
       "The Beast Box is made for sharing. Burgers, fries and sides all in one hit without overthinking the order.",
-    detail: "Beast Box order",
+    name: "Sample customer J",
+    initial: "J",
+    detail: "Beast Box preview",
+    avatarTone: "gold",
   },
   {
     quote:
       "Quick pickup, big portions and the burger still tastes fresh off the grill when you open the bag.",
-    detail: "Pickup order",
+    name: "Sample customer S",
+    initial: "S",
+    detail: "Pickup order preview",
+    avatarTone: "dark",
   },
 ];
 
@@ -98,7 +107,7 @@ export default function HomepageTestimonials() {
                 <p className="home-testimonials__eyebrow">The Nasty crowd</p>
                 <h2 id="home-testimonials-title">What people are saying.</h2>
                 <p>
-                  A dedicated review area for customer feedback, backed by the verified-order review flow already built into the site.
+                  Review-style previews for the homepage. Published customer reviews can replace these sample cards as they come in.
                 </p>
               </div>
               <Link className="home-testimonials__cta" href="/reviews">
@@ -108,28 +117,43 @@ export default function HomepageTestimonials() {
 
             <div className="home-testimonials__grid" aria-label="Sample testimonial cards">
               {testimonials.map((testimonial) => (
-                <article className="home-testimonial-card" key={testimonial.detail}>
-                  <div className="home-testimonial-card__topline">
-                    <span className="home-testimonial-card__stars" aria-label="Five star sample review">
-                      ★★★★★
+                <article className="home-testimonial-card" key={testimonial.name}>
+                  <div className="home-testimonial-card__profile">
+                    <span
+                      className={`home-testimonial-card__avatar home-testimonial-card__avatar--${testimonial.avatarTone}`}
+                      aria-hidden="true"
+                    >
+                      {testimonial.initial}
                     </span>
-                    <span className="home-testimonial-card__sample">Sample review</span>
-                  </div>
-                  <blockquote>“{testimonial.quote}”</blockquote>
-                  <div className="home-testimonial-card__footer">
-                    <span className="home-testimonial-card__avatar" aria-hidden="true">N</span>
-                    <div>
-                      <strong>Customer testimonial</strong>
+                    <div className="home-testimonial-card__profile-copy">
+                      <strong>{testimonial.name}</strong>
                       <span>{testimonial.detail}</span>
                     </div>
+                    <span className="home-testimonial-card__sample">Sample</span>
+                  </div>
+
+                  <div className="home-testimonial-card__rating-row">
+                    <strong>5.0</strong>
+                    <span className="home-testimonial-card__stars" aria-label="Five star sample rating">
+                      ★★★★★
+                    </span>
+                    <span className="home-testimonial-card__review-source">Review preview</span>
+                  </div>
+
+                  <blockquote>“{testimonial.quote}”</blockquote>
+
+                  <div className="home-testimonial-card__meta">
+                    <span>Sample content for layout preview</span>
+                    <span aria-hidden="true">·</span>
+                    <span>Not a published Google review</span>
                   </div>
                 </article>
               ))}
             </div>
 
             <div className="home-testimonials__trust">
-              <strong>Real review system, real completed orders.</strong>
-              <span>The cards above are sample copy for the homepage layout and can be replaced with published customer reviews.</span>
+              <strong>Real review flow, clearly marked sample cards.</strong>
+              <span>Replace these previews with genuine published customer reviews once available.</span>
             </div>
           </section>,
           target,

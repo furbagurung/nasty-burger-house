@@ -57,27 +57,59 @@
   }
 }
 
-/* Menu tab: hide the top app header. Keep the left category rail in its
-   existing kiosk layout; only the right browsing pane gets a pinned heading. */
+/* Menu tab: show the same Location — Logo — Hamburger header used on home,
+   while keeping the left category rail and right product pane independently
+   scrollable below it. */
 @media (max-width: 680px) {
   .catalogue-shell:not(.product-page-shell) > .catalogue-header {
-    display: none !important;
+    position: fixed !important;
+    inset: 0 0 auto !important;
+    z-index: 130 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 0.45rem !important;
+    width: 100% !important;
+    min-height: 5.1rem !important;
+    margin: 0 !important;
+    padding: 0.45rem max(0.75rem, env(safe-area-inset-right)) 0.45rem max(0.75rem, env(safe-area-inset-left)) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: #0e0d0c !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2) !important;
+    transform: translateY(0);
+    will-change: transform;
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+
+  .catalogue-shell:not(.product-page-shell) > .catalogue-header.is-mobile-scroll-hidden {
+    transform: translateY(calc(-100% - 2px)) !important;
+    pointer-events: none !important;
+  }
+
+  .catalogue-shell:not(.product-page-shell) > .catalogue-header .catalogue-logo {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  .catalogue-shell:not(.product-page-shell) > .catalogue-header .catalogue-logo img {
+    width: 3.35rem !important;
+    height: 3.35rem !important;
   }
 
   .catalogue-shell:not(.product-page-shell) > .catalogue-main {
     margin-top: 0 !important;
-    padding-top: 0 !important;
+    padding-top: 5.1rem !important;
   }
 
-  /* Preserve the existing left category rail layout. */
+  /* Preserve the existing left category rail layout below the fixed header. */
   .catalogue-shell:not(.product-page-shell) .catalogue-categories {
-    top: 0 !important;
-    height: calc(100svh - 4.75rem - env(safe-area-inset-bottom)) !important;
+    top: 5.1rem !important;
+    height: calc(100svh - 5.1rem - 4.75rem - env(safe-area-inset-bottom)) !important;
   }
 
   /* Right-side browsing pane scrolls independently so its title stays put. */
   .catalogue-shell:not(.product-page-shell) .catalogue-content {
-    height: calc(100svh - 4.75rem - env(safe-area-inset-bottom)) !important;
+    height: calc(100svh - 5.1rem - 4.75rem - env(safe-area-inset-bottom)) !important;
     min-height: 0 !important;
     overflow-x: hidden !important;
     overflow-y: auto !important;
@@ -94,11 +126,48 @@
     position: sticky !important;
     top: 0 !important;
     z-index: 35 !important;
-    margin: 0 0 1.05rem !important;
-    padding: 0.8rem 0.15rem 0.75rem !important;
+    margin: 0 0 0.7rem !important;
+    padding: 0.72rem 0.15rem 0.62rem !important;
     border-bottom: 1px solid rgba(23, 21, 19, 0.08);
     background: rgba(255, 255, 255, 0.97) !important;
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     backdrop-filter: blur(14px) saturate(140%);
+  }
+
+  .catalogue-shell:not(.product-page-shell) .catalogue-heading .eyebrow,
+  .catalogue-shell:not(.product-page-shell) .catalogue-heading > p {
+    display: none !important;
+  }
+
+  .catalogue-shell:not(.product-page-shell) .catalogue-heading h1 {
+    margin: 0 !important;
+    font-size: clamp(1.55rem, 7vw, 2rem) !important;
+    line-height: 1 !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .catalogue-shell:not(.product-page-shell) > .catalogue-header {
+    min-height: 4.8rem !important;
+    padding-inline: 0.6rem !important;
+  }
+
+  .catalogue-shell:not(.product-page-shell) > .catalogue-main {
+    padding-top: 4.8rem !important;
+  }
+
+  .catalogue-shell:not(.product-page-shell) .catalogue-categories {
+    top: 4.8rem !important;
+    height: calc(100svh - 4.8rem - 4.75rem - env(safe-area-inset-bottom)) !important;
+  }
+
+  .catalogue-shell:not(.product-page-shell) .catalogue-content {
+    height: calc(100svh - 4.8rem - 4.75rem - env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .catalogue-shell:not(.product-page-shell) > .catalogue-header {
+    transition: none !important;
   }
 }

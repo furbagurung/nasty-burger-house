@@ -1,90 +1,39 @@
-/* Homepage hero rebuilt from the real menu photography already supplied for NBH.
-   Food photos remain product photography; the design work is layout, lighting and framing only. */
+/* Homepage hero uses the finished artwork in public/images/hero-slider as the
+   actual carousel photography. No floating product cutouts are layered on top. */
 
 .hero-carousel {
   min-height: max(39rem, calc(100svh - 5.5rem));
-  background: #15120f;
+  background: #0b0a09;
 }
 
 .hero-slide {
   overflow: hidden;
 }
 
-.hero-slide__image,
-.hero-slide__shade {
+.hero-real-photo-scene {
   display: none !important;
 }
 
-.hero-real-photo-scene {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  overflow: hidden;
-  isolation: isolate;
+.hero-slide__image {
+  display: block !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  transform: scale(1.012);
+  transition: transform 7s ease;
 }
 
-.hero-real-photo-scene::before,
-.hero-real-photo-scene::after {
-  position: absolute;
-  content: "";
-  pointer-events: none;
+.hero-slide.is-active .hero-slide__image {
+  transform: scale(1);
 }
 
-.hero-real-photo-stage {
-  position: absolute;
-  inset: 0 0 0 auto;
-  width: 68%;
-  overflow: hidden;
+.hero-slide__shade {
+  display: block !important;
+  background:
+    linear-gradient(90deg, rgba(7, 6, 5, 0.58) 0%, rgba(7, 6, 5, 0.24) 33%, rgba(7, 6, 5, 0.04) 62%, rgba(7, 6, 5, 0.02) 100%),
+    linear-gradient(0deg, rgba(7, 6, 5, 0.26), transparent 38%) !important;
 }
 
-.hero-real-photo__brand {
-  position: absolute;
-  top: clamp(6.5rem, 10vw, 8.5rem);
-  right: clamp(1.4rem, 3.4vw, 4.2rem);
-  z-index: 8;
-  width: clamp(5.2rem, 7vw, 7.5rem);
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.18));
-  pointer-events: none;
-  user-select: none;
-}
-
-.hero-real-photo {
-  position: absolute;
-  z-index: 3;
-  overflow: hidden;
-  border: 1px solid rgba(20, 17, 13, 0.08);
-  border-radius: clamp(1.2rem, 2.2vw, 2rem);
-  background: #fff;
-  box-shadow: 0 28px 70px rgba(24, 18, 10, 0.2);
-}
-
-.hero-real-photo__image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-.hero-real-photo__drink,
-.hero-real-photo__coin,
-.hero-real-photo__coming-soon {
-  position: absolute;
-  z-index: 6;
-  display: block;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 20px 28px rgba(24, 18, 10, 0.24));
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-/* The copy remains real HTML instead of baked-in graphic text. */
+/* Keep the marketing copy as live HTML over the finished hero artwork. */
 .hero-slide__copy {
   position: absolute !important;
   top: 50% !important;
@@ -97,14 +46,14 @@
   min-height: 0 !important;
   margin: 0 !important;
   border: 1px solid rgba(20, 17, 13, 0.08) !important;
-  border-radius: clamp(1.5rem, 2.2vw, 2rem) !important;
+  border-radius: clamp(1.45rem, 2.2vw, 2rem) !important;
   padding: clamp(1.65rem, 3vw, 2.65rem) !important;
   background: rgba(255, 253, 249, 0.965) !important;
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22) !important;
   color: #15130f !important;
   transform: translateY(-45%) !important;
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .hero-slide__copy .eyebrow {
@@ -116,7 +65,7 @@
 
 .hero-slide__copy h1,
 .hero-slide__copy h2 {
-  max-width: 10ch !important;
+  max-width: 11ch !important;
   margin: 0 !important;
   color: #12100e !important;
   font-size: clamp(3rem, 5.2vw, 5.45rem) !important;
@@ -164,212 +113,11 @@
 .hero-slide__copy .hero-card__cta:disabled,
 .hero-slide__copy .hero-card__cta.is-coming-soon {
   cursor: default !important;
-  opacity: 0.82 !important;
+  opacity: 0.84 !important;
   transform: none !important;
 }
 
-/* MENU — bright editorial food photography layout. */
-.hero-slide[data-hero-photography="menu"] .hero-real-photo-scene {
-  background:
-    radial-gradient(circle at 82% 48%, rgba(255, 255, 255, 0.92) 0 16%, transparent 42%),
-    linear-gradient(112deg, #171411 0 34%, #e9dfd1 34% 100%);
-}
-
-.hero-slide[data-hero-photography="menu"] .hero-real-photo-scene::after {
-  right: 8%;
-  bottom: -16%;
-  width: 56%;
-  height: 56%;
-  border-radius: 999px;
-  background: rgba(232, 59, 24, 0.13);
-  filter: blur(2px);
-}
-
-.hero-real-photo--menu-og {
-  right: 10%;
-  bottom: 11%;
-  width: 46%;
-  height: 47%;
-  transform: rotate(-1.6deg);
-}
-
-.hero-real-photo--menu-peri {
-  top: 18%;
-  left: 4%;
-  width: 34%;
-  height: 34%;
-  transform: rotate(2.2deg);
-}
-
-.hero-real-photo--menu-hooked {
-  top: 17%;
-  right: 6%;
-  width: 29%;
-  height: 31%;
-  transform: rotate(-2deg);
-}
-
-.hero-real-photo__drink--menu-coke {
-  top: 21%;
-  left: 42%;
-  width: clamp(3.7rem, 5vw, 5.6rem);
-}
-
-.hero-real-photo__drink--menu-fanta {
-  top: 18%;
-  left: 52%;
-  width: clamp(3.6rem, 4.7vw, 5.3rem);
-}
-
-/* COMBO — darker, punchier fast-food ad with real product cards. */
-.hero-slide[data-hero-photography="combo"] .hero-real-photo-scene {
-  background:
-    radial-gradient(circle at 76% 47%, rgba(232, 59, 24, 0.25), transparent 31%),
-    linear-gradient(112deg, #161311 0 36%, #29211c 36% 100%);
-}
-
-.hero-slide[data-hero-photography="combo"] .hero-real-photo-scene::after {
-  right: -8%;
-  bottom: -24%;
-  width: 56%;
-  aspect-ratio: 1;
-  border: 2.8rem solid rgba(232, 59, 24, 0.14);
-  border-radius: 999px;
-}
-
-.hero-real-photo--combo-burger {
-  right: 11%;
-  bottom: 10%;
-  width: 42%;
-  height: 44%;
-  transform: rotate(-1deg);
-}
-
-.hero-real-photo--combo-fries {
-  left: 5%;
-  bottom: 14%;
-  width: 31%;
-  height: 31%;
-  transform: rotate(2deg);
-}
-
-.hero-real-photo__drink--solo,
-.hero-real-photo__drink--coke,
-.hero-real-photo__drink--fanta {
-  top: 17%;
-  padding: 0.45rem;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.24);
-}
-
-.hero-real-photo__drink--solo {
-  left: 39%;
-  width: clamp(3.6rem, 4.6vw, 5.3rem);
-  transform: rotate(-4deg);
-}
-
-.hero-real-photo__drink--coke {
-  left: 49%;
-  width: clamp(3.4rem, 4.4vw, 5rem);
-}
-
-.hero-real-photo__drink--fanta {
-  left: 59%;
-  width: clamp(3.6rem, 4.7vw, 5.4rem);
-  transform: rotate(4deg);
-}
-
-/* LOYALTY — minimal charcoal + gold composition using the actual Drip coin. */
-.hero-slide[data-hero-photography="loyalty"] .hero-real-photo-scene {
-  background:
-    radial-gradient(circle at 84% 50%, rgba(255, 201, 40, 0.2), transparent 28%),
-    linear-gradient(112deg, #12100e 0 36%, #211c14 36% 100%);
-}
-
-.hero-slide[data-hero-photography="loyalty"] .hero-real-photo-scene::after {
-  top: 18%;
-  right: 8%;
-  width: 34%;
-  aspect-ratio: 1;
-  border: 1px solid rgba(255, 201, 40, 0.24);
-  border-radius: 999px;
-  box-shadow:
-    0 0 0 3rem rgba(255, 201, 40, 0.035),
-    0 0 0 7rem rgba(255, 201, 40, 0.018);
-}
-
-.hero-real-photo--loyalty-burger {
-  right: 15%;
-  bottom: 11%;
-  width: 45%;
-  height: 45%;
-  transform: rotate(-1.5deg);
-}
-
-.hero-real-photo__coin {
-  top: 20%;
-  right: 5.5%;
-  z-index: 7;
-  width: clamp(8.5rem, 15vw, 15rem);
-  animation: hero-coin-float 3.2s ease-in-out infinite alternate;
-}
-
-.hero-real-photo__drink--loyalty-coke {
-  top: 19%;
-  left: 24%;
-  width: clamp(3.8rem, 5vw, 5.7rem);
-  padding: 0.45rem;
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.96);
-}
-
-/* MONTHLY — real supplied teaser photography with the exact supplied sticker. */
-.hero-slide[data-hero-photography="monthly"] .hero-real-photo-scene {
-  background:
-    radial-gradient(circle at 75% 46%, rgba(166, 20, 23, 0.38), transparent 35%),
-    linear-gradient(112deg, #120d0c 0 35%, #351212 35% 100%);
-}
-
-.hero-real-photo--monthly {
-  top: 13%;
-  right: 7%;
-  width: 62%;
-  height: 72%;
-  border-color: rgba(255, 255, 255, 0.08);
-  background: #0c0a09;
-  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.36);
-}
-
-.hero-real-photo--monthly .hero-real-photo__image {
-  object-fit: cover;
-}
-
-.hero-real-photo__coming-soon {
-  top: 20%;
-  right: 2.5%;
-  z-index: 9;
-  width: clamp(9rem, 17vw, 17rem);
-  opacity: 1 !important;
-  filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.28));
-  animation: hero-coming-soon-float 2.25s ease-in-out infinite alternate;
-}
-
-@keyframes hero-coming-soon-float {
-  from { transform: translate3d(0, 4px, 0) rotate(2deg); }
-  to { transform: translate3d(0, -9px, 0) rotate(2deg); }
-}
-
-@keyframes hero-coin-float {
-  from { transform: translate3d(0, 5px, 0) rotate(-3deg); }
-  to { transform: translate3d(0, -8px, 0) rotate(2deg); }
-}
-
 @media (max-width: 980px) {
-  .hero-real-photo-stage {
-    width: 62%;
-  }
-
   .hero-slide__copy {
     width: min(30rem, calc(100% - 2.4rem)) !important;
     left: 1.2rem !important;
@@ -386,18 +134,14 @@
     min-height: clamp(38rem, 78svh, 44rem) !important;
   }
 
-  .hero-real-photo-stage {
-    top: 0;
-    right: 0;
-    bottom: auto;
-    width: 100%;
-    height: 57%;
+  .hero-slide__image {
+    object-position: 66% center !important;
   }
 
-  .hero-real-photo__brand {
-    top: 4.65rem;
-    right: 0.8rem;
-    width: 4.25rem;
+  .hero-slide__shade {
+    background:
+      linear-gradient(0deg, rgba(7, 6, 5, 0.5) 0%, rgba(7, 6, 5, 0.12) 45%, rgba(7, 6, 5, 0.03) 78%),
+      linear-gradient(90deg, rgba(7, 6, 5, 0.18), transparent 66%) !important;
   }
 
   .hero-slide__copy {
@@ -409,7 +153,6 @@
     min-height: 0 !important;
     height: auto !important;
     max-height: none !important;
-    justify-content: initial !important;
     border-radius: 1.3rem !important;
     padding: 1rem 1rem 1.05rem !important;
     transform: none !important;
@@ -422,109 +165,36 @@
 
   .hero-slide__copy h1,
   .hero-slide__copy h2 {
-    max-width: 11ch !important;
-    font-size: clamp(2.15rem, 10vw, 3.25rem) !important;
-    line-height: 0.92 !important;
+    max-width: 12ch !important;
+    font-size: clamp(2.05rem, 10vw, 3.05rem) !important;
+    line-height: 0.94 !important;
   }
 
   .hero-slide__copy > p:not(.eyebrow) {
-    display: -webkit-box;
-    margin-top: 0.65rem !important;
-    overflow: hidden;
-    font-size: 0.82rem !important;
-    line-height: 1.42 !important;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    margin-top: 0.7rem !important;
+    font-size: 0.88rem !important;
+    line-height: 1.45 !important;
   }
 
   .hero-slide__copy .hero-actions {
-    margin-top: 0.75rem !important;
+    margin-top: 0.9rem !important;
   }
 
   .hero-slide__copy .hero-card__cta {
-    min-height: 2.7rem;
-    padding: 0.6rem 1rem;
-    font-size: 0.8rem;
-  }
-
-  .hero-real-photo {
-    border-radius: 1rem;
-  }
-
-  .hero-real-photo--menu-og,
-  .hero-real-photo--combo-burger,
-  .hero-real-photo--loyalty-burger {
-    right: 6%;
-    bottom: 6%;
-    width: 47%;
-    height: 46%;
-  }
-
-  .hero-real-photo--menu-peri {
-    top: 19%;
-    left: 5%;
-    width: 34%;
-    height: 34%;
-  }
-
-  .hero-real-photo--menu-hooked {
-    top: 14%;
-    right: 4%;
-    width: 30%;
-    height: 31%;
-  }
-
-  .hero-real-photo__drink--menu-coke,
-  .hero-real-photo__drink--menu-fanta,
-  .hero-real-photo__drink--loyalty-coke {
-    display: none;
-  }
-
-  .hero-real-photo--combo-fries {
-    left: 5%;
-    bottom: 9%;
-    width: 34%;
-    height: 31%;
-  }
-
-  .hero-real-photo__drink--solo,
-  .hero-real-photo__drink--coke,
-  .hero-real-photo__drink--fanta {
-    top: 17%;
-    width: 3.1rem;
-  }
-
-  .hero-real-photo__drink--solo { left: 30%; }
-  .hero-real-photo__drink--coke { left: 45%; }
-  .hero-real-photo__drink--fanta { left: 60%; }
-
-  .hero-real-photo__coin {
-    top: 15%;
-    right: 3%;
-    width: 7.7rem;
-  }
-
-  .hero-real-photo--monthly {
-    top: 10%;
-    right: 3%;
-    width: 78%;
-    height: 64%;
-  }
-
-  .hero-real-photo__coming-soon {
-    top: 18%;
-    right: 1%;
-    width: 7.5rem;
+    min-height: 2.85rem;
+    padding: 0.68rem 1.1rem;
+    font-size: 0.84rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-real-photo__coin,
-  .hero-real-photo__coming-soon {
-    animation: none !important;
-  }
-
+  .hero-slide__image,
   .hero-slide__copy .hero-card__cta {
     transition: none !important;
+  }
+
+  .hero-slide__image,
+  .hero-slide.is-active .hero-slide__image {
+    transform: none !important;
   }
 }

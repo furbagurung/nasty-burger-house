@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 export default function MobileHomeLocation() {
@@ -12,7 +12,10 @@ export default function MobileHomeLocation() {
   const supportsHeader = isHome || isMenuPage || isProductPage;
   const [headerTarget, setHeaderTarget] = useState<HTMLElement | null>(null);
 
-  useLayoutEffect(() => {
+  // Wait until hydration has committed before portaling into a page-owned header.
+  // Using a layout effect here can mutate the SSR DOM while the menu/product
+  // subtree is still hydrating, which produces a false client/server mismatch.
+  useEffect(() => {
     if (!supportsHeader) {
       setHeaderTarget(null);
       return;
@@ -28,21 +31,30 @@ export default function MobileHomeLocation() {
       return Boolean(header);
     };
 
-    if (findHeader()) return;
+    const frame = window.requestAnimationFrame(() => {
+      if (findHeader()) return;
 
-    const observer = new MutationObserver(() => {
-      if (findHeader()) observer.disconnect();
+      const observer = new MutationObserver(() => {
+        if (findHeader()) observer.disconnect();
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+      const timer = window.setTimeout(() => {
+        findHeader();
+        observer.disconnect();
+      }, 500);
+
+      cleanupObserver = () => {
+        window.clearTimeout(timer);
+        observer.disconnect();
+      };
     });
 
-    observer.observe(document.body, { childList: true, subtree: true });
-    const timer = window.setTimeout(() => {
-      findHeader();
-      observer.disconnect();
-    }, 500);
+    let cleanupObserver = () => {};
 
     return () => {
-      window.clearTimeout(timer);
-      observer.disconnect();
+      window.cancelAnimationFrame(frame);
+      cleanupObserver();
     };
   }, [isHome, isMenuPage, isProductPage, supportsHeader, pathname]);
 

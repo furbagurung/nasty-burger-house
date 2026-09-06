@@ -25,7 +25,7 @@ const menuLinks = [
   { label: "Beast Boxes", href: "/menu/beast-boxes" },
   { label: "Loaded Sides", href: "/menu/loaded-sides" },
   { label: "Kids", href: "/menu/kids" },
-  { label: "Dessert", href: "/menu/dessert" },
+  { label: "Dessert", href: "/menu/sweet" },
   { label: "Drinks", href: "/menu/drinks" },
 ];
 

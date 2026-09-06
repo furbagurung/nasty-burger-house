@@ -43,37 +43,44 @@
   display: none !important;
 }
 
-/* Beast Combo heading: bold Nasty red with a hand-marker underline. */
+/* Beast Combo heading: black lead-in + heavier Nasty-red product name. */
 .product-page-premium
   .product-custom-section:not(.product-custom-section--extras)
   .product-custom-section__heading h2 {
-  position: relative;
-  display: inline-block;
+  display: inline-flex;
   width: fit-content;
+  align-items: baseline;
+  gap: 0.28em;
   margin: 0;
-  color: #e83b18 !important;
-  font-size: 1.08rem;
-  font-weight: 900 !important;
+  color: transparent !important;
+  font-size: 0 !important;
   letter-spacing: -0.03em;
   line-height: 1.12;
-  isolation: isolate;
+  white-space: nowrap;
+}
+
+.product-page-premium
+  .product-custom-section:not(.product-custom-section--extras)
+  .product-custom-section__heading h2::before {
+  color: #171513;
+  content: "Make it the";
+  font-size: 1rem;
+  font-weight: 720;
+  letter-spacing: -0.025em;
 }
 
 .product-page-premium
   .product-custom-section:not(.product-custom-section--extras)
   .product-custom-section__heading h2::after {
-  position: absolute;
-  right: -0.08rem;
-  bottom: -0.18rem;
-  left: -0.08rem;
-  z-index: -1;
-  height: 0.28rem;
-  border-radius: 999px 45% 999px 55%;
-  background: rgba(232, 59, 24, 0.24);
-  clip-path: polygon(0 30%, 13% 12%, 29% 26%, 44% 8%, 61% 24%, 78% 11%, 100% 28%, 98% 82%, 80% 69%, 63% 86%, 45% 70%, 26% 88%, 9% 72%, 0 84%);
-  content: "";
-  pointer-events: none;
-  transform: rotate(-0.8deg);
+  display: inline-block;
+  color: #a62212;
+  content: "Beast Combo";
+  font-size: 1.1rem;
+  font-weight: 950;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  box-shadow: inset 0 -0.23em 0 rgba(103, 20, 10, 0.28);
+  transform: rotate(-0.35deg);
 }
 
 /* Visually group Beast Combo + Customize into one dedicated order-options panel. */
@@ -116,8 +123,14 @@
 
   .product-page-premium
     .product-custom-section:not(.product-custom-section--extras)
-    .product-custom-section__heading h2 {
-    font-size: 1rem;
+    .product-custom-section__heading h2::before {
+    font-size: 0.96rem;
+  }
+
+  .product-page-premium
+    .product-custom-section:not(.product-custom-section--extras)
+    .product-custom-section__heading h2::after {
+    font-size: 1.04rem;
   }
 
   .product-page-premium

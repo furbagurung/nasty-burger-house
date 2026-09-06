@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   type CSSProperties,
+  type MouseEvent as ReactMouseEvent,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -42,6 +43,8 @@ export default function FindStyleNavigation() {
 
   useLayoutEffect(() => {
     if (!isHome) {
+      // The portal host belongs to the homepage-only OrderExperience header.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setButtonHost(null);
       return;
     }
@@ -73,7 +76,10 @@ export default function FindStyleNavigation() {
   }, [isHome]);
 
   useEffect(() => {
+    // Route changes should never leave an external portal drawer open.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsOpen(false);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMenuOpen(false);
   }, [pathname]);
 
@@ -106,7 +112,7 @@ export default function FindStyleNavigation() {
     }
   }
 
-  function handleFindUs(event: React.MouseEvent<HTMLAnchorElement>) {
+  function handleFindUs(event: ReactMouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     closeDrawer();
     window.setTimeout(() => {

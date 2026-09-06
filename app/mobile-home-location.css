@@ -4,13 +4,20 @@
 }
 
 @media (max-width: 900px) {
-  /* Use only the OrderExperience mobile header on the homepage. */
+  /* The shared HomeTopHeader is desktop-only here. Hiding the base class (not
+     only the route modifier) prevents both header systems from stacking. */
+  .home-top-header,
+  body > .home-top-header,
   .home-top-header.is-home-route {
     display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 
+  /* Use the OrderExperience header as the single mobile homepage navbar. */
   .site-shell > .site-header {
     display: grid !important;
+    visibility: visible !important;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
     align-items: center !important;
     gap: 0.45rem !important;
@@ -24,11 +31,13 @@
   .site-shell > .site-header .wordmark {
     grid-column: 2 !important;
     grid-row: 1 !important;
+    display: block !important;
     justify-self: center !important;
     margin: 0 !important;
   }
 
   .site-shell > .site-header .brand-logo--header {
+    display: block !important;
     width: 3.45rem !important;
     height: 3.45rem !important;
   }
@@ -40,6 +49,7 @@
   .site-shell > .site-header .header-actions {
     grid-column: 3 !important;
     grid-row: 1 !important;
+    display: flex !important;
     justify-self: end !important;
     margin: 0 !important;
   }

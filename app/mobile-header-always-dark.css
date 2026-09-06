@@ -33,34 +33,54 @@
     color: #fff;
   }
 
-  /* Homepage mobile header: Location — centered Logo — Hamburger. */
+  /* Homepage mobile header: Location — Logo — Hamburger.
+     Pin each item to the full viewport header so the hamburger always sits
+     in the true right corner regardless of legacy grid/flex rules. */
   .site-shell > .site-header {
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+    position: relative !important;
+    display: block !important;
     width: 100% !important;
     max-width: none !important;
-    justify-content: stretch !important;
+    min-height: 5.1rem !important;
+    padding: 0 !important;
   }
 
   .site-shell > .site-header .mobile-home-location {
-    grid-column: 1 !important;
-    justify-self: start !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: max(0.75rem, env(safe-area-inset-left)) !important;
+    z-index: 3 !important;
+    margin: 0 !important;
+    transform: translateY(-50%) !important;
+  }
+
+  .site-shell > .site-header .mobile-home-location:active {
+    transform: translateY(-50%) scale(0.97) !important;
   }
 
   .site-shell > .site-header .wordmark {
-    grid-column: 2 !important;
-    justify-self: center !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    z-index: 2 !important;
+    display: block !important;
+    margin: 0 !important;
+    transform: translate(-50%, -50%) !important;
   }
 
   .site-shell > .site-header .header-actions {
-    grid-column: 3 !important;
+    position: absolute !important;
+    top: 50% !important;
+    right: max(0.75rem, env(safe-area-inset-right)) !important;
+    z-index: 3 !important;
+    display: flex !important;
     width: auto !important;
     min-width: 0 !important;
-    justify-self: end !important;
-    justify-content: flex-end !important;
-    margin-left: 0 !important;
+    margin: 0 !important;
+    transform: translateY(-50%) !important;
   }
 
   .site-shell > .site-header .mobile-menu-button {
-    margin-left: auto !important;
+    margin: 0 !important;
   }
 }

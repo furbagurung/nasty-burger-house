@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   type CSSProperties,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -42,11 +41,17 @@ export default function FindStyleNavigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const burgerRef = useRef<HTMLButtonElement | null>(null);
 
-  useLayoutEffect(() => {
+  // Do not inject the burger button into an SSR-owned header during hydration.
+  // Waiting for a passive effect (and the next frame) keeps the server DOM stable
+  // until the menu/product subtree has hydrated.
+  useEffect(() => {
     if (!supportsDrawer) {
       setButtonHost(null);
       return;
     }
+
+    let observer: MutationObserver | null = null;
+    let timer: number | null = null;
 
     const findHost = () => {
       const host = document.querySelector<HTMLElement>(
@@ -58,21 +63,24 @@ export default function FindStyleNavigation() {
       return Boolean(host);
     };
 
-    if (findHost()) return;
+    const frame = window.requestAnimationFrame(() => {
+      if (findHost()) return;
 
-    const observer = new MutationObserver(() => {
-      if (findHost()) observer.disconnect();
+      observer = new MutationObserver(() => {
+        if (findHost()) observer?.disconnect();
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      timer = window.setTimeout(() => {
+        findHost();
+        observer?.disconnect();
+      }, 700);
     });
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    const timer = window.setTimeout(() => {
-      findHost();
-      observer.disconnect();
-    }, 700);
 
     return () => {
-      window.clearTimeout(timer);
-      observer.disconnect();
+      window.cancelAnimationFrame(frame);
+      if (timer !== null) window.clearTimeout(timer);
+      observer?.disconnect();
     };
   }, [isMenuPage, isProductPage, supportsDrawer, pathname]);
 

@@ -118,7 +118,7 @@ export default function MobileBottomNav({ active, cartCount }: MobileBottomNavPr
 
   return (
     <>
-      <nav className="mobile-tab-bar mobile-tab-bar--v2" aria-label="Mobile app navigation">
+      <nav className={`mobile-tab-bar mobile-tab-bar--v2${isMoreOpen ? " is-more-open" : ""}`} aria-label="Mobile app navigation">
         <Link className={`mobile-tab ${active === "home" ? "is-active" : ""}`} href="/" aria-current={active === "home" ? "page" : undefined}>
           <AppIcon icon={Home01Icon} /><span>Home</span>
         </Link>

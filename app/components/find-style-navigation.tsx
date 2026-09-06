@@ -35,7 +35,8 @@ export default function FindStyleNavigation() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isMenuPage = pathname.startsWith("/menu/");
-  const supportsDrawer = isHome || isMenuPage;
+  const isProductPage = pathname.startsWith("/product/");
+  const supportsDrawer = isHome || isMenuPage || isProductPage;
   const [buttonHost, setButtonHost] = useState<HTMLElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -49,7 +50,7 @@ export default function FindStyleNavigation() {
 
     const findHost = () => {
       const host = document.querySelector<HTMLElement>(
-        isMenuPage
+        isMenuPage || isProductPage
           ? ".catalogue-shell > .catalogue-header"
           : ".site-shell > .site-header .header-actions",
       );
@@ -73,7 +74,7 @@ export default function FindStyleNavigation() {
       window.clearTimeout(timer);
       observer.disconnect();
     };
-  }, [isMenuPage, supportsDrawer, pathname]);
+  }, [isMenuPage, isProductPage, supportsDrawer, pathname]);
 
   useEffect(() => {
     setIsOpen(false);

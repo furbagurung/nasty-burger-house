@@ -1,0 +1,45 @@
+/* Product-page content order: keep product details compact and show the description
+   after combo/customization controls. */
+.product-page-premium .product-detail__content--premium {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.product-page-premium .product-detail__content--premium > .product-detail__heading-row {
+  order: 1;
+}
+
+.product-page-premium .product-detail__content--premium > .product-detail__tags {
+  order: 2;
+}
+
+.product-page-premium .product-detail__content--premium > .product-custom-section {
+  order: 3;
+}
+
+.product-page-premium .product-detail__content--premium > .product-detail__description {
+  order: 4;
+  margin-top: 1.25rem;
+}
+
+.product-page-premium .product-detail__content--premium > .product-purchase-panel {
+  order: 5;
+}
+
+.product-page-premium .product-detail__content--premium > .product-selection-error {
+  order: 6;
+}
+
+.product-page-premium .product-detail__content--premium > .product-added-actions {
+  order: 7;
+}
+
+.product-page-premium .product-detail__content--premium > .product-detail__notice {
+  order: 8;
+}
+
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__content--premium > .product-detail__description {
+    margin-top: 1rem;
+  }
+}

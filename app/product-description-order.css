@@ -50,7 +50,7 @@
   display: inline-flex;
   width: fit-content;
   align-items: baseline;
-  gap: 0.28em;
+  gap: 0.46em;
   margin: 0;
   color: transparent !important;
   font-size: 0 !important;
@@ -73,13 +73,18 @@
   .product-custom-section:not(.product-custom-section--extras)
   .product-custom-section__heading h2::after {
   display: inline-block;
+  padding-bottom: 0.04em;
   color: #a62212;
   content: "Beast Combo";
   font-size: 1.1rem;
   font-weight: 950;
   letter-spacing: -0.045em;
   line-height: 1.02;
-  box-shadow: inset 0 -0.23em 0 rgba(103, 20, 10, 0.28);
+  text-decoration-line: underline;
+  text-decoration-color: #741428;
+  text-decoration-thickness: 0.16rem;
+  text-underline-offset: 0.17em;
+  text-decoration-skip-ink: none;
   transform: rotate(-0.35deg);
 }
 
@@ -123,6 +128,12 @@
 
   .product-page-premium
     .product-custom-section:not(.product-custom-section--extras)
+    .product-custom-section__heading h2 {
+    gap: 0.5em;
+  }
+
+  .product-page-premium
+    .product-custom-section:not(.product-custom-section--extras)
     .product-custom-section__heading h2::before {
     font-size: 0.96rem;
   }
@@ -131,6 +142,8 @@
     .product-custom-section:not(.product-custom-section--extras)
     .product-custom-section__heading h2::after {
     font-size: 1.04rem;
+    text-decoration-thickness: 0.14rem;
+    text-underline-offset: 0.16em;
   }
 
   .product-page-premium

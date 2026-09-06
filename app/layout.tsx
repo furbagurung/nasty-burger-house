@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import CookieSettings from "./components/cookie-settings";
 import DripPointsBanner from "./components/drip-points-banner";
+import FindStyleNavigation from "./components/find-style-navigation";
 import FooterLegalLinks from "./components/footer-legal-links";
 import HomepageTestimonials from "./components/homepage-testimonials";
 import HomeTopHeader from "./components/home-top-header";
@@ -53,6 +54,7 @@ import "./admin-dashboard.css";
 import "./admin-notification-ui.css";
 import "./mobile-header-always-dark.css";
 import "./homepage-spacing-tight.css";
+import "./find-style-navigation.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -79,6 +81,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <HomeTopHeader />
         <MobileHomeLocation />
+        <FindStyleNavigation />
         {children}
         <HomepageTestimonials />
         <DripPointsBanner />

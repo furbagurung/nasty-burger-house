@@ -15,9 +15,9 @@ export default function MobileHomeLocation() {
     }
 
     const findHeader = () => {
-      const header =
-        document.querySelector<HTMLElement>(".site-shell > .site-header") ??
-        document.querySelector<HTMLElement>(".home-top-header.is-home-route");
+      const header = document.querySelector<HTMLElement>(
+        ".site-shell > .site-header",
+      );
       setHeaderTarget(header);
       return Boolean(header);
     };

@@ -23,9 +23,31 @@ const testimonials = [
   },
 ];
 
+const reels = [
+  {
+    src: "/videos/nasty-reel-01.mp4",
+    poster: "/images/signature-beast.webp",
+    eyebrow: "Fresh off the grill",
+    title: "Watch the Beast hit the grill.",
+  },
+  {
+    src: "/videos/nasty-reel-02.mp4",
+    poster: "/images/bbq-beast-hero.webp",
+    eyebrow: "Beast of the Month",
+    title: "See the monthly drop up close.",
+  },
+  {
+    src: "/videos/nasty-reel-03.mp4",
+    poster: "/images/beast-box-hero.webp",
+    eyebrow: "Loaded feeds",
+    title: "Unbox a full Nasty feed.",
+  },
+];
+
 export default function HomepageTestimonials() {
   const pathname = usePathname();
   const [target, setTarget] = useState<HTMLElement | null>(null);
+  const [failedReels, setFailedReels] = useState<Record<string, boolean>>({});
 
   useLayoutEffect(() => {
     if (pathname !== "/") {
@@ -60,46 +82,99 @@ export default function HomepageTestimonials() {
   if (pathname !== "/" || !target) return null;
 
   return createPortal(
-    <section className="home-testimonials" aria-labelledby="home-testimonials-title">
-      <div className="home-testimonials__heading">
-        <div>
-          <p className="home-testimonials__eyebrow">The Nasty crowd</p>
-          <h2 id="home-testimonials-title">What people are saying.</h2>
-          <p>
-            A dedicated review area for customer feedback, backed by the verified-order review flow already built into the site.
-          </p>
+    <>
+      <section className="home-testimonials" aria-labelledby="home-testimonials-title">
+        <div className="home-testimonials__heading">
+          <div>
+            <p className="home-testimonials__eyebrow">The Nasty crowd</p>
+            <h2 id="home-testimonials-title">What people are saying.</h2>
+            <p>
+              A dedicated review area for customer feedback, backed by the verified-order review flow already built into the site.
+            </p>
+          </div>
+          <Link className="home-testimonials__cta" href="/reviews">
+            Leave a verified review
+          </Link>
         </div>
-        <Link className="home-testimonials__cta" href="/reviews">
-          Leave a verified review
-        </Link>
-      </div>
 
-      <div className="home-testimonials__grid" aria-label="Sample testimonial cards">
-        {testimonials.map((testimonial) => (
-          <article className="home-testimonial-card" key={testimonial.detail}>
-            <div className="home-testimonial-card__topline">
-              <span className="home-testimonial-card__stars" aria-label="Five star sample review">
-                ★★★★★
-              </span>
-              <span className="home-testimonial-card__sample">Sample review</span>
-            </div>
-            <blockquote>“{testimonial.quote}”</blockquote>
-            <div className="home-testimonial-card__footer">
-              <span className="home-testimonial-card__avatar" aria-hidden="true">N</span>
-              <div>
-                <strong>Customer testimonial</strong>
-                <span>{testimonial.detail}</span>
+        <div className="home-testimonials__grid" aria-label="Sample testimonial cards">
+          {testimonials.map((testimonial) => (
+            <article className="home-testimonial-card" key={testimonial.detail}>
+              <div className="home-testimonial-card__topline">
+                <span className="home-testimonial-card__stars" aria-label="Five star sample review">
+                  ★★★★★
+                </span>
+                <span className="home-testimonial-card__sample">Sample review</span>
               </div>
-            </div>
-          </article>
-        ))}
-      </div>
+              <blockquote>“{testimonial.quote}”</blockquote>
+              <div className="home-testimonial-card__footer">
+                <span className="home-testimonial-card__avatar" aria-hidden="true">N</span>
+                <div>
+                  <strong>Customer testimonial</strong>
+                  <span>{testimonial.detail}</span>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
 
-      <div className="home-testimonials__trust">
-        <strong>Real review system, real completed orders.</strong>
-        <span>The cards above are sample copy for the homepage layout and can be replaced with published customer reviews.</span>
-      </div>
-    </section>,
+        <div className="home-testimonials__trust">
+          <strong>Real review system, real completed orders.</strong>
+          <span>The cards above are sample copy for the homepage layout and can be replaced with published customer reviews.</span>
+        </div>
+      </section>
+
+      <section className="home-reels" aria-labelledby="home-reels-title">
+        <div className="home-reels__heading">
+          <div>
+            <p className="home-reels__eyebrow">Nasty on video</p>
+            <h2 id="home-reels-title">See it. Crave it.</h2>
+            <p>Swipe through quick vertical reels from the grill, the truck and the latest Nasty drops.</p>
+          </div>
+          <span className="home-reels__hint">Swipe to watch →</span>
+        </div>
+
+        <div className="home-reels__track" aria-label="Nasty Burger House reels">
+          {reels.map((reel, index) => (
+            <article className="home-reel-card" key={reel.src}>
+              <div className="home-reel-card__media">
+                {failedReels[reel.src] ? (
+                  <div
+                    className="home-reel-card__fallback"
+                    style={{ backgroundImage: `url(${reel.poster})` }}
+                    role="img"
+                    aria-label={`${reel.title} video preview`}
+                  >
+                    <span className="home-reel-card__play" aria-hidden="true">▶</span>
+                  </div>
+                ) : (
+                  <video
+                    controls
+                    playsInline
+                    preload="metadata"
+                    poster={reel.poster}
+                    aria-label={reel.title}
+                    onError={() =>
+                      setFailedReels((current) => ({
+                        ...current,
+                        [reel.src]: true,
+                      }))
+                    }
+                  >
+                    <source src={reel.src} type="video/mp4" />
+                  </video>
+                )}
+                <span className="home-reel-card__number">0{index + 1}</span>
+                <div className="home-reel-card__copy">
+                  <span>{reel.eyebrow}</span>
+                  <strong>{reel.title}</strong>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </>,
     target,
   );
 }

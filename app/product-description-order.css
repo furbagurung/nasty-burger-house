@@ -38,8 +38,101 @@
   order: 8;
 }
 
+/* Remove the step number from product option headings. */
+.product-page-premium .product-custom-section__heading span {
+  display: none !important;
+}
+
+/* Beast Combo heading: bold Nasty red with a hand-marker underline. */
+.product-page-premium
+  .product-custom-section:not(.product-custom-section--extras)
+  .product-custom-section__heading h2 {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  margin: 0;
+  color: #e83b18 !important;
+  font-size: 1.08rem;
+  font-weight: 900 !important;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  isolation: isolate;
+}
+
+.product-page-premium
+  .product-custom-section:not(.product-custom-section--extras)
+  .product-custom-section__heading h2::after {
+  position: absolute;
+  right: -0.08rem;
+  bottom: -0.18rem;
+  left: -0.08rem;
+  z-index: -1;
+  height: 0.28rem;
+  border-radius: 999px 45% 999px 55%;
+  background: rgba(232, 59, 24, 0.24);
+  clip-path: polygon(0 30%, 13% 12%, 29% 26%, 44% 8%, 61% 24%, 78% 11%, 100% 28%, 98% 82%, 80% 69%, 63% 86%, 45% 70%, 26% 88%, 9% 72%, 0 84%);
+  content: "";
+  pointer-events: none;
+  transform: rotate(-0.8deg);
+}
+
+/* Visually group Beast Combo + Customize into one dedicated order-options panel. */
+.product-page-premium
+  .product-detail__content--premium
+  > .product-custom-section:not(.product-custom-section--extras) {
+  margin-top: 1.45rem !important;
+  border: 1px solid #ece5df !important;
+  border-bottom: 0 !important;
+  border-radius: 1.2rem 1.2rem 0 0 !important;
+  padding: 1rem 1rem 0.78rem !important;
+  background: #fcfaf8;
+  box-shadow: 0 -4px 20px rgba(45, 30, 20, 0.035);
+}
+
+.product-page-premium
+  .product-detail__content--premium
+  > .product-custom-section:not(.product-custom-section--extras)
+  + .product-custom-section--extras {
+  position: relative;
+  margin-top: 0 !important;
+  border: 1px solid #ece5df !important;
+  border-top: 1px solid #f0e9e4 !important;
+  border-radius: 0 0 1.2rem 1.2rem !important;
+  padding: 0.8rem 1rem 1rem !important;
+  background: #fcfaf8;
+  box-shadow: 0 12px 28px rgba(45, 30, 20, 0.055);
+}
+
+.product-page-premium
+  .product-custom-section:not(.product-custom-section--extras)
+  .product-custom-section__heading {
+  margin-bottom: 0.9rem;
+}
+
 @media (max-width: 680px) {
   .product-page-premium .product-detail__content--premium > .product-detail__description {
     margin-top: 1rem;
+  }
+
+  .product-page-premium
+    .product-custom-section:not(.product-custom-section--extras)
+    .product-custom-section__heading h2 {
+    font-size: 1rem;
+  }
+
+  .product-page-premium
+    .product-detail__content--premium
+    > .product-custom-section:not(.product-custom-section--extras) {
+    margin-top: 1.15rem !important;
+    border-radius: 1rem 1rem 0 0 !important;
+    padding: 0.9rem 0.78rem 0.7rem !important;
+  }
+
+  .product-page-premium
+    .product-detail__content--premium
+    > .product-custom-section:not(.product-custom-section--extras)
+    + .product-custom-section--extras {
+    border-radius: 0 0 1rem 1rem !important;
+    padding: 0.72rem 0.78rem 0.85rem !important;
   }
 }

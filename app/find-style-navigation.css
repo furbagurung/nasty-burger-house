@@ -1,7 +1,6 @@
 /* Nasty Burger House mobile navigation inspired by the interaction pattern of
    Find Real Estate: two-line burger, top-origin full-screen reveal, staggered
-   menu items and an expandable menu group. All styling is original and uses
-   Nasty Burger House colours and existing header structure. */
+   menu items and an expandable menu group. */
 
 .nasty-find-burger,
 .nasty-find-drawer {
@@ -9,8 +8,6 @@
 }
 
 @media (max-width: 900px) {
-  /* Replace the legacy three-line hamburger, while preserving the existing
-     Location — Logo — Actions header grid. */
   .site-shell > .site-header {
     z-index: 130 !important;
     transition:
@@ -163,7 +160,7 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     padding:
-      calc(5.2rem + env(safe-area-inset-top))
+      calc(5.25rem + env(safe-area-inset-top))
       max(1.15rem, env(safe-area-inset-right))
       calc(1rem + env(safe-area-inset-bottom))
       max(1.15rem, env(safe-area-inset-left));
@@ -174,67 +171,21 @@
     display: none;
   }
 
-  .nasty-find-drawer__intro,
   .nasty-find-drawer__link,
   .nasty-find-drawer__actions {
     opacity: 0;
-    transform: translateY(1.5rem);
+    transform: translateY(1.35rem);
     transition:
-      opacity 360ms ease,
-      transform 640ms cubic-bezier(0.16, 1, 0.3, 1);
+      opacity 340ms ease,
+      transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
     transition-delay: 0ms;
   }
 
-  .nasty-find-drawer.is-open .nasty-find-drawer__intro,
   .nasty-find-drawer.is-open .nasty-find-drawer__link,
   .nasty-find-drawer.is-open .nasty-find-drawer__actions {
     opacity: 1;
     transform: translateY(0);
-    transition-delay: calc(150ms + (var(--nasty-nav-index, 0) * 58ms));
-  }
-
-  .nasty-find-drawer__intro {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.55rem;
-  }
-
-  .nasty-find-drawer__mini-logo {
-    display: grid;
-    width: 2.9rem;
-    height: 2.9rem;
-    place-items: center;
-    flex: 0 0 auto;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.13);
-    border-radius: 50%;
-    background: #fff;
-  }
-
-  .nasty-find-drawer__mini-logo img {
-    width: 88%;
-    height: 88%;
-    object-fit: contain;
-  }
-
-  .nasty-find-drawer__intro > div {
-    display: grid;
-    gap: 0.18rem;
-  }
-
-  .nasty-find-drawer__intro p {
-    margin: 0;
-    color: #ffc928;
-    font-size: 0.62rem;
-    font-weight: 900;
-    letter-spacing: 0.16em;
-  }
-
-  .nasty-find-drawer__intro > div > span {
-    color: rgba(255, 255, 255, 0.54);
-    font-size: 0.74rem;
-    font-weight: 650;
+    transition-delay: calc(145ms + (var(--nasty-nav-index, 0) * 56ms));
   }
 
   .nasty-find-drawer__nav {
@@ -246,13 +197,13 @@
   .nasty-find-drawer__link {
     display: grid;
     width: 100%;
-    min-height: 4.8rem;
-    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    min-height: 4.05rem;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: 0.55rem;
+    gap: 0.8rem;
     border: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0.72rem 0;
+    padding: 0.62rem 0;
     background: transparent;
     color: #fff;
     font: inherit;
@@ -261,32 +212,27 @@
     cursor: pointer;
   }
 
-  .nasty-find-drawer__index {
-    align-self: start;
-    margin-top: 0.45rem;
-    color: #e83b18;
-    font-size: 0.58rem;
-    font-weight: 900;
-    letter-spacing: 0.12em;
-  }
-
   .nasty-find-drawer__label {
     overflow: hidden;
-    font-size: clamp(2rem, 10vw, 3.35rem);
-    font-weight: 930;
-    letter-spacing: -0.065em;
-    line-height: 0.92;
+    font-size: clamp(1.6rem, 7vw, 2.3rem);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+
+  .nasty-find-drawer__arrow,
+  .nasty-find-drawer__plus {
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 50%;
   }
 
   .nasty-find-drawer__arrow {
     display: grid;
-    width: 2rem;
-    height: 2rem;
     place-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.13);
-    border-radius: 50%;
     color: rgba(255, 255, 255, 0.58);
-    font-size: 0.86rem;
+    font-size: 0.78rem;
     transition:
       color 220ms ease,
       border-color 220ms ease,
@@ -305,29 +251,25 @@
 
   .nasty-find-drawer__menu-trigger {
     opacity: 0;
-    transform: translateY(1.5rem);
+    transform: translateY(1.35rem);
   }
 
   .nasty-find-drawer.is-open .nasty-find-drawer__menu-trigger {
     opacity: 1;
     transform: translateY(0);
-    transition-delay: calc(150ms + (var(--nasty-nav-index, 2) * 58ms));
+    transition-delay: calc(145ms + (var(--nasty-nav-index, 1) * 56ms));
   }
 
   .nasty-find-drawer__plus {
     position: relative;
     display: block;
-    width: 2rem;
-    height: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.13);
-    border-radius: 50%;
   }
 
   .nasty-find-drawer__plus i {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 0.72rem;
+    width: 0.68rem;
     height: 1.5px;
     border-radius: 999px;
     background: #ffc928;
@@ -361,18 +303,18 @@
     display: grid;
     min-height: 0;
     overflow: hidden;
-    padding-left: 2.55rem;
+    padding-left: 0.6rem;
   }
 
   .nasty-find-drawer__submenu a {
     display: flex;
-    min-height: 2.75rem;
+    min-height: 2.55rem;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.92rem;
+    font-size: 0.86rem;
     font-weight: 720;
     text-decoration: none;
     transition:
@@ -381,7 +323,7 @@
   }
 
   .nasty-find-drawer__submenu a:hover {
-    padding-left: 0.35rem;
+    padding-left: 0.3rem;
     color: #ffc928;
   }
 
@@ -390,49 +332,21 @@
   }
 
   .nasty-find-drawer__actions {
-    display: grid;
-    gap: 0.85rem;
     margin-top: auto;
-    padding-top: 1.4rem;
-  }
-
-  .nasty-find-drawer__order {
-    display: flex;
-    min-height: 3.65rem;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    border-radius: 999px;
-    padding: 0.72rem 0.86rem 0.72rem 1.25rem;
-    background: #e83b18;
-    color: #fff;
-    font-size: 0.95rem;
-    font-weight: 900;
-    text-decoration: none;
-    box-shadow: 0 14px 32px rgba(232, 59, 24, 0.2);
-  }
-
-  .nasty-find-drawer__order strong {
-    display: grid;
-    width: 2.2rem;
-    height: 2.2rem;
-    place-items: center;
-    border-radius: 50%;
-    background: #ffc928;
-    color: #171513;
-    font-size: 1rem;
+    padding-top: 1.2rem;
   }
 
   .nasty-find-drawer__utility {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0 0.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1rem 0.15rem 0.2rem;
   }
 
   .nasty-find-drawer__utility a {
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7rem;
     font-weight: 760;
     text-decoration: none;
   }
@@ -449,15 +363,15 @@
   }
 
   .nasty-find-drawer__content {
-    padding-top: calc(4.8rem + env(safe-area-inset-top));
+    padding-top: calc(4.85rem + env(safe-area-inset-top));
   }
 
   .nasty-find-drawer__link {
-    min-height: 4.15rem;
+    min-height: 3.7rem;
   }
 
   .nasty-find-drawer__label {
-    font-size: clamp(1.8rem, 9.6vw, 2.8rem);
+    font-size: clamp(1.45rem, 7vw, 1.95rem);
   }
 }
 
@@ -466,12 +380,11 @@
   .nasty-find-burger > span,
   .nasty-find-drawer,
   .nasty-find-drawer__surface,
-  .nasty-find-drawer__intro,
   .nasty-find-drawer__link,
   .nasty-find-drawer__actions,
-  .nasty-find-drawer__arrow,
   .nasty-find-drawer__submenu,
   .nasty-find-drawer__plus i {
-    transition: none !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
   }
 }

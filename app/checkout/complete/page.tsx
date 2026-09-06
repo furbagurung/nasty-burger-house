@@ -2,17 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MobileBottomNav from "../../components/mobile-bottom-nav";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
 export default function CheckoutCompletePage() {
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get("nbhOrderId");
+  const [orderId, setOrderId] = useState("");
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setOrderId(params.get("nbhOrderId") ?? "");
     window.localStorage.setItem(CART_STORAGE_KEY, "[]");
     window.sessionStorage.removeItem("nasty-square-pending-order");
     window.dispatchEvent(new Event("nasty-cart-updated"));

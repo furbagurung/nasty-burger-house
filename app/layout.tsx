@@ -52,6 +52,7 @@ import "./review-stories.css";
 import "./admin-dashboard.css";
 import "./admin-notification-ui.css";
 import "./mobile-header-always-dark.css";
+import "./homepage-spacing-tight.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

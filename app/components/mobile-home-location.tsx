@@ -8,17 +8,19 @@ export default function MobileHomeLocation() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isMenuPage = pathname.startsWith("/menu/");
+  const isProductPage = pathname.startsWith("/product/");
+  const supportsHeader = isHome || isMenuPage || isProductPage;
   const [headerTarget, setHeaderTarget] = useState<HTMLElement | null>(null);
 
   useLayoutEffect(() => {
-    if (!isHome && !isMenuPage) {
+    if (!supportsHeader) {
       setHeaderTarget(null);
       return;
     }
 
     const findHeader = () => {
       const header = document.querySelector<HTMLElement>(
-        isMenuPage
+        isMenuPage || isProductPage
           ? ".catalogue-shell > .catalogue-header"
           : ".site-shell > .site-header",
       );
@@ -42,9 +44,9 @@ export default function MobileHomeLocation() {
       window.clearTimeout(timer);
       observer.disconnect();
     };
-  }, [isHome, isMenuPage, pathname]);
+  }, [isHome, isMenuPage, isProductPage, supportsHeader, pathname]);
 
-  if ((!isHome && !isMenuPage) || !headerTarget) return null;
+  if (!supportsHeader || !headerTarget) return null;
 
   return createPortal(
     <a

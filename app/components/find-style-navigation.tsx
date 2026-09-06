@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -155,31 +154,20 @@ export default function FindStyleNavigation() {
         aria-modal="true"
         aria-label="Nasty Burger House navigation"
       >
-        <div className="nasty-find-drawer__intro" style={staggerStyle(0)}>
-          <span className="nasty-find-drawer__mini-logo" aria-hidden="true">
-            <Image src="/logo.webp" alt="" width={80} height={80} />
-          </span>
-          <div>
-            <p>NASTY BURGER HOUSE</p>
-            <span>Pick your next feed.</span>
-          </div>
-        </div>
-
         <nav className="nasty-find-drawer__nav" aria-label="Mobile navigation">
           <Link
             className="nasty-find-drawer__link"
             href="/"
             onClick={() => closeDrawer()}
-            style={staggerStyle(1)}
+            style={staggerStyle(0)}
           >
-            <span className="nasty-find-drawer__index">01</span>
             <span className="nasty-find-drawer__label">Home</span>
             <span className="nasty-find-drawer__arrow" aria-hidden="true">↗</span>
           </Link>
 
           <div
             className={`nasty-find-drawer__menu-group ${isMenuOpen ? "is-expanded" : ""}`}
-            style={staggerStyle(2)}
+            style={staggerStyle(1)}
           >
             <button
               className="nasty-find-drawer__link nasty-find-drawer__menu-trigger"
@@ -188,7 +176,6 @@ export default function FindStyleNavigation() {
               aria-controls="nasty-find-menu-categories"
               onClick={() => setIsMenuOpen((current) => !current)}
             >
-              <span className="nasty-find-drawer__index">02</span>
               <span className="nasty-find-drawer__label">Menu</span>
               <span className="nasty-find-drawer__plus" aria-hidden="true">
                 <i />
@@ -216,21 +203,16 @@ export default function FindStyleNavigation() {
               className="nasty-find-drawer__link"
               href={link.href}
               onClick={link.href === "#find-us" ? handleFindUs : () => closeDrawer()}
-              style={staggerStyle(index + 3)}
+              style={staggerStyle(index + 2)}
               key={link.href}
             >
-              <span className="nasty-find-drawer__index">0{index + 3}</span>
               <span className="nasty-find-drawer__label">{link.label}</span>
               <span className="nasty-find-drawer__arrow" aria-hidden="true">↗</span>
             </Link>
           ))}
         </nav>
 
-        <div className="nasty-find-drawer__actions" style={staggerStyle(6)}>
-          <a className="nasty-find-drawer__order" href="/?order=1">
-            <span>Order now</span>
-            <strong aria-hidden="true">→</strong>
-          </a>
+        <div className="nasty-find-drawer__actions" style={staggerStyle(5)}>
           <div className="nasty-find-drawer__utility">
             <Link href="/account" onClick={() => closeDrawer()}>Account</Link>
             <Link href="/help" onClick={() => closeDrawer()}>Help</Link>

@@ -1,28 +1,27 @@
-/* Mobile homepage hero: compact app-style card treatment that mirrors the
-   spacing/radius language used by the Drip Points reward banner. */
+/* Mobile homepage hero: full-width edge-to-edge treatment on small screens. */
 @media (max-width: 680px) {
   .site-shell > .home-main {
-    padding-top: 4.95rem !important;
+    padding-top: 0 !important;
     background: #ffffff;
   }
 
   .site-shell > .home-main > .hero-carousel {
-    width: auto !important;
+    width: 100% !important;
     min-height: clamp(30rem, 62svh, 34rem) !important;
     height: clamp(30rem, 62svh, 34rem) !important;
     max-height: 34rem !important;
-    margin: 0.85rem 0.9rem 1.1rem !important;
+    margin: 0 !important;
     overflow: hidden !important;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 1.35rem !important;
+    border: 0 !important;
+    border-radius: 0 !important;
     background: #0b0a09;
-    box-shadow: 0 18px 44px rgba(24, 18, 12, 0.16);
+    box-shadow: none !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide,
   .site-shell > .home-main > .hero-carousel .hero-slide__image,
   .site-shell > .home-main > .hero-carousel .hero-slide__shade {
-    border-radius: inherit;
+    border-radius: 0 !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide {

@@ -41,6 +41,7 @@ import "./standalone-pages.css";
 import "./customer-account.css";
 import "./customer-header-overrides.css";
 import "./client-revision-polish.css";
+import "./hero-real-photography.css";
 import "./admin-dashboard.css";
 import "./admin-notification-ui.css";
 

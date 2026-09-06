@@ -59,6 +59,7 @@ import "./find-style-navigation.css";
 import "./menu-mobile-header-polish.css";
 import "./menu-mobile-layout.css";
 import "./product-mobile-home-header.css";
+import "./product-combo-upgrade-card.css";
 import "./toast.css";
 
 const geistSans = Geist({

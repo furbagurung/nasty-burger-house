@@ -1,10 +1,11 @@
 /* Nasty Burger House dripping header treatment.
-   The header stays solid black while a repeating sauce-like silhouette extends
-   below the bottom edge. Kept in its own file so the concept is easy to tune
-   or remove without disturbing the existing header behaviour. */
+   Rich Nasty red header with a longer, rounder and deliberately irregular
+   sauce-drip silhouette. The drip is part of the header itself, so it follows
+   the existing scroll-direction transform: it slides away with the header on
+   scroll down and returns with it on scroll up. */
 
 :root {
-  --nasty-header-drip: #0b0a09;
+  --nasty-header-drip: #c60816;
 }
 
 .home-top-header {
@@ -22,15 +23,15 @@
 .home-top-header::after {
   position: absolute;
   right: 0;
-  bottom: -2.4rem;
+  bottom: -4.25rem;
   left: 0;
   z-index: -1;
   display: block !important;
-  height: 2.55rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 44' preserveAspectRatio='none'%3E%3Cpath fill='%230b0a09' d='M0 0H240V10C231 10 229 19 220 19C211 19 212 8 202 10C191 12 197 38 186 41C174 44 179 12 167 10C156 8 158 22 147 22C136 22 138 9 127 10C116 11 120 33 109 35C98 37 101 12 90 10C79 8 81 23 70 24C59 25 60 10 49 11C38 12 42 40 30 42C18 44 22 13 11 11C6 10 3 10 0 10Z'/%3E%3C/svg%3E");
+  height: 4.4rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 80' preserveAspectRatio='none'%3E%3Cpath fill='%23c60816' d='M0 0H320V18C310 17 307 28 297 29C285 30 285 13 272 16C258 19 266 66 251 70C234 75 241 18 225 17C211 16 213 38 198 39C183 40 187 17 172 19C157 21 164 57 149 61C133 65 139 18 123 19C107 20 111 42 95 42C79 42 84 19 68 22C52 25 59 74 42 78C23 82 32 23 16 21C8 20 4 24 0 27Z'/%3E%3C/svg%3E");
   background-position: top left;
   background-repeat: repeat-x;
-  background-size: 15rem 2.55rem;
+  background-size: 20rem 4.4rem;
   content: "";
   pointer-events: none;
 }
@@ -51,18 +52,25 @@
   .site-shell > .site-header::after {
     position: absolute;
     right: 0;
-    bottom: -1.55rem;
+    bottom: -2.8rem;
     left: 0;
     z-index: -1;
     display: block !important;
-    height: 1.7rem;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 44' preserveAspectRatio='none'%3E%3Cpath fill='%230b0a09' d='M0 0H240V10C231 10 229 19 220 19C211 19 212 8 202 10C191 12 197 38 186 41C174 44 179 12 167 10C156 8 158 22 147 22C136 22 138 9 127 10C116 11 120 33 109 35C98 37 101 12 90 10C79 8 81 23 70 24C59 25 60 10 49 11C38 12 42 40 30 42C18 44 22 13 11 11C6 10 3 10 0 10Z'/%3E%3C/svg%3E");
+    height: 2.95rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 80' preserveAspectRatio='none'%3E%3Cpath fill='%23c60816' d='M0 0H320V18C310 17 307 28 297 29C285 30 285 13 272 16C258 19 266 66 251 70C234 75 241 18 225 17C211 16 213 38 198 39C183 40 187 17 172 19C157 21 164 57 149 61C133 65 139 18 123 19C107 20 111 42 95 42C79 42 84 19 68 22C52 25 59 74 42 78C23 82 32 23 16 21C8 20 4 24 0 27Z'/%3E%3C/svg%3E");
     background-position: top left;
     background-repeat: repeat-x;
-    background-size: 10.5rem 1.7rem;
+    background-size: 14rem 2.95rem;
     content: "";
     pointer-events: none;
   }
+}
+
+/* The existing header classes own the movement. Keeping the drip attached to
+   the header guarantees the complete silhouette leaves/returns as one unit. */
+.home-top-header.is-hidden,
+.site-shell > .site-header.is-mobile-scroll-hidden {
+  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {

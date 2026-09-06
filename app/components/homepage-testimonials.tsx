@@ -23,24 +23,18 @@ const testimonials = [
   },
 ];
 
-const reels = [
+const reviewVideos = [
   {
     src: "/videos/nasty-reel-01.mp4",
     poster: "/images/signature-beast.webp",
-    eyebrow: "Fresh off the grill",
-    title: "Watch the Beast hit the grill.",
   },
   {
     src: "/videos/nasty-reel-02.mp4",
     poster: "/images/bbq-beast-hero.webp",
-    eyebrow: "Beast of the Month",
-    title: "See the monthly drop up close.",
   },
   {
     src: "/videos/nasty-reel-03.mp4",
     poster: "/images/beast-box-hero.webp",
-    eyebrow: "Loaded feeds",
-    title: "Unbox a full Nasty feed.",
   },
 ];
 
@@ -127,15 +121,15 @@ export default function HomepageTestimonials() {
       <section className="home-reels" aria-labelledby="home-reels-title">
         <div className="home-reels__heading">
           <div>
-            <p className="home-reels__eyebrow">Nasty on video</p>
-            <h2 id="home-reels-title">See it. Crave it.</h2>
-            <p>Swipe through quick vertical reels from the grill, the truck and the latest Nasty drops.</p>
+            <p className="home-reels__eyebrow">Customer stories</p>
+            <h2 id="home-reels-title">Video reviews.</h2>
+            <p>Watch real customer review videos in a vertical reel format.</p>
           </div>
           <span className="home-reels__hint">Swipe to watch →</span>
         </div>
 
-        <div className="home-reels__track" aria-label="Nasty Burger House reels">
-          {reels.map((reel, index) => (
+        <div className="home-reels__track" aria-label="Customer video reviews">
+          {reviewVideos.map((reel, index) => (
             <article className="home-reel-card" key={reel.src}>
               <div className="home-reel-card__media">
                 {failedReels[reel.src] ? (
@@ -143,7 +137,7 @@ export default function HomepageTestimonials() {
                     className="home-reel-card__fallback"
                     style={{ backgroundImage: `url(${reel.poster})` }}
                     role="img"
-                    aria-label={`${reel.title} video preview`}
+                    aria-label={`Customer review video ${index + 1} preview`}
                   >
                     <span className="home-reel-card__play" aria-hidden="true">▶</span>
                   </div>
@@ -153,7 +147,7 @@ export default function HomepageTestimonials() {
                     playsInline
                     preload="metadata"
                     poster={reel.poster}
-                    aria-label={reel.title}
+                    aria-label={`Customer review video ${index + 1}`}
                     onError={() =>
                       setFailedReels((current) => ({
                         ...current,
@@ -164,11 +158,6 @@ export default function HomepageTestimonials() {
                     <source src={reel.src} type="video/mp4" />
                   </video>
                 )}
-                <span className="home-reel-card__number">0{index + 1}</span>
-                <div className="home-reel-card__copy">
-                  <span>{reel.eyebrow}</span>
-                  <strong>{reel.title}</strong>
-                </div>
               </div>
             </article>
           ))}

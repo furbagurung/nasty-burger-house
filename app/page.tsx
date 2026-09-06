@@ -1,5 +1,6 @@
 import FindUsSection from "./components/find-us-section";
 import HomeBeastMonthEnhancer from "./components/home-beast-month-enhancer";
+import HomeHeroPhotographyEnhancer from "./components/home-hero-photography-enhancer";
 import HomeMenuCategoriesEnhancer from "./components/home-menu-categories-enhancer";
 import HomeMenuComingSoonGuard from "./components/home-menu-coming-soon-guard";
 import OrderExperience from "./components/order-experience";
@@ -15,6 +16,7 @@ export default function Home() {
       />
       <FindUsSection />
       <HomeBeastMonthEnhancer />
+      <HomeHeroPhotographyEnhancer />
       <HomeMenuCategoriesEnhancer />
       <HomeMenuComingSoonGuard />
     </>

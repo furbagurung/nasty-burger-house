@@ -62,6 +62,7 @@ import "./product-mobile-home-header.css";
 import "./product-combo-upgrade-card.css";
 import "./product-description-order.css";
 import "./toast.css";
+import "./loading.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

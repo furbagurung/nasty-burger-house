@@ -1,0 +1,70 @@
+/* Single-product mobile pages use the same compact Location — Logo — Hamburger
+   header treatment as the homepage and menu catalogue. */
+@media (max-width: 680px) {
+  .product-page-shell > .catalogue-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 130 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 0.45rem !important;
+    width: 100% !important;
+    min-height: 5.1rem !important;
+    margin: 0 !important;
+    padding: 0.45rem max(0.75rem, env(safe-area-inset-right)) 0.45rem max(0.75rem, env(safe-area-inset-left)) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: #0e0d0c !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .product-page-shell > .catalogue-header .catalogue-mobile-menu,
+  .product-page-shell > .catalogue-header .catalogue-desktop-nav,
+  .product-page-shell > .catalogue-header .catalogue-header-actions {
+    display: none !important;
+  }
+
+  .product-page-shell > .catalogue-header .catalogue-logo {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    z-index: 2 !important;
+    display: grid !important;
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    place-items: center !important;
+    justify-self: center !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  .product-page-shell > .catalogue-header .catalogue-logo img {
+    width: 3.35rem !important;
+    height: 3.35rem !important;
+    object-fit: contain !important;
+  }
+
+  .product-page-shell > .catalogue-header > .mobile-home-location {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-self: start !important;
+  }
+
+  .product-page-shell > .catalogue-header > .nasty-find-burger {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    justify-self: end !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .product-page-shell > .catalogue-header {
+    min-height: 4.8rem !important;
+    padding-inline: 0.6rem !important;
+  }
+
+  .product-page-shell > .catalogue-header .catalogue-logo img {
+    width: 3.05rem !important;
+    height: 3.05rem !important;
+  }
+}

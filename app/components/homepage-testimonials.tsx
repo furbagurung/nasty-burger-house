@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 const testimonials = [
@@ -25,22 +25,22 @@ const testimonials = [
 
 const reviewVideos = [
   {
-    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto/v1788706765/review-02.mp4",
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto,vc_h264/v1788706765/review-02.mp4",
     poster:
       "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706765/review-02.jpg",
   },
   {
-    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto/v1788706753/review-03.mp4",
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto,vc_h264/v1788706753/review-03.mp4",
     poster:
       "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706753/review-03.jpg",
   },
   {
-    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto/v1788706744/review-01.mp4",
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto,vc_h264/v1788706744/review-01.mp4",
     poster:
       "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706744/review-01.jpg",
   },
   {
-    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto/v1788706738/review-04.mp4",
+    src: "https://res.cloudinary.com/qhd4ecgt/video/upload/f_mp4,q_auto,vc_h264/v1788706738/review-04.mp4",
     poster:
       "https://res.cloudinary.com/qhd4ecgt/video/upload/so_0,f_jpg,q_auto/v1788706738/review-04.jpg",
   },
@@ -50,6 +50,8 @@ export default function HomepageTestimonials() {
   const pathname = usePathname();
   const [target, setTarget] = useState<HTMLElement | null>(null);
   const [failedReels, setFailedReels] = useState<Record<string, boolean>>({});
+  const [playingReels, setPlayingReels] = useState<Record<number, boolean>>({});
+  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
 
   useLayoutEffect(() => {
     if (pathname !== "/") {
@@ -80,6 +82,17 @@ export default function HomepageTestimonials() {
       observer.disconnect();
     };
   }, [pathname]);
+
+  async function playReviewVideo(index: number) {
+    const video = videoRefs.current[index];
+    if (!video) return;
+
+    try {
+      await video.play();
+    } catch {
+      // Native controls remain available if the browser blocks programmatic play.
+    }
+  }
 
   if (pathname !== "/" || !target) return null;
 
@@ -147,24 +160,47 @@ export default function HomepageTestimonials() {
                     role="img"
                     aria-label={`Customer review video ${index + 1} preview`}
                   >
-                    <span className="home-reel-card__play" aria-hidden="true">▶</span>
+                    <span className="home-reel-card__unavailable">Video unavailable</span>
                   </div>
                 ) : (
-                  <video
-                    controls
-                    playsInline
-                    preload="metadata"
-                    poster={reel.poster}
-                    aria-label={`Customer review video ${index + 1}`}
-                    onError={() =>
-                      setFailedReels((current) => ({
-                        ...current,
-                        [reel.src]: true,
-                      }))
-                    }
-                  >
-                    <source src={reel.src} type="video/mp4" />
-                  </video>
+                  <>
+                    <video
+                      ref={(element) => {
+                        videoRefs.current[index] = element;
+                      }}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      poster={reel.poster}
+                      src={reel.src}
+                      aria-label={`Customer review video ${index + 1}`}
+                      onPlay={() =>
+                        setPlayingReels((current) => ({ ...current, [index]: true }))
+                      }
+                      onPause={() =>
+                        setPlayingReels((current) => ({ ...current, [index]: false }))
+                      }
+                      onEnded={() =>
+                        setPlayingReels((current) => ({ ...current, [index]: false }))
+                      }
+                      onError={() =>
+                        setFailedReels((current) => ({
+                          ...current,
+                          [reel.src]: true,
+                        }))
+                      }
+                    />
+                    {!playingReels[index] && (
+                      <button
+                        className="home-reel-card__native-play"
+                        type="button"
+                        onClick={() => void playReviewVideo(index)}
+                        aria-label={`Play customer review video ${index + 1}`}
+                      >
+                        <span aria-hidden="true">▶</span>
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </article>

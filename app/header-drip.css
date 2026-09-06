@@ -1,0 +1,73 @@
+/* Nasty Burger House dripping header treatment.
+   The header stays solid black while a repeating sauce-like silhouette extends
+   below the bottom edge. Kept in its own file so the concept is easy to tune
+   or remove without disturbing the existing header behaviour. */
+
+:root {
+  --nasty-header-drip: #0b0a09;
+}
+
+.home-top-header {
+  overflow: visible !important;
+  border-bottom-color: transparent !important;
+  background: var(--nasty-header-drip) !important;
+}
+
+.home-top-header.is-dark,
+.home-top-header.is-hero-transparent {
+  border-bottom-color: transparent !important;
+  background: var(--nasty-header-drip) !important;
+}
+
+.home-top-header::after {
+  position: absolute;
+  right: 0;
+  bottom: -2.4rem;
+  left: 0;
+  z-index: -1;
+  display: block !important;
+  height: 2.55rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 44' preserveAspectRatio='none'%3E%3Cpath fill='%230b0a09' d='M0 0H240V10C231 10 229 19 220 19C211 19 212 8 202 10C191 12 197 38 186 41C174 44 179 12 167 10C156 8 158 22 147 22C136 22 138 9 127 10C116 11 120 33 109 35C98 37 101 12 90 10C79 8 81 23 70 24C59 25 60 10 49 11C38 12 42 40 30 42C18 44 22 13 11 11C6 10 3 10 0 10Z'/%3E%3C/svg%3E");
+  background-position: top left;
+  background-repeat: repeat-x;
+  background-size: 15rem 2.55rem;
+  content: "";
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .site-shell > .site-header {
+    overflow: visible !important;
+    border-bottom-color: transparent !important;
+    background: var(--nasty-header-drip) !important;
+  }
+
+  .site-shell > .site-header.is-mobile-hero-overlay,
+  .site-shell > .site-header.is-mobile-hero-transparent {
+    border-bottom-color: transparent !important;
+    background: var(--nasty-header-drip) !important;
+  }
+
+  .site-shell > .site-header::after {
+    position: absolute;
+    right: 0;
+    bottom: -1.55rem;
+    left: 0;
+    z-index: -1;
+    display: block !important;
+    height: 1.7rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 44' preserveAspectRatio='none'%3E%3Cpath fill='%230b0a09' d='M0 0H240V10C231 10 229 19 220 19C211 19 212 8 202 10C191 12 197 38 186 41C174 44 179 12 167 10C156 8 158 22 147 22C136 22 138 9 127 10C116 11 120 33 109 35C98 37 101 12 90 10C79 8 81 23 70 24C59 25 60 10 49 11C38 12 42 40 30 42C18 44 22 13 11 11C6 10 3 10 0 10Z'/%3E%3C/svg%3E");
+    background-position: top left;
+    background-repeat: repeat-x;
+    background-size: 10.5rem 1.7rem;
+    content: "";
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-top-header::after,
+  .site-shell > .site-header::after {
+    animation: none !important;
+  }
+}

@@ -59,7 +59,8 @@ const heroSlides: HeroSlide[] = [
     description:
       "Join Drip Points, get 500 points to start and unlock rewards made for hungry regulars.",
     image: "/images/signature-beast.webp",
-    imageAlt: "Nasty Burger House signature burger beside a Drip Points promotion",
+    imageAlt:
+      "Nasty Burger House signature burger beside a Drip Points promotion",
     ctaLabel: "Join Drip Points",
     action: "loyalty",
   },
@@ -81,7 +82,8 @@ const heroSlides: HeroSlide[] = [
     description:
       "From the OG Nasty to the Peri Beast, explore the full lineup and build your pickup order.",
     image: "/images/signature-beast.webp",
-    imageAlt: "Nasty Burger House signature burger with cheese, pickles and sauce",
+    imageAlt:
+      "Nasty Burger House signature burger with cheese, pickles and sauce",
     ctaLabel: "Explore burgers",
     href: "/menu/burgers",
   },
@@ -147,7 +149,8 @@ function normaliseCart(value: unknown): CartLine[] {
         modifiers,
         removedIngredients: Array.isArray(line.removedIngredients)
           ? line.removedIngredients.filter(
-              (ingredient): ingredient is string => typeof ingredient === "string",
+              (ingredient): ingredient is string =>
+                typeof ingredient === "string",
             )
           : [],
         boxBurgers: Array.isArray(line.boxBurgers)
@@ -192,8 +195,9 @@ export default function OrderExperience({
     "idle" | "submitting" | "success" | "error"
   >("idle");
   const [checkoutErrors, setCheckoutErrors] = useState<string[]>([]);
-  const [checkoutResult, setCheckoutResult] =
-    useState<CheckoutResult | null>(null);
+  const [checkoutResult, setCheckoutResult] = useState<CheckoutResult | null>(
+    null,
+  );
   const [checkoutRequestId, setCheckoutRequestId] = useState("");
   const [isLoyaltyOpen, setIsLoyaltyOpen] = useState(false);
   const [loyaltyComplete, setLoyaltyComplete] = useState(false);
@@ -223,13 +227,12 @@ export default function OrderExperience({
         total + modifier.price * (modifierQuantities[modifier.id] ?? 0),
       0,
     );
-    return selectedItem.price + modifiersTotal + (isCombo ? comboUpgradePrice : 0);
+    return (
+      selectedItem.price + modifiersTotal + (isCombo ? comboUpgradePrice : 0)
+    );
   }, [isCombo, modifierQuantities, selectedItem, selectedModifiers]);
 
-  const cartCount = cart.reduce(
-    (total, line) => total + line.quantity,
-    0,
-  );
+  const cartCount = cart.reduce((total, line) => total + line.quantity, 0);
   const cartSubtotal = calculateCartSubtotal(cart);
 
   useEffect(() => {
@@ -547,9 +550,7 @@ export default function OrderExperience({
     if (line.boxBurgers.length > 0) {
       details.push(
         `Burgers: ${line.boxBurgers
-          .map(
-            (id) => items.find((item) => item.id === id)?.name ?? id,
-          )
+          .map((id) => items.find((item) => item.id === id)?.name ?? id)
           .join(", ")}`,
       );
     }
@@ -561,9 +562,8 @@ export default function OrderExperience({
         line.modifiers
           .map((selection) => {
             const name =
-              modifierChoices.find(
-                (modifier) => modifier.id === selection.id,
-              )?.name ?? selection.id;
+              modifierChoices.find((modifier) => modifier.id === selection.id)
+                ?.name ?? selection.id;
             return `${selection.quantity}× ${name}`;
           })
           .join(", "),
@@ -660,6 +660,7 @@ export default function OrderExperience({
         errors?: string[];
         orderId?: string;
         subtotal?: number;
+        checkoutUrl?: string;
         message?: string;
       };
 
@@ -677,7 +678,10 @@ export default function OrderExperience({
         setCheckoutState("error");
         return;
       }
-
+      if (result.checkoutUrl) {
+        window.location.assign(result.checkoutUrl);
+        return;
+      }
       setCheckoutResult({
         orderId: result.orderId,
         subtotal: result.subtotal,
@@ -710,7 +714,11 @@ export default function OrderExperience({
       </p>
 
       <header className="site-header">
-        <a className="wordmark" href="#top" aria-label="Nasty Burger House home">
+        <a
+          className="wordmark"
+          href="#top"
+          aria-label="Nasty Burger House home"
+        >
           <Image
             className="brand-logo brand-logo--header"
             src="/logo.webp"
@@ -757,7 +765,10 @@ export default function OrderExperience({
       </header>
 
       {isMobileNavOpen && (
-        <div className="drawer-backdrop mobile-nav-backdrop" role="presentation">
+        <div
+          className="drawer-backdrop mobile-nav-backdrop"
+          role="presentation"
+        >
           <aside
             className="mobile-nav-drawer"
             id="mobile-navigation"
@@ -794,10 +805,7 @@ export default function OrderExperience({
               >
                 Explore menu <span aria-hidden="true">→</span>
               </Link>
-              <a
-                href="#beast-month"
-                onClick={() => setIsMobileNavOpen(false)}
-              >
+              <a href="#beast-month" onClick={() => setIsMobileNavOpen(false)}>
                 Beast of the Month <span aria-hidden="true">→</span>
               </a>
               <button type="button" onClick={openLoyalty}>
@@ -878,7 +886,8 @@ export default function OrderExperience({
                       onClick={() =>
                         setActiveHeroSlide(
                           (current) =>
-                            (current - 1 + heroSlides.length) % heroSlides.length,
+                            (current - 1 + heroSlides.length) %
+                            heroSlides.length,
                         )
                       }
                       aria-label="Show previous promotion"
@@ -937,30 +946,51 @@ export default function OrderExperience({
           </div>
         </section>
 
-        <section className="menu-preview" id="menu" aria-labelledby="menu-preview-title">
+        <section
+          className="menu-preview"
+          id="menu"
+          aria-labelledby="menu-preview-title"
+        >
           <div className="menu-preview__heading">
             <p className="eyebrow">Find your favourite</p>
             <h2 id="menu-preview-title">Explore our menu</h2>
-            <Link className="outline-button" href="/menu/burgers">View menu</Link>
+            <Link className="outline-button" href="/menu/burgers">
+              View menu
+            </Link>
           </div>
           <div className="menu-preview__grid">
-            <div className="menu-preview-card menu-preview-card--featured is-disabled" aria-disabled="true">
+            <div
+              className="menu-preview-card menu-preview-card--featured is-disabled"
+              aria-disabled="true"
+            >
               <span>01</span>
               <strong>Beast of the Month</strong>
             </div>
-            <Link className="menu-preview-card menu-preview-card--burgers" href="/menu/burgers">
+            <Link
+              className="menu-preview-card menu-preview-card--burgers"
+              href="/menu/burgers"
+            >
               <span>02</span>
               <strong>Beast Burgers</strong>
             </Link>
-            <Link className="menu-preview-card menu-preview-card--sides" href="/menu/loaded-sides">
+            <Link
+              className="menu-preview-card menu-preview-card--sides"
+              href="/menu/loaded-sides"
+            >
               <span>03</span>
               <strong>Loaded Sides</strong>
             </Link>
-            <Link className="menu-preview-card menu-preview-card--boxes" href="/menu/beast-boxes">
+            <Link
+              className="menu-preview-card menu-preview-card--boxes"
+              href="/menu/beast-boxes"
+            >
               <span>04</span>
               <strong>Beast Boxes</strong>
             </Link>
-            <Link className="menu-preview-card menu-preview-card--drinks" href="/menu/drinks">
+            <Link
+              className="menu-preview-card menu-preview-card--drinks"
+              href="/menu/drinks"
+            >
               <span>05</span>
               <strong>Drinks</strong>
             </Link>
@@ -973,7 +1003,10 @@ export default function OrderExperience({
           <ReviewStories />
         </div>
 
-        <section className="home-features" aria-label="Popular Nasty Burger House picks">
+        <section
+          className="home-features"
+          aria-label="Popular Nasty Burger House picks"
+        >
           <article className="home-feature home-feature--bbq">
             <div className="home-feature__image">
               <Image
@@ -986,8 +1019,13 @@ export default function OrderExperience({
             <div className="home-feature__copy">
               <p className="eyebrow">Beast of the Month</p>
               <h2>Meet the BBQ Beast.</h2>
-              <p>Smoky Bourbon BBQ, crispy bacon and American cheese stacked for serious appetite.</p>
-              <button type="button" onClick={openOrderType}>Order now</button>
+              <p>
+                Smoky Bourbon BBQ, crispy bacon and American cheese stacked for
+                serious appetite.
+              </p>
+              <button type="button" onClick={openOrderType}>
+                Order now
+              </button>
             </div>
           </article>
           <article className="home-feature home-feature--boxes">
@@ -1002,8 +1040,13 @@ export default function OrderExperience({
             <div className="home-feature__copy">
               <p className="eyebrow">Built for sharing</p>
               <h2>Bring the whole crew.</h2>
-              <p>Solo, Duo and Family boxes loaded with burgers, wings, fries and more.</p>
-              <button type="button" onClick={openOrderType}>Order now</button>
+              <p>
+                Solo, Duo and Family boxes loaded with burgers, wings, fries and
+                more.
+              </p>
+              <button type="button" onClick={openOrderType}>
+                Order now
+              </button>
             </div>
           </article>
         </section>
@@ -1031,7 +1074,9 @@ export default function OrderExperience({
           </nav>
           <nav aria-label="Ordering links">
             <h2>Order</h2>
-            <button type="button" onClick={openOrderType}>Order now</button>
+            <button type="button" onClick={openOrderType}>
+              Order now
+            </button>
             <span>Pickup available</span>
             <span>Uber Eats delivery — coming soon</span>
           </nav>
@@ -1089,15 +1134,27 @@ export default function OrderExperience({
             </p>
             <div className="order-type-options">
               <Link className="order-type-option" href="/menu/burgers">
-                <span className="order-type-option__icon" aria-hidden="true">P</span>
+                <span className="order-type-option__icon" aria-hidden="true">
+                  P
+                </span>
                 <span>
                   <strong>Pickup</strong>
                   <small>Order ahead and collect</small>
                 </span>
-                <span className="order-type-option__arrow" aria-hidden="true">→</span>
+                <span className="order-type-option__arrow" aria-hidden="true">
+                  →
+                </span>
               </Link>
-              <div className="order-type-option order-type-option--disabled" aria-disabled="true">
-                <span className="order-type-option__icon order-type-option__icon--uber" aria-hidden="true">U</span>
+              <div
+                className="order-type-option order-type-option--disabled"
+                aria-disabled="true"
+              >
+                <span
+                  className="order-type-option__icon order-type-option__icon--uber"
+                  aria-hidden="true"
+                >
+                  U
+                </span>
                 <span>
                   <strong>Delivery with Uber Eats</strong>
                   <small>Coming soon</small>
@@ -1305,7 +1362,9 @@ export default function OrderExperience({
                         <button
                           type="button"
                           onClick={() => changeModifier(modifier.id, -1)}
-                          disabled={(modifierQuantities[modifier.id] ?? 0) === 0}
+                          disabled={
+                            (modifierQuantities[modifier.id] ?? 0) === 0
+                          }
                         >
                           −
                         </button>
@@ -1368,7 +1427,9 @@ export default function OrderExperience({
                   +
                 </button>
               </div>
-              <strong>{formatPrice(selectedUnitPrice * productQuantity)}</strong>
+              <strong>
+                {formatPrice(selectedUnitPrice * productQuantity)}
+              </strong>
             </div>
 
             {selectionError && (
@@ -1454,10 +1515,7 @@ export default function OrderExperience({
               <div className="empty-cart">
                 <h3>Your order is empty.</h3>
                 <p>Choose an item from the menu to begin.</p>
-                <Link
-                  href="/menu/burgers"
-                  onClick={() => setIsCartOpen(false)}
-                >
+                <Link href="/menu/burgers" onClick={() => setIsCartOpen(false)}>
                   Browse menu
                 </Link>
               </div>
@@ -1479,7 +1537,10 @@ export default function OrderExperience({
                         ))}
                         <strong>{formatPrice(lineTotal)}</strong>
                         <div className="cart-line__actions">
-                          <button type="button" onClick={() => editCartLine(line)}>
+                          <button
+                            type="button"
+                            onClick={() => editCartLine(line)}
+                          >
                             Edit
                           </button>
                           <button
@@ -1530,9 +1591,7 @@ export default function OrderExperience({
                 <div className="pickup-summary">
                   <strong>Pickup details</strong>
                   <p>{serviceStatus.locationName}</p>
-                  <p>
-                    Estimated preparation: {serviceStatus.prepTimeLabel}
-                  </p>
+                  <p>Estimated preparation: {serviceStatus.prepTimeLabel}</p>
                 </div>
 
                 <div className="checkout-summary">
@@ -1554,7 +1613,10 @@ export default function OrderExperience({
                       ? "Continue to checkout"
                       : "Ordering unavailable"}
                   </button>
-                  <div className="wallet-labels" aria-label="Planned express payments">
+                  <div
+                    className="wallet-labels"
+                    aria-label="Planned express payments"
+                  >
                     <span>Apple Pay</span>
                     <span>Google Pay</span>
                   </div>
@@ -1591,8 +1653,8 @@ export default function OrderExperience({
                 <h2 id="checkout-title">Your order is in.</h2>
                 <p className="checkout-reference">{checkoutResult.orderId}</p>
                 <p>
-                  Your pickup order for {formatPrice(checkoutResult.subtotal)}
-                  {" "}has been sent to Nasty Burger House.
+                  Your pickup order for {formatPrice(checkoutResult.subtotal)}{" "}
+                  has been sent to Nasty Burger House.
                 </p>
                 <div className="demo-warning">
                   <strong>Pay when you collect.</strong>
@@ -1631,13 +1693,17 @@ export default function OrderExperience({
 
                 <div className="checkout-layout">
                   <div className="checkout-fields">
-                    <section className="checkout-section" aria-labelledby="pickup-heading">
+                    <section
+                      className="checkout-section"
+                      aria-labelledby="pickup-heading"
+                    >
                       <div className="checkout-section__heading">
                         <span>1</span>
                         <div>
                           <h3 id="pickup-heading">Pickup</h3>
                           <p>
-                            ASAP · Estimated preparation {serviceStatus.prepTimeLabel}
+                            ASAP · Estimated preparation{" "}
+                            {serviceStatus.prepTimeLabel}
                           </p>
                         </div>
                       </div>
@@ -1649,7 +1715,10 @@ export default function OrderExperience({
                       </div>
                     </section>
 
-                    <section className="checkout-section" aria-labelledby="contact-heading">
+                    <section
+                      className="checkout-section"
+                      aria-labelledby="contact-heading"
+                    >
                       <div className="checkout-section__heading">
                         <span>2</span>
                         <div>
@@ -1703,27 +1772,41 @@ export default function OrderExperience({
                       </div>
                     </section>
 
-                    <section className="checkout-section" aria-labelledby="payment-heading">
+                    <section
+                      className="checkout-section"
+                      aria-labelledby="payment-heading"
+                    >
                       <div className="checkout-section__heading">
                         <span>3</span>
                         <div>
                           <h3 id="payment-heading">Payment at pickup</h3>
-                          <p>Online payment will be added after Square is connected.</p>
+                          <p>
+                            Online payment will be added after Square is
+                            connected.
+                          </p>
                         </div>
                       </div>
                       <div className="payment-placeholder">
                         <div>
                           <strong>Pay when you collect</strong>
-                          <span>No card or wallet details are required online.</span>
+                          <span>
+                            No card or wallet details are required online.
+                          </span>
                         </div>
-                        <div className="wallet-labels" aria-label="Future payment provider">
+                        <div
+                          className="wallet-labels"
+                          aria-label="Future payment provider"
+                        >
                           <span>Square coming later</span>
                         </div>
                       </div>
                     </section>
                   </div>
 
-                  <aside className="checkout-review" aria-labelledby="review-heading">
+                  <aside
+                    className="checkout-review"
+                    aria-labelledby="review-heading"
+                  >
                     <div className="checkout-review__heading">
                       <h3 id="review-heading">Order review</h3>
                       <button
@@ -1749,7 +1832,8 @@ export default function OrderExperience({
                             </span>
                             <strong>
                               {formatPrice(
-                                calculateLineUnitPrice(line, item) * line.quantity,
+                                calculateLineUnitPrice(line, item) *
+                                  line.quantity,
                               )}
                             </strong>
                           </div>
@@ -1762,8 +1846,8 @@ export default function OrderExperience({
                     </div>
                     <p className="allergen-note">
                       Tell the kitchen team about allergies before ordering.
-                      Gluten-free and cross-contamination information is awaiting
-                      client verification.
+                      Gluten-free and cross-contamination information is
+                      awaiting client verification.
                     </p>
 
                     {checkoutErrors.length > 0 && (
@@ -1829,8 +1913,8 @@ export default function OrderExperience({
               <div className="loyalty-success">
                 <strong>You&apos;ve got 500 Drip Points.</strong>
                 <p>
-                  Purchase earning and redemption will connect with the client&apos;s
-                  loyalty platform.
+                  Purchase earning and redemption will connect with the
+                  client&apos;s loyalty platform.
                 </p>
                 <button
                   className="primary-button full-width"
@@ -1844,7 +1928,12 @@ export default function OrderExperience({
               <form onSubmit={submitLoyalty}>
                 <label>
                   Email
-                  <input type="email" name="email" autoComplete="email" required />
+                  <input
+                    type="email"
+                    name="email"
+                    autoComplete="email"
+                    required
+                  />
                 </label>
                 <label>
                   Phone number

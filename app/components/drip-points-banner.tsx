@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 function openDripPoints() {
@@ -13,30 +13,42 @@ export default function DripPointsBanner() {
   const pathname = usePathname();
   const [host, setHost] = useState<HTMLDivElement | null>(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (pathname !== "/") {
       setHost(null);
       return;
     }
 
-    const menuPreview = document.querySelector<HTMLElement>(".menu-preview");
-    if (!menuPreview?.parentElement) return;
+    let portalHost: HTMLDivElement | null = null;
+    let startTimer: number | null = null;
 
-    let portalHost = document.querySelector<HTMLDivElement>(
-      ".drip-points-banner-host",
-    );
+    const start = () => {
+      const menuPreview = document.querySelector<HTMLElement>(".menu-preview");
+      if (!menuPreview?.parentElement) return;
 
-    if (!portalHost) {
-      portalHost = document.createElement("div");
-      portalHost.className = "drip-points-banner-host";
-      menuPreview.parentElement.insertBefore(portalHost, menuPreview.nextSibling);
+      portalHost = document.querySelector<HTMLDivElement>(
+        ".drip-points-banner-host",
+      );
+
+      if (!portalHost) {
+        portalHost = document.createElement("div");
+        portalHost.className = "drip-points-banner-host";
+        menuPreview.parentElement.insertBefore(portalHost, menuPreview.nextSibling);
+      }
+
+      setHost(portalHost);
+    };
+
+    if (document.readyState === "complete") {
+      startTimer = window.setTimeout(start, 0);
+    } else {
+      window.addEventListener("load", start, { once: true });
     }
 
-    setHost(portalHost);
-
     return () => {
+      window.removeEventListener("load", start);
+      if (startTimer !== null) window.clearTimeout(startTimer);
       portalHost?.remove();
-      setHost(null);
     };
   }, [pathname]);
 

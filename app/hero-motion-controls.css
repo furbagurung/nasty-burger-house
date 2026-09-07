@@ -1,6 +1,14 @@
-/* Lucide-powered hero controls rendered by MobileHeroMotion. */
+/* Mobile hero controls render as a normal body-level React sibling.
+   The host mirrors the hero's document geometry so the controls can still sit
+   visually inside the carousel without portalling into hydrated page markup. */
 .hero-carousel__controls {
   display: none !important;
+}
+
+.mobile-hero-controls-host {
+  position: absolute;
+  z-index: 11;
+  pointer-events: none;
 }
 
 .mobile-hero-motion-controls {
@@ -16,6 +24,7 @@
   padding: 0.28rem;
   background: rgba(10, 9, 8, 0.7);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
 }

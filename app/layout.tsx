@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import CookieSettings from "./components/cookie-settings";
-import DripPointsBanner from "./components/drip-points-banner";
 import FindStyleNavigation from "./components/find-style-navigation";
 import FooterLegalLinks from "./components/footer-legal-links";
 import HomepageTestimonials from "./components/homepage-testimonials";
@@ -93,7 +92,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <FindStyleNavigation />
         {children}
         <HomepageTestimonials />
-        <DripPointsBanner />
         <MobileHomeHeaderOverlay />
         <MobileHeroControls />
         <CartDrawerEnhancer />

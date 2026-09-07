@@ -18,6 +18,7 @@ import {
 } from "../lib/order";
 import type { ServiceStatus } from "../lib/service";
 import MobileBottomNav from "./mobile-bottom-nav";
+import DripPointsBanner from "./drip-points-banner";
 
 type OrderExperienceProps = {
   items: MenuItem[];
@@ -962,6 +963,8 @@ export default function OrderExperience({
             </Link>
           </div>
         </section>
+
+        <DripPointsBanner />
 
         <section className="home-features" aria-label="Popular Nasty Burger House picks">
           <article className="home-feature home-feature--bbq">

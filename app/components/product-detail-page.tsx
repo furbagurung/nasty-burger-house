@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { FooterUtilityLinks } from "./footer-legal-links";
 import Link from "next/link";
 import {
   Check,
@@ -749,6 +750,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
           <Link href="/privacy-policy">Privacy Policy</Link>
           <Link href="/terms-and-conditions">Terms &amp; Conditions</Link>
         </nav>
+        <FooterUtilityLinks />
       </footer>
 
       <MobileBottomNav active="menu" />

@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
 import SocialIcon from "./social-icons";
 
-function FooterUtilityLinks() {
+export function FooterUtilityLinks() {
   const openCookieSettings = () => {
     window.dispatchEvent(new Event("nasty:open-cookie-settings"));
   };
@@ -54,38 +53,10 @@ function FooterUtilityLinks() {
 }
 
 export default function FooterLegalLinks() {
-  const [target, setTarget] = useState<HTMLElement | null>(null);
-  const [ready, setReady] = useState(false);
+  const pathname = usePathname();
 
-  useEffect(() => {
-    let startTimer: number | null = null;
-
-    const start = () => {
-      setTarget(
-        document.querySelector<HTMLElement>(
-          ".site-footer .footer-bottom, .catalogue-footer",
-        ),
-      );
-      setReady(true);
-    };
-
-    if (document.readyState === "complete") {
-      startTimer = window.setTimeout(start, 0);
-    } else {
-      window.addEventListener("load", start, { once: true });
-    }
-
-    return () => {
-      window.removeEventListener("load", start);
-      if (startTimer !== null) window.clearTimeout(startTimer);
-    };
-  }, []);
-
-  if (!ready) return null;
-
-  if (target) {
-    return createPortal(<FooterUtilityLinks />, target);
-  }
+  // These pages render their utility links inside their own React-owned footer.
+  if (pathname === "/" || pathname.startsWith("/menu/") || pathname.startsWith("/product/")) return null;
 
   return (
     <footer className="utility-footer">

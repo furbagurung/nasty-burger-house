@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { FooterUtilityLinks } from "./footer-legal-links";
 import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import type { MenuItem } from "../data/menu";
@@ -146,6 +147,7 @@ export default function MenuCategoryPage({
           <Link href="/menu/burgers">Menu</Link>
           <Link href="/?loyalty=1">Drip Points</Link>
         </nav>
+        <FooterUtilityLinks />
       </footer>
 
       <MobileBottomNav active="menu" />

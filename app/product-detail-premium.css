@@ -415,7 +415,7 @@
 }
 
 @media (max-width: 1000px) {
-  .product-detail__layout--premium { grid-template-columns: 1fr; }
+  .product-detail__layout--premium { grid-template-columns: minmax(0, 1fr); }
   .product-detail__visual { border-radius: 2rem 2rem 0 0; }
   .product-detail__media--premium { position: relative; top: auto; min-height: 32rem; }
   .product-detail__content--premium { border-radius: 0 0 2rem 2rem; }

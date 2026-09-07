@@ -4,7 +4,6 @@ import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import CookieSettings from "./components/cookie-settings";
 import FindStyleNavigation from "./components/find-style-navigation";
 import FooterLegalLinks from "./components/footer-legal-links";
-import HomepageTestimonials from "./components/homepage-testimonials";
 import HomeTopHeader from "./components/home-top-header";
 import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
@@ -91,7 +90,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <MobileHomeLocation />
         <FindStyleNavigation />
         {children}
-        <HomepageTestimonials />
         <MobileHomeHeaderOverlay />
         <MobileHeroControls />
         <CartDrawerEnhancer />

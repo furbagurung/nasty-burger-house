@@ -91,6 +91,7 @@
   font: inherit;
   font-size: 0.9rem;
   font-weight: 850;
+  text-decoration: none;
   cursor: pointer;
   transition:
     transform 180ms ease,
@@ -162,25 +163,22 @@
 
   .drip-points-banner__inner {
     min-height: 0;
-    grid-template-columns: minmax(0, 1fr) 8.5rem;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.65rem;
     border-radius: 1.35rem;
     padding: 1.35rem 1.05rem;
   }
 
   .drip-points-banner__copy h2 {
-    max-width: 9ch;
-    font-size: clamp(2.15rem, 10vw, 3rem);
+    max-width: 14ch;
+    font-size: clamp(2rem, 1.25rem + 4vw, 3rem);
   }
 
   .drip-points-banner__body {
-    display: -webkit-box;
+    display: block;
     margin-top: 0.85rem;
-    overflow: hidden;
-    font-size: 0.78rem;
+    font-size: 1rem;
     line-height: 1.45;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
   }
 
   .drip-points-banner__meta {
@@ -188,19 +186,21 @@
   }
 
   .drip-points-banner__cta {
-    min-height: 2.55rem;
+    min-height: 2.75rem;
     margin-top: 1rem;
     padding: 0.58rem 0.9rem;
-    font-size: 0.74rem;
+    font-size: 0.875rem;
   }
 
   .drip-points-banner__art {
-    min-height: 12rem;
+    width: min(100%, 15rem);
+    min-height: 10rem;
+    justify-self: center;
   }
 
   .drip-points-banner__coin {
-    width: 9.2rem;
-    max-width: 125%;
+    width: 10rem;
+    max-width: 100%;
     transform: rotate(-10deg) translateX(0.25rem);
   }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { FooterUtilityLinks } from "./footer-legal-links";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
@@ -18,6 +19,8 @@ import {
 } from "../lib/order";
 import type { ServiceStatus } from "../lib/service";
 import MobileBottomNav from "./mobile-bottom-nav";
+import HomepageTestimonials from "./homepage-testimonials";
+import ReviewStories from "./review-stories";
 import DripPointsBanner from "./drip-points-banner";
 
 type OrderExperienceProps = {
@@ -966,6 +969,10 @@ export default function OrderExperience({
 
         <DripPointsBanner />
 
+        <div className="review-stories-home-host">
+          <ReviewStories />
+        </div>
+
         <section className="home-features" aria-label="Popular Nasty Burger House picks">
           <article className="home-feature home-feature--bbq">
             <div className="home-feature__image">
@@ -1000,6 +1007,7 @@ export default function OrderExperience({
             </div>
           </article>
         </section>
+        <HomepageTestimonials />
       </main>
 
       <footer className="site-footer">
@@ -1038,6 +1046,7 @@ export default function OrderExperience({
         <div className="footer-bottom">
           <span>© 2026 Nasty Burger House</span>
           <span>Pickup ordering only</span>
+          <FooterUtilityLinks />
         </div>
       </footer>
 

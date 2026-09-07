@@ -24,6 +24,7 @@
     border-radius: 0 !important;
   }
 
+  .site-shell > .home-main > .hero-carousel .hero-carousel__slides,
   .site-shell > .home-main > .hero-carousel .hero-slide {
     min-height: 100% !important;
     height: 100% !important;

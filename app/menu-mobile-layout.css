@@ -113,6 +113,8 @@
 
   .catalogue-shell.menu-catalogue-shell .catalogue-categories a {
     display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
@@ -123,7 +125,7 @@
     border-radius: 0.6rem !important;
     background: transparent !important;
     color: #51483f !important;
-    font-size: 0.72rem !important;
+    font-size: 0.75rem !important;
     font-weight: 700 !important;
     line-height: 1.25 !important;
     text-align: center;

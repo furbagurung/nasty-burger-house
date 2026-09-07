@@ -58,12 +58,27 @@ export default function FooterLegalLinks() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setTarget(
-      document.querySelector<HTMLElement>(
-        ".site-footer .footer-bottom, .catalogue-footer",
-      ),
-    );
-    setReady(true);
+    let startTimer: number | null = null;
+
+    const start = () => {
+      setTarget(
+        document.querySelector<HTMLElement>(
+          ".site-footer .footer-bottom, .catalogue-footer",
+        ),
+      );
+      setReady(true);
+    };
+
+    if (document.readyState === "complete") {
+      startTimer = window.setTimeout(start, 0);
+    } else {
+      window.addEventListener("load", start, { once: true });
+    }
+
+    return () => {
+      window.removeEventListener("load", start);
+      if (startTimer !== null) window.clearTimeout(startTimer);
+    };
   }, []);
 
   if (!ready) return null;

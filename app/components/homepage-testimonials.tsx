@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import ReviewStories from "./review-stories";
 
@@ -38,16 +38,17 @@ export default function HomepageTestimonials() {
   const [target, setTarget] = useState<HTMLElement | null>(null);
   const [storiesTarget, setStoriesTarget] = useState<HTMLDivElement | null>(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (pathname !== "/") {
-      // Portal targets belong to the previous route's external DOM.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTarget(null);
       setStoriesTarget(null);
       return;
     }
 
     let storiesHost: HTMLDivElement | null = null;
+    let observer: MutationObserver | null = null;
+    let retryTimer: number | null = null;
+    let startTimer: number | null = null;
 
     const findTargets = () => {
       const main = document.querySelector<HTMLElement>(".site-shell > .home-main");
@@ -72,25 +73,31 @@ export default function HomepageTestimonials() {
       return Boolean(main && storiesHost);
     };
 
-    if (findTargets()) {
-      return () => {
-        storiesHost?.remove();
-      };
+    const start = () => {
+      if (findTargets()) return;
+
+      observer = new MutationObserver(() => {
+        if (findTargets()) observer?.disconnect();
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+      retryTimer = window.setTimeout(() => {
+        findTargets();
+        observer?.disconnect();
+      }, 500);
+    };
+
+    if (document.readyState === "complete") {
+      startTimer = window.setTimeout(start, 0);
+    } else {
+      window.addEventListener("load", start, { once: true });
     }
 
-    const observer = new MutationObserver(() => {
-      if (findTargets()) observer.disconnect();
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-    const timer = window.setTimeout(() => {
-      findTargets();
-      observer.disconnect();
-    }, 500);
-
     return () => {
-      window.clearTimeout(timer);
-      observer.disconnect();
+      window.removeEventListener("load", start);
+      if (startTimer !== null) window.clearTimeout(startTimer);
+      if (retryTimer !== null) window.clearTimeout(retryTimer);
+      observer?.disconnect();
       storiesHost?.remove();
     };
   }, [pathname]);

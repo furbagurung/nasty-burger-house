@@ -16,6 +16,7 @@ export default function CheckoutCompletePage() {
     useState<VerificationState>("checking");
 
   useEffect(() => {
+    let attempts = 0;
     async function verifyPayment() {
       const params = new URLSearchParams(window.location.search);
       const returnedOrderId = params.get("nbhOrderId") ?? "";
@@ -65,9 +66,13 @@ export default function CheckoutCompletePage() {
         if (!result.paid) {
           setVerificationState("pending");
 
-          window.setTimeout(() => {
-            void verifyPayment();
-          }, 2000);
+          if (attempts < 10) {
+            attempts += 1;
+
+            window.setTimeout(() => {
+              void verifyPayment();
+            }, 2000);
+          }
 
           return;
         }

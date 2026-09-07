@@ -8,8 +8,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { type CSSProperties, useEffect, useState } from "react";
 
 function mobileViewport() {
   return window.matchMedia("(max-width: 680px)").matches;
@@ -18,6 +17,7 @@ function mobileViewport() {
 export default function MobileHeroControls() {
   const pathname = usePathname();
   const [heroRoot, setHeroRoot] = useState<HTMLElement | null>(null);
+  const [hostStyle, setHostStyle] = useState<CSSProperties>({ display: "none" });
   const [activeIndex, setActiveIndex] = useState(0);
   const [slideCount, setSlideCount] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -25,6 +25,7 @@ export default function MobileHeroControls() {
   useEffect(() => {
     if (pathname !== "/") {
       setHeroRoot(null);
+      setHostStyle({ display: "none" });
       return;
     }
 
@@ -46,6 +47,16 @@ export default function MobileHeroControls() {
 
   useEffect(() => {
     if (!heroRoot || pathname !== "/") return;
+
+    const syncGeometry = () => {
+      const rect = heroRoot.getBoundingClientRect();
+      setHostStyle({
+        top: `${window.scrollY + rect.top}px`,
+        left: `${window.scrollX + rect.left}px`,
+        width: `${rect.width}px`,
+        height: `${rect.height}px`,
+      });
+    };
 
     const syncState = () => {
       const slides = Array.from(
@@ -69,6 +80,7 @@ export default function MobileHeroControls() {
     };
 
     syncState();
+    syncGeometry();
 
     const mutationObserver = new MutationObserver(syncState);
     mutationObserver.observe(heroRoot, {
@@ -76,6 +88,10 @@ export default function MobileHeroControls() {
       attributes: true,
       attributeFilter: ["class", "aria-label"],
     });
+
+    const resizeObserver = new ResizeObserver(syncGeometry);
+    resizeObserver.observe(heroRoot);
+    window.addEventListener("resize", syncGeometry);
 
     let startX = 0;
     let startY = 0;
@@ -136,6 +152,8 @@ export default function MobileHeroControls() {
 
     return () => {
       mutationObserver.disconnect();
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", syncGeometry);
       heroRoot.removeEventListener("pointerdown", onPointerDown);
       heroRoot.removeEventListener("pointerup", onPointerUp);
       heroRoot.removeEventListener("pointercancel", cancelPointer);
@@ -176,63 +194,64 @@ export default function MobileHeroControls() {
     dots?.[index]?.click();
   };
 
-  return createPortal(
-    <div className="mobile-hero-motion-controls" aria-label="Hero slider controls">
-      <button
-        type="button"
-        onClick={() => triggerControl("previous")}
-        aria-label="Previous promotion"
-      >
-        <HugeiconsIcon
-          icon={ArrowLeft01Icon}
-          size={20}
-          color="currentColor"
-          strokeWidth={1.8}
-          aria-hidden="true"
-        />
-      </button>
-
-      <div className="mobile-hero-motion-dots" aria-label="Choose promotion">
-        {Array.from({ length: slideCount }).map((_, index) => (
-          <button
-            className={index === activeIndex ? "is-active" : ""}
-            type="button"
-            onClick={() => chooseSlide(index)}
-            aria-label={`Show promotion ${index + 1}`}
-            aria-current={index === activeIndex ? "true" : undefined}
-            key={index}
+  return (
+    <div className="mobile-hero-controls-host" style={hostStyle}>
+      <div className="mobile-hero-motion-controls" aria-label="Hero slider controls">
+        <button
+          type="button"
+          onClick={() => triggerControl("previous")}
+          aria-label="Previous promotion"
+        >
+          <HugeiconsIcon
+            icon={ArrowLeft01Icon}
+            size={20}
+            color="currentColor"
+            strokeWidth={1.8}
+            aria-hidden="true"
           />
-        ))}
+        </button>
+
+        <div className="mobile-hero-motion-dots" aria-label="Choose promotion">
+          {Array.from({ length: slideCount }).map((_, index) => (
+            <button
+              className={index === activeIndex ? "is-active" : ""}
+              type="button"
+              onClick={() => chooseSlide(index)}
+              aria-label={`Show promotion ${index + 1}`}
+              aria-current={index === activeIndex ? "true" : undefined}
+              key={index}
+            />
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => triggerControl("playback")}
+          aria-label={isPaused ? "Play promotions" : "Pause promotions"}
+        >
+          <HugeiconsIcon
+            icon={isPaused ? PlayIcon : PauseIcon}
+            size={19}
+            color="currentColor"
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => triggerControl("next")}
+          aria-label="Next promotion"
+        >
+          <HugeiconsIcon
+            icon={ArrowRight01Icon}
+            size={20}
+            color="currentColor"
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+        </button>
       </div>
-
-      <button
-        type="button"
-        onClick={() => triggerControl("playback")}
-        aria-label={isPaused ? "Play promotions" : "Pause promotions"}
-      >
-        <HugeiconsIcon
-          icon={isPaused ? PlayIcon : PauseIcon}
-          size={19}
-          color="currentColor"
-          strokeWidth={1.8}
-          aria-hidden="true"
-        />
-      </button>
-
-      <button
-        type="button"
-        onClick={() => triggerControl("next")}
-        aria-label="Next promotion"
-      >
-        <HugeiconsIcon
-          icon={ArrowRight01Icon}
-          size={20}
-          color="currentColor"
-          strokeWidth={1.8}
-          aria-hidden="true"
-        />
-      </button>
-    </div>,
-    heroRoot,
+    </div>
   );
 }

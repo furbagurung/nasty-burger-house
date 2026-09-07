@@ -659,6 +659,7 @@ export default function OrderExperience({
         ok?: boolean;
         errors?: string[];
         orderId?: string;
+        squareOrderId?: string;
         subtotal?: number;
         checkoutUrl?: string;
         message?: string;
@@ -679,6 +680,16 @@ export default function OrderExperience({
         return;
       }
       if (result.checkoutUrl) {
+        if (result.orderId && result.squareOrderId) {
+          window.sessionStorage.setItem(
+            "nasty-square-pending-order",
+            JSON.stringify({
+              orderId: result.orderId,
+              squareOrderId: result.squareOrderId,
+            }),
+          );
+        }
+
         window.location.assign(result.checkoutUrl);
         return;
       }

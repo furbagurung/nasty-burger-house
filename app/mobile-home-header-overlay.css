@@ -1,4 +1,6 @@
-/* Homepage mobile header overlays the hero instead of reserving vertical space. */
+/* Homepage mobile header overlays the hero instead of reserving vertical space.
+   State is applied on <html> so React-owned header markup is never mutated
+   during hydration. */
 @media (max-width: 900px) {
   .site-shell {
     position: relative;
@@ -21,12 +23,12 @@
       backdrop-filter 220ms ease;
   }
 
-  .site-shell > .site-header.is-mobile-scroll-hidden {
+  html.nasty-mobile-header-hidden .site-shell > .site-header {
     transform: translateY(calc(-100% - 2px)) !important;
     pointer-events: none !important;
   }
 
-  .site-shell > .site-header.is-mobile-hero-overlay {
+  html.nasty-mobile-hero-overlay .site-shell > .site-header {
     border-bottom-color: transparent !important;
     background: transparent !important;
     box-shadow: none !important;

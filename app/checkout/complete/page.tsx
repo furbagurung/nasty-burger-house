@@ -64,9 +64,13 @@ export default function CheckoutCompletePage() {
 
         if (!result.paid) {
           setVerificationState("pending");
+
+          window.setTimeout(() => {
+            void verifyPayment();
+          }, 2000);
+
           return;
         }
-
         window.localStorage.setItem(CART_STORAGE_KEY, "[]");
         window.sessionStorage.removeItem(PENDING_ORDER_KEY);
         window.dispatchEvent(new Event("nasty-cart-updated"));

@@ -1,13 +1,21 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 
 export default function MobileHomeHeaderOverlay() {
   const pathname = usePathname();
 
-  useLayoutEffect(() => {
-    if (pathname !== "/") return;
+  useEffect(() => {
+    const root = document.documentElement;
+
+    if (pathname !== "/") {
+      root.classList.remove(
+        "nasty-mobile-hero-overlay",
+        "nasty-mobile-header-hidden",
+      );
+      return;
+    }
 
     const header = document.querySelector<HTMLElement>(
       ".site-shell > .site-header",
@@ -22,9 +30,9 @@ export default function MobileHomeHeaderOverlay() {
 
     const updateHeader = () => {
       if (!mobileQuery.matches) {
-        header.classList.remove(
-          "is-mobile-hero-overlay",
-          "is-mobile-scroll-hidden",
+        root.classList.remove(
+          "nasty-mobile-hero-overlay",
+          "nasty-mobile-header-hidden",
         );
         isHidden = false;
         lastScrollY = window.scrollY;
@@ -34,12 +42,10 @@ export default function MobileHomeHeaderOverlay() {
       const currentY = Math.max(0, window.scrollY);
       const heroBottom = hero.getBoundingClientRect().bottom;
       const headerHeight = header.getBoundingClientRect().height;
-      const mobileDrawerOpen = Boolean(
-        document.querySelector(".site-shell > .mobile-nav-backdrop"),
-      );
+      const mobileDrawerOpen = root.classList.contains("nasty-find-nav-open");
 
-      header.classList.toggle(
-        "is-mobile-hero-overlay",
+      root.classList.toggle(
+        "nasty-mobile-hero-overlay",
         heroBottom > headerHeight + 8,
       );
 
@@ -51,7 +57,7 @@ export default function MobileHomeHeaderOverlay() {
         isHidden = false;
       }
 
-      header.classList.toggle("is-mobile-scroll-hidden", isHidden);
+      root.classList.toggle("nasty-mobile-header-hidden", isHidden);
       lastScrollY = currentY;
     };
 
@@ -61,9 +67,9 @@ export default function MobileHomeHeaderOverlay() {
     mobileQuery.addEventListener("change", updateHeader);
 
     return () => {
-      header.classList.remove(
-        "is-mobile-hero-overlay",
-        "is-mobile-scroll-hidden",
+      root.classList.remove(
+        "nasty-mobile-hero-overlay",
+        "nasty-mobile-header-hidden",
       );
       window.removeEventListener("scroll", updateHeader);
       window.removeEventListener("resize", updateHeader);

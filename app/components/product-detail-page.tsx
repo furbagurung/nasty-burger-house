@@ -32,7 +32,7 @@ type ProductDetailPageProps = {
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
-const money = new Intl.NumberFormat("en-AU", {
+const money = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "AUD",
   minimumFractionDigits: 0,

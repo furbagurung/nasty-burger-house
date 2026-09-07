@@ -87,7 +87,7 @@ const heroSlides: HeroSlide[] = [
   },
   {
     id: "save-more",
-    eyebrow: "Beast Boxes · From $34.99",
+    eyebrow: "Beast Boxes · From A$34.99",
     title: "Get More. Save Money.",
     description:
       "Go Solo, Duo or Family and get burgers, Nasty Fries, bites, drinks and dessert together in one Beast Box.",
@@ -98,7 +98,7 @@ const heroSlides: HeroSlide[] = [
   },
 ];
 
-const money = new Intl.NumberFormat("en-AU", {
+const money = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "AUD",
 });

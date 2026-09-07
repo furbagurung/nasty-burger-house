@@ -12,7 +12,7 @@ import {
 import type { CustomerOrder, CustomerReview } from "../lib/customer-store";
 import MobileBottomNav from "./mobile-bottom-nav";
 
-const money = new Intl.NumberFormat("en-AU", {
+const money = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "AUD",
 });

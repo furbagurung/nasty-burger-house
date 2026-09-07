@@ -15,7 +15,7 @@ import MobileBottomNav from "./mobile-bottom-nav";
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 const CHECKOUT_CONTACT_KEY = "nasty-burger-checkout-contact";
 
-const money = new Intl.NumberFormat("en-AU", {
+const money = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "AUD",
 });

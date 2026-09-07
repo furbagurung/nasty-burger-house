@@ -59,7 +59,7 @@ const drinkImages: Partial<Record<string, string>> = {
 // Kept in one configuration block so client-approved pricing can be changed safely.
 export const comboUpgradePrice = 6.99;
 export const pricingNotice =
-  "Standalone drink and modifier prices remain provisional. All printed menu item prices and the $6.99 meal upgrade are confirmed.";
+  "Standalone drink and modifier prices remain provisional. All printed menu item prices and the A$6.99 meal upgrade are confirmed.";
 
 export const sauceModifierIds = [
   "signature-sauce",

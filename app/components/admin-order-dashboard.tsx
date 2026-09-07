@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { AdminOrder } from "../lib/admin-orders";
 
-const money = new Intl.NumberFormat("en-AU", {
+const money = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "AUD",
 });

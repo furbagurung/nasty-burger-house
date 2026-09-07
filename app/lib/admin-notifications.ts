@@ -18,7 +18,7 @@ function escapeHtml(value: string) {
 }
 
 function money(value: number) {
-  return new Intl.NumberFormat("en-AU", {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "AUD",
   }).format(value);

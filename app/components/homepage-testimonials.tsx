@@ -1,31 +1,33 @@
-import Link from "next/link";
+﻿"use client";
 
-const testimonials = [
-  {
-    quote:
-      "The burger is stacked, juicy and properly messy — exactly the kind of feed you order when you are seriously hungry.",
-    name: "Sample customer A",
-    initial: "A",
-    detail: "Burger order preview",
-    avatarTone: "red",
-  },
-  {
-    quote:
-      "The Beast Box is made for sharing. Burgers, fries and sides all in one hit without overthinking the order.",
-    name: "Sample customer J",
-    initial: "J",
-    detail: "Beast Box preview",
-    avatarTone: "gold",
-  },
-  {
-    quote:
-      "Quick pickup, big portions and the burger still tastes fresh off the grill when you open the bag.",
-    name: "Sample customer S",
-    initial: "S",
-    detail: "Pickup order preview",
-    avatarTone: "dark",
-  },
-];
+import Link from "next/link";
+import { homepageReviews, homepageReviewsArePreview, type HomepageReview } from "../data/homepage-reviews";
+import InfiniteMovingCards from "./infinite-moving-cards";
+
+function ReviewCard({ review }: { review: HomepageReview }) {
+  return (
+    <article className="home-testimonial-card">
+      <div className="home-testimonial-card__rating-row">
+        <span className="home-testimonial-card__stars" aria-label={`${review.rating} out of 5 stars`}>
+          <span aria-hidden="true">{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</span>
+        </span>
+        <span className="home-testimonial-card__quote-mark" aria-hidden="true">“</span>
+      </div>
+      <blockquote>“{review.quote}”</blockquote>
+      <div className="home-testimonial-card__profile">
+        <div className="home-testimonial-card__profile-copy">
+          <strong>{review.name}</strong>
+          {review.sourceUrl ? (
+            <a href={review.sourceUrl} target="_blank" rel="noopener noreferrer">
+              {review.sourceLabel || "Read review"} <span aria-hidden="true">↗</span>
+              <span className="home-testimonials__sr-only"> by {review.name} (opens in a new tab)</span>
+            </a>
+          ) : !homepageReviewsArePreview ? <span>Customer review</span> : null}
+        </div>
+      </div>
+    </article>
+  );
+}
 
 export default function HomepageTestimonials() {
   return (
@@ -34,51 +36,23 @@ export default function HomepageTestimonials() {
         <div>
           <p className="home-testimonials__eyebrow">The Nasty crowd</p>
           <h2 id="home-testimonials-title">What people are saying.</h2>
-          <p>
-            Review-style previews for the homepage. Published customer reviews can replace these sample cards as they come in.
-          </p>
+          <p>{homepageReviewsArePreview
+            ? <></>
+            : homepageReviews.length > 0
+              ? "Big bites. Honest opinions. In our customers’ own words."
+              : "Had a Nasty feed? We’d love to hear how it was."}</p>
         </div>
         <Link className="home-testimonials__cta" href="/reviews">
-          Leave a verified review
+          Leave a verified review <span aria-hidden="true">↗</span>
         </Link>
       </div>
-
-      <div className="home-testimonials__grid" aria-label="Sample testimonial cards">
-        {testimonials.map((testimonial) => (
-          <article className="home-testimonial-card" key={testimonial.name}>
-            <div className="home-testimonial-card__profile">
-              <span
-                className={`home-testimonial-card__avatar home-testimonial-card__avatar--${testimonial.avatarTone}`}
-                aria-hidden="true"
-              >
-                {testimonial.initial}
-              </span>
-              <div className="home-testimonial-card__profile-copy">
-                <strong>{testimonial.name}</strong>
-                <span>{testimonial.detail}</span>
-              </div>
-              <span className="home-testimonial-card__sample">Sample</span>
-            </div>
-
-            <div className="home-testimonial-card__rating-row">
-              <strong>5.0</strong>
-              <span className="home-testimonial-card__stars" aria-label="Five star sample rating">
-                ★★★★★
-              </span>
-              <span className="home-testimonial-card__review-source">Review preview</span>
-            </div>
-
-            <blockquote>“{testimonial.quote}”</blockquote>
-
-            <div className="home-testimonial-card__meta">
-              <span>Sample content for layout preview</span>
-              <span aria-hidden="true">·</span>
-              <span>Not a published Google review</span>
-            </div>
-          </article>
-        ))}
-      </div>
-
+      {homepageReviews.length > 0 && (
+        <InfiniteMovingCards
+          items={homepageReviews}
+          label={homepageReviewsArePreview ? "Fictional review design preview" : "Customer reviews"}
+          renderItem={(review) => <ReviewCard review={review} />}
+        />
+      )}
     </section>
   );
 }

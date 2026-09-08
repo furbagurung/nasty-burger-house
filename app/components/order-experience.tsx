@@ -1076,13 +1076,6 @@ export default function OrderExperience({
           <p>Big flavour. Zero apologies.</p>
         </div>
         <div className="footer-links">
-          <nav aria-label="Menu links">
-            <h2>Our menu</h2>
-            <Link href="/menu/featured">Featured</Link>
-            <Link href="/menu/burgers">Beast Burgers</Link>
-            <Link href="/menu/loaded-sides">Loaded Sides</Link>
-            <Link href="/menu/beast-boxes">Beast Boxes</Link>
-          </nav>
           <nav aria-label="Ordering links">
             <h2>Order</h2>
             <button type="button" onClick={openOrderType}>

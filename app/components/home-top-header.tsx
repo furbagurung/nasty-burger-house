@@ -55,6 +55,9 @@ export default function HomeTopHeader() {
   const isHome = pathname === "/";
   const isMenuPage = pathname.startsWith("/menu/");
   const isProductPage = pathname.startsWith("/product/");
+  const isMenuNavActive = pathname === "/menu" || isMenuPage || isProductPage;
+  const isBeastNavActive = pathname === "/beast-of-the-month";
+  const isDripNavActive = pathname === "/drip-points";
   const [isHidden, setIsHidden] = useState(false);
   const [isHeroTransparent, setIsHeroTransparent] = useState(isHome);
   const [cartCount, setCartCount] = useState(0);
@@ -260,10 +263,26 @@ export default function HomeTopHeader() {
       </Link>
 
       <nav className="home-top-header__nav" aria-label="Primary navigation">
-        <Link href="/menu/burgers">Menu</Link>
-        <Link href="/beast-of-the-month">Beast of the Month</Link>
+        <Link
+          className={isMenuNavActive ? "is-active" : undefined}
+          href="/menu/burgers"
+          aria-current={isMenuNavActive ? "page" : undefined}
+        >
+          Menu
+        </Link>
+        <Link
+          className={isBeastNavActive ? "is-active" : undefined}
+          href="/beast-of-the-month"
+          aria-current={isBeastNavActive ? "page" : undefined}
+        >
+          Beast of the Month
+        </Link>
         <Link href={isHome ? "#find-us" : "/#find-us"}>Find Us</Link>
-        <Link className="home-top-header__drip" href="/drip-points">
+        <Link
+          className={`home-top-header__drip${isDripNavActive ? " is-active" : ""}`}
+          href="/drip-points"
+          aria-current={isDripNavActive ? "page" : undefined}
+        >
           <span className="home-top-header__drip-icon" aria-hidden="true">
             <Image src="/images/drip-points/drip-coin.png" alt="" width={32} height={32} />
           </span>

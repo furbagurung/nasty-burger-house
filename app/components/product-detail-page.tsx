@@ -381,7 +381,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             {item.canUpgrade && (
               <section className="product-custom-section">
                 <div className="product-custom-section__heading">
-                  <div><span>01</span><h2>Make it the Beast Combo</h2></div>
+                  <div><span>01</span><h2>Upgrade to the Beast Combo</h2></div>
                   <strong>+{money.format(comboUpgradePrice)}</strong>
                 </div>
                 <button

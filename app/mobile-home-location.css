@@ -162,6 +162,7 @@
   }
 
   /* Keep the location visually attached to whichever mobile header is active. */
+  html.nasty-mobile-header-hidden .mobile-home-location.is-home-route,
   body:has(.site-shell > .site-header.is-mobile-scroll-hidden)
     > .mobile-home-location.is-home-route,
   body:has(.catalogue-shell:not(.product-page-shell) > .catalogue-header.is-mobile-scroll-hidden)

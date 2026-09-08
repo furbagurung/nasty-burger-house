@@ -39,7 +39,7 @@ export type MenuItem = {
 };
 
 export const adultDrinkChoices = [
-  "SOLO",
+  "Sprite",
   "Coke",
   "Coke No Sugar",
   "Fanta",
@@ -49,7 +49,6 @@ export const adultDrinkChoices = [
 export const kidsDrinkChoices = adultDrinkChoices;
 
 const drinkImages: Partial<Record<string, string>> = {
-  SOLO: "/images/menu/solo-can.png",
   Coke: "/images/menu/Coke.webp",
   "Coke No Sugar": "/images/menu/coke no sugar.webp",
   Fanta: "/images/menu/fanta-can.png",

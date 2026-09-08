@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { menuNavigationCategories } from "../data/menu-pages";
 import { MenuToggleIcon } from "./menu-toggle-icon";
 
 export default function CatalogueMobileMenu() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -71,19 +73,36 @@ export default function CatalogueMobileMenu() {
             </div>
 
             <nav className="mobile-nav-links" aria-label="Menu navigation">
-              <Link href="/" onClick={() => setIsOpen(false)}>
+              <Link
+                className={pathname === "/" ? "is-active" : undefined}
+                href="/"
+                aria-current={pathname === "/" ? "page" : undefined}
+                onClick={() => setIsOpen(false)}
+              >
                 Home <span aria-hidden="true">→</span>
               </Link>
-              {menuNavigationCategories.map((category) => (
-                <Link
-                  href={`/menu/${category.id}`}
-                  key={category.id}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {category.label} <span aria-hidden="true">→</span>
-                </Link>
-              ))}
-              <Link href="/?loyalty=1" onClick={() => setIsOpen(false)}>
+              {menuNavigationCategories.map((category) => {
+                const href = `/menu/${category.id}`;
+                const isActive = pathname === href || pathname.startsWith(`${href}/`);
+
+                return (
+                  <Link
+                    className={isActive ? "is-active" : undefined}
+                    href={href}
+                    key={category.id}
+                    aria-current={isActive ? "page" : undefined}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {category.label} <span aria-hidden="true">→</span>
+                  </Link>
+                );
+              })}
+              <Link
+                className={pathname === "/drip-points" ? "is-active" : undefined}
+                href="/drip-points"
+                aria-current={pathname === "/drip-points" ? "page" : undefined}
+                onClick={() => setIsOpen(false)}
+              >
                 Drip Points <span aria-hidden="true">→</span>
               </Link>
             </nav>

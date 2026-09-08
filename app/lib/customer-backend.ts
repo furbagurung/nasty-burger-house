@@ -207,7 +207,20 @@ export async function updateCurrentCustomer(input: {
     .select("id,name,email,phone,birthday,created_at,updated_at")
     .single();
 
-  if (error) throw error;
+  const squareResponse = await fetch("/api/account/sync-square", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: input.name.trim(),
+      phone: input.phone.trim(),
+    }),
+  });
+
+  if (!squareResponse.ok) {
+    throw new Error("Profile saved, but Square customer sync failed.");
+  }
   return mapProfile(data as CustomerRow);
 }
 
@@ -231,7 +244,9 @@ export async function loadDripActivity() {
 
   const { data, error } = await supabase
     .from("drip_ledger")
-    .select("id,order_id,entry_type,points,points_status,description,created_at")
+    .select(
+      "id,order_id,entry_type,points,points_status,description,created_at",
+    )
     .order("created_at", { ascending: false });
 
   if (error) throw error;
@@ -253,7 +268,9 @@ export async function loadCustomerOrders(): Promise<CustomerOrder[]> {
       .order("submitted_at", { ascending: false }),
     supabase
       .from("drip_ledger")
-      .select("id,order_id,entry_type,points,points_status,description,created_at")
+      .select(
+        "id,order_id,entry_type,points,points_status,description,created_at",
+      )
       .eq("entry_type", "order"),
   ]);
 
@@ -273,7 +290,9 @@ export async function loadCustomerOrder(orderId: string) {
 
   // Guest Supabase orders are intentionally not readable through customer RLS.
   // Keep the just-submitted same-device receipt as a local convenience only.
-  return readCustomerOrders().find((order) => order.orderId === orderId) ?? null;
+  return (
+    readCustomerOrders().find((order) => order.orderId === orderId) ?? null
+  );
 }
 
 export async function loadCustomerReviews(): Promise<CustomerReview[]> {
@@ -312,10 +331,7 @@ export async function saveReview(input: {
   if (lookupError) throw lookupError;
 
   const query = existing
-    ? supabase
-        .from("reviews")
-        .update({ rating, message })
-        .eq("id", existing.id)
+    ? supabase.from("reviews").update({ rating, message }).eq("id", existing.id)
     : supabase.from("reviews").insert({
         customer_id: user.id,
         order_id: input.orderId,

@@ -17,7 +17,9 @@ type SearchCustomersResponse = {
 type CreateCustomerResponse = {
   customer?: SquareCustomer;
 };
-
+type UpdateCustomerResponse = {
+  customer?: SquareCustomer;
+};
 export type SquareCustomerInput = {
   name: string;
   email: string;
@@ -46,7 +48,33 @@ function splitName(name: string) {
     familyName: parts.slice(1).join(" ") || undefined,
   };
 }
+async function updateSquareCustomer(
+  customerId: string,
+  input: SquareCustomerInput,
+  phone: string,
+) {
+  const email = input.email.trim().toLowerCase();
+  const { givenName, familyName } = splitName(input.name);
 
+  const result = await squareRequest<UpdateCustomerResponse>(
+    `/v2/customers/${encodeURIComponent(customerId)}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({
+        given_name: givenName,
+        ...(familyName ? { family_name: familyName } : {}),
+        email_address: email,
+        phone_number: phone,
+      }),
+    },
+  );
+
+  if (!result.customer?.id) {
+    throw new Error("Square did not return the updated customer.");
+  }
+
+  return result.customer;
+}
 async function searchCustomerByEmail(email: string) {
   const result = await squareRequest<SearchCustomersResponse>(
     "/v2/customers/search",
@@ -90,14 +118,15 @@ export async function findOrCreateSquareCustomer(input: SquareCustomerInput) {
 
   const byEmail = await searchCustomerByEmail(email);
   if (byEmail?.id) {
+    await updateSquareCustomer(byEmail.id, input, phone);
     return { id: byEmail.id, created: false, phone };
   }
 
   const byPhone = await searchCustomerByPhone(phone);
   if (byPhone?.id) {
+    await updateSquareCustomer(byPhone.id, input, phone);
     return { id: byPhone.id, created: false, phone };
   }
-
   const { givenName, familyName } = splitName(input.name);
   const result = await squareRequest<CreateCustomerResponse>("/v2/customers", {
     method: "POST",

@@ -14,10 +14,7 @@ import {
   updateCurrentCustomer,
 } from "../lib/customer-backend";
 import type { CustomerProfile, DripLedgerEntry } from "../lib/customer-store";
-import {
-  DRIP_REWARD_TARGET,
-  dripProgressPercent,
-} from "../lib/loyalty";
+import { DRIP_REWARD_TARGET, dripProgressPercent } from "../lib/loyalty";
 import MobileBottomNav from "./mobile-bottom-nav";
 
 export default function AccountProfilePage() {
@@ -61,7 +58,11 @@ export default function AccountProfilePage() {
         setReviewCount(reviews.length);
       } catch (loadError) {
         if (!active) return;
-        setError(loadError instanceof Error ? loadError.message : "Could not load your account.");
+        setError(
+          loadError instanceof Error
+            ? loadError.message
+            : "Could not load your account.",
+        );
       } finally {
         if (active) setReady(true);
       }
@@ -78,7 +79,9 @@ export default function AccountProfilePage() {
     () =>
       ledger.reduce(
         (total, entry) =>
-          entry.status === "pending" ? total + Math.max(0, entry.points) : total,
+          entry.status === "pending"
+            ? total + Math.max(0, entry.points)
+            : total,
         0,
       ),
     [ledger],
@@ -87,13 +90,31 @@ export default function AccountProfilePage() {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+
+    const normalizedPhone = phone.replace(/[()\s-]/g, "");
+
+    if (!/^(?:\+61|0)4\d{8}$/.test(normalizedPhone)) {
+      setError("Enter a valid Australian mobile number, e.g. 0491 570 006.");
+      return;
+    }
+
     try {
-      const updated = await updateCurrentCustomer({ name, email, phone, birthday });
+      const updated = await updateCurrentCustomer({
+        name,
+        email,
+        phone: normalizedPhone,
+        birthday,
+      });
+
       setProfile(updated);
       setSaved(true);
       window.setTimeout(() => setSaved(false), 1800);
     } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : "Could not save your profile.");
+      setError(
+        saveError instanceof Error
+          ? saveError.message
+          : "Could not save your profile.",
+      );
     }
   }
 
@@ -107,7 +128,13 @@ export default function AccountProfilePage() {
   }
 
   if (!ready) {
-    return <div className="standalone-page"><main className="standalone-main"><div className="cart-page-loading">Loading your account…</div></main></div>;
+    return (
+      <div className="standalone-page">
+        <main className="standalone-main">
+          <div className="cart-page-loading">Loading your account…</div>
+        </main>
+      </div>
+    );
   }
 
   if (!profile) {
@@ -115,14 +142,36 @@ export default function AccountProfilePage() {
       <div className="standalone-page account-page">
         <main className="standalone-main account-empty-main">
           <section className="account-empty-card">
-            <Image src="/images/drip-points/drip-coin.png" alt="" width={120} height={120} />
+            <Image
+              src="/images/drip-points/drip-coin.png"
+              alt=""
+              width={120}
+              height={120}
+            />
             <p className="standalone-eyebrow">Nasty account</p>
             <h1>Your account lives here.</h1>
-            <p>Create an account to save checkout details, build order history and earn Drip Points.</p>
-            {error && <p className="account-form-error" role="alert">{error}</p>}
+            <p>
+              Create an account to save checkout details, build order history
+              and earn Drip Points.
+            </p>
+            {error && (
+              <p className="account-form-error" role="alert">
+                {error}
+              </p>
+            )}
             <div className="account-empty-actions">
-              <Link className="standalone-primary-button" href="/account/create">Create account</Link>
-              <Link className="standalone-secondary-link" href="/account/sign-in">Sign in</Link>
+              <Link
+                className="standalone-primary-button"
+                href="/account/create"
+              >
+                Create account
+              </Link>
+              <Link
+                className="standalone-secondary-link"
+                href="/account/sign-in"
+              >
+                Sign in
+              </Link>
             </div>
           </section>
         </main>
@@ -138,14 +187,26 @@ export default function AccountProfilePage() {
           <div>
             <p className="standalone-eyebrow">Nasty account</p>
             <h1>Hey, {profile.name.split(" ")[0]}.</h1>
-            <p>Manage your profile, rewards, orders and feedback from one place.</p>
+            <p>
+              Manage your profile, rewards, orders and feedback from one place.
+            </p>
           </div>
-          <button type="button" onClick={() => void signOut()}>Sign out</button>
+          <button type="button" onClick={() => void signOut()}>
+            Sign out
+          </button>
         </header>
 
         <section className="account-overview-grid">
-          <Link className="account-overview-card account-overview-card--drip" href="/drip-points">
-            <Image src="/images/drip-points/drip-coin.png" alt="" width={72} height={72} />
+          <Link
+            className="account-overview-card account-overview-card--drip"
+            href="/drip-points"
+          >
+            <Image
+              src="/images/drip-points/drip-coin.png"
+              alt=""
+              width={72}
+              height={72}
+            />
             <span>Available Drip Points</span>
             <strong>{balance.toLocaleString()}</strong>
             <small>
@@ -153,7 +214,9 @@ export default function AccountProfilePage() {
                 ? `${pendingPoints.toLocaleString()} pending · ${progress}% toward reward`
                 : `${progress}% toward ${DRIP_REWARD_TARGET.toLocaleString()} points`}
             </small>
-            <i aria-hidden="true"><b style={{ width: `${progress}%` }} /></i>
+            <i aria-hidden="true">
+              <b style={{ width: `${progress}%` }} />
+            </i>
           </Link>
           <Link className="account-overview-card" href="/account/orders">
             <span>Orders</span>
@@ -170,30 +233,83 @@ export default function AccountProfilePage() {
         <section className="account-dashboard-layout">
           <form className="account-card account-profile-form" onSubmit={submit}>
             <div className="account-section-heading">
-              <div><p className="standalone-eyebrow">Profile</p><h2>Your details</h2></div>
+              <div>
+                <p className="standalone-eyebrow">Profile</p>
+                <h2>Your details</h2>
+              </div>
               {saved && <span>Saved</span>}
             </div>
             <div className="account-form-grid">
-              <label>Full name<input value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={80} required /></label>
+              <label>
+                Full name
+                <input
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  minLength={2}
+                  maxLength={80}
+                  required
+                />
+              </label>
               <label>
                 Email address
-                <input type="email" value={email} readOnly={backendMode === "supabase"} onChange={(event) => setEmail(event.target.value)} required />
-                {backendMode === "supabase" && <small>Managed by secure account authentication.</small>}
+                <input
+                  type="email"
+                  value={email}
+                  readOnly={backendMode === "supabase"}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
+                />
+                {backendMode === "supabase" && (
+                  <small>Managed by secure account authentication.</small>
+                )}
               </label>
-              <label>Mobile number<input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} required /></label>
-              <label>Birthday <small>Optional</small><input type="date" value={birthday} onChange={(event) => setBirthday(event.target.value)} /></label>
+              <label>
+                Mobile number
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                  required
+                />
+              </label>
+              <label>
+                Birthday <small>Optional</small>
+                <input
+                  type="date"
+                  value={birthday}
+                  onChange={(event) => setBirthday(event.target.value)}
+                />
+              </label>
             </div>
-            {error && <p className="account-form-error" role="alert">{error}</p>}
-            <button className="standalone-primary-button" type="submit">Save profile</button>
+            {error && (
+              <p className="account-form-error" role="alert">
+                {error}
+              </p>
+            )}
+            <button className="standalone-primary-button" type="submit">
+              Save profile
+            </button>
           </form>
 
           <aside className="account-card account-quick-links">
             <p className="standalone-eyebrow">Quick actions</p>
             <h2>Keep it moving.</h2>
-            <Link href="/menu/burgers"><span>Order again</span><strong>→</strong></Link>
-            <Link href="/account/orders"><span>Order history</span><strong>→</strong></Link>
-            <Link href="/drip-points"><span>Drip Points activity</span><strong>→</strong></Link>
-            <Link href="/reviews"><span>Leave a review</span><strong>→</strong></Link>
+            <Link href="/menu/burgers">
+              <span>Order again</span>
+              <strong>→</strong>
+            </Link>
+            <Link href="/account/orders">
+              <span>Order history</span>
+              <strong>→</strong>
+            </Link>
+            <Link href="/drip-points">
+              <span>Drip Points activity</span>
+              <strong>→</strong>
+            </Link>
+            <Link href="/reviews">
+              <span>Leave a review</span>
+              <strong>→</strong>
+            </Link>
           </aside>
         </section>
       </main>

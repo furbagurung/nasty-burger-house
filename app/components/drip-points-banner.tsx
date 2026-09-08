@@ -7,11 +7,8 @@ export default function DripPointsBanner() {
       <section className="drip-points-banner" aria-labelledby="drip-banner-title">
         <div className="drip-points-banner__inner">
           <div className="drip-points-banner__copy">
-            <p className="drip-points-banner__eyebrow">
-              Join the loyalty. Get 500 Drip Points. 🔥
-            </p>
             <h2 id="drip-banner-title">
-              Eat. Earn. Get rewarded. Stay Nasty.
+              Join the loyalty. Get 500 Drip Points.
             </h2>
             <p className="drip-points-banner__body">
               Start with 500 points on us, then earn more every time you order

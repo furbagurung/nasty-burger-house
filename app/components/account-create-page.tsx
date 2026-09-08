@@ -27,15 +27,21 @@ export default function AccountCreatePage() {
   const [submitting, setSubmitting] = useState(false);
   const [confirmationSent, setConfirmationSent] = useState(false);
 
-  useEffect(() => {
-    if (productionAuth) return;
-    const existing = readCustomerProfile();
-    if (!existing) return;
+ useEffect(() => {
+  if (productionAuth) return;
+
+  const existing = readCustomerProfile();
+  if (!existing) return;
+
+  const timer = window.setTimeout(() => {
     setName(existing.name);
     setEmail(existing.email);
     setPhone(existing.phone);
     setBirthday(existing.birthday ?? "");
-  }, [productionAuth]);
+  }, 0);
+
+  return () => window.clearTimeout(timer);
+}, [productionAuth]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -49,8 +55,10 @@ export default function AccountCreatePage() {
       setError("Enter a valid email address.");
       return;
     }
-    if (!/^[+()\d\s-]{8,24}$/.test(phone.trim())) {
-      setError("Enter a valid mobile number.");
+    const normalizedPhone = phone.trim().replace(/[()\s-]/g, "");
+
+    if (!/^(?:\+61|0)4\d{8}$/.test(normalizedPhone)) {
+      setError("Enter a valid Australian mobile number, e.g. 0491 570 006.");
       return;
     }
     if (productionAuth && password.length < 8) {
@@ -64,7 +72,9 @@ export default function AccountCreatePage() {
 
     const destination =
       new URLSearchParams(window.location.search).get("return") ?? "/account";
-    const safeDestination = destination.startsWith("/") ? destination : "/account";
+    const safeDestination = destination.startsWith("/")
+      ? destination
+      : "/account";
 
     if (!productionAuth) {
       saveCustomerProfile({ name, email, phone, birthday });
@@ -95,7 +105,7 @@ export default function AccountCreatePage() {
           emailRedirectTo,
           data: {
             name: name.trim(),
-            phone: phone.trim(),
+           phone: normalizedPhone,
             birthday: birthday || null,
           },
         },
@@ -131,7 +141,9 @@ export default function AccountCreatePage() {
               Points whenever you order.
             </p>
             <div className="account-auth-benefits">
-              <span><strong>500</strong> signup Drip Points</span>
+              <span>
+                <strong>500</strong> signup Drip Points
+              </span>
               <span>Order history</span>
               <span>Faster checkout</span>
             </div>
@@ -145,7 +157,10 @@ export default function AccountCreatePage() {
                 We sent a confirmation link to <strong>{email}</strong>. Open it
                 to activate your account and the 500-point welcome bonus.
               </p>
-              <Link className="standalone-primary-button" href="/account/sign-in">
+              <Link
+                className="standalone-primary-button"
+                href="/account/sign-in"
+              >
                 Go to sign in
               </Link>
             </div>
@@ -153,42 +168,97 @@ export default function AccountCreatePage() {
             <form className="account-auth-form" onSubmit={submit}>
               <label>
                 Full name
-                <input value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" minLength={2} maxLength={80} required />
+                <input
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  autoComplete="name"
+                  minLength={2}
+                  maxLength={80}
+                  required
+                />
               </label>
               <label>
                 Email address
-                <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" maxLength={160} required />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  autoComplete="email"
+                  maxLength={160}
+                  required
+                />
               </label>
               <label>
                 Mobile number
-                <input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} autoComplete="tel" minLength={8} maxLength={24} required />
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                  autoComplete="tel"
+                  minLength={8}
+                  maxLength={24}
+                  required
+                />
               </label>
               <label>
                 Birthday <small>Optional</small>
-                <input type="date" value={birthday} onChange={(event) => setBirthday(event.target.value)} />
+                <input
+                  type="date"
+                  value={birthday}
+                  onChange={(event) => setBirthday(event.target.value)}
+                />
               </label>
               {productionAuth && (
                 <>
                   <label>
                     Password
-                    <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="new-password" minLength={8} required />
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      autoComplete="new-password"
+                      minLength={8}
+                      required
+                    />
                   </label>
                   <label>
                     Confirm password
-                    <input type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} autoComplete="new-password" minLength={8} required />
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(event) =>
+                        setConfirmPassword(event.target.value)
+                      }
+                      autoComplete="new-password"
+                      minLength={8}
+                      required
+                    />
                   </label>
                 </>
               )}
-              {error && <p className="account-form-error" role="alert">{error}</p>}
-              <button className="standalone-primary-button" type="submit" disabled={submitting}>
-                {submitting ? "Creating account…" : "Create account + get 500 points"}
+              {error && (
+                <p className="account-form-error" role="alert">
+                  {error}
+                </p>
+              )}
+              <button
+                className="standalone-primary-button"
+                type="submit"
+                disabled={submitting}
+              >
+                {submitting
+                  ? "Creating account…"
+                  : "Create account + get 500 points"}
               </button>
               <p className="account-auth-note">
                 {productionAuth
                   ? "Your password is handled by Supabase Auth and is never stored in the Nasty Burger House customer tables."
                   : "Local preview mode is active until Supabase environment variables are configured."}
               </p>
-              <p className="account-auth-switch">Already have an account? <Link href="/account/sign-in">Sign in</Link></p>
+              <p className="account-auth-switch">
+                Already have an account?{" "}
+                <Link href="/account/sign-in">Sign in</Link>
+              </p>
             </form>
           )}
         </section>

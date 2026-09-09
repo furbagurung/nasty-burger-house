@@ -34,6 +34,7 @@ export default function MenuItemMedia({
         fill
         sizes={sizes}
         priority={priority}
+        style={{ objectFit: "cover", objectPosition: "center" }}
       />
     );
   }

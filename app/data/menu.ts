@@ -49,6 +49,7 @@ export const adultDrinkChoices = [
 export const kidsDrinkChoices = adultDrinkChoices;
 
 const drinkImages: Partial<Record<string, string>> = {
+  Sprite: "/images/Sprite.jpg",
   Coke: "/images/menu/Coke.webp",
   "Coke No Sugar": "/images/menu/coke no sugar.webp",
   Fanta: "/images/menu/fanta-can.png",

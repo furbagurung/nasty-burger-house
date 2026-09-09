@@ -12,6 +12,39 @@ import { findOrCreateSquareCustomer } from "../../lib/square/customers";
 
 const MAX_REQUEST_BYTES = 50_000;
 
+function resolveCheckoutOrigin(request: Request) {
+  const allowedHosts = new Set([
+    "nastyburgerhouse.com.au",
+    "www.nastyburgerhouse.com.au",
+    "localhost:3000",
+    "localhost:3001",
+  ]);
+
+  const candidates = [
+    request.headers.get("origin")?.trim(),
+    (() => {
+      try {
+        return new URL(request.url).origin;
+      } catch {
+        return undefined;
+      }
+    })(),
+  ];
+
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+
+    try {
+      const url = new URL(candidate);
+      if (allowedHosts.has(url.host)) return url.origin;
+    } catch {
+      // Fall through to the configured site URL.
+    }
+  }
+
+  return process.env.NEXT_PUBLIC_SITE_URL?.trim();
+}
+
 export async function POST(request: Request) {
   const serviceStatus = getServiceStatus();
   if (!serviceStatus.acceptingOrders) {
@@ -84,7 +117,11 @@ export async function POST(request: Request) {
       ...validation.order.customer,
       requestId: validation.order.requestId,
     });
-    const checkout = await createSquareCheckout(orderPayload, customer);
+    const checkout = await createSquareCheckout(
+      orderPayload,
+      customer,
+      resolveCheckoutOrigin(request),
+    );
 
     // Square is the commerce source of truth. Existing email/webhook alerts are
     // retained only as optional operational notifications and never block checkout.

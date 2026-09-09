@@ -277,7 +277,7 @@ export const menuItems: MenuItem[] = [
       "A refreshing tropical dessert with silky mango pudding, lychee granita and lychee pearls.",
     category: "sweet",
     price: 12,
-    image: "/images/menu/mango-pudding.jpg",
+    image: "/images/mango-pudding.jpg",
     dietaryTags: ["Vegetarian"],
   },
   ...adultDrinkChoices.map((name) => ({

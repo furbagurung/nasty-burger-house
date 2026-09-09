@@ -45,8 +45,9 @@ function lineNote(line: OrderPayload["lines"][number]) {
   return details.join(" · ").slice(0, 1900) || undefined;
 }
 
-function checkoutRedirectUrl(orderId: string) {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+function checkoutRedirectUrl(orderId: string, requestOrigin?: string) {
+  const configured =
+    requestOrigin?.trim() || process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (!configured) return undefined;
 
   try {
@@ -61,13 +62,14 @@ function checkoutRedirectUrl(orderId: string) {
 export async function createSquareCheckout(
   payload: OrderPayload,
   customer: { id: string; phone: string },
+  requestOrigin?: string,
 ) {
   const config = getSquareConfig();
   if (!config.locationId) {
     throw new Error("Square location ID is not configured.");
   }
 
-  const redirectUrl = checkoutRedirectUrl(payload.orderId);
+  const redirectUrl = checkoutRedirectUrl(payload.orderId, requestOrigin);
   const supportEmail = process.env.SQUARE_MERCHANT_SUPPORT_EMAIL?.trim();
 
   const response = await squareRequest<CreatePaymentLinkResponse>(

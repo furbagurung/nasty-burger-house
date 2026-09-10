@@ -55,6 +55,12 @@
   object-position: center !important;
 }
 
+/* The OG Nasty source is wider than the other menu photos, so give only this card a slight crop-in. */
+.catalogue-product--browse[href="/product/og-nasty"] .catalogue-product__media--browse img {
+  transform: scale(1.12);
+  transform-origin: center;
+}
+
 .catalogue-product__media--browse .catalogue-product__placeholder {
   width: 100%;
   height: 100%;

@@ -1,6 +1,6 @@
 import { createClient } from "../../../lib/supabase/server";
 import { findOrCreateSquareCustomer } from "../../../lib/square/customers";
-import { findSquareLoyaltyAccountByCustomerId } from "../../../lib/square/loyalty";
+import { findOrCreateSquareLoyaltyAccount } from "../../../lib/square/loyalty";
 
 export async function GET() {
   const supabase = await createClient();
@@ -53,17 +53,21 @@ export async function GET() {
       requestId: user.id,
     });
 
-    const loyaltyAccount = await findSquareLoyaltyAccountByCustomerId(
-      squareCustomer.id,
-    );
+    const { account: loyaltyAccount, created } =
+      await findOrCreateSquareLoyaltyAccount({
+        customerId: squareCustomer.id,
+        phone,
+        requestId: `nbh-loyalty-${user.id}`,
+      });
 
     return Response.json({
       ok: true,
-      enrolled: Boolean(loyaltyAccount),
+      enrolled: true,
+      created,
       squareCustomerId: squareCustomer.id,
-      loyaltyAccountId: loyaltyAccount?.id ?? null,
-      balance: loyaltyAccount?.balance ?? 0,
-      lifetimePoints: loyaltyAccount?.lifetime_points ?? 0,
+      loyaltyAccountId: loyaltyAccount.id,
+      balance: loyaltyAccount.balance ?? 0,
+      lifetimePoints: loyaltyAccount.lifetime_points ?? 0,
     });
   } catch (error) {
     console.error("[NBH Square loyalty status]", error);

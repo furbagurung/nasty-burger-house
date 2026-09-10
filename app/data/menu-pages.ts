@@ -13,7 +13,7 @@ export const menuPageCategories: MenuPageCategory[] = [
     id: "featured",
     label: "Featured",
     shortLabel: "★",
-    image: "/images/menu/BBQ-Beast.jpg",
+    image: "/images/final-menu-photo/bbq-beast-v2.jpg",
     description:
       "Start with the Nasty favourites, featured picks and boxes built for a bigger feed.",
   },
@@ -21,7 +21,7 @@ export const menuPageCategories: MenuPageCategory[] = [
     id: "burgers",
     label: "Burgers",
     shortLabel: "B",
-    image: "/images/menu/og-nasty.jpg",
+    image: "/images/final-menu-photo/the-og-nasty-v2.jpg",
     description:
       "Flame-grilled beef, chicken, fish and veggie burgers loaded with Nasty Burger House flavour.",
   },
@@ -29,7 +29,7 @@ export const menuPageCategories: MenuPageCategory[] = [
     id: "loaded-sides",
     label: "Sides",
     shortLabel: "S",
-    image: "/images/menu/nasty-fries.jpg",
+    image: "/images/final-menu-photo/nasty-fries-v2.jpg",
     description:
       "Crispy, saucy sides made to share—or keep entirely to yourself.",
   },
@@ -37,7 +37,7 @@ export const menuPageCategories: MenuPageCategory[] = [
     id: "kids",
     label: "Kids",
     shortLabel: "K",
-    image: "/images/menu/Dino-nuggets.jpg",
+    image: "/images/final-menu-photo/dino-nuggets-v2.jpg",
     description:
       "Monster Cheese, Dino Nuggets and smaller favourites made for little appetites.",
   },
@@ -45,7 +45,7 @@ export const menuPageCategories: MenuPageCategory[] = [
     id: "beast-boxes",
     label: "Beast Boxes",
     shortLabel: "BX",
-    image: "/images/beast-boxes/Solo Beast Box.jpg",
+    image: "/images/final-menu-photo/solo-beast-box-v2.jpeg",
     description:
       "Choose your burgers and drinks, then feed one, two or the whole family.",
   },
@@ -53,7 +53,7 @@ export const menuPageCategories: MenuPageCategory[] = [
     id: "veg",
     label: "Veg",
     shortLabel: "V",
-    image: "/images/menu/green-beast.jpg",
+    image: "/images/final-menu-photo/green-beast-v2.jpg",
     description:
       "Green Beast, Nasty Fries and Dirty Eggplant — the vegetarian Nasty favourites.",
   },
@@ -61,14 +61,14 @@ export const menuPageCategories: MenuPageCategory[] = [
     id: "sweet",
     label: "Dessert",
     shortLabel: "D",
-    image: "/images/menu/mango-pudding.jpg",
+    image: "/images/final-menu-photo/mango-pudding-v2.jpeg",
     description: "Finish the feed with a fresh Nasty Burger House dessert.",
   },
   {
     id: "drinks",
     label: "Drinks",
     shortLabel: "DR",
-    image: "/images/menu/Coke.webp",
+    image: "/images/final-menu-photo/drinks-menu-image-v2.jpeg",
     description: "Solo, Coke, Fanta and mineral water for your meal, combo or Beast Box.",
   },
 ];

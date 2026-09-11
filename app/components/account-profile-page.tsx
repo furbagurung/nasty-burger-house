@@ -9,13 +9,17 @@ import {
   loadCurrentCustomer,
   loadCustomerOrders,
   loadCustomerReviews,
-  loadDripActivity,
   signOutCurrentCustomer,
   updateCurrentCustomer,
 } from "../lib/customer-backend";
-import type { CustomerProfile, DripLedgerEntry } from "../lib/customer-store";
+import type { CustomerProfile } from "../lib/customer-store";
 import { DRIP_REWARD_TARGET, dripProgressPercent } from "../lib/loyalty";
 import MobileBottomNav from "./mobile-bottom-nav";
+
+type SquareLoyaltyStatus = {
+  ok?: boolean;
+  balance?: number;
+};
 
 export default function AccountProfilePage() {
   const router = useRouter();
@@ -29,7 +33,6 @@ export default function AccountProfilePage() {
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
   const [balance, setBalance] = useState(0);
-  const [ledger, setLedger] = useState<DripLedgerEntry[]>([]);
   const [orderCount, setOrderCount] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
 
@@ -38,11 +41,20 @@ export default function AccountProfilePage() {
 
     async function load() {
       try {
-        const [current, drip, orders, reviews] = await Promise.all([
+        const loyaltyRequest = fetch("/api/account/loyalty", {
+          cache: "no-store",
+        })
+          .then(async (response) => {
+            const data = (await response.json()) as SquareLoyaltyStatus;
+            return response.ok && data.ok ? data : null;
+          })
+          .catch(() => null);
+
+        const [current, orders, reviews, loyalty] = await Promise.all([
           loadCurrentCustomer(),
-          loadDripActivity(),
           loadCustomerOrders(),
           loadCustomerReviews(),
+          loyaltyRequest,
         ]);
         if (!active) return;
         setProfile(current);
@@ -52,8 +64,11 @@ export default function AccountProfilePage() {
           setPhone(current.phone);
           setBirthday(current.birthday ?? "");
         }
-        setBalance(drip.balance);
-        setLedger(drip.entries);
+        setBalance(
+          loyalty && Number.isFinite(loyalty.balance)
+            ? Number(loyalty.balance)
+            : 0,
+        );
         setOrderCount(orders.length);
         setReviewCount(reviews.length);
       } catch (loadError) {
@@ -75,17 +90,6 @@ export default function AccountProfilePage() {
   }, []);
 
   const progress = useMemo(() => dripProgressPercent(balance), [balance]);
-  const pendingPoints = useMemo(
-    () =>
-      ledger.reduce(
-        (total, entry) =>
-          entry.status === "pending"
-            ? total + Math.max(0, entry.points)
-            : total,
-        0,
-      ),
-    [ledger],
-  );
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -210,9 +214,7 @@ export default function AccountProfilePage() {
             <span>Available Drip Points</span>
             <strong>{balance.toLocaleString()}</strong>
             <small>
-              {pendingPoints > 0
-                ? `${pendingPoints.toLocaleString()} pending · ${progress}% toward reward`
-                : `${progress}% toward ${DRIP_REWARD_TARGET.toLocaleString()} points`}
+              {progress}% toward {DRIP_REWARD_TARGET.toLocaleString()} Drip Points
             </small>
             <i aria-hidden="true">
               <b style={{ width: `${progress}%` }} />

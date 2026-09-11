@@ -4,16 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { signInCustomerByEmail } from "../lib/customer-store";
-import {
-  getBrowserClientOrNull,
-  isSupabaseBrowserConfigured,
-} from "../lib/supabase/client";
+import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import MobileBottomNav from "./mobile-bottom-nav";
+import PasswordInput from "./password-input";
 
 export default function AccountSignInPage() {
   const router = useRouter();
   const productionAuth = isSupabaseBrowserConfigured();
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -27,7 +25,7 @@ export default function AccountSignInPage() {
     const safeDestination = destination.startsWith("/") ? destination : "/account";
 
     if (!productionAuth) {
-      const profile = signInCustomerByEmail(email);
+      const profile = signInCustomerByEmail(identifier);
       if (!profile) {
         setError("No saved local account with that email exists on this device yet.");
         return;
@@ -36,21 +34,20 @@ export default function AccountSignInPage() {
       return;
     }
 
-    const supabase = getBrowserClientOrNull();
-    if (!supabase) {
-      setError("Supabase is not configured yet.");
-      return;
-    }
-
     setSubmitting(true);
     try {
-      const { error: authError } = await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
-        password,
+      const response = await fetch("/api/account/sign-in", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          identifier: identifier.trim(),
+          password,
+        }),
       });
+      const result = (await response.json()) as { ok?: boolean; error?: string };
 
-      if (authError) {
-        setError(authError.message);
+      if (!response.ok || !result.ok) {
+        setError(result.error || "We could not sign you in. Please try again.");
         return;
       }
 
@@ -74,17 +71,35 @@ export default function AccountSignInPage() {
           </div>
           <form className="account-auth-form" onSubmit={submit}>
             <label>
-              Email address
-              <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" required />
+              {productionAuth ? "Email address or mobile number" : "Email address"}
+              <input
+                type="text"
+                value={identifier}
+                onChange={(event) => setIdentifier(event.target.value)}
+                autoComplete="username"
+                inputMode="email"
+                placeholder={productionAuth ? "Email or 04XX XXX XXX" : undefined}
+                required
+              />
             </label>
             {productionAuth && (
-              <label>
-                Password
-                <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required />
-              </label>
+              <PasswordInput
+                label="Password"
+                value={password}
+                onChange={setPassword}
+                autoComplete="current-password"
+              />
             )}
-            {error && <p className="account-form-error" role="alert">{error}</p>}
-            <button className="standalone-primary-button" type="submit" disabled={submitting}>
+            {error && (
+              <p className="account-form-error" role="alert">
+                {error}
+              </p>
+            )}
+            <button
+              className="standalone-primary-button"
+              type="submit"
+              disabled={submitting}
+            >
               {submitting ? "Signing in…" : "Sign in"}
             </button>
             {productionAuth && (
@@ -92,12 +107,9 @@ export default function AccountSignInPage() {
                 Forgot password?
               </Link>
             )}
-            <p className="account-auth-note">
-              {productionAuth
-                ? "Secure Supabase Auth is active for this build."
-                : "Local preview mode is active until Supabase environment variables are configured."}
+            <p className="account-auth-switch">
+              New here? <Link href="/account/create">Create an account</Link>
             </p>
-            <p className="account-auth-switch">New here? <Link href="/account/create">Create an account</Link></p>
           </form>
         </section>
       </main>

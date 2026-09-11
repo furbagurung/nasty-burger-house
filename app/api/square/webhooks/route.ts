@@ -1,3 +1,4 @@
+import { ensureSquareSignupBonus } from "../../../lib/square/loyalty";
 import { validateSquareWebhookSignature } from "../../../lib/square/webhooks";
 
 type SquareWebhookEvent = {
@@ -9,7 +10,11 @@ type SquareWebhookEvent = {
   data?: {
     type?: string;
     id?: string;
-    object?: unknown;
+    object?: {
+      loyalty_account?: {
+        id?: string;
+      };
+    };
   };
 };
 
@@ -34,9 +39,28 @@ export async function POST(request: Request) {
     );
   }
 
-  // Square is now the source of truth. This endpoint intentionally keeps
-  // processing lightweight and acknowledges verified events quickly. Add
-  // seller-specific automations here later (loyalty, notifications, analytics).
+  if (event.type === "loyalty.account.created") {
+    const loyaltyAccountId =
+      event.data?.object?.loyalty_account?.id ?? event.data?.id ?? "";
+
+    if (loyaltyAccountId) {
+      try {
+        const bonus = await ensureSquareSignupBonus(loyaltyAccountId);
+        console.info("[NBH Square loyalty signup bonus]", {
+          eventId: event.event_id ?? null,
+          loyaltyAccountId,
+          applied: bonus.applied,
+        });
+      } catch (error) {
+        console.error("[NBH Square loyalty signup bonus]", error);
+        return Response.json(
+          { ok: false, error: "Could not apply Square Loyalty signup bonus." },
+          { status: 500 },
+        );
+      }
+    }
+  }
+
   console.info("[NBH Square webhook]", {
     eventId: event.event_id ?? null,
     type: event.type ?? null,

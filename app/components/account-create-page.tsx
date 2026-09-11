@@ -13,6 +13,7 @@ import {
   isSupabaseBrowserConfigured,
 } from "../lib/supabase/client";
 import MobileBottomNav from "./mobile-bottom-nav";
+import PasswordInput from "./password-input";
 
 export default function AccountCreatePage() {
   const router = useRouter();
@@ -20,28 +21,26 @@ export default function AccountCreatePage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [birthday, setBirthday] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [confirmationSent, setConfirmationSent] = useState(false);
 
- useEffect(() => {
-  if (productionAuth) return;
+  useEffect(() => {
+    if (productionAuth) return;
 
-  const existing = readCustomerProfile();
-  if (!existing) return;
+    const existing = readCustomerProfile();
+    if (!existing) return;
 
-  const timer = window.setTimeout(() => {
-    setName(existing.name);
-    setEmail(existing.email);
-    setPhone(existing.phone);
-    setBirthday(existing.birthday ?? "");
-  }, 0);
+    const timer = window.setTimeout(() => {
+      setName(existing.name);
+      setEmail(existing.email);
+      setPhone(existing.phone);
+    }, 0);
 
-  return () => window.clearTimeout(timer);
-}, [productionAuth]);
+    return () => window.clearTimeout(timer);
+  }, [productionAuth]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -55,8 +54,8 @@ export default function AccountCreatePage() {
       setError("Enter a valid email address.");
       return;
     }
-    const normalizedPhone = phone.trim().replace(/[()\s-]/g, "");
 
+    const normalizedPhone = phone.trim().replace(/[()\s-]/g, "");
     if (!/^(?:\+61|0)4\d{8}$/.test(normalizedPhone)) {
       setError("Enter a valid Australian mobile number, e.g. 0491 570 006.");
       return;
@@ -77,7 +76,7 @@ export default function AccountCreatePage() {
       : "/account";
 
     if (!productionAuth) {
-      saveCustomerProfile({ name, email, phone, birthday });
+      saveCustomerProfile({ name, email, phone: normalizedPhone });
       ensureSignupBonus();
       router.push(safeDestination);
       return;
@@ -85,7 +84,7 @@ export default function AccountCreatePage() {
 
     const supabase = getBrowserClientOrNull();
     if (!supabase) {
-      setError("Supabase is not configured yet.");
+      setError("Account service is unavailable right now.");
       return;
     }
 
@@ -105,8 +104,7 @@ export default function AccountCreatePage() {
           emailRedirectTo,
           data: {
             name: name.trim(),
-           phone: normalizedPhone,
-            birthday: birthday || null,
+            phone: normalizedPhone,
           },
         },
       });
@@ -134,7 +132,6 @@ export default function AccountCreatePage() {
       <main className="standalone-main account-auth-main">
         <section className="account-auth-card">
           <div className="account-auth-card__intro">
-            <p className="standalone-eyebrow">Nasty account</p>
             <h1>Create your account.</h1>
             <p>
               Save your details, see order history, leave reviews and earn Drip
@@ -157,10 +154,7 @@ export default function AccountCreatePage() {
                 We sent a confirmation link to <strong>{email}</strong>. Open it
                 to activate your account and the 500-point welcome bonus.
               </p>
-              <Link
-                className="standalone-primary-button"
-                href="/account/sign-in"
-              >
+              <Link className="standalone-primary-button" href="/account/sign-in">
                 Go to sign in
               </Link>
             </div>
@@ -197,43 +191,26 @@ export default function AccountCreatePage() {
                   autoComplete="tel"
                   minLength={8}
                   maxLength={24}
+                  placeholder="04XX XXX XXX"
                   required
-                />
-              </label>
-              <label>
-                Birthday <small>Optional</small>
-                <input
-                  type="date"
-                  value={birthday}
-                  onChange={(event) => setBirthday(event.target.value)}
                 />
               </label>
               {productionAuth && (
                 <>
-                  <label>
-                    Password
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(event) => setPassword(event.target.value)}
-                      autoComplete="new-password"
-                      minLength={8}
-                      required
-                    />
-                  </label>
-                  <label>
-                    Confirm password
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(event) =>
-                        setConfirmPassword(event.target.value)
-                      }
-                      autoComplete="new-password"
-                      minLength={8}
-                      required
-                    />
-                  </label>
+                  <PasswordInput
+                    label="Password"
+                    value={password}
+                    onChange={setPassword}
+                    autoComplete="new-password"
+                    minLength={8}
+                  />
+                  <PasswordInput
+                    label="Confirm password"
+                    value={confirmPassword}
+                    onChange={setConfirmPassword}
+                    autoComplete="new-password"
+                    minLength={8}
+                  />
                 </>
               )}
               {error && (
@@ -250,11 +227,6 @@ export default function AccountCreatePage() {
                   ? "Creating account…"
                   : "Create account + get 500 points"}
               </button>
-              <p className="account-auth-note">
-                {productionAuth
-                  ? "Your password is handled by Supabase Auth and is never stored in the Nasty Burger House customer tables."
-                  : "Local preview mode is active until Supabase environment variables are configured."}
-              </p>
               <p className="account-auth-switch">
                 Already have an account?{" "}
                 <Link href="/account/sign-in">Sign in</Link>

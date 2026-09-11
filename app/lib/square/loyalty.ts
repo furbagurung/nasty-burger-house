@@ -1,6 +1,7 @@
 import "server-only";
 
 import { randomUUID } from "node:crypto";
+import { DRIP_SIGNUP_BONUS } from "../loyalty";
 import { squareRequest } from "./api";
 import { normalizeAustralianPhone } from "./customers";
 
@@ -34,12 +35,30 @@ type SquareLoyaltyProgram = {
   }>;
 };
 
+type SquareLoyaltyEvent = {
+  id?: string;
+  type?: string;
+  loyalty_account_id?: string;
+  source?: string;
+  created_at?: string;
+  adjust_points?: {
+    points?: number;
+    reason?: string;
+  };
+};
+
 type RetrieveLoyaltyProgramResponse = {
   program?: SquareLoyaltyProgram;
 };
 
 type SearchLoyaltyAccountsResponse = {
   loyalty_accounts?: SquareLoyaltyAccount[];
+  cursor?: string;
+};
+
+type SearchLoyaltyEventsResponse = {
+  events?: SquareLoyaltyEvent[];
+  cursor?: string;
 };
 
 type CreateLoyaltyAccountResponse = {
@@ -52,6 +71,12 @@ type AdjustLoyaltyPointsResponse = {
     type?: string;
   };
 };
+
+const SIGNUP_BONUS_REASONS = new Set([
+  "website signup bonus",
+  "default signup bonus",
+  "signup bonus",
+]);
 
 export async function getSquareLoyaltyProgram() {
   const result = await squareRequest<RetrieveLoyaltyProgramResponse>(
@@ -82,6 +107,30 @@ export async function findSquareLoyaltyAccountByCustomerId(customerId: string) {
   );
 
   return result.loyalty_accounts?.[0] ?? null;
+}
+
+export async function listAllSquareLoyaltyAccounts() {
+  const accounts: SquareLoyaltyAccount[] = [];
+  let cursor: string | undefined;
+
+  do {
+    const result = await squareRequest<SearchLoyaltyAccountsResponse>(
+      "/v2/loyalty/accounts/search",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          query: {},
+          limit: 200,
+          ...(cursor ? { cursor } : {}),
+        }),
+      },
+    );
+
+    accounts.push(...(result.loyalty_accounts ?? []));
+    cursor = result.cursor || undefined;
+  } while (cursor);
+
+  return accounts;
 }
 
 export async function createSquareLoyaltyAccount(input: {
@@ -145,6 +194,66 @@ export async function adjustSquareLoyaltyPoints(input: {
       }),
     },
   );
+}
+
+export async function hasSquareSignupBonus(accountId: string) {
+  let cursor: string | undefined;
+
+  do {
+    const result = await squareRequest<SearchLoyaltyEventsResponse>(
+      "/v2/loyalty/events/search",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          query: {
+            filter: {
+              loyalty_account_filter: {
+                loyalty_account_id: accountId,
+              },
+              type_filter: {
+                types: ["ADJUST_POINTS"],
+              },
+            },
+          },
+          limit: 30,
+          ...(cursor ? { cursor } : {}),
+        }),
+      },
+    );
+
+    const hasBonus = (result.events ?? []).some((event) => {
+      const reason = event.adjust_points?.reason?.trim().toLowerCase() ?? "";
+      return (
+        event.type === "ADJUST_POINTS" &&
+        event.adjust_points?.points === DRIP_SIGNUP_BONUS &&
+        SIGNUP_BONUS_REASONS.has(reason)
+      );
+    });
+
+    if (hasBonus) return true;
+    cursor = result.cursor || undefined;
+  } while (cursor);
+
+  return false;
+}
+
+export async function ensureSquareSignupBonus(accountId: string) {
+  if (!accountId.trim()) {
+    throw new Error("Square Loyalty account ID is required.");
+  }
+
+  if (await hasSquareSignupBonus(accountId)) {
+    return { applied: false };
+  }
+
+  await adjustSquareLoyaltyPoints({
+    accountId,
+    points: DRIP_SIGNUP_BONUS,
+    reason: "Default signup bonus",
+    requestId: `nbh-loyalty-signup-${accountId}`,
+  });
+
+  return { applied: true };
 }
 
 export async function findOrCreateSquareLoyaltyAccount(input: {

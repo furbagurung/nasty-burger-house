@@ -62,6 +62,7 @@ function checkoutRedirectUrl(orderId: string, requestOrigin?: string) {
 export async function createSquareCheckout(
   payload: OrderPayload,
   customer: { id: string; phone: string },
+  loyaltyAccountId: string,
   requestOrigin?: string,
 ) {
   const config = getSquareConfig();
@@ -82,6 +83,10 @@ export async function createSquareCheckout(
         order: {
           location_id: config.locationId,
           reference_id: payload.orderId.slice(0, 40),
+          metadata: {
+            nbh_customer_id: customer.id,
+            nbh_loyalty_id: loyaltyAccountId,
+          },
           line_items: payload.lines.map((line) => ({
             name: line.name,
             quantity: String(line.quantity),

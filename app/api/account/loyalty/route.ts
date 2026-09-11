@@ -1,8 +1,7 @@
 import { createClient } from "../../../lib/supabase/server";
-import { DRIP_SIGNUP_BONUS } from "../../../lib/loyalty";
 import { findOrCreateSquareCustomer } from "../../../lib/square/customers";
 import {
-  adjustSquareLoyaltyPoints,
+  ensureSquareSignupBonus,
   findOrCreateSquareLoyaltyAccount,
   findSquareLoyaltyAccountByCustomerId,
 } from "../../../lib/square/loyalty";
@@ -65,28 +64,16 @@ export async function GET() {
         requestId: `nbh-loyalty-${user.id}`,
       });
 
-    let loyaltyAccount = initialLoyaltyAccount;
-    let signupBonusApplied = false;
-
-    if ((loyaltyAccount.lifetime_points ?? 0) === 0) {
-      await adjustSquareLoyaltyPoints({
-        accountId: loyaltyAccount.id,
-        points: DRIP_SIGNUP_BONUS,
-        reason: "Website signup bonus",
-        requestId: `nbh-loyalty-signup-${user.id}`,
-      });
-
-      signupBonusApplied = true;
-      loyaltyAccount =
-        (await findSquareLoyaltyAccountByCustomerId(squareCustomer.id)) ??
-        loyaltyAccount;
-    }
+    const bonus = await ensureSquareSignupBonus(initialLoyaltyAccount.id);
+    const loyaltyAccount =
+      (await findSquareLoyaltyAccountByCustomerId(squareCustomer.id)) ??
+      initialLoyaltyAccount;
 
     return Response.json({
       ok: true,
       enrolled: true,
       created,
-      signupBonusApplied,
+      signupBonusApplied: bonus.applied,
       squareCustomerId: squareCustomer.id,
       loyaltyAccountId: loyaltyAccount.id,
       balance: loyaltyAccount.balance ?? 0,

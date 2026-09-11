@@ -46,6 +46,13 @@ type CreateLoyaltyAccountResponse = {
   loyalty_account?: SquareLoyaltyAccount;
 };
 
+type AdjustLoyaltyPointsResponse = {
+  event?: {
+    id?: string;
+    type?: string;
+  };
+};
+
 export async function getSquareLoyaltyProgram() {
   const result = await squareRequest<RetrieveLoyaltyProgramResponse>(
     "/v2/loyalty/programs/main",
@@ -110,6 +117,34 @@ export async function createSquareLoyaltyAccount(input: {
   }
 
   return result.loyalty_account;
+}
+
+export async function adjustSquareLoyaltyPoints(input: {
+  accountId: string;
+  points: number;
+  reason: string;
+  requestId?: string;
+}) {
+  if (!Number.isInteger(input.points) || input.points === 0) {
+    throw new Error("Square Loyalty points adjustment must be a non-zero integer.");
+  }
+
+  return squareRequest<AdjustLoyaltyPointsResponse>(
+    `/v2/loyalty/accounts/${encodeURIComponent(input.accountId)}/adjust`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        idempotency_key: (
+          input.requestId ||
+          `nbh-loyalty-adjust-${input.accountId}-${randomUUID()}`
+        ).slice(0, 128),
+        adjust_points: {
+          points: input.points,
+          reason: input.reason,
+        },
+      }),
+    },
+  );
 }
 
 export async function findOrCreateSquareLoyaltyAccount(input: {

@@ -45,6 +45,10 @@ type SquareLoyaltyEvent = {
     points?: number;
     reason?: string;
   };
+  accumulate_points?: {
+    points?: number;
+    order_id?: string;
+  };
 };
 
 type RetrieveLoyaltyProgramResponse = {
@@ -70,6 +74,10 @@ type AdjustLoyaltyPointsResponse = {
     id?: string;
     type?: string;
   };
+};
+
+type AccumulateLoyaltyPointsResponse = {
+  events?: SquareLoyaltyEvent[];
 };
 
 const SIGNUP_BONUS_REASONS = new Set([
@@ -191,6 +199,39 @@ export async function adjustSquareLoyaltyPoints(input: {
           points: input.points,
           reason: input.reason,
         },
+      }),
+    },
+  );
+}
+
+export async function accumulateSquareLoyaltyPoints(input: {
+  accountId: string;
+  orderId: string;
+  locationId: string;
+  requestId?: string;
+}) {
+  const accountId = input.accountId.trim();
+  const orderId = input.orderId.trim();
+  const locationId = input.locationId.trim();
+
+  if (!accountId || !orderId || !locationId) {
+    throw new Error(
+      "Square Loyalty account, order, and location IDs are required to accumulate points.",
+    );
+  }
+
+  return squareRequest<AccumulateLoyaltyPointsResponse>(
+    `/v2/loyalty/accounts/${encodeURIComponent(accountId)}/accumulate`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        accumulate_points: {
+          order_id: orderId,
+        },
+        location_id: locationId,
+        idempotency_key: (
+          input.requestId || `nbh-loyalty-order-${orderId}`
+        ).slice(0, 128),
       }),
     },
   );

@@ -9,6 +9,10 @@ import { getServiceStatus } from "../../lib/service";
 import { SquareApiError, squareConfigurationState } from "../../lib/square/api";
 import { createSquareCheckout } from "../../lib/square/checkout";
 import { findOrCreateSquareCustomer } from "../../lib/square/customers";
+import {
+  ensureSquareSignupBonus,
+  findOrCreateSquareLoyaltyAccount,
+} from "../../lib/square/loyalty";
 
 const MAX_REQUEST_BYTES = 50_000;
 
@@ -117,9 +121,19 @@ export async function POST(request: Request) {
       ...validation.order.customer,
       requestId: validation.order.requestId,
     });
+
+    const { account: loyaltyAccount } = await findOrCreateSquareLoyaltyAccount({
+      customerId: customer.id,
+      phone: customer.phone,
+      requestId: `nbh-checkout-loyalty-${validation.order.requestId}`,
+    });
+
+    await ensureSquareSignupBonus(loyaltyAccount.id);
+
     const checkout = await createSquareCheckout(
       orderPayload,
       customer,
+      loyaltyAccount.id,
       resolveCheckoutOrigin(request),
     );
 
@@ -145,13 +159,14 @@ export async function POST(request: Request) {
         orderId,
         squareOrderId: checkout.squareOrderId,
         squareCustomerId: customer.id,
+        loyaltyAccountId: loyaltyAccount.id,
         paymentLinkId: checkout.paymentLinkId,
         checkoutUrl: checkout.checkoutUrl,
         subtotal: validation.order.subtotal,
         paymentMethod: "square_checkout",
         paymentStatus: "pending",
         earnedDripPoints: 0,
-        dripPointsStatus: null,
+        dripPointsStatus: "awaiting-payment",
         storageMode: "square",
         message: "Continue to Square to securely pay for your pickup order.",
       },

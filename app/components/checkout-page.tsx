@@ -14,6 +14,7 @@ import MobileBottomNav from "./mobile-bottom-nav";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 const CHECKOUT_CONTACT_KEY = "nasty-burger-checkout-contact";
+const PENDING_ORDER_KEY = "nasty-square-pending-order";
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -157,7 +158,15 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
       }
 
       // Keep the cart until Square confirms payment and redirects back to the site.
-      window.sessionStorage.setItem("nasty-square-pending-order", result.orderId);
+      // Store both IDs so the confirmation page can verify the Square payment.
+      window.sessionStorage.setItem(
+        PENDING_ORDER_KEY,
+        JSON.stringify({
+          orderId: result.orderId,
+          squareOrderId: result.squareOrderId,
+          createdAt: Date.now(),
+        }),
+      );
       window.location.assign(result.checkoutUrl);
     } catch {
       setErrors([

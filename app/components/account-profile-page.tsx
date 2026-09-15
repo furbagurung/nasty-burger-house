@@ -21,6 +21,20 @@ type SquareLoyaltyStatus = {
   balance?: number;
 };
 
+async function loadLoyaltyBalance() {
+  try {
+    const response = await fetch("/api/account/loyalty", {
+      cache: "no-store",
+    });
+    const data = (await response.json()) as SquareLoyaltyStatus;
+    return response.ok && data.ok && Number.isFinite(data.balance)
+      ? Number(data.balance)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function AccountProfilePage() {
   const router = useRouter();
   const backendMode = customerBackendMode();
@@ -35,20 +49,6 @@ export default function AccountProfilePage() {
   const [balance, setBalance] = useState(0);
   const [orderCount, setOrderCount] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
-
-  async function loadLoyaltyBalance() {
-    try {
-      const response = await fetch("/api/account/loyalty", {
-        cache: "no-store",
-      });
-      const data = (await response.json()) as SquareLoyaltyStatus;
-      return response.ok && data.ok && Number.isFinite(data.balance)
-        ? Number(data.balance)
-        : null;
-    } catch {
-      return null;
-    }
-  }
 
   useEffect(() => {
     let active = true;

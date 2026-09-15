@@ -42,6 +42,7 @@ import "./mobile-app-header.css";
 import "./mobile-bottom-nav-v2.css";
 import "./standalone-pages.css";
 import "./customer-account.css";
+import "./google-auth.css";
 import "./customer-header-overrides.css";
 import "./client-revision-polish.css";
 import "./hero-real-photography.css";

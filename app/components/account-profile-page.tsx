@@ -237,9 +237,6 @@ export default function AccountProfilePage() {
             <button className="standalone-primary-button" type="submit" disabled={saving}>
               {saving ? "Saving…" : "Save changes"}
             </button>
-            {backendMode === "supabase" && profile.phone && (
-              <span className="account-saas-sync-status"><i aria-hidden="true" /> Square Loyalty connected</span>
-            )}
           </div>
         </form>
 
@@ -281,3 +278,4 @@ export default function AccountProfilePage() {
     </>
   );
 }
+

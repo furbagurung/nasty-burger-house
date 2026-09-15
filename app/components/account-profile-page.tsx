@@ -37,7 +37,6 @@ export default function AccountProfilePage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [birthday, setBirthday] = useState("");
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
   const [modalError, setModalError] = useState("");
@@ -65,7 +64,6 @@ export default function AccountProfilePage() {
           setName(current.name);
           setEmail(current.email);
           setPhone(current.phone);
-          setBirthday(current.birthday ?? "");
           setPhoneModalOpen(backendMode === "supabase" && !current.phone);
         }
         setOrderCount(orders.length);
@@ -111,7 +109,6 @@ export default function AccountProfilePage() {
         name,
         email,
         phone: normalizedPhone,
-        birthday,
       });
       if (!updated) throw new Error("Could not update your account.");
 
@@ -225,10 +222,6 @@ export default function AccountProfilePage() {
               <input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="0491 570 006" required />
               {backendMode === "supabase" && !profile.phone && <small>Required to activate Square POS Loyalty.</small>}
             </label>
-            <label>
-              Birthday <small>Optional</small>
-              <input type="date" value={birthday} onChange={(event) => setBirthday(event.target.value)} />
-            </label>
           </div>
 
           {error && <p className="account-form-error" role="alert">{error}</p>}
@@ -278,4 +271,3 @@ export default function AccountProfilePage() {
     </>
   );
 }
-

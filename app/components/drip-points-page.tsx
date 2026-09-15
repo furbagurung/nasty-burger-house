@@ -3,10 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import {
-  loadCurrentCustomer,
-  loadDripActivity,
-} from "../lib/customer-backend";
+import { loadCurrentCustomer } from "../lib/customer-backend";
+import { loadCustomerDripActivity } from "../lib/customer-drip-activity";
 import type { CustomerProfile, DripLedgerEntry } from "../lib/customer-store";
 import {
   DRIP_POINTS_PER_AUD,
@@ -37,7 +35,7 @@ export default function DripPointsPage() {
       try {
         const [customer, activity] = await Promise.all([
           loadCurrentCustomer(),
-          loadDripActivity(),
+          loadCustomerDripActivity(),
         ]);
         if (!active) return;
         setProfile(customer);

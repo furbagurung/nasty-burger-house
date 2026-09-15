@@ -163,7 +163,6 @@ export default function AccountProfilePage() {
         <div>
           <p className="standalone-eyebrow">Dashboard</p>
           <h1>Welcome back, {firstName}</h1>
-          <p>Your orders, rewards and account details in one place.</p>
         </div>
         <Link className="account-saas-order-button" href="/menu/burgers">
           Order now <span aria-hidden="true">→</span>

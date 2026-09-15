@@ -67,6 +67,7 @@ import "./loading.css";
 import "./cart-page-redesign.css";
 import "./account-saas-dashboard.css";
 import "./account-saas-persistent.css";
+import "./account-skeleton.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { findOrCreateSquareCustomer } from "../../lib/square/customers";
 import {
+  ensureSquareSignupBonus,
+  findOrCreateSquareLoyaltyAccount,
+} from "../../lib/square/loyalty";
+import {
   createClient,
   isSupabaseServerConfigured,
 } from "../../lib/supabase/server";
@@ -73,10 +77,8 @@ export async function GET(request: Request) {
         const metadata = user.user_metadata as Record<string, unknown> | undefined;
         const name = metadataString(metadata, "name", "full_name", "display_name");
         const phone = metadataString(metadata, "phone", "phone_number");
+        const customerName = name || user.email.split("@")[0] || "Customer";
 
-        // Google OAuth normally provides a verified email and display name but no
-        // mobile number. Keep the public profile useful immediately and let the
-        // customer add their phone from Account before Square customer syncing.
         if (name || phone) {
           const profileUpdate: { name?: string; phone?: string } = {};
           if (name) profileUpdate.name = name;
@@ -92,17 +94,30 @@ export async function GET(request: Request) {
           }
         }
 
-        if (name && phone) {
-          try {
-            await findOrCreateSquareCustomer({
-              name,
-              email: user.email,
+        try {
+          // Every website account gets a Square Customer Directory profile.
+          // Google does not normally provide a phone number, so the customer can
+          // exist in Square immediately and be enrolled in Square Loyalty as soon
+          // as they add their Australian mobile number in their Nasty account.
+          const squareCustomer = await findOrCreateSquareCustomer({
+            name: customerName,
+            email: user.email,
+            ...(phone ? { phone } : {}),
+            requestId: user.id,
+          });
+
+          if (phone) {
+            const { account } = await findOrCreateSquareLoyaltyAccount({
+              customerId: squareCustomer.id,
               phone,
-              requestId: user.id,
+              requestId: `nbh-signup-loyalty-${user.id}`,
             });
-          } catch (squareError) {
-            console.error("[NBH signup Square sync]", squareError);
+            await ensureSquareSignupBonus(account.id);
           }
+        } catch (squareError) {
+          // Account authentication should still succeed if Square is temporarily
+          // unavailable. The account/loyalty endpoint retries this sync later.
+          console.error("[NBH signup Square sync]", squareError);
         }
       }
 

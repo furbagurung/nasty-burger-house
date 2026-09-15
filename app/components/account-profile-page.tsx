@@ -196,7 +196,10 @@ export default function AccountProfilePage() {
         </Link>
       </section>
 
-      <section className="account-dashboard-layout account-saas-dashboard-layout">
+      <section
+        className="account-dashboard-layout account-saas-dashboard-layout"
+        style={{ gridTemplateColumns: "minmax(0, 1fr)" }}
+      >
         <form id="profile" className="account-card account-profile-form account-saas-profile-card" onSubmit={submit}>
           <div className="account-section-heading">
             <div>
@@ -232,15 +235,6 @@ export default function AccountProfilePage() {
             </button>
           </div>
         </form>
-
-        <aside className="account-card account-quick-links account-saas-quick-card">
-          <p className="standalone-eyebrow">Quick actions</p>
-          <h2>Shortcuts</h2>
-          <Link href="/menu/burgers"><span>Order again</span><strong>→</strong></Link>
-          <Link href="/account/orders"><span>Order history</span><strong>→</strong></Link>
-          <Link href="/account/drip-points"><span>Drip Points activity</span><strong>→</strong></Link>
-          <Link href="/account/reviews"><span>Leave a review</span><strong>→</strong></Link>
-        </aside>
       </section>
 
       {backendMode === "supabase" && !profile.phone && phoneModalOpen && (

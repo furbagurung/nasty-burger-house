@@ -5,6 +5,8 @@ import {
   isSupabaseServerConfigured,
 } from "../../lib/supabase/server";
 
+const OAUTH_RETURN_COOKIE = "nbh_oauth_return";
+
 function metadataString(
   metadata: Record<string, unknown> | null | undefined,
   ...keys: string[]
@@ -16,17 +18,44 @@ function metadataString(
   return "";
 }
 
+function readCookie(request: Request, name: string) {
+  const cookieHeader = request.headers.get("cookie") ?? "";
+  const encodedName = `${name}=`;
+  for (const part of cookieHeader.split(";")) {
+    const trimmed = part.trim();
+    if (!trimmed.startsWith(encodedName)) continue;
+    try {
+      return decodeURIComponent(trimmed.slice(encodedName.length));
+    } catch {
+      return "";
+    }
+  }
+  return "";
+}
+
+function safeNextPath(value: string | null | undefined) {
+  return value?.startsWith("/") && !value.startsWith("//") ? value : "/account";
+}
+
+function redirectAndClearReturnCookie(url: URL) {
+  const response = NextResponse.redirect(url);
+  response.cookies.set(OAUTH_RETURN_COOKIE, "", {
+    path: "/",
+    maxAge: 0,
+    sameSite: "lax",
+  });
+  return response;
+}
+
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const requestedNext = requestUrl.searchParams.get("next");
-  const next =
-    requestedNext?.startsWith("/") && !requestedNext.startsWith("//")
-      ? requestedNext
-      : "/account";
+  const requestedNext =
+    requestUrl.searchParams.get("next") || readCookie(request, OAUTH_RETURN_COOKIE);
+  const next = safeNextPath(requestedNext);
 
   if (!isSupabaseServerConfigured()) {
-    return NextResponse.redirect(
+    return redirectAndClearReturnCookie(
       new URL("/account/sign-in?setup=required", requestUrl.origin),
     );
   }
@@ -77,11 +106,11 @@ export async function GET(request: Request) {
         }
       }
 
-      return NextResponse.redirect(new URL(next, requestUrl.origin));
+      return redirectAndClearReturnCookie(new URL(next, requestUrl.origin));
     }
   }
 
-  return NextResponse.redirect(
+  return redirectAndClearReturnCookie(
     new URL("/account/sign-in?error=callback", requestUrl.origin),
   );
 }

@@ -15,6 +15,7 @@ import "./catalogue-theme.css";
 import "./menu-browse.css";
 import "./mobile-app.css";
 import "./home-top-header.css";
+import "./account-dropdown-polish.css";
 import "./nav-marker.css";
 import "./shared-header-pages.css";
 import "./menu-catalogue-layout.css";

@@ -9,6 +9,7 @@ import {
   saveReview,
 } from "../lib/customer-backend";
 import type { CustomerOrder, CustomerReview } from "../lib/customer-store";
+import AccountDashboardSkeleton from "./account-dashboard-skeleton";
 import MobileBottomNav from "./mobile-bottom-nav";
 
 export default function ReviewsPage() {
@@ -96,7 +97,7 @@ export default function ReviewsPage() {
   }
 
   if (!ready) {
-    return <div className="standalone-page"><main className="standalone-main"><div className="cart-page-loading">Loading reviews…</div></main></div>;
+    return <AccountDashboardSkeleton variant="reviews" />;
   }
 
   return (

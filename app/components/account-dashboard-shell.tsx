@@ -33,23 +33,32 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
   useEffect(() => {
     let active = true;
 
-    async function load() {
+    async function loadProfile() {
       try {
-        const [customer, orders, reviews] = await Promise.all([
-          loadCurrentCustomer(),
-          loadCustomerOrders(),
-          loadCustomerReviews(),
-        ]);
-        if (!active) return;
-        setProfile(customer);
-        setOrderCount(orders.length);
-        setReviewCount(reviews.length);
+        const customer = await loadCurrentCustomer();
+        if (active) setProfile(customer);
       } finally {
         if (active) setReady(true);
       }
     }
 
-    void load();
+    async function loadCounts() {
+      try {
+        const [orders, reviews] = await Promise.all([
+          loadCustomerOrders(),
+          loadCustomerReviews(),
+        ]);
+        if (!active) return;
+        setOrderCount(orders.length);
+        setReviewCount(reviews.length);
+      } catch {
+        // Counts are secondary UI.
+      }
+    }
+
+    void loadProfile();
+    void loadCounts();
+
     return () => {
       active = false;
     };

@@ -45,19 +45,19 @@ export default function AccountProfilePage() {
   const [saving, setSaving] = useState(false);
   const [phoneModalOpen, setPhoneModalOpen] = useState(false);
   const [balance, setBalance] = useState(0);
+  const [loyaltyReady, setLoyaltyReady] = useState(false);
   const [orderCount, setOrderCount] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
 
   useEffect(() => {
     let active = true;
 
-    async function load() {
+    async function loadCoreAccount() {
       try {
-        const [current, orders, reviews, loyaltyBalance] = await Promise.all([
+        const [current, orders, reviews] = await Promise.all([
           loadCurrentCustomer(),
           loadCustomerOrders(),
           loadCustomerReviews(),
-          loadLoyaltyBalance(),
         ]);
         if (!active) return;
         setProfile(current);
@@ -68,7 +68,6 @@ export default function AccountProfilePage() {
           setBirthday(current.birthday ?? "");
           setPhoneModalOpen(backendMode === "supabase" && !current.phone);
         }
-        setBalance(loyaltyBalance ?? 0);
         setOrderCount(orders.length);
         setReviewCount(reviews.length);
       } catch (loadError) {
@@ -79,7 +78,16 @@ export default function AccountProfilePage() {
       }
     }
 
-    void load();
+    async function loadSquareLoyalty() {
+      const loyaltyBalance = await loadLoyaltyBalance();
+      if (!active) return;
+      if (loyaltyBalance !== null) setBalance(loyaltyBalance);
+      setLoyaltyReady(true);
+    }
+
+    void loadCoreAccount();
+    void loadSquareLoyalty();
+
     return () => {
       active = false;
     };
@@ -109,8 +117,10 @@ export default function AccountProfilePage() {
 
       setProfile(updated);
       setPhone(normalizedPhone);
+      setLoyaltyReady(false);
       const loyaltyBalance = await loadLoyaltyBalance();
       if (loyaltyBalance !== null) setBalance(loyaltyBalance);
+      setLoyaltyReady(true);
 
       setSaved(true);
       setPhoneModalOpen(false);
@@ -173,9 +183,9 @@ export default function AccountProfilePage() {
         <Link className="account-overview-card account-overview-card--drip" href="/account/drip-points">
           <Image src="/images/drip-points/drip-coin.png" alt="" width={72} height={72} />
           <span>Available Drip Points</span>
-          <strong>{balance.toLocaleString()}</strong>
-          <small>{progress}% toward {DRIP_REWARD_TARGET.toLocaleString()} Drip Points</small>
-          <i aria-hidden="true"><b style={{ width: `${progress}%` }} /></i>
+          <strong>{loyaltyReady ? balance.toLocaleString() : "…"}</strong>
+          <small>{loyaltyReady ? `${progress}% toward ${DRIP_REWARD_TARGET.toLocaleString()} Drip Points` : "Syncing Square Loyalty…"}</small>
+          <i aria-hidden="true"><b style={{ width: `${loyaltyReady ? progress : 0}%` }} /></i>
         </Link>
         <Link className="account-overview-card" href="/account/orders">
           <span>Orders</span>

@@ -25,6 +25,37 @@ export function customerBackendMode(): CustomerBackendMode {
   return isSupabaseBrowserConfigured() ? "supabase" : "local-fallback";
 }
 
+const ACCOUNT_DATA_CACHE_TTL_MS = 20_000;
+
+type TimedRequest<T> = {
+  expiresAt: number;
+  promise: Promise<T>;
+};
+
+let currentCustomerCache: TimedRequest<CustomerProfile | null> | null = null;
+let customerOrdersCache: TimedRequest<CustomerOrder[]> | null = null;
+let customerReviewsCache: TimedRequest<CustomerReview[]> | null = null;
+
+function cachedRequest<T>(
+  cache: TimedRequest<T> | null,
+  setCache: (entry: TimedRequest<T> | null) => void,
+  loader: () => Promise<T>,
+) {
+  const now = Date.now();
+  if (cache && cache.expiresAt > now) return cache.promise;
+
+  const promise = loader();
+  setCache({ expiresAt: now + ACCOUNT_DATA_CACHE_TTL_MS, promise });
+  void promise.catch(() => setCache(null));
+  return promise;
+}
+
+function clearAccountDataCache() {
+  currentCustomerCache = null;
+  customerOrdersCache = null;
+  customerReviewsCache = null;
+}
+
 type CustomerRow = {
   id: string;
   name: string;
@@ -155,15 +186,15 @@ async function getAuthenticatedSupabase() {
   if (!supabase) return { supabase: null, user: null };
 
   const {
-    data: { user },
+    data: { session },
     error,
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getSession();
 
   if (error) return { supabase, user: null };
-  return { supabase, user };
+  return { supabase, user: session?.user ?? null };
 }
 
-export async function loadCurrentCustomer() {
+async function loadCurrentCustomerFresh() {
   const { supabase, user } = await getAuthenticatedSupabase();
   if (!supabase) return readSignedInCustomerProfile();
   if (!user) return null;
@@ -176,6 +207,18 @@ export async function loadCurrentCustomer() {
 
   if (error) throw error;
   return data ? mapProfile(data as CustomerRow) : null;
+}
+
+export function loadCurrentCustomer(): Promise<CustomerProfile | null> {
+  if (!isSupabaseBrowserConfigured()) return loadCurrentCustomerFresh();
+
+  return cachedRequest(
+    currentCustomerCache,
+    (entry) => {
+      currentCustomerCache = entry;
+    },
+    loadCurrentCustomerFresh,
+  );
 }
 
 export async function updateCurrentCustomer(input: {
@@ -221,10 +264,13 @@ export async function updateCurrentCustomer(input: {
   if (!squareResponse.ok) {
     throw new Error("Profile saved, but Square customer sync failed.");
   }
+
+  currentCustomerCache = null;
   return mapProfile(data as CustomerRow);
 }
 
 export async function signOutCurrentCustomer() {
+  clearAccountDataCache();
   const supabase = getBrowserClientOrNull();
   if (!supabase) {
     signOutCustomer();
@@ -254,7 +300,7 @@ export async function loadDripActivity() {
   return { entries, balance: dripBalance(entries) };
 }
 
-export async function loadCustomerOrders(): Promise<CustomerOrder[]> {
+async function loadCustomerOrdersFresh(): Promise<CustomerOrder[]> {
   const { supabase, user } = await getAuthenticatedSupabase();
   if (!supabase) return readCustomerOrders();
   if (!user) return [];
@@ -283,6 +329,18 @@ export async function loadCustomerOrders(): Promise<CustomerOrder[]> {
   );
 }
 
+export function loadCustomerOrders(): Promise<CustomerOrder[]> {
+  if (!isSupabaseBrowserConfigured()) return loadCustomerOrdersFresh();
+
+  return cachedRequest(
+    customerOrdersCache,
+    (entry) => {
+      customerOrdersCache = entry;
+    },
+    loadCustomerOrdersFresh,
+  );
+}
+
 export async function loadCustomerOrder(orderId: string) {
   const orders = await loadCustomerOrders();
   const accountOrder = orders.find((order) => order.orderId === orderId);
@@ -295,7 +353,7 @@ export async function loadCustomerOrder(orderId: string) {
   );
 }
 
-export async function loadCustomerReviews(): Promise<CustomerReview[]> {
+async function loadCustomerReviewsFresh(): Promise<CustomerReview[]> {
   const { supabase, user } = await getAuthenticatedSupabase();
   if (!supabase) return readCustomerReviews();
   if (!user) return [];
@@ -307,6 +365,18 @@ export async function loadCustomerReviews(): Promise<CustomerReview[]> {
 
   if (error) throw error;
   return ((data ?? []) as ReviewRow[]).map(mapReview);
+}
+
+export function loadCustomerReviews(): Promise<CustomerReview[]> {
+  if (!isSupabaseBrowserConfigured()) return loadCustomerReviewsFresh();
+
+  return cachedRequest(
+    customerReviewsCache,
+    (entry) => {
+      customerReviewsCache = entry;
+    },
+    loadCustomerReviewsFresh,
+  );
 }
 
 export async function saveReview(input: {
@@ -344,5 +414,6 @@ export async function saveReview(input: {
     .single();
 
   if (error) throw error;
+  customerReviewsCache = null;
   return mapReview(data as ReviewRow);
 }

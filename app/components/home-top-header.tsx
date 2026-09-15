@@ -3,7 +3,6 @@
 import {
   Login01Icon,
   Logout01Icon,
-  LoyaltyCardIcon,
   ShoppingBag01Icon,
   StarIcon,
   UserAdd01Icon,
@@ -32,7 +31,8 @@ function readCartCount() {
     return parsed.reduce((total, line) => {
       if (!line || typeof line !== "object") return total;
       const quantity = "quantity" in line ? Number(line.quantity) : 0;
-      return total + (Number.isFinite(quantity) ? Math.max(0, Math.floor(quantity)) : 0);
+      return total +
+        (Number.isFinite(quantity) ? Math.max(0, Math.floor(quantity)) : 0);
     }, 0);
   } catch {
     return 0;
@@ -41,6 +41,11 @@ function readCartCount() {
 
 function firstName(name: string) {
   return name.trim().split(/\s+/)[0] ?? "";
+}
+
+function profileInitial(name: string, email: string) {
+  const source = name.trim() || email.trim() || "N";
+  return source.charAt(0).toUpperCase();
 }
 
 function authDisplayName(
@@ -58,11 +63,16 @@ export default function HomeTopHeader() {
   const isMenuNavActive = pathname === "/menu" || isMenuPage || isProductPage;
   const isBeastNavActive = pathname === "/beast-of-the-month";
   const isDripNavActive = pathname === "/drip-points";
+  const isProfileDropdownActive = pathname === "/account";
+  const isOrdersDropdownActive = pathname.startsWith("/account/orders");
+  const isReviewsDropdownActive =
+    pathname === "/reviews" || pathname.startsWith("/account/reviews");
   const [isHidden, setIsHidden] = useState(false);
   const [isHeroTransparent, setIsHeroTransparent] = useState(isHome);
   const [cartCount, setCartCount] = useState(0);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const lastScrollY = useRef(0);
   const accountMenuRef = useRef<HTMLDivElement>(null);
@@ -95,6 +105,7 @@ export default function HomeTopHeader() {
         if (active) {
           setIsSignedIn(Boolean(localProfile));
           setCustomerName(localProfile?.name ?? "");
+          setCustomerEmail(localProfile?.email ?? "");
         }
         return;
       }
@@ -105,6 +116,8 @@ export default function HomeTopHeader() {
         } = await supabase.auth.getUser();
 
         let resolvedName = authDisplayName(user) || localProfile?.name || "";
+        const resolvedEmail = user?.email?.trim() || localProfile?.email || "";
+
         if (user && !resolvedName) {
           const { data: customer } = await supabase
             .from("customers")
@@ -119,28 +132,39 @@ export default function HomeTopHeader() {
         if (active) {
           setIsSignedIn(Boolean(user));
           setCustomerName(resolvedName);
+          setCustomerEmail(resolvedEmail);
         }
       } catch {
         if (active) {
           setIsSignedIn(Boolean(localProfile));
           setCustomerName(localProfile?.name ?? "");
+          setCustomerEmail(localProfile?.email ?? "");
         }
       }
     }
 
     void updateAccount();
 
-    const { data: authState } = supabase?.auth.onAuthStateChange((_event, session) => {
-      if (!active) return;
-      const localProfile = readSignedInCustomerProfile();
-      setIsSignedIn(Boolean(session?.user));
-      setCustomerName(
-        authDisplayName(session?.user) || localProfile?.name || "",
-      );
-      if (session?.user && !authDisplayName(session.user) && !localProfile?.name) {
-        void updateAccount();
-      }
-    }) ?? { data: { subscription: null } };
+    const { data: authState } = supabase?.auth.onAuthStateChange(
+      (_event, session) => {
+        if (!active) return;
+        const localProfile = readSignedInCustomerProfile();
+        setIsSignedIn(Boolean(session?.user));
+        setCustomerName(
+          authDisplayName(session?.user) || localProfile?.name || "",
+        );
+        setCustomerEmail(
+          session?.user?.email?.trim() || localProfile?.email || "",
+        );
+        if (
+          session?.user &&
+          !authDisplayName(session.user) &&
+          !localProfile?.name
+        ) {
+          void updateAccount();
+        }
+      },
+    ) ?? { data: { subscription: null } };
 
     const refreshAccount = () => void updateAccount();
     window.addEventListener("storage", refreshAccount);
@@ -227,7 +251,9 @@ export default function HomeTopHeader() {
     updateWindowHeader();
     window.addEventListener("scroll", updateWindowHeader, { passive: true });
     window.addEventListener("resize", updateWindowHeader);
-    catalogueScroller?.addEventListener("scroll", updateCatalogueHeader, { passive: true });
+    catalogueScroller?.addEventListener("scroll", updateCatalogueHeader, {
+      passive: true,
+    });
     return () => {
       window.removeEventListener("scroll", updateWindowHeader);
       window.removeEventListener("resize", updateWindowHeader);
@@ -243,12 +269,14 @@ export default function HomeTopHeader() {
       signOutCustomer();
       setIsSignedIn(false);
       setCustomerName("");
+      setCustomerEmail("");
       setIsAccountOpen(false);
       window.location.assign("/");
     }
   }
 
   const greetingName = firstName(customerName);
+  const avatarInitial = profileInitial(customerName, customerEmail);
   const headerClassName = [
     "home-top-header",
     isHome ? "is-home-route" : "is-inner-route",
@@ -258,8 +286,18 @@ export default function HomeTopHeader() {
 
   return (
     <header className={headerClassName} aria-label="Nasty Burger House header">
-      <Link className="home-top-header__brand" href="/" aria-label="Nasty Burger House home">
-        <Image src="/logo.webp" alt="Nasty Burger House" width={256} height={256} priority />
+      <Link
+        className="home-top-header__brand"
+        href="/"
+        aria-label="Nasty Burger House home"
+      >
+        <Image
+          src="/logo.webp"
+          alt="Nasty Burger House"
+          width={256}
+          height={256}
+          priority
+        />
       </Link>
 
       <nav className="home-top-header__nav" aria-label="Primary navigation">
@@ -284,7 +322,12 @@ export default function HomeTopHeader() {
           aria-current={isDripNavActive ? "page" : undefined}
         >
           <span className="home-top-header__drip-icon" aria-hidden="true">
-            <Image src="/images/drip-points/drip-coin.png" alt="" width={32} height={32} />
+            <Image
+              src="/images/drip-points/drip-coin.png"
+              alt=""
+              width={32}
+              height={32}
+            />
           </span>
           <span>Drip Points</span>
         </Link>
@@ -297,11 +340,20 @@ export default function HomeTopHeader() {
             type="button"
             aria-haspopup="menu"
             aria-expanded={isAccountOpen}
-            aria-label={isSignedIn ? `Account menu${greetingName ? ` for ${greetingName}` : ""}` : "Account menu"}
+            aria-label={
+              isSignedIn
+                ? `Account menu${greetingName ? ` for ${greetingName}` : ""}`
+                : "Account menu"
+            }
             onClick={() => setIsAccountOpen((current) => !current)}
           >
             <span className="home-top-header__icon" aria-hidden="true">
-              <HugeiconsIcon icon={UserIcon} size={22} color="currentColor" strokeWidth={1.9} />
+              <HugeiconsIcon
+                icon={UserIcon}
+                size={22}
+                color="currentColor"
+                strokeWidth={1.9}
+              />
             </span>
             <span className="home-top-header__action-copy">
               <small>Account</small>
@@ -313,73 +365,224 @@ export default function HomeTopHeader() {
                   : "Sign in"}
               </strong>
             </span>
-            <span className="home-top-header__account-chevron" aria-hidden="true">⌄</span>
+            <span
+              className="home-top-header__account-chevron"
+              aria-hidden="true"
+            >
+              ⌄
+            </span>
           </button>
 
           {isAccountOpen && (
             <div className="home-top-header__account-dropdown" role="menu">
               {isSignedIn ? (
                 <>
-                  <div className="home-top-header__account-greeting">
-                    <small>Nasty account</small>
-                    <strong>{greetingName ? `Hello, ${greetingName}` : "Welcome back"}</strong>
+                  <div
+                    className="home-top-header__profile-summary"
+                    role="presentation"
+                  >
+                    <span
+                      className="home-top-header__profile-avatar"
+                      aria-hidden="true"
+                    >
+                      {avatarInitial}
+                    </span>
+                    <span className="home-top-header__profile-identity">
+                      <strong>{customerName || "Nasty member"}</strong>
+                      <small>{customerEmail || "Your Nasty account"}</small>
+                    </span>
                   </div>
-                  <Link href="/account" role="menuitem">
-                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
-                      <HugeiconsIcon icon={UserCircleIcon} size={18} color="currentColor" strokeWidth={1.8} />
+
+                  <Link
+                    className={`home-top-header__drip-entry${isDripNavActive ? " is-active" : ""}`}
+                    href="/drip-points"
+                    role="menuitem"
+                  >
+                    <span
+                      className="home-top-header__drip-entry-icon"
+                      aria-hidden="true"
+                    >
+                      <Image
+                        src="/images/drip-points/drip-coin.png"
+                        alt=""
+                        width={42}
+                        height={42}
+                      />
                     </span>
-                    <span>My profile</span>
-                  </Link>
-                  <Link href="/account/orders" role="menuitem">
-                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
-                      <HugeiconsIcon icon={ShoppingBag01Icon} size={18} color="currentColor" strokeWidth={1.8} />
+                    <strong>Drip Points</strong>
+                    <span className="home-top-header__drip-entry-badge">
+                      REWARDS
                     </span>
-                    <span>My orders</span>
                   </Link>
-                  <Link href="/drip-points" role="menuitem">
-                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
-                      <HugeiconsIcon icon={LoyaltyCardIcon} size={18} color="currentColor" strokeWidth={1.8} />
-                    </span>
-                    <span>Drip Points</span>
-                  </Link>
-                  <Link href="/reviews" role="menuitem">
-                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
-                      <HugeiconsIcon icon={StarIcon} size={18} color="currentColor" strokeWidth={1.8} />
-                    </span>
-                    <span>Reviews</span>
-                  </Link>
-                  <button type="button" role="menuitem" onClick={handleSignOut}>
-                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
-                      <HugeiconsIcon icon={Logout01Icon} size={18} color="currentColor" strokeWidth={1.8} />
+
+                  <div
+                    className="home-top-header__account-links"
+                    role="presentation"
+                  >
+                    <Link
+                      className={
+                        isProfileDropdownActive ? "is-active" : undefined
+                      }
+                      href="/account"
+                      role="menuitem"
+                    >
+                      <span
+                        className="home-top-header__dropdown-icon"
+                        aria-hidden="true"
+                      >
+                        <HugeiconsIcon
+                          icon={UserCircleIcon}
+                          size={18}
+                          color="currentColor"
+                          strokeWidth={1.8}
+                        />
+                      </span>
+                      <span>My profile</span>
+                    </Link>
+                    <Link
+                      className={
+                        isOrdersDropdownActive ? "is-active" : undefined
+                      }
+                      href="/account/orders"
+                      role="menuitem"
+                    >
+                      <span
+                        className="home-top-header__dropdown-icon"
+                        aria-hidden="true"
+                      >
+                        <HugeiconsIcon
+                          icon={ShoppingBag01Icon}
+                          size={18}
+                          color="currentColor"
+                          strokeWidth={1.8}
+                        />
+                      </span>
+                      <span>My orders</span>
+                    </Link>
+                    <Link
+                      className={
+                        isReviewsDropdownActive ? "is-active" : undefined
+                      }
+                      href="/reviews"
+                      role="menuitem"
+                    >
+                      <span
+                        className="home-top-header__dropdown-icon"
+                        aria-hidden="true"
+                      >
+                        <HugeiconsIcon
+                          icon={StarIcon}
+                          size={18}
+                          color="currentColor"
+                          strokeWidth={1.8}
+                        />
+                      </span>
+                      <span>Reviews</span>
+                    </Link>
+                  </div>
+
+                  <button
+                    className="home-top-header__signout"
+                    type="button"
+                    role="menuitem"
+                    onClick={handleSignOut}
+                  >
+                    <span
+                      className="home-top-header__dropdown-icon"
+                      aria-hidden="true"
+                    >
+                      <HugeiconsIcon
+                        icon={Logout01Icon}
+                        size={18}
+                        color="currentColor"
+                        strokeWidth={1.8}
+                      />
                     </span>
                     <span>Sign out</span>
                   </button>
                 </>
               ) : (
                 <>
-                  <div className="home-top-header__account-greeting">
-                    <small>Nasty account</small>
-                    <strong>Your account</strong>
+                  <div
+                    className="home-top-header__profile-summary"
+                    role="presentation"
+                  >
+                    <span
+                      className="home-top-header__profile-avatar is-guest"
+                      aria-hidden="true"
+                    >
+                      N
+                    </span>
+                    <span className="home-top-header__profile-identity">
+                      <strong>Nasty account</strong>
+                      <small>Sign in to save orders & rewards</small>
+                    </span>
                   </div>
-                  <Link href="/account/sign-in" role="menuitem">
-                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
-                      <HugeiconsIcon icon={Login01Icon} size={18} color="currentColor" strokeWidth={1.8} />
+
+                  <Link
+                    className="home-top-header__drip-entry"
+                    href="/account/create?return=/drip-points"
+                    role="menuitem"
+                  >
+                    <span
+                      className="home-top-header__drip-entry-icon"
+                      aria-hidden="true"
+                    >
+                      <Image
+                        src="/images/drip-points/drip-coin.png"
+                        alt=""
+                        width={42}
+                        height={42}
+                      />
                     </span>
-                    <span>Sign in</span>
+                    <strong>Drip Points</strong>
+                    <span className="home-top-header__drip-entry-badge">JOIN</span>
                   </Link>
-                  <Link href="/account/create" role="menuitem">
-                    <span className="home-top-header__dropdown-icon" aria-hidden="true">
-                      <HugeiconsIcon icon={UserAdd01Icon} size={18} color="currentColor" strokeWidth={1.8} />
-                    </span>
-                    <span>Create account</span>
-                  </Link>
+
+                  <div
+                    className="home-top-header__account-links"
+                    role="presentation"
+                  >
+                    <Link href="/account/sign-in" role="menuitem">
+                      <span
+                        className="home-top-header__dropdown-icon"
+                        aria-hidden="true"
+                      >
+                        <HugeiconsIcon
+                          icon={Login01Icon}
+                          size={18}
+                          color="currentColor"
+                          strokeWidth={1.8}
+                        />
+                      </span>
+                      <span>Sign in</span>
+                    </Link>
+                    <Link href="/account/create" role="menuitem">
+                      <span
+                        className="home-top-header__dropdown-icon"
+                        aria-hidden="true"
+                      >
+                        <HugeiconsIcon
+                          icon={UserAdd01Icon}
+                          size={18}
+                          color="currentColor"
+                          strokeWidth={1.8}
+                        />
+                      </span>
+                      <span>Create account</span>
+                    </Link>
+                  </div>
                 </>
               )}
             </div>
           )}
         </div>
 
-        <Link className="home-top-header__cart home-top-header__cart--bag" href="/cart" aria-label={`Open cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}>
+        <Link
+          className="home-top-header__cart home-top-header__cart--bag"
+          href="/cart"
+          aria-label={`Open cart, ${cartCount} item${cartCount === 1 ? "" : "s"}`}
+        >
           <span className="home-top-header__bag-mark" aria-hidden="true">
             <Image src="/images/bag.webp" alt="" width={48} height={48} />
           </span>

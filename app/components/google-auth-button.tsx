@@ -8,6 +8,8 @@ type GoogleAuthButtonProps = {
   onError?: (message: string) => void;
 };
 
+const OAUTH_RETURN_COOKIE = "nbh_oauth_return";
+
 function safeReturnPath() {
   const requested = new URLSearchParams(window.location.search).get("return") ?? "/account";
   return requested.startsWith("/") && !requested.startsWith("//")
@@ -36,7 +38,15 @@ export default function GoogleAuthButton({
         process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin
       ).replace(/\/$/, "");
       const next = safeReturnPath();
-      const redirectTo = `${siteUrl}/auth/callback?next=${encodeURIComponent(next)}`;
+
+      // Supabase redirect allow-lists are safest with an exact callback URL.
+      // Keep the post-login destination in a short-lived, non-sensitive cookie
+      // instead of appending it to redirectTo.
+      document.cookie = `${OAUTH_RETURN_COOKIE}=${encodeURIComponent(next)}; Path=/; Max-Age=600; SameSite=Lax${
+        window.location.protocol === "https:" ? "; Secure" : ""
+      }`;
+
+      const redirectTo = `${siteUrl}/auth/callback`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

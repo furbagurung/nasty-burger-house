@@ -45,7 +45,10 @@ export default function AccountProfilePage() {
   const [birthday, setBirthday] = useState("");
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [modalError, setModalError] = useState("");
   const [ready, setReady] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [phoneModalOpen, setPhoneModalOpen] = useState(false);
   const [balance, setBalance] = useState(0);
   const [orderCount, setOrderCount] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
@@ -68,6 +71,7 @@ export default function AccountProfilePage() {
           setEmail(current.email);
           setPhone(current.phone);
           setBirthday(current.birthday ?? "");
+          setPhoneModalOpen(backendMode === "supabase" && !current.phone);
         }
         setBalance(loyaltyBalance ?? 0);
         setOrderCount(orders.length);
@@ -88,21 +92,22 @@ export default function AccountProfilePage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [backendMode]);
 
   const progress = useMemo(() => dripProgressPercent(balance), [balance]);
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError("");
+  async function saveProfileDetails(source: "page" | "modal") {
+    const setSourceError = source === "modal" ? setModalError : setError;
+    setSourceError("");
 
     const normalizedPhone = phone.replace(/[()\s-]/g, "");
 
     if (!/^(?:\+61|0)4\d{8}$/.test(normalizedPhone)) {
-      setError("Enter a valid Australian mobile number, e.g. 0491 570 006.");
-      return;
+      setSourceError("Enter a valid Australian mobile number, e.g. 0491 570 006.");
+      return false;
     }
 
+    setSaving(true);
     try {
       const updated = await updateCurrentCustomer({
         name,
@@ -110,6 +115,10 @@ export default function AccountProfilePage() {
         phone: normalizedPhone,
         birthday,
       });
+
+      if (!updated) {
+        throw new Error("Could not update your account.");
+      }
 
       setProfile(updated);
       setPhone(normalizedPhone);
@@ -121,14 +130,31 @@ export default function AccountProfilePage() {
       if (loyaltyBalance !== null) setBalance(loyaltyBalance);
 
       setSaved(true);
+      setPhoneModalOpen(false);
+      setModalError("");
+      setError("");
       window.setTimeout(() => setSaved(false), 1800);
+      return true;
     } catch (saveError) {
-      setError(
+      setSourceError(
         saveError instanceof Error
           ? saveError.message
           : "Could not save your profile.",
       );
+      return false;
+    } finally {
+      setSaving(false);
     }
+  }
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await saveProfileDetails("page");
+  }
+
+  async function submitPhoneModal(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await saveProfileDetails("modal");
   }
 
   async function signOut() {
@@ -193,150 +219,302 @@ export default function AccountProfilePage() {
     );
   }
 
+  const firstName = profile.name.trim().split(/\s+/)[0] || "there";
+  const initials = profile.name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("") || "NB";
+
   return (
-    <div className="standalone-page account-page">
-      <main className="standalone-main account-dashboard-main">
-        <header className="account-dashboard-heading">
-          <div>
-            <p className="standalone-eyebrow">Nasty account</p>
-            <h1>Hey, {profile.name.split(" ")[0]}.</h1>
-            <p>
-              Manage your profile, rewards, orders and feedback from one place.
-            </p>
-          </div>
-          <button type="button" onClick={() => void signOut()}>
-            Sign out
-          </button>
-        </header>
-
-        {backendMode === "supabase" && !profile.phone && (
-          <div className="account-inline-notice">
-            <span>
-              Add your Australian mobile number below to activate your Drip
-              Points in Square POS.
-            </span>
-            <strong>500 signup points</strong>
-          </div>
-        )}
-
-        <section className="account-overview-grid">
-          <Link
-            className="account-overview-card account-overview-card--drip"
-            href="/drip-points"
-          >
-            <Image
-              src="/images/drip-points/drip-coin.png"
-              alt=""
-              width={72}
-              height={72}
-            />
-            <span>Available Drip Points</span>
-            <strong>{balance.toLocaleString()}</strong>
-            <small>
-              {progress}% toward {DRIP_REWARD_TARGET.toLocaleString()} Drip Points
-            </small>
-            <i aria-hidden="true">
-              <b style={{ width: `${progress}%` }} />
-            </i>
-          </Link>
-          <Link className="account-overview-card" href="/account/orders">
-            <span>Orders</span>
-            <strong>{orderCount}</strong>
-            <small>View live status, receipts and history</small>
-          </Link>
-          <Link className="account-overview-card" href="/reviews">
-            <span>Reviews</span>
-            <strong>{reviewCount}</strong>
-            <small>Rate completed orders and manage feedback</small>
-          </Link>
-        </section>
-
-        <section className="account-dashboard-layout">
-          <form className="account-card account-profile-form" onSubmit={submit}>
-            <div className="account-section-heading">
-              <div>
-                <p className="standalone-eyebrow">Profile</p>
-                <h2>Your details</h2>
-              </div>
-              {saved && <span>Saved</span>}
+    <div className="standalone-page account-page account-saas-page">
+      <main className="account-saas-shell">
+        <aside className="account-saas-sidebar" aria-label="Account navigation">
+          <div className="account-saas-brand">
+            <div className="account-saas-brand-mark">N</div>
+            <div>
+              <strong>Nasty Account</strong>
+              <span>Customer dashboard</span>
             </div>
-            <div className="account-form-grid">
-              <label>
-                Full name
-                <input
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  minLength={2}
-                  maxLength={80}
-                  required
-                />
-              </label>
-              <label>
-                Email address
-                <input
-                  type="email"
-                  value={email}
-                  readOnly={backendMode === "supabase"}
-                  onChange={(event) => setEmail(event.target.value)}
-                  required
-                />
-                {backendMode === "supabase" && (
-                  <small>Managed by secure account authentication.</small>
+          </div>
+
+          <nav className="account-saas-nav">
+            <Link className="is-active" href="/account">
+              <span className="account-saas-nav-icon" aria-hidden="true">▦</span>
+              Overview
+            </Link>
+            <Link href="/account/orders">
+              <span className="account-saas-nav-icon" aria-hidden="true">◫</span>
+              Orders
+              {orderCount > 0 && <em>{orderCount}</em>}
+            </Link>
+            <Link href="/drip-points">
+              <span className="account-saas-nav-icon account-saas-nav-icon--coin" aria-hidden="true">●</span>
+              Drip Points
+            </Link>
+            <Link href="/reviews">
+              <span className="account-saas-nav-icon" aria-hidden="true">☆</span>
+              Reviews
+            </Link>
+            <a href="#profile">
+              <span className="account-saas-nav-icon" aria-hidden="true">◉</span>
+              Profile
+            </a>
+            <Link href="/menu/burgers">
+              <span className="account-saas-nav-icon" aria-hidden="true">＋</span>
+              Order food
+            </Link>
+          </nav>
+
+          <div className="account-saas-sidebar-footer">
+            <div className="account-saas-user">
+              <span>{initials}</span>
+              <div>
+                <strong>{profile.name}</strong>
+                <small>{profile.email}</small>
+              </div>
+            </div>
+            <button type="button" onClick={() => void signOut()}>
+              Sign out
+            </button>
+          </div>
+        </aside>
+
+        <div className="account-saas-content">
+          <header className="account-dashboard-heading account-saas-heading">
+            <div>
+              <p className="standalone-eyebrow">Dashboard</p>
+              <h1>Welcome back, {firstName}</h1>
+              <p>Your orders, rewards and account details in one place.</p>
+            </div>
+            <Link className="account-saas-order-button" href="/menu/burgers">
+              Order now
+              <span aria-hidden="true">→</span>
+            </Link>
+          </header>
+
+          <section className="account-overview-grid account-saas-stats" aria-label="Account overview">
+            <Link
+              className="account-overview-card account-overview-card--drip"
+              href="/drip-points"
+            >
+              <Image
+                src="/images/drip-points/drip-coin.png"
+                alt=""
+                width={72}
+                height={72}
+              />
+              <span>Available Drip Points</span>
+              <strong>{balance.toLocaleString()}</strong>
+              <small>
+                {progress}% toward {DRIP_REWARD_TARGET.toLocaleString()} Drip Points
+              </small>
+              <i aria-hidden="true">
+                <b style={{ width: `${progress}%` }} />
+              </i>
+            </Link>
+            <Link className="account-overview-card" href="/account/orders">
+              <span>Orders</span>
+              <strong>{orderCount}</strong>
+              <small>Track orders and view receipts</small>
+            </Link>
+            <Link className="account-overview-card" href="/reviews">
+              <span>Reviews</span>
+              <strong>{reviewCount}</strong>
+              <small>Manage your feedback</small>
+            </Link>
+          </section>
+
+          <section className="account-dashboard-layout account-saas-dashboard-layout">
+            <form
+              id="profile"
+              className="account-card account-profile-form account-saas-profile-card"
+              onSubmit={submit}
+            >
+              <div className="account-section-heading">
+                <div>
+                  <p className="standalone-eyebrow">Profile</p>
+                  <h2>Personal details</h2>
+                  <p className="account-saas-section-copy">
+                    Keep these details current so checkout and Square Loyalty stay synced.
+                  </p>
+                </div>
+                {saved && <span>Saved</span>}
+              </div>
+
+              <div className="account-form-grid">
+                <label>
+                  Full name
+                  <input
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    minLength={2}
+                    maxLength={80}
+                    required
+                  />
+                </label>
+                <label>
+                  Email address
+                  <input
+                    type="email"
+                    value={email}
+                    readOnly={backendMode === "supabase"}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                  />
+                  {backendMode === "supabase" && (
+                    <small>Managed by secure account authentication.</small>
+                  )}
+                </label>
+                <label>
+                  Mobile number
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(event) => setPhone(event.target.value)}
+                    placeholder="0491 570 006"
+                    required
+                  />
+                  {backendMode === "supabase" && !profile.phone && (
+                    <small>Required to activate Square POS Loyalty.</small>
+                  )}
+                </label>
+                <label>
+                  Birthday <small>Optional</small>
+                  <input
+                    type="date"
+                    value={birthday}
+                    onChange={(event) => setBirthday(event.target.value)}
+                  />
+                </label>
+              </div>
+
+              {error && (
+                <p className="account-form-error" role="alert">
+                  {error}
+                </p>
+              )}
+
+              <div className="account-saas-form-actions">
+                <button
+                  className="standalone-primary-button"
+                  type="submit"
+                  disabled={saving}
+                >
+                  {saving ? "Saving…" : "Save changes"}
+                </button>
+                {backendMode === "supabase" && profile.phone && (
+                  <span className="account-saas-sync-status">
+                    <i aria-hidden="true" /> Square Loyalty connected
+                  </span>
                 )}
-              </label>
+              </div>
+            </form>
+
+            <aside className="account-card account-quick-links account-saas-quick-card">
+              <p className="standalone-eyebrow">Quick actions</p>
+              <h2>Shortcuts</h2>
+              <Link href="/menu/burgers">
+                <span>Order again</span>
+                <strong>→</strong>
+              </Link>
+              <Link href="/account/orders">
+                <span>Order history</span>
+                <strong>→</strong>
+              </Link>
+              <Link href="/drip-points">
+                <span>Drip Points activity</span>
+                <strong>→</strong>
+              </Link>
+              <Link href="/reviews">
+                <span>Leave a review</span>
+                <strong>→</strong>
+              </Link>
+            </aside>
+          </section>
+        </div>
+      </main>
+
+      {backendMode === "supabase" && !profile.phone && phoneModalOpen && (
+        <div className="account-loyalty-modal-backdrop" role="presentation">
+          <section
+            className="account-loyalty-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="account-loyalty-modal-title"
+          >
+            <button
+              className="account-loyalty-modal-close"
+              type="button"
+              aria-label="Close"
+              onClick={() => setPhoneModalOpen(false)}
+            >
+              ×
+            </button>
+
+            <div className="account-loyalty-modal-coin">
+              <Image
+                src="/images/drip-points/drip-coin.png"
+                alt=""
+                width={88}
+                height={88}
+              />
+            </div>
+
+            <span className="account-loyalty-modal-kicker">Square POS Loyalty</span>
+            <h2 id="account-loyalty-modal-title">Activate your 500 Drip Points</h2>
+            <p>
+              Add your Australian mobile number to link this website account with
+              Nasty Burger House Square POS. Your 500 signup points will be added
+              to the same loyalty profile you use in store.
+            </p>
+
+            <div className="account-loyalty-modal-benefit">
+              <strong>500</strong>
+              <span>signup Drip Points</span>
+              <small>Synced to Square Loyalty</small>
+            </div>
+
+            <form onSubmit={submitPhoneModal}>
               <label>
-                Mobile number
+                Australian mobile number
                 <input
                   type="tel"
                   value={phone}
                   onChange={(event) => setPhone(event.target.value)}
+                  placeholder="0491 570 006"
+                  autoComplete="tel"
+                  autoFocus
                   required
                 />
-                {backendMode === "supabase" && !profile.phone && (
-                  <small>Required to enroll your account in Square Loyalty.</small>
-                )}
               </label>
-              <label>
-                Birthday <small>Optional</small>
-                <input
-                  type="date"
-                  value={birthday}
-                  onChange={(event) => setBirthday(event.target.value)}
-                />
-              </label>
-            </div>
-            {error && (
-              <p className="account-form-error" role="alert">
-                {error}
-              </p>
-            )}
-            <button className="standalone-primary-button" type="submit">
-              Save profile
-            </button>
-          </form>
 
-          <aside className="account-card account-quick-links">
-            <p className="standalone-eyebrow">Quick actions</p>
-            <h2>Keep it moving.</h2>
-            <Link href="/menu/burgers">
-              <span>Order again</span>
-              <strong>→</strong>
-            </Link>
-            <Link href="/account/orders">
-              <span>Order history</span>
-              <strong>→</strong>
-            </Link>
-            <Link href="/drip-points">
-              <span>Drip Points activity</span>
-              <strong>→</strong>
-            </Link>
-            <Link href="/reviews">
-              <span>Leave a review</span>
-              <strong>→</strong>
-            </Link>
-          </aside>
-        </section>
-      </main>
+              {modalError && (
+                <p className="account-form-error" role="alert">
+                  {modalError}
+                </p>
+              )}
+
+              <button type="submit" disabled={saving}>
+                {saving ? "Activating…" : "Activate 500 Drip Points"}
+              </button>
+              <button
+                className="account-loyalty-modal-later"
+                type="button"
+                onClick={() => setPhoneModalOpen(false)}
+              >
+                I&apos;ll do this later
+              </button>
+            </form>
+
+            <small className="account-loyalty-modal-note">
+              Your number is used to match your Square Loyalty customer profile.
+            </small>
+          </section>
+        </div>
+      )}
+
       <MobileBottomNav active="more" />
     </div>
   );

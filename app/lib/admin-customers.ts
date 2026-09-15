@@ -230,6 +230,15 @@ async function loadSquareEnrolledCustomers(): Promise<SquareEnrolledCustomer[]> 
     const createdAt =
       account.created_at || customer?.created_at || account.enrolled_at || new Date(0).toISOString();
     const updatedAt = account.updated_at || customer?.updated_at || createdAt;
+    const balance =
+      typeof account.balance === "number" && Number.isFinite(account.balance)
+        ? account.balance
+        : 0;
+    const lifetimePoints =
+      typeof account.lifetime_points === "number" &&
+      Number.isFinite(account.lifetime_points)
+        ? account.lifetime_points
+        : 0;
 
     return [
       {
@@ -242,10 +251,8 @@ async function loadSquareEnrolledCustomers(): Promise<SquareEnrolledCustomer[]> 
         createdAt,
         updatedAt,
         enrolledAt: account.enrolled_at ?? null,
-        balance: Number.isFinite(account.balance) ? account.balance ?? 0 : 0,
-        lifetimePoints: Number.isFinite(account.lifetime_points)
-          ? account.lifetime_points ?? 0
-          : 0,
+        balance,
+        lifetimePoints,
       } satisfies SquareEnrolledCustomer,
     ];
   });

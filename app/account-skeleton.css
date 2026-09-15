@@ -1,0 +1,426 @@
+.account-skeleton {
+  width: 100%;
+  min-width: 0;
+}
+
+.account-skeleton-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.account-skeleton-block,
+.account-skeleton-coin,
+.account-skeleton-star {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #ece9e3;
+}
+
+.account-skeleton-block::after,
+.account-skeleton-coin::after,
+.account-skeleton-star::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  transform: translateX(-100%);
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 35%,
+    rgba(255, 200, 65, 0.58) 50%,
+    rgba(255, 255, 255, 0.35) 65%,
+    transparent 100%
+  );
+  animation: accountSkeletonSweep 1.25s ease-in-out infinite;
+}
+
+.account-skeleton-block--dark {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.account-skeleton-block--dark::after {
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 35%,
+    rgba(255, 196, 42, 0.22) 50%,
+    rgba(255, 255, 255, 0.05) 65%,
+    transparent 100%
+  );
+}
+
+.account-skeleton-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.35rem;
+  padding: 0.65rem 0.25rem 0;
+}
+
+.account-skeleton-heading > div {
+  width: min(100%, 42rem);
+}
+
+.account-skeleton-eyebrow {
+  width: 5.5rem;
+  height: 0.65rem;
+  margin-bottom: 0.8rem;
+}
+
+.account-skeleton-title {
+  width: min(70%, 25rem);
+  height: 3.15rem;
+  border-radius: 0.65rem;
+}
+
+.account-skeleton-subtitle {
+  width: min(62%, 16rem);
+  height: 2rem;
+  border-radius: 0.55rem;
+}
+
+.account-skeleton-subtitle--short {
+  width: 8.5rem;
+}
+
+.account-skeleton-copy {
+  width: min(74%, 22rem);
+  height: 0.75rem;
+  margin-top: 0.8rem;
+}
+
+.account-skeleton-copy--wide {
+  width: min(88%, 31rem);
+}
+
+.account-skeleton-button {
+  width: 7.8rem;
+  height: 2.9rem;
+  flex: 0 0 auto;
+  border-radius: 0.8rem;
+  background: #f2d35b;
+}
+
+.account-skeleton-card {
+  min-width: 0;
+  border: 1px solid #e5e3df;
+  border-radius: 1.15rem;
+  padding: 1.35rem;
+  background: #ffffff;
+}
+
+.account-skeleton-stats {
+  display: grid;
+  grid-template-columns: 1.35fr repeat(2, minmax(0, 0.75fr));
+  gap: 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.account-skeleton-stats .account-skeleton-card {
+  min-height: 10.5rem;
+}
+
+.account-skeleton-card--reward {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  background: linear-gradient(135deg, #15110e, #3a1a12);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.account-skeleton-coin {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: #d9a514;
+  box-shadow: inset 0 0 0 5px rgba(255, 238, 153, 0.18);
+}
+
+.account-skeleton-label {
+  width: 7.2rem;
+  height: 0.68rem;
+}
+
+.account-skeleton-number {
+  width: 8.7rem;
+  height: 3.15rem;
+  margin-top: 0.65rem;
+  border-radius: 0.6rem;
+}
+
+.account-skeleton-number--small {
+  width: 3rem;
+}
+
+.account-skeleton-progress {
+  width: 100%;
+  height: 0.32rem;
+  margin-top: 1rem;
+}
+
+.account-skeleton-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(17rem, 0.55fr);
+  gap: 0.85rem;
+}
+
+.account-skeleton-form-card,
+.account-skeleton-shortcuts,
+.account-skeleton-review-form,
+.account-skeleton-review-history {
+  min-height: 22rem;
+}
+
+.account-skeleton-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.95rem;
+  margin-top: 1.55rem;
+}
+
+.account-skeleton-field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.account-skeleton-field-label {
+  width: 5rem;
+  height: 0.62rem;
+}
+
+.account-skeleton-input {
+  width: 100%;
+  height: 3.1rem;
+  border-radius: 0.9rem;
+}
+
+.account-skeleton-input--full {
+  margin-top: 1.35rem;
+}
+
+.account-skeleton-save {
+  width: 8.8rem;
+  height: 2.9rem;
+  margin-top: 1.45rem;
+  border-radius: 0.85rem;
+  background: #dedbd5;
+}
+
+.account-skeleton-shortcuts {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-skeleton-shortcut {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.8rem;
+  border-top: 1px solid #efede9;
+}
+
+.account-skeleton-shortcut:first-of-type {
+  margin-top: 1rem;
+}
+
+.account-skeleton-shortcut-line {
+  width: 7.5rem;
+  height: 0.72rem;
+}
+
+.account-skeleton-shortcut-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.account-skeleton-order-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.account-skeleton-order-card {
+  min-height: 12.5rem;
+}
+
+.account-skeleton-order-top,
+.account-skeleton-order-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.account-skeleton-order-top > div {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.account-skeleton-status {
+  width: 5.2rem;
+  height: 1.55rem;
+  background: #e7f1dd;
+}
+
+.account-skeleton-order-id {
+  width: 10.5rem;
+  height: 1.4rem;
+  border-radius: 0.4rem;
+}
+
+.account-skeleton-date {
+  width: 7rem;
+  height: 0.62rem;
+}
+
+.account-skeleton-price {
+  width: 5rem;
+  height: 1.35rem;
+  border-radius: 0.4rem;
+}
+
+.account-skeleton-pills {
+  display: flex;
+  gap: 0.45rem;
+  margin: 1.1rem 0;
+}
+
+.account-skeleton-pill {
+  width: 6.4rem;
+  height: 1.9rem;
+  background: #f1eee8;
+}
+
+.account-skeleton-pill--short {
+  width: 4.7rem;
+}
+
+.account-skeleton-order-footer {
+  align-items: center;
+  border-top: 1px solid #efede9;
+  padding-top: 1rem;
+}
+
+.account-skeleton-points {
+  width: 6.8rem;
+  height: 0.72rem;
+  background: #f6d8ce;
+}
+
+.account-skeleton-review-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(18rem, 0.7fr);
+  gap: 0.85rem;
+}
+
+.account-skeleton-stars {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 1.4rem;
+}
+
+.account-skeleton-star {
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 0.65rem;
+  background: #f1c94b;
+}
+
+.account-skeleton-textarea {
+  width: 100%;
+  height: 7.5rem;
+  margin-top: 1.35rem;
+  border-radius: 0.9rem;
+}
+
+.account-skeleton-review-row {
+  display: grid;
+  gap: 0.6rem;
+  border-top: 1px solid #efede9;
+  padding: 1rem 0;
+}
+
+.account-skeleton-review-row:first-of-type {
+  margin-top: 1rem;
+}
+
+.account-skeleton-review-row-title {
+  width: 8.5rem;
+  height: 0.75rem;
+}
+
+@keyframes accountSkeletonSweep {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 1040px) {
+  .account-skeleton-body,
+  .account-skeleton-review-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .account-skeleton-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .account-skeleton-title {
+    width: min(88%, 20rem);
+    height: 2.55rem;
+  }
+
+  .account-skeleton-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .account-skeleton-card--reward {
+    grid-column: 1 / -1;
+  }
+
+  .account-skeleton-field-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .account-skeleton-card {
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+
+  .account-skeleton-stats .account-skeleton-card {
+    min-height: 9.2rem;
+  }
+
+  .account-skeleton-coin {
+    width: 3.2rem;
+    height: 3.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-skeleton-block::after,
+  .account-skeleton-coin::after,
+  .account-skeleton-star::after {
+    animation: none;
+  }
+}

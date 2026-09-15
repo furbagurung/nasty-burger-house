@@ -1,0 +1,81 @@
+.account-saas-layout-page {
+  min-height: 100vh;
+  background: #f6f7f9;
+}
+
+.account-saas-shell--persistent {
+  padding-top: 3.75rem;
+}
+
+.account-saas-route-content {
+  min-width: 0;
+  padding-top: 0.9rem;
+}
+
+.account-saas-route-content .account-saas-heading--overview {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.account-saas-route-content .account-saas-heading--overview h1 {
+  margin-top: 0.35rem;
+  font-size: clamp(2.25rem, 3.25vw, 3.05rem);
+  line-height: 1;
+}
+
+.account-saas-route-content > .standalone-page,
+.account-saas-route-content .standalone-page {
+  min-height: 0;
+  background: transparent;
+}
+
+.account-saas-route-content .standalone-main,
+.account-saas-route-content .order-history-main,
+.account-saas-route-content .reviews-main,
+.account-saas-route-content .drip-page-main,
+.account-saas-route-content .order-detail-main {
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.account-saas-route-content .standalone-page-heading {
+  margin: 0 0 1.4rem;
+}
+
+.account-saas-route-content .standalone-page-heading h1 {
+  font-size: clamp(2.35rem, 4.5vw, 4.4rem);
+}
+
+.account-saas-route-content .cart-page-loading,
+.account-saas-inner-loading {
+  display: grid;
+  min-height: 15rem;
+  place-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.2rem;
+  background: #fff;
+  color: #7a8088;
+}
+
+.account-saas-route-content .order-history-list,
+.account-saas-route-content .reviews-layout,
+.account-saas-route-content .drip-account-panel {
+  width: 100%;
+}
+
+@media (max-width: 820px) {
+  .account-saas-shell--persistent {
+    padding-top: 1.4rem;
+  }
+
+  .account-saas-route-content {
+    padding-top: 0.2rem;
+  }
+
+  .account-saas-route-content .account-saas-heading--overview h1 {
+    font-size: clamp(2rem, 8vw, 2.7rem);
+  }
+}

@@ -36,25 +36,30 @@ export default function AccountProfilePage() {
   const [orderCount, setOrderCount] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
 
+  async function loadLoyaltyBalance() {
+    try {
+      const response = await fetch("/api/account/loyalty", {
+        cache: "no-store",
+      });
+      const data = (await response.json()) as SquareLoyaltyStatus;
+      return response.ok && data.ok && Number.isFinite(data.balance)
+        ? Number(data.balance)
+        : null;
+    } catch {
+      return null;
+    }
+  }
+
   useEffect(() => {
     let active = true;
 
     async function load() {
       try {
-        const loyaltyRequest = fetch("/api/account/loyalty", {
-          cache: "no-store",
-        })
-          .then(async (response) => {
-            const data = (await response.json()) as SquareLoyaltyStatus;
-            return response.ok && data.ok ? data : null;
-          })
-          .catch(() => null);
-
-        const [current, orders, reviews, loyalty] = await Promise.all([
+        const [current, orders, reviews, loyaltyBalance] = await Promise.all([
           loadCurrentCustomer(),
           loadCustomerOrders(),
           loadCustomerReviews(),
-          loyaltyRequest,
+          loadLoyaltyBalance(),
         ]);
         if (!active) return;
         setProfile(current);
@@ -64,11 +69,7 @@ export default function AccountProfilePage() {
           setPhone(current.phone);
           setBirthday(current.birthday ?? "");
         }
-        setBalance(
-          loyalty && Number.isFinite(loyalty.balance)
-            ? Number(loyalty.balance)
-            : 0,
-        );
+        setBalance(loyaltyBalance ?? 0);
         setOrderCount(orders.length);
         setReviewCount(reviews.length);
       } catch (loadError) {
@@ -111,6 +112,14 @@ export default function AccountProfilePage() {
       });
 
       setProfile(updated);
+      setPhone(normalizedPhone);
+
+      // Saving the phone enrolls/links the customer in Square Loyalty and applies
+      // the one-time website signup bonus. Refresh immediately so the POS balance
+      // shown on this page matches Square without requiring a browser reload.
+      const loyaltyBalance = await loadLoyaltyBalance();
+      if (loyaltyBalance !== null) setBalance(loyaltyBalance);
+
       setSaved(true);
       window.setTimeout(() => setSaved(false), 1800);
     } catch (saveError) {
@@ -200,6 +209,16 @@ export default function AccountProfilePage() {
           </button>
         </header>
 
+        {backendMode === "supabase" && !profile.phone && (
+          <div className="account-inline-notice">
+            <span>
+              Add your Australian mobile number below to activate your Drip
+              Points in Square POS.
+            </span>
+            <strong>500 signup points</strong>
+          </div>
+        )}
+
         <section className="account-overview-grid">
           <Link
             className="account-overview-card account-overview-card--drip"
@@ -273,6 +292,9 @@ export default function AccountProfilePage() {
                   onChange={(event) => setPhone(event.target.value)}
                   required
                 />
+                {backendMode === "supabase" && !profile.phone && (
+                  <small>Required to enroll your account in Square Loyalty.</small>
+                )}
               </label>
               <label>
                 Birthday <small>Optional</small>

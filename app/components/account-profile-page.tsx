@@ -12,6 +12,7 @@ import {
 } from "../lib/customer-backend";
 import type { CustomerProfile } from "../lib/customer-store";
 import { DRIP_REWARD_TARGET, dripProgressPercent } from "../lib/loyalty";
+import AccountDashboardSkeleton from "./account-dashboard-skeleton";
 
 type SquareLoyaltyStatus = {
   ok?: boolean;
@@ -136,7 +137,7 @@ export default function AccountProfilePage() {
   }
 
   if (!ready) {
-    return <div className="account-saas-inner-loading">Loading your dashboard…</div>;
+    return <AccountDashboardSkeleton variant="overview" />;
   }
 
   if (!profile) {

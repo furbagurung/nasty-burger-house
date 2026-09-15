@@ -12,6 +12,7 @@ import {
   getBrowserClientOrNull,
   isSupabaseBrowserConfigured,
 } from "../lib/supabase/client";
+import GoogleAuthButton from "./google-auth-button";
 import MobileBottomNav from "./mobile-bottom-nav";
 import PasswordInput from "./password-input";
 
@@ -160,6 +161,18 @@ export default function AccountCreatePage() {
             </div>
           ) : (
             <form className="account-auth-form" onSubmit={submit}>
+              {productionAuth && (
+                <>
+                  <GoogleAuthButton
+                    label="Sign up with Google"
+                    onError={setError}
+                  />
+                  <div className="account-auth-divider" aria-hidden="true">
+                    <span>or create with email</span>
+                  </div>
+                </>
+              )}
+
               <label>
                 Full name
                 <input

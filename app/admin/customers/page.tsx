@@ -29,11 +29,12 @@ export default async function AdminCustomersPage() {
     );
   }
 
-  const customers = await loadAdminCustomers(auth.admin);
+  const portal = await loadAdminCustomers(auth.admin);
 
   return (
     <AdminCustomerDashboard
-      customers={customers}
+      customers={portal.customers}
+      squareStatus={portal.square}
       adminEmail={auth.user.email}
     />
   );

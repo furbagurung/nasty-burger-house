@@ -1,0 +1,239 @@
+/* Account dropdown polish inspired by compact SaaS profile menus.
+   Loaded after home-top-header.css so these rules only refine the dropdown. */
+.home-top-header__account-dropdown {
+  width: 18.4rem;
+  overflow: visible;
+  border: 1px solid rgba(30, 28, 26, 0.08);
+  border-radius: 1.35rem;
+  padding: 0.62rem;
+  background: rgba(252, 252, 253, 0.98);
+  color: #171513;
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.22),
+    0 4px 16px rgba(0, 0, 0, 0.08);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.home-top-header__profile-summary {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.68rem;
+  padding: 0.32rem 0.38rem 0.64rem;
+}
+
+.home-top-header__profile-avatar {
+  display: grid;
+  width: 2.62rem;
+  height: 2.62rem;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #ffb13b 0%, #f45a35 48%, #c5232d 100%);
+  color: #fff;
+  box-shadow:
+    0 0 0 2px rgba(235, 166, 38, 0.55),
+    0 5px 13px rgba(117, 49, 23, 0.2);
+  font-size: 0.92rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.home-top-header__profile-avatar.is-guest {
+  background: linear-gradient(145deg, #292725 0%, #0d0c0b 100%);
+  box-shadow: 0 0 0 2px rgba(23, 21, 19, 0.14);
+}
+
+.home-top-header__profile-identity {
+  display: grid;
+  min-width: 0;
+  flex: 1 1 auto;
+  gap: 0.14rem;
+  line-height: 1.12;
+}
+
+.home-top-header__profile-identity strong,
+.home-top-header__profile-identity small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-top-header__profile-identity strong {
+  color: #171513;
+  font-size: 0.9rem;
+  font-weight: 840;
+  letter-spacing: -0.018em;
+}
+
+.home-top-header__profile-identity small {
+  color: #8c8884;
+  font-size: 0.68rem;
+  font-weight: 560;
+}
+
+.home-top-header__account-dropdown > .home-top-header__drip-entry {
+  display: flex;
+  width: 100%;
+  min-height: 3.18rem;
+  align-items: center;
+  gap: 0.56rem;
+  margin: 0 0 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 0.92rem;
+  padding: 0.38rem 0.46rem;
+  background: linear-gradient(100deg, #ef3d3d 0%, #f36e35 47%, #f3c667 112%);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 7px 18px rgba(199, 57, 40, 0.2);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    filter 150ms ease;
+}
+
+.home-top-header__account-dropdown > .home-top-header__drip-entry:hover,
+.home-top-header__account-dropdown > .home-top-header__drip-entry.is-active {
+  background: linear-gradient(100deg, #e93636 0%, #f06231 47%, #efbd55 112%);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 9px 22px rgba(199, 57, 40, 0.26);
+  filter: saturate(1.04);
+  transform: translateY(-1px);
+}
+
+.home-top-header__drip-entry-icon {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.home-top-header__drip-entry-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px rgba(96, 35, 17, 0.18));
+}
+
+.home-top-header__drip-entry > strong {
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: 0.86rem;
+  font-weight: 850;
+  letter-spacing: -0.012em;
+}
+
+.home-top-header__drip-entry-badge {
+  display: inline-flex;
+  min-height: 1.55rem;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  padding: 0.16rem 0.52rem;
+  background: rgba(255, 255, 255, 0.92);
+  color: #3e3027;
+  box-shadow: 0 2px 7px rgba(91, 47, 30, 0.12);
+  font-size: 0.55rem;
+  font-weight: 900;
+  letter-spacing: 0.035em;
+}
+
+.home-top-header__account-links {
+  display: grid;
+  gap: 0.08rem;
+  border-radius: 1rem;
+  padding: 0.24rem;
+  background: #f4f4f6;
+}
+
+.home-top-header__account-links > a,
+.home-top-header__account-dropdown > .home-top-header__signout {
+  display: flex;
+  width: 100%;
+  min-height: 2.62rem;
+  align-items: center;
+  gap: 0.58rem;
+  border: 0;
+  border-radius: 0.78rem;
+  padding: 0.52rem 0.65rem;
+  color: #292725;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 670;
+  text-align: left;
+  text-decoration: none;
+  transition:
+    background-color 140ms ease,
+    box-shadow 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.home-top-header__account-links > a {
+  background: transparent;
+}
+
+.home-top-header__account-links > a:hover,
+.home-top-header__account-links > a.is-active {
+  background: #fff;
+  color: #11100f;
+  box-shadow: 0 3px 10px rgba(31, 29, 27, 0.08);
+}
+
+.home-top-header__dropdown-icon {
+  display: grid;
+  width: 1.32rem;
+  height: 1.32rem;
+  place-items: center;
+  flex: 0 0 auto;
+  color: #5f5b57;
+}
+
+.home-top-header__account-links > a:hover .home-top-header__dropdown-icon,
+.home-top-header__account-links > a.is-active .home-top-header__dropdown-icon {
+  color: #24211f;
+}
+
+.home-top-header__account-dropdown > .home-top-header__signout {
+  margin-top: 0.55rem;
+  background: #fff0f1;
+  color: #e4464d;
+}
+
+.home-top-header__account-dropdown > .home-top-header__signout:hover {
+  background: #ffe5e7;
+  color: #cf3038;
+  transform: translateY(-1px);
+}
+
+.home-top-header__account-dropdown > .home-top-header__signout .home-top-header__dropdown-icon {
+  color: currentColor;
+}
+
+@media (max-width: 900px) {
+  .home-top-header.is-home-route .home-top-header__account-dropdown {
+    width: min(18.4rem, calc(100vw - 1.7rem));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-top-header__account-dropdown > .home-top-header__drip-entry,
+  .home-top-header__account-links > a,
+  .home-top-header__account-dropdown > .home-top-header__signout {
+    transition: none;
+  }
+}

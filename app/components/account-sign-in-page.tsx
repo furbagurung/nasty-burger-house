@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { signInCustomerByEmail } from "../lib/customer-store";
 import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
+import GoogleAuthButton from "./google-auth-button";
 import MobileBottomNav from "./mobile-bottom-nav";
 import PasswordInput from "./password-input";
 
@@ -70,6 +71,15 @@ export default function AccountSignInPage() {
             <p>Open your Nasty account, Drip Points and order history.</p>
           </div>
           <form className="account-auth-form" onSubmit={submit}>
+            {productionAuth && (
+              <>
+                <GoogleAuthButton onError={setError} />
+                <div className="account-auth-divider" aria-hidden="true">
+                  <span>or</span>
+                </div>
+              </>
+            )}
+
             <label>
               {productionAuth ? "Email address or mobile number" : "Email address"}
               <input

@@ -47,7 +47,7 @@ body:has(.admin-customer-shell) > .home-top-header {
 }
 
 .admin-customer-toolbar > div > span {
-  max-width: 44rem;
+  max-width: 48rem;
   color: #77716a;
   font-size: 0.76rem;
   line-height: 1.45;
@@ -84,6 +84,76 @@ body:has(.admin-customer-shell) > .home-top-header {
   box-shadow: 0 0 0 3px rgba(23, 21, 19, 0.08);
 }
 
+.admin-square-sync {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid #d9d7d2;
+  border-radius: 1rem;
+  padding: 0.9rem 1rem;
+  background: #fff;
+}
+
+.admin-square-sync > div {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-square-sync > div > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.admin-square-sync strong {
+  color: #27231f;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.admin-square-sync span,
+.admin-square-sync small {
+  color: #7a746d;
+  font-size: 0.67rem;
+  line-height: 1.4;
+}
+
+.admin-square-sync small {
+  max-width: 36rem;
+  text-align: right;
+}
+
+.admin-square-sync__dot {
+  width: 0.72rem;
+  height: 0.72rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #aaa49c;
+  box-shadow: 0 0 0 4px rgba(170, 164, 156, 0.12);
+}
+
+.admin-square-sync.is-connected {
+  border-color: #bde2c9;
+  background: #f5fcf7;
+}
+
+.admin-square-sync.is-connected .admin-square-sync__dot {
+  background: #239455;
+  box-shadow: 0 0 0 4px rgba(35, 148, 85, 0.12);
+}
+
+.admin-square-sync.is-warning {
+  border-color: #ecd4a6;
+  background: #fffaf0;
+}
+
+.admin-square-sync.is-warning .admin-square-sync__dot {
+  background: #d99118;
+  box-shadow: 0 0 0 4px rgba(217, 145, 24, 0.12);
+}
+
 .admin-customer-table-wrap {
   overflow: hidden;
   border: 1px solid #dddbd6;
@@ -97,11 +167,11 @@ body:has(.admin-customer-shell) > .home-top-header {
   display: grid;
   grid-template-columns:
     minmax(16rem, 2.1fr)
-    minmax(8rem, 0.85fr)
+    minmax(9rem, 0.9fr)
     minmax(7.5rem, 0.8fr)
     minmax(11rem, 1.05fr)
     minmax(6rem, 0.55fr)
-    minmax(7rem, 0.65fr);
+    minmax(8rem, 0.72fr);
   align-items: center;
   gap: 0.8rem;
 }
@@ -199,17 +269,35 @@ body:has(.admin-customer-shell) > .home-top-header {
   white-space: nowrap;
 }
 
-.admin-customer-cell > span:not(.admin-account-status) {
+.admin-customer-cell > span:not(.admin-account-status):not(.admin-customer-source) {
   color: #8a847c;
   font-size: 0.64rem;
 }
 
+.admin-customer-source,
 .admin-account-status {
   width: max-content;
+  max-width: 100%;
   border-radius: 999px;
   padding: 0.3rem 0.58rem;
   font-size: 0.62rem;
   font-weight: 900;
+  white-space: nowrap;
+}
+
+.admin-customer-source.is-website {
+  background: #eef0f4;
+  color: #454b58;
+}
+
+.admin-customer-source.is-square {
+  background: #fff0ec;
+  color: #c23b21;
+}
+
+.admin-customer-source.is-both {
+  background: #e9f8ef;
+  color: #176f3e;
 }
 
 .admin-account-status.is-verified {
@@ -267,9 +355,15 @@ body:has(.admin-customer-shell) > .home-top-header {
 }
 
 @media (max-width: 760px) {
-  .admin-customer-toolbar {
+  .admin-customer-toolbar,
+  .admin-square-sync {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .admin-square-sync small {
+    max-width: none;
+    text-align: left;
   }
 
   .admin-customer-search {

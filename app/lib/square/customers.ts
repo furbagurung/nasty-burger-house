@@ -23,7 +23,7 @@ type UpdateCustomerResponse = {
 export type SquareCustomerInput = {
   name: string;
   email: string;
-  phone: string;
+  phone?: string;
   requestId: string;
 };
 
@@ -64,7 +64,7 @@ async function updateSquareCustomer(
         given_name: givenName,
         ...(familyName ? { family_name: familyName } : {}),
         email_address: email,
-        phone_number: phone,
+        ...(phone ? { phone_number: phone } : {}),
       }),
     },
   );
@@ -114,7 +114,7 @@ async function searchCustomerByPhone(phone: string) {
 
 export async function findOrCreateSquareCustomer(input: SquareCustomerInput) {
   const email = input.email.trim().toLowerCase();
-  const phone = normalizeAustralianPhone(input.phone);
+  const phone = normalizeAustralianPhone(input.phone ?? "");
 
   const byEmail = await searchCustomerByEmail(email);
   if (byEmail?.id) {
@@ -135,9 +135,9 @@ export async function findOrCreateSquareCustomer(input: SquareCustomerInput) {
       given_name: givenName,
       ...(familyName ? { family_name: familyName } : {}),
       email_address: email,
-      phone_number: phone,
+      ...(phone ? { phone_number: phone } : {}),
       reference_id: `nbh-web-${input.requestId}`.slice(0, 100),
-      note: "Created by Nasty Burger House web checkout.",
+      note: "Created by Nasty Burger House website account.",
     }),
   });
 

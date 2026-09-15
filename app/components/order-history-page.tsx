@@ -7,6 +7,7 @@ import {
   loadCustomerOrders,
 } from "../lib/customer-backend";
 import type { CustomerOrder } from "../lib/customer-store";
+import AccountDashboardSkeleton from "./account-dashboard-skeleton";
 import MobileBottomNav from "./mobile-bottom-nav";
 
 const money = new Intl.NumberFormat("en-US", {
@@ -59,7 +60,7 @@ export default function OrderHistoryPage() {
   }, []);
 
   if (!ready) {
-    return <div className="standalone-page"><main className="standalone-main"><div className="cart-page-loading">Loading order history…</div></main></div>;
+    return <AccountDashboardSkeleton variant="orders" />;
   }
 
   return (

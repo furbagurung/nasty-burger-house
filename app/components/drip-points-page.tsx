@@ -69,25 +69,27 @@ export default function DripPointsPage() {
   return (
     <div className="standalone-page drip-page">
       <main className="standalone-main drip-page-main">
-        <section className="drip-page-hero">
-          <div className="drip-page-hero__copy">
-            <p className="standalone-eyebrow">Nasty Rewards</p>
-            <h1>Get Nasty. Earn Drip Points. Eat Free.</h1>
-            <p>
-              Create a Nasty account, start with {DRIP_SIGNUP_BONUS} points and
-              earn {DRIP_POINTS_PER_AUD} points for every A$1 of eligible order value.
-            </p>
-            <div className="drip-page-hero__stat">
-              <strong>{profile ? balance.toLocaleString() : DRIP_SIGNUP_BONUS}</strong>
-              <span>{profile ? "available Drip Points" : "Drip Points to start"}</span>
+        {ready && !profile && (
+          <section className="drip-page-hero">
+            <div className="drip-page-hero__copy">
+              <p className="standalone-eyebrow">Nasty Rewards</p>
+              <h1>Get Nasty. Earn Drip Points. Eat Free.</h1>
+              <p>
+                Create a Nasty account, start with {DRIP_SIGNUP_BONUS} points and
+                earn {DRIP_POINTS_PER_AUD} points for every A$1 of eligible order value.
+              </p>
+              <div className="drip-page-hero__stat">
+                <strong>{DRIP_SIGNUP_BONUS}</strong>
+                <span>Drip Points to start</span>
+              </div>
             </div>
-          </div>
 
-          <div className="drip-page-hero__art" aria-hidden="true">
-            <span className="drip-page-hero__glow" />
-            <Image src="/images/drip-points/drip-coin.png" alt="" width={620} height={620} priority />
-          </div>
-        </section>
+            <div className="drip-page-hero__art" aria-hidden="true">
+              <span className="drip-page-hero__glow" />
+              <Image src="/images/drip-points/drip-coin.png" alt="" width={620} height={620} priority />
+            </div>
+          </section>
+        )}
 
         <section className="drip-page-benefits" aria-labelledby="drip-benefits-title">
           <div className="drip-page-benefits__heading">

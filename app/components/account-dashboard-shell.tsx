@@ -71,7 +71,49 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
     }
   }
 
-  if (!ready || !profile) {
+  if (!ready) {
+    return (
+      <div className="account-page account-saas-page account-saas-layout-page">
+        <main className="account-saas-shell account-saas-shell--persistent">
+          <aside className="account-saas-sidebar account-skeleton-sidebar" aria-hidden="true">
+            <div className="account-saas-brand">
+              <span className="account-skeleton-block account-skeleton-sidebar-logo" />
+              <div className="account-skeleton-sidebar-brand-copy">
+                <span className="account-skeleton-block account-skeleton-sidebar-name" />
+                <span className="account-skeleton-block account-skeleton-sidebar-caption" />
+              </div>
+            </div>
+
+            <div className="account-skeleton-sidebar-nav">
+              {[0, 1, 2, 3, 4, 5].map((item) => (
+                <div className={item === 0 ? "is-active" : ""} key={item}>
+                  <span className="account-skeleton-block account-skeleton-sidebar-icon" />
+                  <span className="account-skeleton-block account-skeleton-sidebar-link" />
+                </div>
+              ))}
+            </div>
+
+            <div className="account-saas-sidebar-footer account-skeleton-sidebar-footer">
+              <div className="account-saas-user">
+                <span className="account-skeleton-block account-skeleton-sidebar-avatar" />
+                <div>
+                  <span className="account-skeleton-block account-skeleton-sidebar-user-name" />
+                  <span className="account-skeleton-block account-skeleton-sidebar-email" />
+                </div>
+              </div>
+              <span className="account-skeleton-block account-skeleton-sidebar-signout" />
+            </div>
+          </aside>
+
+          <section className="account-saas-content account-saas-route-content">
+            {children}
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  if (!profile) {
     return <>{children}</>;
   }
 

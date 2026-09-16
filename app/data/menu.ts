@@ -158,7 +158,7 @@ export const menuItems: MenuItem[] = [
     id: "bbq-beast",
     name: "BBQ Beast",
     description:
-      "Juicy flame-grilled beef patty with crispy bacon, American cheese, house-made Bourbon BBQ sauce and creamy mayo on a toasted milk bun.",
+      "Juicy flame-grilled beef patty with smoked pastrami, American cheese, house-made Bourbon BBQ sauce and creamy mayo on a toasted milk bun.",
     category: "burgers",
     price: 19,
     image: "/images/final-menu-photo/bbq-beast-v2.jpg",
@@ -167,7 +167,7 @@ export const menuItems: MenuItem[] = [
     dietaryTags: ["Halal"],
     modifierIds: burgerModifierIds,
     removableIngredients: [
-      "Crispy bacon",
+      "Smoked pastrami",
       "American cheese",
       "Bourbon BBQ sauce",
       "Creamy mayo",

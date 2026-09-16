@@ -10,6 +10,7 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -146,7 +147,7 @@ export default function HomeTopHeader() {
     void updateAccount();
 
     const { data: authState } = supabase?.auth.onAuthStateChange(
-      (_event, session) => {
+      (_event: AuthChangeEvent, session: Session | null) => {
         if (!active) return;
         const localProfile = readSignedInCustomerProfile();
         setIsSignedIn(Boolean(session?.user));

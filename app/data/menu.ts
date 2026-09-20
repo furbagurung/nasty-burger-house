@@ -230,7 +230,7 @@ export const menuItems: MenuItem[] = [
     id: "dino-nuggets",
     name: "Dino Nuggets",
     description:
-      "Six crispy chicken dino nuggets served with Nasty Fries and tomato sauce.",
+      "Eight crispy chicken dino nuggets served with Nasty Fries and tomato sauce.",
     category: "kids",
     price: 14,
     image: "/images/final-menu-photo/dino-nuggets-v2.jpg",

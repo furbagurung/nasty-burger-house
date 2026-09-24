@@ -59,12 +59,19 @@ export default function ClosureAnnouncement() {
 
   useEffect(() => {
     document.documentElement.classList.toggle(
+      "nasty-closure-visible",
+      isVisible,
+    );
+    document.documentElement.classList.toggle(
       "nasty-closure-menu",
       isMenuRoute && isVisible,
     );
 
     return () => {
-      document.documentElement.classList.remove("nasty-closure-menu");
+      document.documentElement.classList.remove(
+        "nasty-closure-visible",
+        "nasty-closure-menu",
+      );
     };
   }, [isMenuRoute, isVisible]);
 
@@ -73,7 +80,8 @@ export default function ClosureAnnouncement() {
   const upcoming = phase === "upcoming";
 
   return (
-    <aside
+    <>
+      <aside
       className={[
         "closure-announcement",
         desktopHeaderHidden ? "is-header-hidden" : "",
@@ -109,9 +117,11 @@ export default function ClosureAnnouncement() {
 
       <span className="closure-announcement__mobile-copy">
         {upcoming
-          ? "Open today · Closed 25–29 Sep · Reopening 30 Sep."
-          : "Closed due to a technical issue · Reopening 30 Sep."}
+          ? "Open today · Closed Sep 25–29 · Reopens Sep 30"
+          : "Closed Sep 25–29 · Reopens Sep 30"}
       </span>
-    </aside>
+      </aside>
+      <div className="closure-announcement-spacer" aria-hidden="true" />
+    </>
   );
 }

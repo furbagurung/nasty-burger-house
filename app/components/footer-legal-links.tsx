@@ -61,6 +61,7 @@ export default function FooterLegalLinks() {
   return (
     <footer className="utility-footer">
       <span>© 2026 Nasty Burger House</span>
+      <span className="footer-credit">Made with love by Furba Gurung</span>
       <FooterUtilityLinks />
     </footer>
   );

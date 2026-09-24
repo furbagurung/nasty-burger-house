@@ -1,0 +1,50 @@
+.closure-announcement {
+  position: fixed;
+  top: 5.85rem;
+  left: 0;
+  right: 0;
+  z-index: 59;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 2.55rem;
+  padding: 0.55rem clamp(1rem, 4vw, 4rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  background: #c8102e;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+}
+
+.closure-announcement strong {
+  font-size: 0.84rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.closure-announcement span {
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 768px) {
+  .closure-announcement {
+    top: 4.25rem;
+    z-index: 58;
+    display: block;
+    min-height: auto;
+    padding: 0.5rem 1rem;
+  }
+
+  .closure-announcement strong,
+  .closure-announcement span {
+    display: block;
+    font-size: 0.75rem;
+  }
+
+  .closure-announcement span {
+    margin-top: 0.15rem;
+  }
+}

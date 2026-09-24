@@ -13,6 +13,12 @@
     background: #fff;
   }
 
+  html.nasty-closure-visible .catalogue-shell.menu-catalogue-shell {
+    height: calc(
+      100dvh - var(--closure-mobile-bar-height) - env(safe-area-inset-top)
+    );
+  }
+
   .catalogue-shell.menu-catalogue-shell > .catalogue-header {
     position: relative !important;
     inset: auto !important;
@@ -68,12 +74,6 @@
     padding: 0 !important;
     overflow: hidden !important;
     box-sizing: border-box;
-  }
-
-  html.nasty-closure-menu
-    .catalogue-shell.menu-catalogue-shell
-    > .catalogue-main {
-    padding-top: 3rem !important;
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-main::before,

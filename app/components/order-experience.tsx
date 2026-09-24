@@ -986,17 +986,17 @@ export default function OrderExperience({
             </Link>
             <Link
               className="menu-preview-card menu-preview-card--sides"
-              href="/menu/loaded-sides"
+              href="/menu/kids"
             >
               <span>03</span>
-              <strong>Loaded Sides</strong>
+              <strong>Kids</strong>
             </Link>
             <Link
               className="menu-preview-card menu-preview-card--boxes"
-              href="/menu/beast-boxes"
+              href="/menu/sweet"
             >
               <span>04</span>
-              <strong>Beast Boxes</strong>
+              <strong>Dessert</strong>
             </Link>
             <Link
               className="menu-preview-card menu-preview-card--drinks"

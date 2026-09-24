@@ -13,7 +13,7 @@
   max-width: 74rem;
   gap: 0.9rem;
   margin: 0 auto;
-  padding: 1.1rem 0 calc(6.8rem + env(safe-area-inset-bottom));
+  padding: 7rem 0 calc(6.8rem + env(safe-area-inset-bottom));
 }
 
 .account-saas-route-content .drip-page {

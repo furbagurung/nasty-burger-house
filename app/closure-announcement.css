@@ -108,11 +108,22 @@
     will-change: transform;
   }
 
-  .closure-announcement__marquee > span {
-    display: block;
+  .closure-announcement__marquee-item {
+    display: flex;
     flex: 0 0 auto;
+    align-items: center;
+    gap: 0.65rem;
     padding-right: 4rem;
+  }
+
+  .closure-announcement__marquee-item b {
+    font-weight: 850;
     text-transform: uppercase;
+  }
+
+  .closure-announcement__marquee-item > span {
+    font-weight: 650;
+    text-transform: none;
   }
 
   @keyframes closure-marquee {
@@ -174,12 +185,12 @@
     animation: none;
   }
 
-  .closure-announcement__marquee > span {
+  .closure-announcement__marquee-item {
+    justify-content: center;
     padding-right: 0;
-    text-transform: uppercase;
   }
 
-  .closure-announcement__marquee > span[aria-hidden="true"] {
+  .closure-announcement__marquee-item[aria-hidden="true"] {
     display: none;
   }
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { FooterUtilityLinks } from "./footer-legal-links";
 import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import type { MenuItem } from "../data/menu";
@@ -142,12 +141,6 @@ export default function MenuCategoryPage({
           <Image src="/logo.webp" alt="Nasty Burger House" width={256} height={256} />
           <p>Order online and collect from Nasty Burger House.</p>
         </div>
-        <nav aria-label="Footer navigation">
-          <Link href="/">Home</Link>
-          <Link href="/menu/burgers">Menu</Link>
-          <Link href="/?loyalty=1">Drip Points</Link>
-        </nav>
-        <FooterUtilityLinks />
       </footer>
 
       <MobileBottomNav active="menu" />

@@ -27,20 +27,6 @@
   margin: 0;
   padding: 0 0 1.5rem;
 }
-.drip-page {
-  width: 100%;
-  min-width: 0;
-  background: transparent;
-}
-
-.drip-page .drip-page-main {
-  display: grid;
-  width: 100%;
-  max-width: none;
-  gap: 0.9rem;
-  padding: 0 0 1.5rem;
-}
-
 /* Guest-only promo content keeps the existing Nasty reward presentation. */
 .drip-page .drip-page-hero {
   min-height: 27rem;

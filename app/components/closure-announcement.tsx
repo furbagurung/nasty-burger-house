@@ -116,9 +116,18 @@ export default function ClosureAnnouncement() {
       </span>
 
       <span className="closure-announcement__mobile-copy">
-        {upcoming
-          ? "Open today · Closed Sep 25–29 · Reopens Sep 30"
-          : "Closed Sep 25–29 · Reopens Sep 30"}
+        <span className="closure-announcement__marquee">
+          <span>
+            {upcoming
+              ? "Upcoming closure · 25–29 September"
+              : "Temporarily closed · 25–29 September"}
+          </span>
+          <span aria-hidden="true">
+            {upcoming
+              ? "Upcoming closure · 25–29 September"
+              : "Temporarily closed · 25–29 September"}
+          </span>
+        </span>
       </span>
       </aside>
       <div className="closure-announcement-spacer" aria-hidden="true" />

@@ -3,10 +3,40 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+type ClosurePhase = "upcoming" | "closed" | "ended";
+
+function getClosurePhase(): ClosurePhase {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Australia/Sydney",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+
+  const year = parts.find((part) => part.type === "year")?.value ?? "";
+  const month = parts.find((part) => part.type === "month")?.value ?? "";
+  const day = parts.find((part) => part.type === "day")?.value ?? "";
+  const dateKey = `${year}-${month}-${day}`;
+
+  if (dateKey < "2026-09-25") return "upcoming";
+  if (dateKey <= "2026-09-29") return "closed";
+  return "ended";
+}
+
 export default function ClosureAnnouncement() {
   const pathname = usePathname();
   const [desktopHeaderHidden, setDesktopHeaderHidden] = useState(false);
+  const [phase, setPhase] = useState<ClosurePhase>("upcoming");
   const isMenuRoute = pathname === "/menu" || pathname.startsWith("/menu/");
+  const isVisible = phase !== "ended";
+
+  useEffect(() => {
+    const updatePhase = () => setPhase(getClosurePhase());
+    updatePhase();
+
+    const interval = window.setInterval(updatePhase, 60_000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".home-top-header");
@@ -28,14 +58,19 @@ export default function ClosureAnnouncement() {
   }, [pathname]);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("nasty-closure-menu", isMenuRoute);
+    document.documentElement.classList.toggle(
+      "nasty-closure-menu",
+      isMenuRoute && isVisible,
+    );
 
     return () => {
       document.documentElement.classList.remove("nasty-closure-menu");
     };
-  }, [isMenuRoute]);
+  }, [isMenuRoute, isVisible]);
 
-  if (pathname.startsWith("/admin")) return null;
+  if (pathname.startsWith("/admin") || !isVisible) return null;
+
+  const upcoming = phase === "upcoming";
 
   return (
     <aside
@@ -43,19 +78,39 @@ export default function ClosureAnnouncement() {
         "closure-announcement",
         desktopHeaderHidden ? "is-header-hidden" : "",
         isMenuRoute ? "is-menu-route" : "",
+        upcoming ? "is-upcoming" : "is-closed",
       ]
         .filter(Boolean)
         .join(" ")}
       role="status"
-      aria-label="Temporary closure announcement"
+      aria-label={upcoming ? "Upcoming closure announcement" : "Temporary closure announcement"}
     >
-      <strong>Temporarily closed · 25–29 September</strong>
+      <strong>
+        {upcoming
+          ? "Upcoming closure · 25–29 September"
+          : "Temporarily closed · 25–29 September"}
+      </strong>
+
       <span className="closure-announcement__desktop-copy">
-        Due to a technical issue, Nasty Burger House will be closed during these
-        dates. We&apos;ll reopen on 30 September. Thank you for your patience.
+        {upcoming ? (
+          <>
+            We&apos;re open today. Due to a technical issue, Nasty Burger House
+            will be closed from 25–29 September. We&apos;ll reopen on 30
+            September.
+          </>
+        ) : (
+          <>
+            Due to a technical issue, Nasty Burger House is closed during these
+            dates. We&apos;ll reopen on 30 September. Thank you for your
+            patience.
+          </>
+        )}
       </span>
+
       <span className="closure-announcement__mobile-copy">
-        Closed due to a technical issue. Reopening 30 September.
+        {upcoming
+          ? "Open today · Closed 25–29 Sep · Reopening 30 Sep."
+          : "Closed due to a technical issue · Reopening 30 Sep."}
       </span>
     </aside>
   );

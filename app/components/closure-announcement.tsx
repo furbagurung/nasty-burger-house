@@ -78,6 +78,12 @@ export default function ClosureAnnouncement() {
   if (pathname.startsWith("/admin") || !isVisible) return null;
 
   const upcoming = phase === "upcoming";
+  const headline = upcoming
+    ? "Upcoming closure · 25–29 September"
+    : "Temporarily closed · 25–29 September";
+  const message = upcoming
+    ? "We're open today. Due to a technical issue, Nasty Burger House will be closed from 25–29 September. We'll reopen on 30 September."
+    : "Due to a technical issue, Nasty Burger House is closed during these dates. We'll reopen on 30 September. Thank you for your patience.";
 
   return (
     <>
@@ -93,39 +99,22 @@ export default function ClosureAnnouncement() {
       role="status"
       aria-label={upcoming ? "Upcoming closure announcement" : "Temporary closure announcement"}
     >
-      <strong>
-        {upcoming
-          ? "Upcoming closure · 25–29 September"
-          : "Temporarily closed · 25–29 September"}
-      </strong>
+      <strong>{headline}</strong>
 
-      <span className="closure-announcement__desktop-copy">
-        {upcoming ? (
-          <>
-            We&apos;re open today. Due to a technical issue, Nasty Burger House
-            will be closed from 25–29 September. We&apos;ll reopen on 30
-            September.
-          </>
-        ) : (
-          <>
-            Due to a technical issue, Nasty Burger House is closed during these
-            dates. We&apos;ll reopen on 30 September. Thank you for your
-            patience.
-          </>
-        )}
-      </span>
+      <span className="closure-announcement__desktop-copy">{message}</span>
 
       <span className="closure-announcement__mobile-copy">
         <span className="closure-announcement__marquee">
-          <span>
-            {upcoming
-              ? "Upcoming closure · 25–29 September"
-              : "Temporarily closed · 25–29 September"}
+          <span className="closure-announcement__marquee-item">
+            <b>{headline}</b>
+            <span>{message}</span>
           </span>
-          <span aria-hidden="true">
-            {upcoming
-              ? "Upcoming closure · 25–29 September"
-              : "Temporarily closed · 25–29 September"}
+          <span
+            className="closure-announcement__marquee-item"
+            aria-hidden="true"
+          >
+            <b>{headline}</b>
+            <span>{message}</span>
           </span>
         </span>
       </span>

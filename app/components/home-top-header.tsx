@@ -69,7 +69,6 @@ export default function HomeTopHeader() {
   const isReviewsDropdownActive =
     pathname === "/reviews" || pathname.startsWith("/account/reviews");
   const [isHidden, setIsHidden] = useState(false);
-  const [isHeroTransparent, setIsHeroTransparent] = useState(isHome);
   const [cartCount, setCartCount] = useState(0);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [customerName, setCustomerName] = useState("");
@@ -218,16 +217,6 @@ export default function HomeTopHeader() {
     setIsHidden(false);
 
     const applyScrollState = (currentY: number) => {
-      if (isHome) {
-        const hero = document.querySelector<HTMLElement>(".hero-carousel");
-        const heroBottom = hero
-          ? hero.offsetTop + hero.offsetHeight
-          : window.innerHeight;
-        setIsHeroTransparent(window.scrollY < heroBottom - 24);
-      } else {
-        setIsHeroTransparent(false);
-      }
-
       if (isMenuPage || isProductPage) {
         setIsHidden(false);
         lastScrollY.current = currentY;
@@ -281,7 +270,7 @@ export default function HomeTopHeader() {
   const headerClassName = [
     "home-top-header",
     isHome ? "is-home-route" : "is-inner-route",
-    isHome && isHeroTransparent ? "is-hero-transparent" : "is-dark",
+    "is-dark",
     isHidden ? "is-hidden" : "is-visible",
   ].join(" ");
 

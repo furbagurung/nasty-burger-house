@@ -107,7 +107,7 @@
     min-width: 100%;
     height: 100%;
     align-items: center;
-    animation: closure-marquee 5s linear infinite;
+    animation: closure-marquee-bounce 15s ease-in-out infinite alternate;
     will-change: transform;
   }
 
@@ -130,12 +130,14 @@
     text-transform: none;
   }
 
-  @keyframes closure-marquee {
-    from {
+  @keyframes closure-marquee-bounce {
+    0%,
+    8% {
       transform: translateX(0);
     }
 
-    to {
+    92%,
+    100% {
       transform: translateX(-50%);
     }
   }

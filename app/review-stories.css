@@ -1,7 +1,7 @@
 .home-story-highlights {
   position: relative;
   isolation: isolate;
-  margin-bottom: 3.4rem;
+  margin-bottom: 6rem;
   padding: 3rem 1rem 4rem;
   background: #11100f;
   color: #fff;
@@ -329,7 +329,7 @@
 
 @media (max-width: 680px) {
   .home-story-highlights {
-    margin-bottom: 2.45rem;
+    margin-bottom: 4.25rem;
   }
 
   .home-story-highlights::after {

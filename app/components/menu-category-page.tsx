@@ -141,6 +141,7 @@ export default function MenuCategoryPage({
           <Image src="/logo.webp" alt="Nasty Burger House" width={256} height={256} />
           <p>Order online and collect from Nasty Burger House.</p>
         </div>
+        <span className="footer-credit">Made with love by Furba Gurung</span>
       </footer>
 
       <MobileBottomNav active="menu" />

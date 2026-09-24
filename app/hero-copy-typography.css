@@ -4,7 +4,7 @@
 
 .hero-carousel .hero-slide__copy {
   top: 52% !important;
-  left: clamp(1.4rem, 5vw, 5.25rem) !important;
+  left: max(1.5rem, calc((100vw - 1500px) / 2)) !important;
   width: min(39rem, 42vw) !important;
   max-width: 42vw !important;
   border: 0 !important;

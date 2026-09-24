@@ -751,6 +751,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
           <Link href="/terms-and-conditions">Terms &amp; Conditions</Link>
         </nav>
         <FooterUtilityLinks />
+        <span className="footer-credit">Made with love by Furba Gurung</span>
       </footer>
 
       <MobileBottomNav active="menu" />

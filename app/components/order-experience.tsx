@@ -1095,6 +1095,7 @@ export default function OrderExperience({
         <div className="footer-bottom">
           <span>© 2026 Nasty Burger House</span>
           <span>Pickup ordering only</span>
+          <span className="footer-credit">Made with love by Furba Gurung</span>
           <FooterUtilityLinks />
         </div>
       </footer>

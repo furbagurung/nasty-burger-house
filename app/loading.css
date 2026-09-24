@@ -1,12 +1,15 @@
 /* Branded route loading state for Nasty Burger House. */
 .nasty-loading {
-  position: fixed;
-  inset: 0;
+  position: fixed !important;
+  inset: 0 !important;
   z-index: 9999;
-  width: 100vw;
-  max-width: none;
-  height: 100dvh;
-  margin: 0;
+  width: auto !important;
+  max-width: none !important;
+  height: auto !important;
+  min-width: 100vw;
+  min-height: 100dvh;
+  margin: 0 !important;
+  box-sizing: border-box;
   display: grid;
   min-height: 100dvh;
   place-items: center;

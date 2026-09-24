@@ -394,6 +394,14 @@
     gap: 0.55rem;
     min-height: 4.35rem;
     padding: 0.35rem max(0.85rem, env(safe-area-inset-left)) 0.35rem max(0.85rem, env(safe-area-inset-right));
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+  }
+
+  .home-top-header.is-home-route.is-hidden,
+  .home-top-header.is-home-route.is-visible {
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
   }
 
   .home-top-header.is-home-route .home-top-header__brand {

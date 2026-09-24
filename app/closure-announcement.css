@@ -86,19 +86,43 @@
   }
 
   .closure-announcement__mobile-copy {
-    display: flex;
+    display: block;
+    width: 100%;
     min-height: var(--closure-mobile-bar-height);
-    align-items: center;
-    justify-content: center;
-    max-width: 100%;
+    overflow: hidden;
     margin: 0;
     color: #fff;
     font-size: clamp(0.61rem, 2.55vw, 0.7rem);
-    font-weight: 760;
-    line-height: 1;
+    font-weight: 800;
+    line-height: var(--closure-mobile-bar-height);
     letter-spacing: 0.005em;
-    text-align: center;
     white-space: nowrap;
+  }
+
+  .closure-announcement__marquee {
+    display: flex;
+    width: max-content;
+    min-width: 100%;
+    align-items: center;
+    animation: closure-marquee 16s linear infinite;
+    will-change: transform;
+  }
+
+  .closure-announcement__marquee > span {
+    display: block;
+    flex: 0 0 auto;
+    padding-right: 4rem;
+    text-transform: uppercase;
+  }
+
+  @keyframes closure-marquee {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
   }
 
   .closure-announcement-spacer {
@@ -139,5 +163,23 @@
 @media (max-width: 360px) {
   .closure-announcement__mobile-copy {
     font-size: 0.58rem;
+  }
+}
+
+
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  .closure-announcement__marquee {
+    width: 100%;
+    justify-content: center;
+    animation: none;
+  }
+
+  .closure-announcement__marquee > span {
+    padding-right: 0;
+    text-transform: uppercase;
+  }
+
+  .closure-announcement__marquee > span[aria-hidden="true"] {
+    display: none;
   }
 }

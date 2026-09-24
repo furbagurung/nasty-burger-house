@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/next"
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
+import ClosureAnnouncement from "./components/closure-announcement";
 import CookieSettings from "./components/cookie-settings";
 import FindStyleNavigation from "./components/find-style-navigation";
 import FooterLegalLinks from "./components/footer-legal-links";
@@ -15,6 +16,7 @@ import "./catalogue-theme.css";
 import "./menu-browse.css";
 import "./mobile-app.css";
 import "./home-top-header.css";
+import "./closure-announcement.css";
 import "./account-dropdown-polish.css";
 import "./nav-marker.css";
 import "./shared-header-pages.css";
@@ -96,6 +98,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body>
         <HomeTopHeader />
+        <ClosureAnnouncement />
         <MobileHomeLocation />
         <FindStyleNavigation />
         {children}

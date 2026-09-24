@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Loading() {
   return (
-    <main className="nasty-loading" role="status" aria-live="polite" aria-label="Loading Nasty Burger House">
+    <div className="nasty-loading" role="status" aria-live="polite" aria-label="Loading Nasty Burger House">
       <div className="nasty-loading__stage" aria-hidden="true">
         <span className="nasty-loading__orbit nasty-loading__orbit--outer" />
         <span className="nasty-loading__orbit nasty-loading__orbit--inner" />
@@ -26,6 +26,6 @@ export default function Loading() {
       <div className="nasty-loading__bar" aria-hidden="true">
         <span />
       </div>
-    </main>
+    </div>
   );
 }

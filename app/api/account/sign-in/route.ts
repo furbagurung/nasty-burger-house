@@ -1,7 +1,10 @@
+import { enforceAuthRateLimit } from "../../../lib/rate-limit";
 import { getAdminClientOrNull } from "../../../lib/supabase/admin";
 import { createClient } from "../../../lib/supabase/server";
 
 const INVALID_CREDENTIALS = "Invalid email, mobile number or password.";
+const TOO_MANY_ATTEMPTS = "Too many sign-in attempts. Please try again later.";
+const SERVICE_UNAVAILABLE = "Sign in is temporarily unavailable. Please try again.";
 
 function phoneVariants(value: string) {
   const normalized = value.trim().replace(/[()\s-]/g, "");
@@ -31,6 +34,30 @@ export async function POST(request: Request) {
 
   if (!identifier || !password || identifier.length > 180 || password.length > 256) {
     return Response.json({ ok: false, error: INVALID_CREDENTIALS }, { status: 400 });
+  }
+
+  const rateLimit = await enforceAuthRateLimit(
+    request,
+    "customer-sign-in",
+    identifier,
+    5,
+    600,
+  );
+
+  if (!rateLimit.ok) {
+    return Response.json(
+      {
+        ok: false,
+        error:
+          rateLimit.status === 429 ? TOO_MANY_ATTEMPTS : SERVICE_UNAVAILABLE,
+      },
+      {
+        status: rateLimit.status,
+        headers: rateLimit.retryAfter
+          ? { "Retry-After": String(rateLimit.retryAfter), "Cache-Control": "no-store" }
+          : { "Cache-Control": "no-store" },
+      },
+    );
   }
 
   let email = identifier.toLowerCase();

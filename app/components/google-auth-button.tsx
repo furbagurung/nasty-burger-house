@@ -11,7 +11,8 @@ type GoogleAuthButtonProps = {
 const OAUTH_RETURN_COOKIE = "nbh_oauth_return";
 
 function safeReturnPath() {
-  const requested = new URLSearchParams(window.location.search).get("return") ?? "/account";
+  const requested =
+    new URLSearchParams(window.location.search).get("return") ?? "/account";
   return requested.startsWith("/") && !requested.startsWith("//")
     ? requested
     : "/account";
@@ -39,12 +40,7 @@ export default function GoogleAuthButton({
       ).replace(/\/$/, "");
       const next = safeReturnPath();
 
-      // Supabase redirect allow-lists are safest with an exact callback URL.
-      // Keep the post-login destination in a short-lived, non-sensitive cookie
-      // instead of appending it to redirectTo.
-      document.cookie = `${OAUTH_RETURN_COOKIE}=${encodeURIComponent(next)}; Path=/; Max-Age=600; SameSite=Lax${
-        window.location.protocol === "https:" ? "; Secure" : ""
-      }`;
+      document.cookie = `${OAUTH_RETURN_COOKIE}=${encodeURIComponent(next)}; Path=/; Max-Age=600; SameSite=Lax${window.location.protocol === "https:" ? "; Secure" : ""}`;
 
       const redirectTo = `${siteUrl}/auth/callback`;
 
@@ -60,7 +56,8 @@ export default function GoogleAuthButton({
       });
 
       if (error) {
-        onError?.(error.message || "We could not open Google sign in.");
+        console.warn("[NBH Google auth]", { code: error.code });
+        onError?.("We could not open Google sign in. Please try again.");
         setLoading(false);
       }
     } catch {
@@ -76,7 +73,9 @@ export default function GoogleAuthButton({
       onClick={() => void continueWithGoogle()}
       disabled={loading}
     >
-      <span className="account-google-icon" aria-hidden="true">G</span>
+      <span className="account-google-icon" aria-hidden="true">
+        G
+      </span>
       <span>{loading ? "Opening Google…" : label}</span>
     </button>
   );

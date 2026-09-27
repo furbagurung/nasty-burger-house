@@ -1,4 +1,5 @@
 import { sendAdminOrderEmail } from "../../lib/admin-notifications";
+import { consumeRateLimit, requestIp } from "../../lib/rate-limit";
 import { validateOrderPayload } from "../../lib/order";
 import {
   createOrderDispatchPayload,
@@ -50,6 +51,38 @@ function resolveCheckoutOrigin(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const ip = requestIp(request);
+  if (ip) {
+    const rateLimit = await consumeRateLimit({
+      scope: "checkout-create",
+      key: `ip:${ip}`,
+      limit: 20,
+      windowSeconds: 300,
+    });
+
+    if (!rateLimit.ok) {
+      return Response.json(
+        {
+          ok: false,
+          errors: [
+            rateLimit.status === 429
+              ? "Too many checkout attempts. Please try again shortly."
+              : "Checkout is temporarily unavailable. Please try again.",
+          ],
+        },
+        {
+          status: rateLimit.status,
+          headers: rateLimit.retryAfter
+            ? {
+                "Retry-After": String(rateLimit.retryAfter),
+                "Cache-Control": "no-store",
+              }
+            : { "Cache-Control": "no-store" },
+        },
+      );
+    }
+  }
+
   const serviceStatus = getServiceStatus();
   if (!serviceStatus.acceptingOrders) {
     return Response.json(

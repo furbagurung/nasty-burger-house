@@ -21,8 +21,8 @@ export default function AccountResetPasswordPage() {
     event.preventDefault();
     setError("");
 
-    if (password.length < 8) {
-      setError("Use a password with at least 8 characters.");
+    if (password.length < 10) {
+      setError("Use a password with at least 10 characters.");
       return;
     }
     if (password !== confirmPassword) {
@@ -32,7 +32,7 @@ export default function AccountResetPasswordPage() {
 
     const supabase = getBrowserClientOrNull();
     if (!supabase) {
-      setError("Supabase is not configured yet.");
+      setError("Password update is temporarily unavailable.");
       return;
     }
 
@@ -40,13 +40,13 @@ export default function AccountResetPasswordPage() {
     try {
       const { error: updateError } = await supabase.auth.updateUser({ password });
       if (updateError) {
-        setError(updateError.message);
+        setError("We could not update your password. Please request a new reset link.");
         return;
       }
       router.push("/account?password=updated");
       router.refresh();
     } catch {
-      setError("We could not update your password. Open the reset link again and retry.");
+      setError("We could not update your password. Please request a new reset link.");
     } finally {
       setSubmitting(false);
     }
@@ -59,23 +59,53 @@ export default function AccountResetPasswordPage() {
           <div className="account-auth-card__intro">
             <p className="standalone-eyebrow">Account security</p>
             <h1>Choose a new password.</h1>
-            <p>Use at least 8 characters and keep it unique to your Nasty account.</p>
+            <p>Use at least 10 characters and keep it unique to your Nasty account.</p>
           </div>
           <form className="account-auth-form" onSubmit={submit}>
             <label>
               New password
-              <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="new-password" minLength={8} required />
+              <input
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                autoComplete="new-password"
+                minLength={10}
+                maxLength={256}
+                required
+              />
             </label>
             <label>
               Confirm new password
-              <input type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} autoComplete="new-password" minLength={8} required />
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                autoComplete="new-password"
+                minLength={10}
+                maxLength={256}
+                required
+              />
             </label>
-            {!configured && <p className="account-auth-note">Supabase setup is required for password recovery.</p>}
-            {error && <p className="account-form-error" role="alert">{error}</p>}
-            <button className="standalone-primary-button" type="submit" disabled={submitting || !configured}>
+            {!configured && (
+              <p className="account-auth-note">
+                Password recovery is temporarily unavailable.
+              </p>
+            )}
+            {error && (
+              <p className="account-form-error" role="alert">
+                {error}
+              </p>
+            )}
+            <button
+              className="standalone-primary-button"
+              type="submit"
+              disabled={submitting || !configured}
+            >
               {submitting ? "Updating…" : "Update password"}
             </button>
-            <Link className="standalone-secondary-link" href="/account/sign-in">Back to sign in</Link>
+            <Link className="standalone-secondary-link" href="/account/sign-in">
+              Back to sign in
+            </Link>
           </form>
         </section>
       </main>

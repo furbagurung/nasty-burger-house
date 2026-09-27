@@ -8,10 +8,7 @@ import {
   readCustomerProfile,
   saveCustomerProfile,
 } from "../lib/customer-store";
-import {
-  getBrowserClientOrNull,
-  isSupabaseBrowserConfigured,
-} from "../lib/supabase/client";
+import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import GoogleAuthButton from "./google-auth-button";
 import MobileBottomNav from "./mobile-bottom-nav";
 import PasswordInput from "./password-input";
@@ -61,8 +58,8 @@ export default function AccountCreatePage() {
       setError("Enter a valid Australian mobile number, e.g. 0491 570 006.");
       return;
     }
-    if (productionAuth && password.length < 8) {
-      setError("Use a password with at least 8 characters.");
+    if (productionAuth && password.length < 10) {
+      setError("Use a password with at least 10 characters.");
       return;
     }
     if (productionAuth && password !== confirmPassword) {
@@ -72,9 +69,10 @@ export default function AccountCreatePage() {
 
     const destination =
       new URLSearchParams(window.location.search).get("return") ?? "/account";
-    const safeDestination = destination.startsWith("/")
-      ? destination
-      : "/account";
+    const safeDestination =
+      destination.startsWith("/") && !destination.startsWith("//")
+        ? destination
+        : "/account";
 
     if (!productionAuth) {
       saveCustomerProfile({ name, email, phone: normalizedPhone });
@@ -83,39 +81,36 @@ export default function AccountCreatePage() {
       return;
     }
 
-    const supabase = getBrowserClientOrNull();
-    if (!supabase) {
-      setError("Account service is unavailable right now.");
-      return;
-    }
-
     setSubmitting(true);
     try {
-      const siteUrl = (
-        process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin
-      ).replace(/\/$/, "");
-      const emailRedirectTo = `${siteUrl}/auth/callback?next=${encodeURIComponent(
-        safeDestination,
-      )}`;
-
-      const { data, error: authError } = await supabase.auth.signUp({
-        email: email.trim().toLowerCase(),
-        password,
-        options: {
-          emailRedirectTo,
-          data: {
-            name: name.trim(),
-            phone: normalizedPhone,
-          },
-        },
+      const response = await fetch("/api/account/sign-up", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          phone: normalizedPhone,
+          password,
+          next: safeDestination,
+        }),
       });
 
-      if (authError) {
-        setError(authError.message);
+      const result = (await response.json()) as {
+        ok?: boolean;
+        signedIn?: boolean;
+        confirmationRequired?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || !result.ok) {
+        setError(
+          result.error ||
+            "We could not create your account. Please check your details and try again.",
+        );
         return;
       }
 
-      if (data.session) {
+      if (result.signedIn) {
         router.push(safeDestination);
         router.refresh();
       } else {
@@ -152,8 +147,8 @@ export default function AccountCreatePage() {
               <p className="standalone-eyebrow">Check your inbox</p>
               <h2>Confirm your email.</h2>
               <p>
-                We sent a confirmation link to <strong>{email}</strong>. Open it
-                to activate your account and the 500-point welcome bonus.
+                If the details can be registered, a confirmation link will be sent to{" "}
+                <strong>{email}</strong>.
               </p>
               <Link className="standalone-primary-button" href="/account/sign-in">
                 Go to sign in
@@ -215,14 +210,14 @@ export default function AccountCreatePage() {
                     value={password}
                     onChange={setPassword}
                     autoComplete="new-password"
-                    minLength={8}
+                    minLength={10}
                   />
                   <PasswordInput
                     label="Confirm password"
                     value={confirmPassword}
                     onChange={setConfirmPassword}
                     autoComplete="new-password"
-                    minLength={8}
+                    minLength={10}
                   />
                 </>
               )}

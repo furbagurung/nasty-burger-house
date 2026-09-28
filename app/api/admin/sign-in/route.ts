@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return Response.json({ ok: false, error: INVALID }, { status: 400 });
+    return Response.json(\n      { ok: false, error: INVALID },\n      { status: 400, headers: NO_STORE_HEADERS },\n    );
   }
 
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     password.length > 256 ||
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
   ) {
-    return Response.json({ ok: false, error: INVALID }, { status: 400 });
+    return Response.json(\n      { ok: false, error: INVALID },\n      { status: 400, headers: NO_STORE_HEADERS },\n    );
   }
 
   const rateLimit = await enforceAuthRateLimit(
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   ]);
 
   if (!admin) {
-    return Response.json({ ok: false, error: UNAVAILABLE }, { status: 503 });
+    return Response.json(\n      { ok: false, error: UNAVAILABLE },\n      { status: 503, headers: NO_STORE_HEADERS },\n    );
   }
 
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
   });
 
   if (error || !data.user) {
-    return Response.json({ ok: false, error: INVALID }, { status: 401 });
+    return Response.json(\n      { ok: false, error: INVALID },\n      { status: 401, headers: NO_STORE_HEADERS },\n    );
   }
 
   const { data: membership, error: membershipError } = await admin
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
 
   if (membershipError || !membership) {
     await supabase.auth.signOut();
-    return Response.json({ ok: false, error: INVALID }, { status: 401 });
+    return Response.json(\n      { ok: false, error: INVALID },\n      { status: 401, headers: NO_STORE_HEADERS },\n    );
   }
 
   return Response.json(

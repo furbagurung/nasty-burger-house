@@ -45,7 +45,7 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return Response.json({ ok: false, error: GENERIC_ERROR }, { status: 400 });
+    return Response.json(\n      { ok: false, error: GENERIC_ERROR },\n      { status: 400, headers: NO_STORE_HEADERS },\n    );
   }
 
   const name = typeof body.name === "string" ? body.name.trim() : "";
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     password.length < 10 ||
     password.length > 256
   ) {
-    return Response.json({ ok: false, error: GENERIC_ERROR }, { status: 400 });
+    return Response.json(\n      { ok: false, error: GENERIC_ERROR },\n      { status: 400, headers: NO_STORE_HEADERS },\n    );
   }
 
   const rateLimit = await enforceAuthRateLimit(
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
 
   if (error) {
     console.warn("[NBH signup rejected]", { code: error.code });
-    return Response.json({ ok: false, error: GENERIC_ERROR }, { status: 400 });
+    return Response.json(\n      { ok: false, error: GENERIC_ERROR },\n      { status: 400, headers: NO_STORE_HEADERS },\n    );
   }
 
   return Response.json(

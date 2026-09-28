@@ -1,4 +1,5 @@
 import { verifyAdmin } from "../../../../lib/admin-auth";
+import { consumeRateLimit } from "../../../../lib/rate-limit";
 import {
   ensureSquareSignupBonus,
   hasSquareSignupBonus,
@@ -57,6 +58,25 @@ export async function GET() {
 export async function POST() {
   const auth = await verifyAdmin();
   if (!auth.ok) return authError(auth.reason);
+
+  const rateLimit = await consumeRateLimit({
+    scope: "admin-loyalty-backfill",
+    key: `admin:${auth.user.id}`,
+    limit: 5,
+    windowSeconds: 3600,
+  });
+
+  if (!rateLimit.ok) {
+    return Response.json(
+      { ok: false, error: "Too many backfill requests. Please try again later." },
+      {
+        status: rateLimit.status,
+        headers: rateLimit.retryAfter
+          ? { "Retry-After": String(rateLimit.retryAfter), "Cache-Control": "no-store" }
+          : { "Cache-Control": "no-store" },
+      },
+    );
+  }
 
   try {
     const accounts = await listAllSquareLoyaltyAccounts();

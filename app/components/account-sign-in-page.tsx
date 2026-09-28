@@ -23,7 +23,10 @@ export default function AccountSignInPage() {
 
     const destination =
       new URLSearchParams(window.location.search).get("return") ?? "/account";
-    const safeDestination = destination.startsWith("/") ? destination : "/account";
+    const safeDestination =
+      destination.startsWith("/") && !destination.startsWith("//")
+        ? destination
+        : "/account";
 
     if (!productionAuth) {
       const profile = signInCustomerByEmail(identifier);
@@ -89,6 +92,7 @@ export default function AccountSignInPage() {
                 autoComplete="username"
                 inputMode="email"
                 placeholder={productionAuth ? "Email or 04XX XXX XXX" : undefined}
+                maxLength={180}
                 required
               />
             </label>

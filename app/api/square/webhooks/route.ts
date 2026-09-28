@@ -90,8 +90,24 @@ async function accrueCompletedOrder(event: SquareWebhookEvent) {
   });
 }
 
+const MAX_WEBHOOK_BYTES = 256_000;
+
 export async function POST(request: Request) {
+  const contentLength = Number(request.headers.get("content-length") ?? 0);
+  if (contentLength > MAX_WEBHOOK_BYTES) {
+    return Response.json(
+      { ok: false, error: "Webhook payload too large." },
+      { status: 413, headers: { "Cache-Control": "no-store" } },
+    );
+  }
+
   const rawBody = await request.text();
+  if (Buffer.byteLength(rawBody, "utf8") > MAX_WEBHOOK_BYTES) {
+    return Response.json(
+      { ok: false, error: "Webhook payload too large." },
+      { status: 413, headers: { "Cache-Control": "no-store" } },
+    );
+  }
   const signature = request.headers.get("x-square-hmacsha256-signature");
 
   if (!validateSquareWebhookSignature(rawBody, signature)) {

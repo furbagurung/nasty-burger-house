@@ -3387,3 +3387,55 @@ a.order-type-option:hover {
 .catalogue-desktop-nav a {
   color: #fffdf8;
 }
+
+/* Shared homepage container alignment */
+:root {
+  --home-container: 1180px;
+  --home-gutter: 1rem;
+}
+
+.site-header {
+  padding-inline: 0;
+}
+
+.site-header__inner {
+  display: grid;
+  width: min(calc(100% - (var(--home-gutter) * 2)), var(--home-container));
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-areas: "nav logo actions";
+  align-items: center;
+  gap: 2rem;
+  margin-inline: auto;
+}
+
+.hero-slide__copy {
+  left: max(var(--home-gutter), calc((100% - var(--home-container)) / 2));
+}
+
+@media (max-width: 900px) {
+  .site-header__inner {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 680px) {
+  :root {
+    --home-gutter: 0.75rem;
+  }
+
+  .site-header {
+    padding-inline: 0;
+  }
+
+  .site-header__inner {
+    width: min(calc(100% - (var(--home-gutter) * 2)), var(--home-container));
+    min-height: 4.75rem;
+  }
+
+  .hero-slide__copy {
+    right: var(--home-gutter);
+    left: var(--home-gutter);
+    width: auto;
+  }
+}

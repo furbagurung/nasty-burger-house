@@ -111,7 +111,7 @@ export async function POST(request: Request) {
   });
 
   if (authError) {
-    return Response.json({ ok: false, error: INVALID_CREDENTIALS }, { status: 401 });
+    return Response.json(\n      { ok: false, error: INVALID_CREDENTIALS },\n      { status: 401, headers: NO_STORE_HEADERS },\n    );
   }
 
   return Response.json(

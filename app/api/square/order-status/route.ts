@@ -1,3 +1,4 @@
+import { consumeRateLimit, requestIp } from "../../../lib/rate-limit";
 import { squareRequest } from "../../../lib/square/api";
 
 type SquareOrderResponse = {
@@ -15,13 +16,35 @@ type SquarePaymentResponse = {
 };
 
 export async function GET(request: Request) {
+  const ip = requestIp(request);
+  if (ip) {
+    const rateLimit = await consumeRateLimit({
+      scope: "square-order-status",
+      key: `ip:${ip}`,
+      limit: 60,
+      windowSeconds: 300,
+    });
+
+    if (!rateLimit.ok) {
+      return Response.json(
+        { ok: false, error: "Too many status checks. Please try again shortly." },
+        {
+          status: rateLimit.status,
+          headers: rateLimit.retryAfter
+            ? { "Retry-After": String(rateLimit.retryAfter), "Cache-Control": "no-store" }
+            : { "Cache-Control": "no-store" },
+        },
+      );
+    }
+  }
+
   const url = new URL(request.url);
   const squareOrderId = url.searchParams.get("squareOrderId")?.trim();
 
-  if (!squareOrderId) {
+  if (!squareOrderId || !/^[A-Za-z0-9_-]{6,128}$/.test(squareOrderId)) {
     return Response.json(
       { ok: false, error: "Missing Square order ID." },
-      { status: 400 },
+      { status: 400, headers: { "Cache-Control": "no-store" } },
     );
   }
 
@@ -35,11 +58,14 @@ export async function GET(request: Request) {
     )?.payment_id;
 
     if (!paymentId) {
-      return Response.json({
-        ok: true,
-        paid: false,
-        status: "PENDING",
-      });
+      return Response.json(
+        {
+          ok: true,
+          paid: false,
+          status: "PENDING",
+        },
+        { headers: { "Cache-Control": "no-store" } },
+      );
     }
 
     const paymentResult = await squareRequest<SquarePaymentResponse>(
@@ -48,11 +74,14 @@ export async function GET(request: Request) {
 
     const status = paymentResult.payment?.status ?? "UNKNOWN";
 
-    return Response.json({
-      ok: true,
-      paid: status === "COMPLETED",
-      status,
-    });
+    return Response.json(
+      {
+        ok: true,
+        paid: status === "COMPLETED",
+        status,
+      },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) {
     console.error("[NBH Square order status]", error);
 
@@ -61,7 +90,7 @@ export async function GET(request: Request) {
         ok: false,
         error: "Unable to verify Square payment.",
       },
-      { status: 502 },
+      { status: 502, headers: { "Cache-Control": "no-store" } },
     );
   }
 }

@@ -108,6 +108,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <FooterLegalLinks />
         <CookieSettings />
         <ToastProvider />
+        <Analytics />
       </body>
     </html>
   );

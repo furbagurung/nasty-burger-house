@@ -725,53 +725,55 @@ export default function OrderExperience({
       </p>
 
       <header className="site-header">
-        <a
-          className="wordmark"
-          href="#top"
-          aria-label="Nasty Burger House home"
-        >
-          <Image
-            className="brand-logo brand-logo--header"
-            src="/logo.webp"
-            alt=""
-            width={256}
-            height={256}
-            priority
-          />
-        </a>
-        <nav className="desktop-nav" aria-label="Primary navigation">
-          <a href="#menu">Menu</a>
-          <a href="#beast-month">Beast of the Month</a>
-          <button className="nav-button" type="button" onClick={openLoyalty}>
-            Drip Points
-          </button>
-        </nav>
-        <div className="header-actions">
-          <button
-            className="mobile-menu-button"
-            type="button"
-            aria-label="Open navigation"
-            aria-expanded={isMobileNavOpen}
-            aria-controls="mobile-navigation"
-            onClick={() => setIsMobileNavOpen(true)}
+        <div className="site-header__inner">
+          <a
+            className="wordmark"
+            href="#top"
+            aria-label="Nasty Burger House home"
           >
-            <span aria-hidden="true" />
-            <span aria-hidden="true" />
-            <span aria-hidden="true" />
-          </button>
-          <button
-            className="cart-button"
-            type="button"
-            onClick={cartCount > 0 ? openCart : openOrderType}
-            aria-label={
-              cartCount > 0
-                ? `View order, ${cartCount} items`
-                : "Choose an order type"
-            }
-          >
-            {cartCount > 0 ? "View order" : "Order now"}
-            {cartCount > 0 && <span>{cartCount}</span>}
-          </button>
+            <Image
+              className="brand-logo brand-logo--header"
+              src="/logo.webp"
+              alt=""
+              width={256}
+              height={256}
+              priority
+            />
+          </a>
+          <nav className="desktop-nav" aria-label="Primary navigation">
+            <a href="#menu">Menu</a>
+            <a href="#beast-month">Beast of the Month</a>
+            <button className="nav-button" type="button" onClick={openLoyalty}>
+              Drip Points
+            </button>
+          </nav>
+          <div className="header-actions">
+            <button
+              className="mobile-menu-button"
+              type="button"
+              aria-label="Open navigation"
+              aria-expanded={isMobileNavOpen}
+              aria-controls="mobile-navigation"
+              onClick={() => setIsMobileNavOpen(true)}
+            >
+              <span aria-hidden="true" />
+              <span aria-hidden="true" />
+              <span aria-hidden="true" />
+            </button>
+            <button
+              className="cart-button"
+              type="button"
+              onClick={cartCount > 0 ? openCart : openOrderType}
+              aria-label={
+                cartCount > 0
+                  ? `View order, ${cartCount} items`
+                  : "Choose an order type"
+              }
+            >
+              {cartCount > 0 ? "View order" : "Order now"}
+              {cartCount > 0 && <span>{cartCount}</span>}
+            </button>
+          </div>
         </div>
       </header>
 

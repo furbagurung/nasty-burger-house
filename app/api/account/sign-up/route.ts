@@ -1,4 +1,5 @@
 import { enforceAuthRateLimit } from "../../../lib/rate-limit";
+import { NO_STORE_HEADERS, validateJsonRequest } from "../../../lib/request-security";
 import { createClient } from "../../../lib/supabase/server";
 
 const GENERIC_ERROR = "We could not create your account. Please check your details and try again.";
@@ -25,6 +26,14 @@ function configuredSiteOrigin(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const requestGuard = validateJsonRequest(request, 16_384);
+  if (!requestGuard.ok) {
+    return Response.json(
+      { ok: false, error: GENERIC_ERROR },
+      { status: requestGuard.status, headers: NO_STORE_HEADERS },
+    );
+  }
+
   let body: {
     name?: unknown;
     email?: unknown;
@@ -79,7 +88,7 @@ export async function POST(request: Request) {
         status: rateLimit.status,
         headers: rateLimit.retryAfter
           ? { "Retry-After": String(rateLimit.retryAfter), "Cache-Control": "no-store" }
-          : { "Cache-Control": "no-store" },
+          : NO_STORE_HEADERS,
       },
     );
   }
@@ -107,6 +116,6 @@ export async function POST(request: Request) {
       signedIn: Boolean(data.session),
       confirmationRequired: !data.session,
     },
-    { headers: { "Cache-Control": "no-store" } },
+    { headers: NO_STORE_HEADERS },
   );
 }

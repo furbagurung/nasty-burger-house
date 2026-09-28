@@ -137,6 +137,35 @@ export async function POST(request: Request) {
     });
   }
 
+  const customerRateLimit = await consumeRateLimit({
+    scope: "checkout-create-customer",
+    key: `email:${validation.order.customer.email}`,
+    limit: 10,
+    windowSeconds: 300,
+  });
+
+  if (!customerRateLimit.ok) {
+    return Response.json(
+      {
+        ok: false,
+        errors: [
+          customerRateLimit.status === 429
+            ? "Too many checkout attempts. Please try again shortly."
+            : "Checkout is temporarily unavailable. Please try again.",
+        ],
+      },
+      {
+        status: customerRateLimit.status,
+        headers: customerRateLimit.retryAfter
+          ? {
+              "Retry-After": String(customerRateLimit.retryAfter),
+              "Cache-Control": "no-store",
+            }
+          : { "Cache-Control": "no-store" },
+      },
+    );
+  }
+
   const orderId = createOrderId(validation.order.requestId);
   const squareOrder = {
     ...validation.order,

@@ -1,4 +1,5 @@
 import { enforceAuthRateLimit } from "../../../lib/rate-limit";
+import { NO_STORE_HEADERS, validateJsonRequest } from "../../../lib/request-security";
 import { getAdminClientOrNull } from "../../../lib/supabase/admin";
 import { createClient } from "../../../lib/supabase/server";
 
@@ -21,19 +22,33 @@ function phoneVariants(value: string) {
 }
 
 export async function POST(request: Request) {
+  const requestGuard = validateJsonRequest(request, 8_192);
+  if (!requestGuard.ok) {
+    return Response.json(
+      { ok: false, error: INVALID_CREDENTIALS },
+      { status: requestGuard.status, headers: NO_STORE_HEADERS },
+    );
+  }
+
   let body: { identifier?: unknown; password?: unknown };
 
   try {
     body = (await request.json()) as { identifier?: unknown; password?: unknown };
   } catch {
-    return Response.json({ ok: false, error: INVALID_CREDENTIALS }, { status: 400 });
+    return Response.json(
+      { ok: false, error: INVALID_CREDENTIALS },
+      { status: 400, headers: NO_STORE_HEADERS },
+    );
   }
 
   const identifier = typeof body.identifier === "string" ? body.identifier.trim() : "";
   const password = typeof body.password === "string" ? body.password : "";
 
   if (!identifier || !password || identifier.length > 180 || password.length > 256) {
-    return Response.json({ ok: false, error: INVALID_CREDENTIALS }, { status: 400 });
+    return Response.json(
+      { ok: false, error: INVALID_CREDENTIALS },
+      { status: 400, headers: NO_STORE_HEADERS },
+    );
   }
 
   const rateLimit = await enforceAuthRateLimit(
@@ -67,7 +82,10 @@ export async function POST(request: Request) {
     const admin = getAdminClientOrNull();
 
     if (!variants || !admin) {
-      return Response.json({ ok: false, error: INVALID_CREDENTIALS }, { status: 401 });
+      return Response.json(
+        { ok: false, error: INVALID_CREDENTIALS },
+        { status: 401, headers: NO_STORE_HEADERS },
+      );
     }
 
     const { data, error } = await admin
@@ -77,7 +95,10 @@ export async function POST(request: Request) {
       .limit(2);
 
     if (error || !data || data.length !== 1 || !data[0]?.email) {
-      return Response.json({ ok: false, error: INVALID_CREDENTIALS }, { status: 401 });
+      return Response.json(
+      { ok: false, error: INVALID_CREDENTIALS },
+      { status: 401, headers: NO_STORE_HEADERS },
+    );
     }
 
     email = String(data[0].email).trim().toLowerCase();
@@ -95,6 +116,6 @@ export async function POST(request: Request) {
 
   return Response.json(
     { ok: true },
-    { headers: { "Cache-Control": "no-store" } },
+    { headers: NO_STORE_HEADERS },
   );
 }

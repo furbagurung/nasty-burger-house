@@ -32,13 +32,19 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return Response.json(\n      { ok: true, message: GENERIC_MESSAGE },\n      { headers: NO_STORE_HEADERS },\n    );
+    return Response.json(
+      { ok: true, message: GENERIC_MESSAGE },
+      { headers: NO_STORE_HEADERS },
+    );
   }
 
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
 
   if (!email || email.length > 160 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return Response.json(\n      { ok: true, message: GENERIC_MESSAGE },\n      { headers: NO_STORE_HEADERS },\n    );
+    return Response.json(
+      { ok: true, message: GENERIC_MESSAGE },
+      { headers: NO_STORE_HEADERS },
+    );
   }
 
   const rateLimit = await enforceAuthRateLimit(

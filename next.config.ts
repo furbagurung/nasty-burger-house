@@ -41,6 +41,7 @@ const securityHeaders = [
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: blob:",
             "font-src 'self' data:",
+            "frame-src 'self' https://www.google.com https://maps.google.com",
             "connect-src 'self' https://*.supabase.co https://vitals.vercel-insights.com",
             "upgrade-insecure-requests",
           ].join("; "),

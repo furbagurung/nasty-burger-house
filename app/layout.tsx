@@ -1,6 +1,8 @@
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import ClosureAnnouncement from "./components/closure-announcement";
 import CookieSettings from "./components/cookie-settings";
@@ -11,6 +13,7 @@ import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
 import MobileHomeLocation from "./components/mobile-home-location";
 import ToastProvider from "./components/toast-provider";
+
 import "./globals.css";
 import "./catalogue-theme.css";
 import "./menu-browse.css";
@@ -101,14 +104,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ClosureAnnouncement />
         <MobileHomeLocation />
         <FindStyleNavigation />
+
         {children}
+
         <MobileHomeHeaderOverlay />
         <MobileHeroControls />
         <CartDrawerEnhancer />
         <FooterLegalLinks />
         <CookieSettings />
         <ToastProvider />
+
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

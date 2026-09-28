@@ -96,9 +96,9 @@ export async function POST(request: Request) {
 
     if (error || !data || data.length !== 1 || !data[0]?.email) {
       return Response.json(
-      { ok: false, error: INVALID_CREDENTIALS },
-      { status: 401, headers: NO_STORE_HEADERS },
-    );
+        { ok: false, error: INVALID_CREDENTIALS },
+        { status: 401, headers: NO_STORE_HEADERS },
+      );
     }
 
     email = String(data[0].email).trim().toLowerCase();
@@ -111,7 +111,10 @@ export async function POST(request: Request) {
   });
 
   if (authError) {
-    return Response.json(\n      { ok: false, error: INVALID_CREDENTIALS },\n      { status: 401, headers: NO_STORE_HEADERS },\n    );
+    return Response.json(
+      { ok: false, error: INVALID_CREDENTIALS },
+      { status: 401, headers: NO_STORE_HEADERS },
+    );
   }
 
   return Response.json(

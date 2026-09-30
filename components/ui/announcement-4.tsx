@@ -10,17 +10,15 @@ type Announcement4Props = {
 
 export default function Announcement4({ onDismiss }: Announcement4Props) {
   return (
-    <div className="relative flex w-full max-w-[1180px] items-center justify-center gap-2 px-10 text-center sm:gap-3 sm:px-12">
-      <span className="font-extrabold uppercase tracking-[0.02em]">
-        WE&apos;RE OPEN 7 DAYS
-      </span>
+    <div className="announcement-4">
+      <span className="announcement-4__title">WE&apos;RE OPEN 7 DAYS</span>
 
       <span
         aria-hidden="true"
-        className="hidden size-1 shrink-0 rounded-full bg-white/55 sm:block"
+        className="announcement-4__separator"
       />
 
-      <span className="font-semibold">11:30 AM – 10:00 PM</span>
+      <span className="announcement-4__hours">11:30 AM – 10:00 PM</span>
 
       {onDismiss ? (
         <Button
@@ -29,7 +27,7 @@ export default function Announcement4({ onDismiss }: Announcement4Props) {
           size="icon"
           onClick={onDismiss}
           aria-label="Dismiss opening hours announcement"
-          className="absolute right-0 size-8 rounded-full text-white hover:bg-white/15 hover:text-white sm:right-1"
+          className="announcement-4__close"
         >
           <X className="size-4" />
         </Button>

@@ -200,3 +200,97 @@
     display: none;
   }
 }
+
+
+/* Watermelon announcement component adapted to the fixed Nasty Burger House top bar. */
+.closure-announcement .announcement-4 {
+  position: relative;
+  display: flex;
+  width: min(100%, 1180px);
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-inline: auto;
+  padding: 0 2.5rem;
+  white-space: nowrap;
+}
+
+.closure-announcement .announcement-4__title,
+.closure-announcement .announcement-4__hours {
+  color: #fff;
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.closure-announcement .announcement-4__title {
+  font-weight: 850;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.closure-announcement .announcement-4__hours {
+  font-weight: 650;
+}
+
+.closure-announcement .announcement-4__separator {
+  display: block;
+  width: 0.28rem;
+  height: 0.28rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.closure-announcement .announcement-4__close {
+  position: absolute;
+  right: 0;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+}
+
+.closure-announcement .announcement-4__close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .closure-announcement .announcement-4 {
+    gap: 0.38rem;
+    padding: 0 2.15rem 0 0.15rem;
+  }
+
+  .closure-announcement .announcement-4__title,
+  .closure-announcement .announcement-4__hours {
+    font-size: clamp(0.6rem, 2.65vw, 0.72rem);
+    line-height: 1;
+  }
+
+  .closure-announcement .announcement-4__separator {
+    width: 0.22rem;
+    height: 0.22rem;
+  }
+
+  .closure-announcement .announcement-4__close {
+    right: -0.2rem;
+    width: 1.9rem;
+    height: 1.9rem;
+    min-width: 1.9rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .closure-announcement .announcement-4 {
+    gap: 0.28rem;
+  }
+
+  .closure-announcement .announcement-4__title,
+  .closure-announcement .announcement-4__hours {
+    font-size: 0.58rem;
+  }
+}

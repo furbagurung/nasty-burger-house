@@ -1,12 +1,15 @@
 "use client";
 
+import Announcement4 from "@/components/ui/announcement-4";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ClosureAnnouncement() {
   const pathname = usePathname();
   const [desktopHeaderHidden, setDesktopHeaderHidden] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
   const isMenuRoute = pathname === "/menu" || pathname.startsWith("/menu/");
+  const isVisible = !dismissed && !pathname.startsWith("/admin");
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".home-top-header");
@@ -28,10 +31,13 @@ export default function ClosureAnnouncement() {
   }, [pathname]);
 
   useEffect(() => {
-    document.documentElement.classList.add("nasty-closure-visible");
+    document.documentElement.classList.toggle(
+      "nasty-closure-visible",
+      isVisible,
+    );
     document.documentElement.classList.toggle(
       "nasty-closure-menu",
-      isMenuRoute,
+      isMenuRoute && isVisible,
     );
 
     return () => {
@@ -40,12 +46,9 @@ export default function ClosureAnnouncement() {
         "nasty-closure-menu",
       );
     };
-  }, [isMenuRoute]);
+  }, [isMenuRoute, isVisible]);
 
-  if (pathname.startsWith("/admin")) return null;
-
-  const headline = "WE'RE OPEN 7 DAYS";
-  const message = "11:30 AM – 10:00 PM";
+  if (!isVisible) return null;
 
   return (
     <>
@@ -61,25 +64,7 @@ export default function ClosureAnnouncement() {
         role="status"
         aria-label="Opening hours announcement"
       >
-        <strong>{headline}</strong>
-
-        <span className="closure-announcement__desktop-copy">{message}</span>
-
-        <span className="closure-announcement__mobile-copy">
-          <span className="closure-announcement__marquee">
-            <span className="closure-announcement__marquee-item">
-              <b>{headline}</b>
-              <span>{message}</span>
-            </span>
-            <span
-              className="closure-announcement__marquee-item"
-              aria-hidden="true"
-            >
-              <b>{headline}</b>
-              <span>{message}</span>
-            </span>
-          </span>
-        </span>
+        <Announcement4 onDismiss={() => setDismissed(true)} />
       </aside>
       <div className="closure-announcement-spacer" aria-hidden="true" />
     </>

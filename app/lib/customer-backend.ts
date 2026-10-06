@@ -107,6 +107,7 @@ type ReviewRow = {
   order_id: string;
   rating: number;
   message: string;
+  status: CustomerReview["status"];
   created_at: string;
 };
 
@@ -140,6 +141,7 @@ function mapReview(row: ReviewRow): CustomerReview {
     orderId: row.order_id,
     rating: row.rating,
     message: row.message,
+    status: row.status,
     createdAt: row.created_at,
   };
 }
@@ -360,7 +362,7 @@ async function loadCustomerReviewsFresh(): Promise<CustomerReview[]> {
 
   const { data, error } = await supabase
     .from("reviews")
-    .select("id,order_id,rating,message,created_at")
+    .select("id,order_id,rating,message,status,created_at")
     .order("created_at", { ascending: false });
 
   if (error) throw error;
@@ -391,29 +393,30 @@ export async function saveReview(input: {
   const rating = Math.max(1, Math.min(5, Math.round(input.rating)));
   const message = input.message.trim().slice(0, 1000);
 
-  const { data: existing, error: lookupError } = await supabase
-    .from("reviews")
-    .select("id")
-    .eq("customer_id", user.id)
-    .eq("order_id", input.orderId)
-    .maybeSingle();
+  const response = await fetch("/api/reviews", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      orderId: input.orderId,
+      rating,
+      message,
+    }),
+  });
 
-  if (lookupError) throw lookupError;
+  const result = (await response.json().catch(() => null)) as
+    | {
+        ok?: boolean;
+        error?: string;
+        review?: CustomerReview;
+      }
+    | null;
 
-  const query = existing
-    ? supabase.from("reviews").update({ rating, message }).eq("id", existing.id)
-    : supabase.from("reviews").insert({
-        customer_id: user.id,
-        order_id: input.orderId,
-        rating,
-        message,
-      });
+  if (!response.ok || !result?.ok || !result.review) {
+    throw new Error(result?.error ?? "Could not submit your review.");
+  }
 
-  const { data, error } = await query
-    .select("id,order_id,rating,message,created_at")
-    .single();
-
-  if (error) throw error;
   customerReviewsCache = null;
-  return mapReview(data as ReviewRow);
+  return result.review;
 }

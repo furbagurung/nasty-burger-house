@@ -1,0 +1,186 @@
+.admin-review-main {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.admin-review-guidance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  border: 1px solid #e3ded8;
+  border-radius: 1rem;
+  padding: 1rem 1.15rem;
+  background: #fff;
+}
+
+.admin-review-guidance > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.admin-review-guidance p,
+.admin-review-guidance span {
+  margin: 0;
+  color: #756e67;
+  font-size: 0.78rem;
+}
+
+.admin-review-guidance strong {
+  font-size: 0.95rem;
+}
+
+.admin-review-guidance > span {
+  max-width: 43rem;
+  line-height: 1.5;
+}
+
+.admin-review-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.admin-review-card {
+  display: grid;
+  gap: 1rem;
+  border: 1px solid #e2ddd6;
+  border-left: 4px solid #c8c1b8;
+  border-radius: 1.1rem;
+  padding: 1.15rem;
+  background: #fff;
+}
+
+.admin-review-card--pending {
+  border-left-color: #e4a20d;
+}
+
+.admin-review-card--published {
+  border-left-color: #2e8a43;
+}
+
+.admin-review-card--flagged {
+  border-left-color: #bf321d;
+}
+
+.admin-review-card__header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-review-card__header h2 {
+  margin: 0.45rem 0 0;
+  font-size: 1.1rem;
+}
+
+.admin-review-card__header p {
+  margin: 0.2rem 0 0;
+  color: #776f67;
+  font-size: 0.76rem;
+}
+
+.admin-review-card__header time {
+  color: #81796f;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.admin-review-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.admin-review-status,
+.admin-review-verified {
+  border-radius: 999px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admin-review-status {
+  background: #f2efeb;
+  color: #625b54;
+}
+
+.admin-review-status--pending {
+  background: #fff1c9;
+  color: #835600;
+}
+
+.admin-review-status--published {
+  background: #e9f7eb;
+  color: #236b31;
+}
+
+.admin-review-status--flagged {
+  background: #fbe9e6;
+  color: #9f2d1b;
+}
+
+.admin-review-verified {
+  background: #eef3f8;
+  color: #31536f;
+}
+
+.admin-review-card__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.admin-review-card__rating strong {
+  color: #f0a51a;
+  letter-spacing: 0.08em;
+}
+
+.admin-review-card__rating span {
+  color: #756e67;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.admin-review-card__message {
+  max-width: 58rem;
+  margin: 0;
+  color: #3f3934;
+  line-height: 1.6;
+}
+
+.admin-review-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.admin-review-pending-action {
+  border: 0;
+  padding: 0.6rem 0.75rem;
+  background: transparent;
+  color: #746c64;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.admin-review-pending-action:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+@media (max-width: 760px) {
+  .admin-review-guidance,
+  .admin-review-card__header {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .admin-review-card__header time {
+    white-space: normal;
+  }
+}

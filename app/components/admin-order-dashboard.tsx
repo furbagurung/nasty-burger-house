@@ -282,6 +282,7 @@ export default function AdminOrderDashboard({
         <div className="admin-header__actions">
           <span>{adminEmail ?? "Admin"}</span>
           <Link href="/admin/customers">Customers</Link>
+          <Link href="/admin/reviews">Reviews</Link>
           <button type="button" onClick={() => void enableNotifications()}>
             {notificationsEnabled && soundEnabled ? "Order alerts on" : "Enable order alerts"}
           </button>

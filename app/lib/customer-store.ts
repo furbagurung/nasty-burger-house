@@ -61,6 +61,7 @@ export type CustomerReview = {
   orderId: string;
   rating: number;
   message: string;
+  status: "pending" | "published" | "hidden" | "flagged";
   createdAt: string;
 };
 
@@ -277,6 +278,7 @@ export function saveCustomerReview(input: {
     orderId: input.orderId,
     rating: Math.max(1, Math.min(5, Math.round(input.rating))),
     message: input.message.trim().slice(0, 1000),
+    status: "pending",
     createdAt: new Date().toISOString(),
   };
   window.localStorage.setItem(

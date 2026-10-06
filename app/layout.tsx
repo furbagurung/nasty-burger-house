@@ -57,6 +57,8 @@ import "./mobile-hero-premium-card.css";
 import "./mobile-home-location.css";
 import "./homepage-testimonials.css";
 import "./review-stories.css";
+import "./customer-reviews.css";
+import "./admin-reviews.css";
 import "./admin-dashboard.css";
 import "./admin-customers.css";
 import "./admin-notification-ui.css";

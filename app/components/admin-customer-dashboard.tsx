@@ -97,6 +97,7 @@ export default function AdminCustomerDashboard({
         <div className="admin-header__actions">
           <span>{adminEmail ?? "Admin"}</span>
           <Link href="/admin">Orders</Link>
+          <Link href="/admin/reviews">Reviews</Link>
           <Link href="/">View site</Link>
           <form action="/admin/logout" method="post">
             <button type="submit">Log out</button>

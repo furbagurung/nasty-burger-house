@@ -109,15 +109,25 @@ const heroSlides: HeroSlide[] = [
 ];
 
 function renderHeroTitle(title: string) {
-  return title.split(/(beast)/gi).map((part, index) =>
-    /^beast$/i.test(part) ? (
-      <span className="hero-title__accent" key={`${part}-${index}`}>
-        {part}
-      </span>
-    ) : (
-      part
-    ),
-  );
+  return title.split(/(drip points|beast)/gi).map((part, index) => {
+    if (/^beast$/i.test(part)) {
+      return (
+        <span className="hero-title__accent" key={`${part}-${index}`}>
+          {part}
+        </span>
+      );
+    }
+
+    if (/^drip points$/i.test(part)) {
+      return (
+        <span className="hero-title__drip-accent" key={`${part}-${index}`}>
+          {part}
+        </span>
+      );
+    }
+
+    return part;
+  });
 }
 
 const money = new Intl.NumberFormat("en-US", {

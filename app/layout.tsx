@@ -79,6 +79,7 @@ import "./account-skeleton-sidebar.css";
 import "./drip-points-dashboard.css";
 import "./brand-typography.css";
 import "./brand-cta.css";
+import "./landing-promo-modal.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",

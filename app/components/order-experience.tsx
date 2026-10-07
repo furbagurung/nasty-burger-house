@@ -64,49 +64,45 @@ type HeroSlide = {
 const heroSlides: HeroSlide[] = [
   {
     id: "drip-points",
-    eyebrow: "Nasty rewards",
+    eyebrow: "Nasty Rewards",
     title: "Get Drip Points",
-    description:
-      "Join Drip Points, get 500 points to start and unlock rewards made for hungry regulars.",
+    description: "500 points on us. Earn more every order.",
     image: "/images/signature-beast.webp",
     imageAlt:
       "Nasty Burger House signature burger beside a Drip Points promotion",
-    ctaLabel: "Join Drip Points",
+    ctaLabel: "Join Now",
     action: "loyalty",
   },
   {
     id: "monthly",
-    eyebrow: "Limited-time drop",
+    eyebrow: "Coming Soon",
     title: "Beast of the Month",
-    description:
-      "Meet the BBQ Beast: flame-grilled beef, crispy bacon, American cheese and house-made Bourbon BBQ sauce.",
+    description: "New Beast coming soon.",
     image: "/images/bbq-beast-hero.webp",
     imageAlt: "BBQ burger with beef patties, bacon, cheese and smoky sauce",
-    ctaLabel: "Order the BBQ Beast",
+    ctaLabel: "Coming Soon",
     action: "monthly",
   },
   {
     id: "beast-burgers",
-    eyebrow: "Flame-grilled favourites",
+    eyebrow: "Flame-grilled",
     title: "Beast Burgers",
-    description:
-      "From the OG Nasty to the Peri Beast, explore the full lineup and build your pickup order.",
+    description: "Big flavour. Built your way.",
     image: "/images/signature-beast.webp",
     imageAlt:
       "Nasty Burger House signature burger with cheese, pickles and sauce",
-    ctaLabel: "Explore burgers",
+    ctaLabel: "Explore",
     href: "/menu/burgers",
   },
   {
     id: "save-more",
-    eyebrow: "Beast Boxes · From A$34.99",
-    title: "Get More. Save Money.",
-    description:
-      "Go Solo, Duo or Family and get burgers, Nasty Fries, bites, drinks and dessert together in one Beast Box.",
+    eyebrow: "Build Your Feed",
+    title: "Beast Combo",
+    description: "Add Nasty Fries and a drink.",
     image: "/images/beast-box-hero.webp",
     imageAlt: "Beast Box with burger, fries, wings, eggplant bites and dessert",
-    ctaLabel: "Explore Beast Boxes",
-    href: "/menu/beast-boxes",
+    ctaLabel: "Build Combo",
+    href: "/menu/burgers",
   },
 ];
 

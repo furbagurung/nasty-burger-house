@@ -1160,9 +1160,9 @@ export default function OrderExperience({
                 Solo, Duo and Family boxes loaded with burgers, wings, fries and
                 more.
               </p>
-              <button type="button" onClick={openOrderType}>
+              <ButtonWithIcon tone="red" onClick={openOrderType}>
                 Order now
-              </button>
+              </ButtonWithIcon>
             </div>
           </article>
         </section>
@@ -1183,9 +1183,9 @@ export default function OrderExperience({
         <div className="footer-links">
           <nav aria-label="Ordering links">
             <h2>Order</h2>
-            <button type="button" onClick={openOrderType}>
+            <ButtonWithIcon tone="red" onClick={openOrderType}>
               Order now
-            </button>
+            </ButtonWithIcon>
             <span>Pickup available</span>
             <span>Uber Eats delivery — coming soon</span>
           </nav>
@@ -1708,15 +1708,16 @@ export default function OrderExperience({
                       ? pricingNotice
                       : serviceStatus.notice}
                   </p>
-                  <button
-                    type="button"
+                  <ButtonWithIcon
+                    tone="red"
+                    fullWidth
                     onClick={openCheckout}
                     disabled={!serviceStatus.acceptingOrders}
                   >
                     {serviceStatus.acceptingOrders
                       ? "Continue to checkout"
                       : "Ordering unavailable"}
-                  </button>
+                  </ButtonWithIcon>
                   <div
                     className="wallet-labels"
                     aria-label="Planned express payments"

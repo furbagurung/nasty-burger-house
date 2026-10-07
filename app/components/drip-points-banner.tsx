@@ -1,44 +1,33 @@
 import Image from "next/image";
-import ButtonWithIcon from "@/components/ui/button-witn-icon";
+
+const DESKTOP_AD = "/images/hero-slider/hero-2-loyalty-drip-points.jpg";
+const MOBILE_AD = "/images/hero-slider/hero-2-loyalty-drip-points.jpg";
 
 export default function DripPointsBanner() {
   return (
-    <div className="drip-points-banner-host">
-      <section className="drip-points-banner" aria-labelledby="drip-banner-title">
-        <div className="drip-points-banner__inner">
-          <div className="drip-points-banner__copy">
-            <h2 id="drip-banner-title">
-              Join the loyalty. Get 500 Drip Points.
-            </h2>
-            <div className="drip-points-banner__meta" aria-label="Drip Points benefits">
-              <span>500 points to start</span>
-              <span>Earn every order</span>
-            </div>
-            <ButtonWithIcon href="/drip-points" tone="red">
-              Join Drip Points
-            </ButtonWithIcon>
-          </div>
+    <section
+      className="drip-ad-display"
+      aria-label="Nasty Burger House promotion"
+    >
+      <div className="drip-ad-display__desktop">
+        <Image
+          src={DESKTOP_AD}
+          alt="Nasty Burger House Drip Points promotion"
+          fill
+          sizes="(max-width: 1180px) calc(100vw - 2rem), 1180px"
+          className="drip-ad-display__image"
+        />
+      </div>
 
-          <div className="drip-points-banner__art" aria-hidden="true">
-            <span className="drip-points-banner__glow" />
-            <Image
-              className="drip-points-banner__coin"
-              src="/images/drip-points/drip-coin.png"
-              alt=""
-              width={620}
-              height={620}
-              sizes="(max-width: 680px) 46vw, 360px"
-            />
-            <Image
-              className="drip-points-banner__logo"
-              src="/logo.webp"
-              alt=""
-              width={256}
-              height={256}
-            />
-          </div>
-        </div>
-      </section>
-    </div>
+      <div className="drip-ad-display__mobile">
+        <Image
+          src={MOBILE_AD}
+          alt="Nasty Burger House Drip Points promotion"
+          fill
+          sizes="calc(100vw - 1.5rem)"
+          className="drip-ad-display__image"
+        />
+      </div>
+    </section>
   );
 }

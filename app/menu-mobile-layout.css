@@ -231,25 +231,29 @@
   .catalogue-shell.menu-catalogue-shell .catalogue-product-grid--browse {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 1.5rem 0.75rem !important;
+    gap: 1.25rem 0.6rem !important;
     width: 100% !important;
     margin: 0 !important;
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-product--browse {
+    display: flex !important;
     min-width: 0;
+    flex-direction: column;
+    align-items: center;
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-product__media--browse {
-    width: min(100%, 10.75rem) !important;
+    width: min(88%, 9.25rem) !important;
     aspect-ratio: 1;
+    margin-inline: auto;
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-product--browse h2 {
     max-width: 100% !important;
-    margin: 0.5rem 0 0 !important;
+    margin: 0.4rem 0 0 !important;
     font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif !important;
-    font-size: 0.85rem !important;
+    font-size: 0.8rem !important;
     font-weight: 800 !important;
     line-height: 1.35 !important;
     text-align: center !important;

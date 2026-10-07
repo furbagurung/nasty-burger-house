@@ -13,6 +13,7 @@ import {
   dripProgressPercent,
 } from "../lib/loyalty";
 import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-AU", {
@@ -190,12 +191,12 @@ export default function DripPointsPage() {
                 />
                 <strong>{DRIP_SIGNUP_BONUS} welcome points</strong>
                 <span>Create your account to activate your rewards balance.</span>
-                <Link
-                  className="standalone-primary-button"
+                <ButtonWithIcon
                   href="/account/create?return=/drip-points"
+                  tone="red"
                 >
                   Create account
-                </Link>
+                </ButtonWithIcon>
                 <Link
                   className="standalone-secondary-link"
                   href="/account/sign-in?return=/drip-points"

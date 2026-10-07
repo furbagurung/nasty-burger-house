@@ -1,0 +1,48 @@
+/* Nasty Burger House brand typography
+   Body/UI: Questrial
+   Titles/headings: Anton SC */
+
+html,
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-questrial), Arial, Helvetica, sans-serif !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-anton-sc), Impact, "Arial Narrow", sans-serif !important;
+  font-weight: 400 !important;
+}
+
+/* Hero typography had explicit Geist overrides. */
+.hero-carousel .hero-slide__copy h1,
+.hero-carousel .hero-slide__copy h2,
+.order-hero h1,
+.menu-preview__heading h2,
+.section-heading h2,
+.location-section h2,
+.home-feature__copy h2,
+.promo-card h2 {
+  font-family: var(--font-anton-sc), Impact, "Arial Narrow", sans-serif !important;
+  font-weight: 400 !important;
+}
+
+/* Keep supporting copy, nav and CTA typography consistently Questrial. */
+.hero-carousel .hero-slide__copy .eyebrow,
+.hero-carousel .hero-slide__copy > p:not(.eyebrow),
+.hero-carousel .hero-slide__copy .hero-card__cta,
+.home-top-header,
+.desktop-nav,
+.catalogue-header,
+.mobile-tab-bar--v2,
+.site-footer,
+.eyebrow {
+  font-family: var(--font-questrial), Arial, Helvetica, sans-serif !important;
+}

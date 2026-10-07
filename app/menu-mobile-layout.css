@@ -212,14 +212,19 @@
     padding: 1rem 0 0.85rem !important;
     background: #fff !important;
     border-bottom: 1px solid #eee9e3;
-    text-align: center !important;
+    text-align: left !important;
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-heading h1 {
-    color: #c8102e !important;
+    color: #8f0f22 !important;
+    background: linear-gradient(90deg, #7f0c1d 0%, #c8102e 72%, #a30e27 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-size: clamp(1.5rem, 5vw, 2rem) !important;
     line-height: 1.15 !important;
     letter-spacing: 0 !important;
+    text-align: left !important;
     overflow-wrap: anywhere;
   }
 

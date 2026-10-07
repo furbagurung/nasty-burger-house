@@ -8,6 +8,15 @@ import { reviewVideos } from "./review-stories-data";
 export default function ReviewStories() {
   const [activeStoryIndex, setActiveStoryIndex] = useState<number | null>(null);
 
+  useEffect(() => {
+    const host = document.querySelector<HTMLElement>(".review-stories-home-host");
+    const adBanner = document.querySelector<HTMLElement>(".drip-ad-display");
+
+    if (host && adBanner && adBanner.parentElement) {
+      adBanner.parentElement.insertBefore(host, adBanner);
+    }
+  }, []);
+
   return (
     <>
       <section className="home-story-highlights" aria-labelledby="story-reviews-title">

@@ -61,24 +61,28 @@ export async function POST(request: Request) {
     });
 
     if (!rateLimit.ok) {
-      return Response.json(
-        {
-          ok: false,
-          errors: [
-            rateLimit.status === 429
-              ? "Too many checkout attempts. Please try again shortly."
-              : "Checkout is temporarily unavailable. Please try again.",
-          ],
-        },
-        {
-          status: rateLimit.status,
-          headers: rateLimit.retryAfter
-            ? {
-                "Retry-After": String(rateLimit.retryAfter),
-                "Cache-Control": "no-store",
-              }
-            : { "Cache-Control": "no-store" },
-        },
+      if (rateLimit.status === 429) {
+        return Response.json(
+          {
+            ok: false,
+            errors: ["Too many checkout attempts. Please try again shortly."],
+          },
+          {
+            status: 429,
+            headers: rateLimit.retryAfter
+              ? {
+                  "Retry-After": String(rateLimit.retryAfter),
+                  "Cache-Control": "no-store",
+                }
+              : { "Cache-Control": "no-store" },
+          },
+        );
+      }
+
+      // Checkout is revenue-critical. If the rate-limit backend is temporarily
+      // unavailable, fail open here rather than blocking Square payment.
+      console.warn(
+        "[NBH checkout] Rate limiter unavailable; continuing checkout.",
       );
     }
   }

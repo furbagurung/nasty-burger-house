@@ -62,6 +62,7 @@ import "./admin-customers.css";
 import "./admin-notification-ui.css";
 import "./mobile-header-always-dark.css";
 import "./homepage-spacing-tight.css";
+import "./homepage-popular-picks.css";
 import "./find-style-navigation.css";
 import "./menu-mobile-header-polish.css";
 import "./menu-mobile-layout.css";

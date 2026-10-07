@@ -184,3 +184,35 @@
     max-width: 10.5rem !important;
   }
 }
+
+
+/* Compact shared CTA inside mobile hero carousel. */
+@media (max-width: 680px) {
+  .site-shell > .home-main > .hero-carousel .hero-carousel__cta {
+    height: 2.35rem !important;
+    min-height: 2.35rem !important;
+    padding: 0.22rem 2.55rem 0.22rem 0.95rem !important;
+    font-size: 0.76rem !important;
+    line-height: 1 !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-carousel__cta:hover {
+    padding-left: 2.55rem !important;
+    padding-right: 0.95rem !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-carousel__cta > span:last-child {
+    right: 0.22rem !important;
+    width: 1.9rem !important;
+    height: 1.9rem !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-carousel__cta:hover > span:last-child {
+    right: calc(100% - 2.12rem) !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-carousel__cta svg {
+    width: 0.82rem;
+    height: 0.82rem;
+  }
+}

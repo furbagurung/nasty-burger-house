@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-const SESSION_KEY = "nasty-loyalty-promo-seen-v1";
 
 export default function LandingPromoModal() {
   const [open, setOpen] = useState(false);
@@ -16,14 +15,8 @@ export default function LandingPromoModal() {
       params.has(key),
     );
 
-    if (
-      hasRequestedOverlay ||
-      window.sessionStorage.getItem(SESSION_KEY) === "1"
-    ) {
-      return;
-    }
+    if (hasRequestedOverlay) return;
 
-    window.sessionStorage.setItem(SESSION_KEY, "1");
     const frame = window.requestAnimationFrame(() => setOpen(true));
 
     return () => window.cancelAnimationFrame(frame);

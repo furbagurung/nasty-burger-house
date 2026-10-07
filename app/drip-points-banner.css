@@ -30,7 +30,9 @@
 }
 
 .drip-ad-display__desktop .drip-ad-display__image {
-  transform: scale(1.16);
+  object-fit: contain;
+  object-position: center;
+  transform: none;
 }
 
 @media (max-width: 680px) {

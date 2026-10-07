@@ -75,7 +75,7 @@ export default function LandingPromoModal() {
           aria-label="View Drip Points"
         >
           <Image
-            src="/images/loyalty-poster.png"
+            src="/images/verticalJoin-drip-points.webp"
             alt="Nasty Burger House Drip Points promotion"
             fill
             priority

@@ -928,7 +928,16 @@ export default function OrderExperience({
                   {index === 0 ? (
                     <h1>{slide.title}</h1>
                   ) : (
-                    <h2>{slide.title}</h2>
+                    <h2>
+                      {slide.id === "monthly" ? (
+                        <>
+                          <span className="hero-title__accent">Beast</span>{" "}
+                          of the Month
+                        </>
+                      ) : (
+                        slide.title
+                      )}
+                    </h2>
                   )}
                   <p>{slide.description}</p>
                   {slide.id !== "monthly" && (

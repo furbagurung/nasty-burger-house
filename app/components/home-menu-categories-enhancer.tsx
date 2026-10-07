@@ -307,10 +307,11 @@ export default function HomeMenuCategoriesEnhancer() {
 
       .menu-preview__heading {
         display: flex;
-        width: min(100%, 1120px);
+        width: min(100%, 1180px);
         align-items: flex-end;
         justify-content: space-between;
-        gap: 1rem;
+        flex-direction: row;
+        gap: 1.25rem;
         margin-inline: auto;
         text-align: left;
       }
@@ -473,6 +474,8 @@ export default function HomeMenuCategoriesEnhancer() {
           width: 100%;
           align-items: center !important;
           justify-content: space-between;
+          flex-direction: row !important;
+          gap: 1rem;
           padding: 0 1rem;
           text-align: left !important;
         }

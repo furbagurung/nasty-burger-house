@@ -1,6 +1,6 @@
 /* Nasty Burger House brand typography
    Body/UI: Questrial
-   Titles/headings: Anton SC */
+   Titles/headings: Bowlby One SC */
 
 html,
 body,
@@ -17,7 +17,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-anton-sc), Impact, "Arial Narrow", sans-serif !important;
+  font-family: var(--font-bowlby-one-sc), Impact, "Arial Narrow", sans-serif !important;
   font-weight: 400 !important;
 }
 
@@ -30,7 +30,7 @@ h6 {
 .location-section h2,
 .home-feature__copy h2,
 .promo-card h2 {
-  font-family: var(--font-anton-sc), Impact, "Arial Narrow", sans-serif !important;
+  font-family: var(--font-bowlby-one-sc), Impact, "Arial Narrow", sans-serif !important;
   font-weight: 400 !important;
 }
 

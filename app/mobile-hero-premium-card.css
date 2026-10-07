@@ -15,7 +15,7 @@
     min-height: 0 !important;
     height: clamp(17.5rem, 72vw, 20rem) !important;
     max-height: 20rem !important;
-    margin: 0.75rem auto 0 !important;
+    margin: 1.25rem auto 0 !important;
     overflow: hidden !important;
     border: 0 !important;
     border-radius: 1.25rem !important;

@@ -110,22 +110,28 @@ export default function FindStyleNavigation() {
   }, [isOpen, supportsDrawer]);
 
   useEffect(() => {
-    if (!isMenuPage) return;
+    if (!isMenuPage && !isProductPage) return;
 
     const header = document.querySelector<HTMLElement>(
-      ".catalogue-shell:not(.product-page-shell) > .catalogue-header",
+      isMenuPage
+        ? ".catalogue-shell:not(.product-page-shell) > .catalogue-header"
+        : ".product-page-shell > .catalogue-header",
     );
-    const scroller = document.querySelector<HTMLElement>(
-      ".catalogue-shell:not(.product-page-shell) .catalogue-content",
-    );
+    const menuScroller = isMenuPage
+      ? document.querySelector<HTMLElement>(
+          ".catalogue-shell:not(.product-page-shell) .catalogue-content",
+        )
+      : null;
 
-    if (!header || !scroller) return;
+    if (!header || (isMenuPage && !menuScroller)) return;
 
-    let lastScrollY = scroller.scrollTop;
+    const readScrollY = () =>
+      Math.max(0, menuScroller ? menuScroller.scrollTop : window.scrollY);
+    let lastScrollY = readScrollY();
     let isHidden = false;
 
     const updateHeader = () => {
-      const currentY = Math.max(0, scroller.scrollTop);
+      const currentY = readScrollY();
 
       if (isOpen || currentY <= 12) {
         isHidden = false;
@@ -140,13 +146,14 @@ export default function FindStyleNavigation() {
     };
 
     updateHeader();
-    scroller.addEventListener("scroll", updateHeader, { passive: true });
+    const target: Window | HTMLElement = menuScroller ?? window;
+    target.addEventListener("scroll", updateHeader, { passive: true });
 
     return () => {
       header.classList.remove("is-mobile-scroll-hidden");
-      scroller.removeEventListener("scroll", updateHeader);
+      target.removeEventListener("scroll", updateHeader);
     };
-  }, [isMenuPage, isOpen]);
+  }, [isMenuPage, isProductPage, isOpen]);
 
   function closeDrawer({ restoreFocus = false } = {}) {
     setIsOpen(false);

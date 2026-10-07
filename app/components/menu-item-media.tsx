@@ -5,6 +5,7 @@ type MenuItemMediaProps = {
   item: MenuItem;
   priority?: boolean;
   sizes: string;
+  fit?: "cover" | "contain";
 };
 
 function demoImageFor(item: MenuItem) {
@@ -18,6 +19,7 @@ export default function MenuItemMedia({
   item,
   priority = false,
   sizes,
+  fit = "cover",
 }: MenuItemMediaProps) {
   const image = demoImageFor(item);
   const usesTemporaryImage = Boolean(image && !item.image);
@@ -34,7 +36,7 @@ export default function MenuItemMedia({
         fill
         sizes={sizes}
         priority={priority}
-        style={{ objectFit: "cover", objectPosition: "center" }}
+        style={{ objectFit: fit, objectPosition: "center" }}
       />
     );
   }

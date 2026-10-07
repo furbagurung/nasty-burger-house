@@ -10,10 +10,6 @@ export default function DripPointsBanner() {
             <h2 id="drip-banner-title">
               Join the loyalty. Get 500 Drip Points.
             </h2>
-            <p className="drip-points-banner__body">
-              Start with 500 points on us, then earn more every time you order
-              and turn those Drip Points into Nasty rewards.
-            </p>
             <div className="drip-points-banner__meta" aria-label="Drip Points benefits">
               <span>500 points to start</span>
               <span>Earn every order</span>

@@ -1,7 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { Bowlby_One_SC, Geist_Mono, Questrial } from "next/font/google";
+import { Bowlby_One_SC, DM_Sans, Geist_Mono } from "next/font/google";
 
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import ClosureAnnouncement from "./components/closure-announcement";
@@ -80,10 +80,9 @@ import "./drip-points-dashboard.css";
 import "./brand-typography.css";
 import "./brand-cta.css";
 
-const questrial = Questrial({
-  variable: "--font-questrial",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
-  weight: "400",
 });
 
 const bowlbyOneSC = Bowlby_One_SC({
@@ -107,7 +106,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${questrial.variable} ${bowlbyOneSC.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${bowlbyOneSC.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body>
         <HomeTopHeader />

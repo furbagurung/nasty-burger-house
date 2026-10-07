@@ -1,7 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { Anton_SC, Geist_Mono, Questrial } from "next/font/google";
+import { Bowlby_One_SC, Geist_Mono, Questrial } from "next/font/google";
 
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import ClosureAnnouncement from "./components/closure-announcement";
@@ -85,8 +85,8 @@ const questrial = Questrial({
   weight: "400",
 });
 
-const antonSC = Anton_SC({
-  variable: "--font-anton-sc",
+const bowlbyOneSC = Bowlby_One_SC({
+  variable: "--font-bowlby-one-sc",
   subsets: ["latin"],
   weight: "400",
 });
@@ -106,7 +106,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${questrial.variable} ${antonSC.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${questrial.variable} ${bowlbyOneSC.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body>
         <HomeTopHeader />

@@ -223,7 +223,7 @@
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-heading h1 {
-    color: var(--hot) !important;
+    color: #c8102e !important;
     font-size: clamp(1.5rem, 5vw, 2rem) !important;
     line-height: 1.15 !important;
     letter-spacing: 0 !important;
@@ -252,7 +252,7 @@
     margin: 0.5rem 0 0 !important;
     font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif !important;
     font-size: 0.85rem !important;
-    font-weight: 650 !important;
+    font-weight: 800 !important;
     line-height: 1.35 !important;
     overflow-wrap: anywhere;
   }

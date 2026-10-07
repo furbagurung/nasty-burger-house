@@ -22,6 +22,7 @@ import MobileBottomNav from "./mobile-bottom-nav";
 import HomepageTestimonials from "./homepage-testimonials";
 import ReviewStories from "./review-stories";
 import DripPointsBanner from "./drip-points-banner";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 type OrderExperienceProps = {
   items: MenuItem[];
@@ -877,15 +878,15 @@ export default function OrderExperience({
                 Join Drip Points <span aria-hidden="true">→</span>
               </button>
             </nav>
-            <button
-              className="primary-button full-width"
-              type="button"
+            <ButtonWithIcon
+              tone="red"
+              fullWidth
               onClick={cartCount > 0 ? openCart : openOrderType}
             >
               {cartCount > 0
                 ? `View order · ${formatPrice(cartSubtotal)}`
                 : "Order now"}
-            </button>
+            </ButtonWithIcon>
           </aside>
         </div>
       )}
@@ -925,13 +926,12 @@ export default function OrderExperience({
                   <p>{slide.description}</p>
                   <div className="hero-actions">
                     {slide.href ? (
-                      <Link className="hero-card__cta" href={slide.href}>
+                      <ButtonWithIcon href={slide.href} tone="light">
                         {slide.ctaLabel}
-                      </Link>
+                      </ButtonWithIcon>
                     ) : (
-                      <button
-                        className="hero-card__cta"
-                        type="button"
+                      <ButtonWithIcon
+                        tone="light"
                         onClick={
                           slide.action === "loyalty"
                             ? openLoyalty
@@ -942,7 +942,7 @@ export default function OrderExperience({
                         }
                       >
                         {slide.ctaLabel}
-                      </button>
+                      </ButtonWithIcon>
                     )}
                   </div>
                   <div className="hero-carousel__controls">
@@ -1019,9 +1019,9 @@ export default function OrderExperience({
           <div className="menu-preview__heading">
             <p className="eyebrow">Find your favourite</p>
             <h2 id="menu-preview-title">Explore our menu</h2>
-            <Link className="outline-button" href="/menu/burgers">
+            <ButtonWithIcon href="/menu/burgers" tone="light">
               View menu
-            </Link>
+            </ButtonWithIcon>
           </div>
           <div className="menu-preview__grid">
             <div
@@ -1139,9 +1139,9 @@ export default function OrderExperience({
                 Smoky Bourbon BBQ, crispy bacon and American cheese stacked for
                 serious appetite.
               </p>
-              <button type="button" onClick={openOrderType}>
+              <ButtonWithIcon tone="red" onClick={openOrderType}>
                 Order now
-              </button>
+              </ButtonWithIcon>
             </div>
           </article>
           <article className="home-feature home-feature--boxes">
@@ -1547,13 +1547,9 @@ export default function OrderExperience({
                 {selectionError}
               </p>
             )}
-            <button
-              className="primary-button full-width"
-              type="button"
-              onClick={addSelectedItem}
-            >
+            <ButtonWithIcon tone="red" fullWidth onClick={addSelectedItem}>
               {editingLineId ? "Save changes" : "Add to order"}
-            </button>
+            </ButtonWithIcon>
           </section>
         </div>
       )}
@@ -1579,20 +1575,18 @@ export default function OrderExperience({
             <h3>BBQ Beast · {formatPrice(monthlyItem.price)}</h3>
             <p>{monthlyItem.description}</p>
             <div className="modal-actions">
-              <button
-                className="secondary-button"
-                type="button"
+              <ButtonWithIcon
+                tone="light"
                 onClick={() => continueAfterMonthly(pendingItem)}
               >
                 Keep my choice
-              </button>
-              <button
-                className="primary-button"
-                type="button"
+              </ButtonWithIcon>
+              <ButtonWithIcon
+                tone="red"
                 onClick={() => continueAfterMonthly(monthlyItem)}
               >
                 Try BBQ Beast
-              </button>
+              </ButtonWithIcon>
             </div>
           </section>
         </div>
@@ -1773,13 +1767,14 @@ export default function OrderExperience({
                     present it when collecting your food.
                   </p>
                 </div>
-                <Link
-                  className="primary-button full-width"
+                <ButtonWithIcon
                   href="/menu/burgers"
+                  tone="red"
+                  fullWidth
                   onClick={() => setIsCheckoutOpen(false)}
                 >
                   Return to menu
-                </Link>
+                </ButtonWithIcon>
               </div>
             ) : (
               <form className="checkout-form" onSubmit={submitOrder}>
@@ -1971,8 +1966,9 @@ export default function OrderExperience({
                       </div>
                     )}
 
-                    <button
-                      className="primary-button full-width"
+                    <ButtonWithIcon
+                      tone="red"
+                      fullWidth
                       type="submit"
                       disabled={
                         checkoutState === "submitting" ||
@@ -1984,7 +1980,7 @@ export default function OrderExperience({
                         : checkoutState === "submitting"
                           ? "Sending order…"
                           : "Place pickup order"}
-                    </button>
+                    </ButtonWithIcon>
                     <small>
                       No online payment is required. You&apos;ll pay at pickup.
                     </small>
@@ -2026,13 +2022,13 @@ export default function OrderExperience({
                   Purchase earning and redemption will connect with the
                   client&apos;s loyalty platform.
                 </p>
-                <button
-                  className="primary-button full-width"
-                  type="button"
+                <ButtonWithIcon
+                  tone="red"
+                  fullWidth
                   onClick={() => setIsLoyaltyOpen(false)}
                 >
                   Start ordering
-                </button>
+                </ButtonWithIcon>
               </div>
             ) : (
               <form onSubmit={submitLoyalty}>
@@ -2049,9 +2045,9 @@ export default function OrderExperience({
                   Phone number
                   <input type="tel" name="phone" autoComplete="tel" required />
                 </label>
-                <button className="primary-button full-width" type="submit">
+                <ButtonWithIcon tone="red" fullWidth type="submit">
                   Get 500 Drip Points
-                </button>
+                </ButtonWithIcon>
               </form>
             )}
           </section>

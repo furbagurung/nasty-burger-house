@@ -22,6 +22,11 @@
       visibility 180ms ease !important;
   }
 
+  .product-page-shell > .catalogue-header.is-mobile-scroll-hidden {
+    transform: translateY(calc(-100% - 2px)) !important;
+    pointer-events: none !important;
+  }
+
   /* Keep the customization, drink and Beast Box drawers visually full-screen.
      Their backdrop is rendered as a direct child of the product shell, so the
      header can hide only while one of those drawers is actually open. */

@@ -15,7 +15,6 @@ export default function ReviewStories() {
           <div>
             <p className="home-story-highlights__eyebrow">Customer stories</p>
             <h2 id="story-reviews-title">Review highlights.</h2>
-            <p>Tap a story to watch real customer review videos.</p>
           </div>
         </div>
         <div className="home-story-highlights__row" aria-label="Review story highlights">

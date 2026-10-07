@@ -55,3 +55,43 @@ h6 {
 [class*="eyebrow"] {
   display: none !important;
 }
+
+
+/* Section title scale
+   Reduce homepage section titles by one golden-ratio step (× 0.618).
+   Hero titles and primary page titles keep their existing scale. */
+.menu-preview__heading h2 {
+  font-size: clamp(1.854rem, 4.326vw, 3.955rem) !important;
+}
+
+.popular-picks__heading h2 {
+  font-size: clamp(1.36rem, 2.472vw, 2.472rem) !important;
+}
+
+.home-story-highlights__heading h2 {
+  font-size: clamp(1.421rem, 3.09vw, 2.472rem) !important;
+}
+
+.home-testimonials__heading h2 {
+  font-size: clamp(1.73rem, 3.337vw, 3.399rem) !important;
+}
+
+.find-us-section__copy h2 {
+  font-size: clamp(1.669rem, 3.337vw, 3.245rem) !important;
+}
+
+@media (max-width: 760px) {
+  .home-testimonials__heading h2 {
+    font-size: clamp(1.73rem, 8.034vw, 2.627rem) !important;
+  }
+
+  .find-us-section__copy h2 {
+    font-size: clamp(1.452rem, 7.107vw, 2.225rem) !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .popular-picks__heading h2 {
+    font-size: 1.051rem !important;
+  }
+}

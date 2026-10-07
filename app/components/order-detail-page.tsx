@@ -11,6 +11,7 @@ import {
 } from "../lib/customer-backend";
 import type { CustomerOrder, CustomerReview } from "../lib/customer-store";
 import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -80,7 +81,7 @@ export default function OrderDetailPage() {
             <p className="standalone-eyebrow">Order not found</p>
             <h1>We can&apos;t find that order in your account.</h1>
             {error && <p className="account-form-error" role="alert">{error}</p>}
-            <Link className="standalone-primary-button" href="/account/orders">Order history</Link>
+            <ButtonWithIcon href="/account/orders" tone="red">Order history</ButtonWithIcon>
           </section>
         </main>
         <MobileBottomNav active="more" />
@@ -165,7 +166,7 @@ export default function OrderDetailPage() {
               {review ? (
                 <><h2>{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</h2><p>{review.message || "Thanks for rating your order."}</p><Link href={`/reviews?order=${encodeURIComponent(order.orderId)}`}>Edit review</Link></>
               ) : canReview ? (
-                <><h2>How was it?</h2><p>Rate this completed order and leave a short review.</p><Link className="standalone-primary-button" href={`/reviews?order=${encodeURIComponent(order.orderId)}`}>Leave a review</Link></>
+                <><h2>How was it?</h2><p>Rate this completed order and leave a short review.</p><ButtonWithIcon href={`/reviews?order=${encodeURIComponent(order.orderId)}`} tone="red">Leave a review</ButtonWithIcon></>
               ) : (
                 <><h2>Review after pickup.</h2><p>The review form unlocks when this order is marked completed.</p></>
               )}
@@ -175,7 +176,7 @@ export default function OrderDetailPage() {
 
         <div className="order-detail-footer-actions">
           <Link className="standalone-secondary-link" href="/account/orders">← All orders</Link>
-          <Link className="standalone-primary-button" href="/menu/burgers">Order again</Link>
+          <ButtonWithIcon href="/menu/burgers" tone="red">Order again</ButtonWithIcon>
         </div>
       </main>
       <MobileBottomNav active="more" />

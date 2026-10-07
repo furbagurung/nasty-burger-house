@@ -9,7 +9,7 @@ import {
   calculateLineUnitPrice,
   type CartLine,
 } from "../lib/order";
-import type { ServiceStatus } from "../lib/service";
+import { getServiceStatus, type ServiceStatus } from "../lib/service";
 import MobileBottomNav from "./mobile-bottom-nav";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
@@ -66,7 +66,8 @@ type CheckoutPageProps = {
   serviceStatus: ServiceStatus;
 };
 
-export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
+export default function CheckoutPage({ serviceStatus: initialServiceStatus }: CheckoutPageProps) {
+  const [serviceStatus, setServiceStatus] = useState(initialServiceStatus);
   const [cart, setCart] = useState<CartLine[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -75,6 +76,15 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const syncServiceStatus = () => setServiceStatus(getServiceStatus());
+
+    syncServiceStatus();
+    const interval = window.setInterval(syncServiceStatus, 30_000);
+
+    return () => window.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     try {

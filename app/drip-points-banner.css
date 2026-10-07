@@ -14,7 +14,7 @@
 
 .drip-ad-display__desktop {
   display: block;
-  aspect-ratio: 4 / 1;
+  height: clamp(18rem, 24vw, 24rem);
   border-radius: 0;
   background: transparent;
   box-shadow: none;
@@ -27,6 +27,10 @@
 .drip-ad-display__image {
   object-fit: contain;
   object-position: center;
+}
+
+.drip-ad-display__desktop .drip-ad-display__image {
+  transform: scale(1.16);
 }
 
 @media (max-width: 680px) {

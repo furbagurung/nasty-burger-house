@@ -8,6 +8,7 @@ import {
   isSupabaseBrowserConfigured,
 } from "../lib/supabase/client";
 import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 export default function AccountResetPasswordPage() {
   const router = useRouter();
@@ -96,13 +97,13 @@ export default function AccountResetPasswordPage() {
                 {error}
               </p>
             )}
-            <button
-              className="standalone-primary-button"
+            <ButtonWithIcon
+              tone="red"
               type="submit"
               disabled={submitting || !configured}
             >
               {submitting ? "Updating…" : "Update password"}
-            </button>
+            </ButtonWithIcon>
             <Link className="standalone-secondary-link" href="/account/sign-in">
               Back to sign in
             </Link>

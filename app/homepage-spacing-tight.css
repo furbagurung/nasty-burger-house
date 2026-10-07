@@ -25,6 +25,10 @@
 @media (max-width: 760px) {
   .home-main > .menu-preview .menu-preview__heading {
     display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding-inline: 1rem !important;
   }
 
   .home-main > .menu-preview {

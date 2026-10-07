@@ -19,6 +19,7 @@ h5,
 h6 {
   font-family: var(--font-bowlby-one-sc), Impact, "Arial Narrow", sans-serif !important;
   font-weight: 400 !important;
+  letter-spacing: 0 !important;
 }
 
 /* Hero typography had explicit Geist overrides. */
@@ -32,6 +33,7 @@ h6 {
 .promo-card h2 {
   font-family: var(--font-bowlby-one-sc), Impact, "Arial Narrow", sans-serif !important;
   font-weight: 400 !important;
+  letter-spacing: 0 !important;
 }
 
 /* Keep supporting copy, nav and CTA typography consistently Questrial. */
@@ -45,4 +47,11 @@ h6 {
 .site-footer,
 .eyebrow {
   font-family: var(--font-questrial), Arial, Helvetica, sans-serif !important;
+}
+
+
+/* Eyebrow labels are intentionally removed across all sections and pages. */
+.eyebrow,
+[class*="eyebrow"] {
+  display: none !important;
 }

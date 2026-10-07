@@ -107,7 +107,6 @@ export default function ReviewsPage() {
         <div className="standalone-page-heading">
           <p className="standalone-eyebrow">Customer feedback</p>
           <div><h1>Reviews</h1><span>{reviews.length} saved</span></div>
-          <p>Reviews unlock after an order is completed, so every rating is tied to a real purchase.</p>
         </div>
 
         {!signedIn && (

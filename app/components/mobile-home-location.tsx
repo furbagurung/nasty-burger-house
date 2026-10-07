@@ -5,9 +5,8 @@ import { usePathname } from "next/navigation";
 export default function MobileHomeLocation() {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const isMenuPage = pathname.startsWith("/menu/");
   const isProductPage = pathname.startsWith("/product/");
-  const supportsHeader = isHome || isMenuPage || isProductPage;
+  const supportsHeader = isHome || isProductPage;
 
   if (!supportsHeader) return null;
 

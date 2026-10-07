@@ -56,16 +56,21 @@
 
 .hero-carousel .hero-slide__copy .hero-title__accent {
   display: inline;
-  color: #9d0b24;
+  color: #c8102e;
   background: linear-gradient(
     180deg,
-    #d31a38 0%,
-    #a70d29 52%,
-    #6f091a 100%
+    #ff5366 0%,
+    #e11d3f 34%,
+    #c8102e 62%,
+    #7f0c1d 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0.012em rgba(255, 255, 255, 0.14);
+  filter:
+    drop-shadow(0 2px 0 rgba(0, 0, 0, 0.42))
+    drop-shadow(0 0 10px rgba(200, 16, 46, 0.24));
 }
 
 .hero-carousel .hero-slide__copy > p:not(.eyebrow) {

@@ -74,10 +74,7 @@
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .eyebrow {
-    margin: 0 0 0.35rem !important;
-    color: var(--gold) !important;
-    font-size: 0.52rem !important;
-    letter-spacing: 0.19em !important;
+    display: none !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h1,

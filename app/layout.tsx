@@ -9,6 +9,7 @@ import CookieSettings from "./components/cookie-settings";
 import FindStyleNavigation from "./components/find-style-navigation";
 import FooterLegalLinks from "./components/footer-legal-links";
 import HomeTopHeader from "./components/home-top-header";
+import ImageDragGuard from "./components/image-drag-guard";
 import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
 import MobileHomeLocation from "./components/mobile-home-location";
@@ -115,6 +116,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ClosureAnnouncement />
         <MobileHomeLocation />
         <FindStyleNavigation />
+        <ImageDragGuard />
 
         {children}
 

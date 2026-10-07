@@ -56,11 +56,11 @@
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy {
     position: absolute !important;
-    right: 0.95rem !important;
-    bottom: 2.55rem !important;
+    right: auto !important;
+    bottom: 2.65rem !important;
     left: 0.95rem !important;
     display: block !important;
-    width: auto !important;
+    width: min(62%, 12.75rem) !important;
     min-height: 0 !important;
     height: auto !important;
     max-height: none !important;
@@ -82,39 +82,39 @@
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h1,
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h2 {
-    max-width: 8.5ch !important;
+    max-width: 7.6ch !important;
     margin: 0 !important;
     color: #fff !important;
-    font-size: clamp(1.95rem, 9vw, 2.7rem) !important;
-    line-height: 0.92 !important;
+    font-size: clamp(1.62rem, 7.2vw, 2.05rem) !important;
+    line-height: 0.94 !important;
     letter-spacing: -0.055em !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy > p:not(.eyebrow) {
     display: -webkit-box !important;
-    max-width: 19rem !important;
-    margin: 0.48rem 0 0 !important;
+    max-width: 11.5rem !important;
+    margin: 0.38rem 0 0 !important;
     overflow: hidden !important;
     color: rgba(255, 255, 255, 0.82) !important;
-    font-size: 0.72rem !important;
-    line-height: 1.35 !important;
+    font-size: 0.64rem !important;
+    line-height: 1.32 !important;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-actions {
-    margin-top: 0.65rem !important;
+    margin-top: 0.55rem !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta {
     min-width: 0 !important;
-    min-height: 2.35rem !important;
+    min-height: 2rem !important;
     border-color: rgba(255, 255, 255, 0.78) !important;
-    padding: 0.5rem 0.85rem !important;
+    padding: 0.4rem 0.7rem !important;
     background: rgba(255, 255, 255, 0.94) !important;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16) !important;
     color: var(--ink) !important;
-    font-size: 0.72rem !important;
+    font-size: 0.64rem !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta:hover {
@@ -163,10 +163,10 @@
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h1,
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h2 {
-    font-size: clamp(1.82rem, 8.8vw, 2.35rem) !important;
+    font-size: clamp(1.5rem, 7vw, 1.9rem) !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy > p:not(.eyebrow) {
-    max-width: 16.5rem !important;
+    max-width: 10.5rem !important;
   }
 }

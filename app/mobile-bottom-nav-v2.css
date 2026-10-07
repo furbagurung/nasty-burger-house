@@ -1,6 +1,18 @@
 /* Mobile bottom navigation v2: Home · Menu · Cart · Drip Points · More */
 
 @media (max-width: 680px) {
+  :root {
+    --mobile-tab-bar-clearance: calc(5.35rem + env(safe-area-inset-bottom));
+  }
+
+  html {
+    scroll-padding-bottom: var(--mobile-tab-bar-clearance);
+  }
+
+  .site-shell {
+    padding-bottom: var(--mobile-tab-bar-clearance);
+  }
+
   .mobile-tab-bar--v2 {
     position: fixed !important;
     right: 0 !important;

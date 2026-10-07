@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 const DESKTOP_AD = "/images/hero-slider/hero-2-loyalty-drip-points.jpg";
-const MOBILE_AD = "/images/hero-slider/hero-2-loyalty-drip-points.jpg";
+const MOBILE_AD = "/images/loyalty-poster.png";
 
 export default function DripPointsBanner() {
   return (

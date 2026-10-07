@@ -25,6 +25,7 @@ import type { CartLine } from "../lib/order";
 import CatalogueMobileMenu from "./catalogue-mobile-menu";
 import MenuItemMedia from "./menu-item-media";
 import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 type ProductDetailPageProps = {
   item: MenuItem;
@@ -461,11 +462,15 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                 <button type="button" onClick={() => setQuantity((current) => Math.min(20, current + 1))} disabled={quantity === 20} aria-label="Increase quantity"><Plus size={17} /></button>
               </div>
 
-              <button className={`product-add-button${addedToCart ? " is-added" : ""}`} type="button" onClick={addToCart}>
-                {addedToCart ? <Check size={19} /> : <ShoppingBag size={19} />}
-                <span>{addedToCart ? "Added to cart" : "Add to cart"}</span>
-                <strong>{money.format(totalPrice)}</strong>
-              </button>
+              <ButtonWithIcon
+                tone={addedToCart ? "dark" : "red"}
+                fullWidth
+                onClick={addToCart}
+              >
+                {addedToCart
+                  ? "Added to cart"
+                  : `Add to cart · ${money.format(totalPrice)}`}
+              </ButtonWithIcon>
             </div>
 
             {selectionError && <p className="product-selection-error" role="alert">{selectionError}</p>}
@@ -473,7 +478,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             {addedToCart && (
               <div className="product-added-actions">
                 <span><Check size={16} /> Your item is in the cart.</span>
-                <Link href="/?cart=1">View cart</Link>
+                <ButtonWithIcon href="/?cart=1" tone="light">View cart</ButtonWithIcon>
               </div>
             )}
 

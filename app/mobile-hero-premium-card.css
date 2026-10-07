@@ -84,7 +84,7 @@
     color: #fff !important;
     font-size: clamp(1.62rem, 7.2vw, 2.05rem) !important;
     line-height: 0.94 !important;
-    letter-spacing: -0.055em !important;
+    letter-spacing: 0 !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy > p:not(.eyebrow) {

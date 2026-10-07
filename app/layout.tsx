@@ -80,6 +80,7 @@ import "./drip-points-dashboard.css";
 import "./brand-typography.css";
 import "./brand-cta.css";
 import "./landing-promo-modal.css";
+import "./home-menu-categories.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",

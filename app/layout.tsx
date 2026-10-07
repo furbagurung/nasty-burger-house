@@ -1,7 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Anton_SC, Geist_Mono, Questrial } from "next/font/google";
 
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import ClosureAnnouncement from "./components/closure-announcement";
@@ -77,10 +77,18 @@ import "./account-saas-persistent.css";
 import "./account-skeleton.css";
 import "./account-skeleton-sidebar.css";
 import "./drip-points-dashboard.css";
+import "./brand-typography.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const questrial = Questrial({
+  variable: "--font-questrial",
   subsets: ["latin"],
+  weight: "400",
+});
+
+const antonSC = Anton_SC({
+  variable: "--font-anton-sc",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 const geistMono = Geist_Mono({
@@ -98,7 +106,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${questrial.variable} ${antonSC.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body>
         <HomeTopHeader />

@@ -1015,11 +1015,13 @@ export default function OrderExperience({
           aria-labelledby="menu-preview-title"
         >
           <div className="menu-preview__heading">
-            <p className="eyebrow">Find your favourite</p>
-            <h2 id="menu-preview-title">Explore our menu</h2>
-            <ButtonWithIcon href="/menu/burgers" tone="light">
-              View menu
-            </ButtonWithIcon>
+            <div>
+              <p className="eyebrow">Find your favourite</p>
+              <h2 id="menu-preview-title">Explore our menu</h2>
+            </div>
+            <Link className="menu-preview__view-all" href="/menu/burgers">
+              View all <span aria-hidden="true">→</span>
+            </Link>
           </div>
           <div className="menu-preview__grid">
             <div

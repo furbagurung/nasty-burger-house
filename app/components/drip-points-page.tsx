@@ -145,11 +145,6 @@ export default function DripPointsPage() {
               <div className="drip-page-benefits__heading">
                 <p className="standalone-eyebrow">How Drip Points work</p>
                 <h2 id="drip-benefits-title">Earn safely. Unlock after pickup.</h2>
-                <p>
-                  {DRIP_SIGNUP_BONUS} signup points equals 25% of the{" "}
-                  {DRIP_REWARD_TARGET.toLocaleString()}-point target for a free
-                  Beast Burger Meal.
-                </p>
               </div>
 
               <div className="drip-page-benefit-grid">
@@ -177,10 +172,6 @@ export default function DripPointsPage() {
                 <h2 id="drip-signup-title">
                   Start with {DRIP_SIGNUP_BONUS} Drip Points.
                 </h2>
-                <p>
-                  Drip Points are tied to your authenticated Nasty account so
-                  rewards cannot be duplicated between devices.
-                </p>
               </div>
               <div className="drip-page-success">
                 <Image
@@ -273,10 +264,6 @@ export default function DripPointsPage() {
               <div className="drip-dashboard-earn__copy">
                 <p className="standalone-eyebrow">Nasty Rewards</p>
                 <h2>Earn more Drip Points</h2>
-                <p>
-                  Order your favourites, collect points and move closer to your
-                  next free Beast Burger Meal.
-                </p>
                 <Link href="/menu/burgers">
                   Explore menu <span aria-hidden="true">→</span>
                 </Link>

@@ -349,7 +349,12 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
         <div className="product-detail__layout product-detail__layout--premium">
           <section className="product-detail__visual" aria-label={`${item.name} image`}>
             <div className="product-detail__media product-detail__media--premium">
-              <MenuItemMedia item={item} sizes="(max-width: 900px) 100vw, 54vw" priority />
+              <MenuItemMedia
+                item={item}
+                sizes="(max-width: 900px) 100vw, 54vw"
+                priority
+                fit="contain"
+              />
             </div>
             <div className="product-detail__visual-note">
               <span>{category?.label ?? "Nasty Burger House"}</span>

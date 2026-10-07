@@ -54,6 +54,20 @@
     0 12px 34px rgba(0, 0, 0, 0.34);
 }
 
+.hero-carousel .hero-slide__copy .hero-title__accent {
+  display: inline;
+  color: #9d0b24;
+  background: linear-gradient(
+    180deg,
+    #d31a38 0%,
+    #a70d29 52%,
+    #6f091a 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .hero-carousel .hero-slide__copy > p:not(.eyebrow) {
   max-width: 29rem !important;
   margin: clamp(0.9rem, 1.3vw, 1.25rem) 0 0 !important;

@@ -92,8 +92,8 @@
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy > p:not(.eyebrow) {
     display: -webkit-box !important;
-    max-width: 11.5rem !important;
-    margin: 0.38rem 0 0 !important;
+    max-width: 10.5rem !important;
+    margin: 0.32rem 0 0 !important;
     overflow: hidden !important;
     color: rgba(255, 255, 255, 0.82) !important;
     font-size: 0.64rem !important;
@@ -108,13 +108,30 @@
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta {
     min-width: 0 !important;
-    min-height: 2rem !important;
+    min-height: 1.8rem !important;
+    justify-content: flex-start !important;
+    gap: 0.38rem !important;
     border-color: rgba(255, 255, 255, 0.78) !important;
-    padding: 0.4rem 0.7rem !important;
+    padding: 0.3rem 0.34rem 0.3rem 0.62rem !important;
     background: rgba(255, 255, 255, 0.94) !important;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16) !important;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.14) !important;
     color: var(--ink) !important;
-    font-size: 0.64rem !important;
+    font-size: 0.58rem !important;
+    font-weight: 800 !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta::after {
+    width: 1.45rem !important;
+    height: 1.45rem !important;
+    border-color: rgba(21, 19, 15, 0.08) !important;
+    background: rgba(21, 19, 15, 0.06) !important;
+    box-shadow: none !important;
+    color: var(--ink) !important;
+    font-size: 0.72rem !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta::before {
+    display: none !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta:hover {

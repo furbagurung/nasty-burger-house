@@ -17,7 +17,7 @@ import {
   calculateLineUnitPrice,
   type CartLine,
 } from "../lib/order";
-import type { ServiceStatus } from "../lib/service";
+import { getServiceStatus, type ServiceStatus } from "../lib/service";
 import MobileBottomNav from "./mobile-bottom-nav";
 import HomepageTestimonials from "./homepage-testimonials";
 import ReviewStories from "./review-stories";
@@ -213,13 +213,22 @@ export default function OrderExperience({
   const [pendingItem, setPendingItem] = useState<MenuItem | null>(null);
   const [selectionError, setSelectionError] = useState("");
   const [announcement, setAnnouncement] = useState("");
-  const [serviceStatus] = useState(initialServiceStatus);
+  const [serviceStatus, setServiceStatus] = useState(initialServiceStatus);
   const [popularPickIds, setPopularPickIds] = useState<string[]>([
     "og-nasty",
     "peri-beast",
     "nasty-fries",
     "bbq-beast",
   ]);
+
+  useEffect(() => {
+    const syncServiceStatus = () => setServiceStatus(getServiceStatus());
+
+    syncServiceStatus();
+    const interval = window.setInterval(syncServiceStatus, 30_000);
+
+    return () => window.clearInterval(interval);
+  }, []);
 
   const burgerItems = useMemo(
     () => items.filter((item) => item.category === "burgers"),

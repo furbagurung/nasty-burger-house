@@ -78,6 +78,7 @@ import "./account-skeleton.css";
 import "./account-skeleton-sidebar.css";
 import "./drip-points-dashboard.css";
 import "./brand-typography.css";
+import "./brand-cta.css";
 
 const questrial = Questrial({
   variable: "--font-questrial",

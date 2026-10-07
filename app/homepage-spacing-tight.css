@@ -24,7 +24,11 @@
 
 @media (max-width: 760px) {
   .home-main > .menu-preview .menu-preview__heading {
-    padding-inline: 1rem !important;
+    display: none !important;
+  }
+
+  .home-main > .menu-preview {
+    padding-top: 0.75rem !important;
   }
 
   .home-main > .menu-preview {

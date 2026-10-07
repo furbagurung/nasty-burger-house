@@ -14,7 +14,7 @@ export default function ReviewStories() {
         <div className="home-story-highlights__heading">
           <div>
             <p className="home-story-highlights__eyebrow">Customer stories</p>
-            <h2 id="story-reviews-title">Review highlights.</h2>
+            <h2 id="story-reviews-title">Review highlights</h2>
           </div>
         </div>
         <div className="home-story-highlights__row" aria-label="Review story highlights">

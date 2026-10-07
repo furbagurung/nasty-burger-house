@@ -9,6 +9,7 @@ import {
 import type { CustomerOrder } from "../lib/customer-store";
 import AccountDashboardSkeleton from "./account-dashboard-skeleton";
 import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -86,7 +87,7 @@ export default function OrderHistoryPage() {
             <p className="standalone-eyebrow">No orders yet</p>
             <h2>Your first Nasty order will show here.</h2>
             <p>Place an order while signed in and its live status, receipt and points will stay attached to your account.</p>
-            <Link className="standalone-primary-button" href="/menu/burgers">Start an order</Link>
+            <ButtonWithIcon href="/menu/burgers" tone="red">Start an order</ButtonWithIcon>
           </section>
         ) : (
           <section className="order-history-list" aria-label="Past orders">

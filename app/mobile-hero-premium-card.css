@@ -12,8 +12,8 @@
   .site-shell > .home-main > .hero-carousel {
     width: calc(100% - 1.5rem) !important;
     min-height: 0 !important;
-    height: clamp(14.25rem, 58vw, 16rem) !important;
-    max-height: 16rem !important;
+    height: clamp(13rem, 53vw, 14.75rem) !important;
+    max-height: 14.75rem !important;
     margin: 1.25rem auto 0 !important;
     overflow: hidden !important;
     border: 0 !important;
@@ -56,8 +56,9 @@
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy {
     position: absolute !important;
+    top: 50% !important;
     right: auto !important;
-    bottom: 2.65rem !important;
+    bottom: auto !important;
     left: 0.95rem !important;
     display: block !important;
     width: min(62%, 12.75rem) !important;
@@ -71,6 +72,7 @@
     background: transparent !important;
     box-shadow: none !important;
     color: #fff !important;
+    transform: translateY(-50%) !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .eyebrow {
@@ -172,7 +174,7 @@
 
 @media (max-width: 390px) {
   .site-shell > .home-main > .hero-carousel {
-    height: 14.25rem !important;
+    height: 13rem !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h1,

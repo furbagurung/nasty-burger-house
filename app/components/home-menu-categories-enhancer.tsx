@@ -37,13 +37,6 @@ function enhanceMenuGrid() {
   const grid = document.querySelector<HTMLElement>(".menu-preview__grid");
   if (!grid) return;
 
-  const viewMenu = document.querySelector<HTMLAnchorElement>(
-    ".menu-preview__heading .outline-button",
-  );
-  if (viewMenu && viewMenu.textContent !== "View all menu") {
-    viewMenu.textContent = "View all menu";
-  }
-
   const cards = Array.from(
     grid.querySelectorAll<HTMLElement>(":scope > .menu-preview-card"),
   );
@@ -307,16 +300,23 @@ export default function HomeMenuCategoriesEnhancer() {
   return (
     <style>{`
       .menu-preview {
-        padding: clamp(4rem, 7vw, 6rem) max(1.25rem, calc((100% - 1180px) / 2)) !important;
+        padding: clamp(5rem, 8vw, 7.5rem) max(1.25rem, calc((100% - 1180px) / 2)) !important;
         background: #fff !important;
         color: #15130f;
       }
 
       .menu-preview__heading {
         display: flex;
-        align-items: center;
-        flex-direction: column;
-        text-align: center;
+        width: min(100%, 1120px);
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-inline: auto;
+        text-align: left;
+      }
+
+      .menu-preview__heading > div {
+        min-width: 0;
       }
 
       .menu-preview__heading .eyebrow {
@@ -326,30 +326,42 @@ export default function HomeMenuCategoriesEnhancer() {
       .menu-preview__heading h2 {
         margin: 0;
         color: #15130f;
-        font-weight: 400 !important;
+        font-size: clamp(3.2rem, 5.8vw, 5.5rem) !important;
+        font-weight: 950 !important;
+        letter-spacing: -0.065em !important;
         line-height: 0.94 !important;
       }
 
-      .menu-preview__heading .outline-button {
-        margin-top: 1.4rem;
-        border-color: #77716a;
-        background: #fff;
+      .menu-preview__view-all {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 0.4rem;
+        padding-bottom: 0.18rem;
+        border-bottom: 1px solid currentColor;
         color: #15130f;
+        font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif;
+        font-size: 0.86rem;
+        font-weight: 800;
+        text-decoration: none;
       }
 
       .menu-preview__grid {
         display: grid !important;
-        width: min(100%, 1180px);
+        width: min(100%, 1120px);
         grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-        align-items: start;
-        gap: 1rem !important;
-        margin: clamp(2.25rem, 4vw, 3.5rem) auto 0 !important;
+        align-items: end;
+        gap: clamp(0.5rem, 1vw, 1rem) !important;
+        margin: clamp(4rem, 6.5vw, 5.75rem) auto 0 !important;
       }
 
       .menu-preview-card--clean {
-        display: grid;
+        display: flex;
         min-width: 0;
-        gap: 0.8rem;
+        min-height: 0 !important;
+        align-items: center;
+        justify-content: flex-start !important;
+        flex-direction: column;
         overflow: visible !important;
         border: 0 !important;
         border-radius: 0 !important;
@@ -357,9 +369,10 @@ export default function HomeMenuCategoriesEnhancer() {
         background: transparent !important;
         box-shadow: none !important;
         color: #15130f !important;
-        text-align: left;
+        text-align: center;
         text-decoration: none;
         transform: none !important;
+        transition: none !important;
       }
 
       .menu-preview-card--clean::before {
@@ -367,38 +380,40 @@ export default function HomeMenuCategoriesEnhancer() {
         content: none !important;
       }
 
+      .menu-preview-card--clean:hover,
+      .menu-preview-card--clean:active {
+        background: transparent !important;
+        box-shadow: none !important;
+        transform: none !important;
+      }
+
       .menu-preview-card__image {
         position: relative;
-        display: block;
+        display: flex;
         width: 100%;
-        aspect-ratio: 1 / 1;
+        height: clamp(7.25rem, 10vw, 9.5rem);
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
-        border-radius: 1.15rem;
-        background: #f4eee4;
+        background: transparent;
       }
 
       .menu-preview-card__image img:not(.home-menu-card__sticker) {
         display: block;
         width: 100% !important;
         height: 100% !important;
-        padding: 0.45rem;
         object-fit: contain !important;
         object-position: center !important;
         user-select: none !important;
         -webkit-user-select: none !important;
         -webkit-user-drag: none !important;
         pointer-events: none;
-        transition: transform 220ms ease;
-      }
-
-      .menu-preview-card--clean:hover .menu-preview-card__image img:not(.home-menu-card__sticker) {
-        transform: scale(1.025);
       }
 
       .menu-preview-card--clean.is-disabled {
         opacity: 1;
-        filter: none;
-        cursor: default;
+        filter: grayscale(0.15);
+        cursor: not-allowed;
       }
 
       .menu-preview-card--clean.is-disabled > * {
@@ -407,114 +422,131 @@ export default function HomeMenuCategoriesEnhancer() {
 
       .home-menu-card__sticker {
         position: absolute;
-        top: 0.65rem;
-        right: 0.65rem;
-        z-index: 3;
-        width: clamp(4.25rem, 7vw, 6rem);
+        top: 0.75rem;
+        right: 0.75rem;
+        width: 7rem;
         height: auto;
+        z-index: 3;
         object-fit: contain;
         pointer-events: none;
+      }
+
+      @media (max-width: 768px) {
+        .home-menu-card__sticker {
+          width: 5.5rem;
+          top: 0.5rem;
+          right: 0.5rem;
+        }
       }
 
       .menu-preview-card--clean strong {
         position: static !important;
         display: block;
-        max-width: 100% !important;
-        margin: 0;
-        overflow: hidden;
+        max-width: 13rem !important;
+        margin-top: 0.9rem;
         color: #15130f !important;
-        font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif !important;
-        font-size: 0.98rem !important;
-        font-weight: 850 !important;
-        line-height: 1.15 !important;
-        text-align: left;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        font-size: clamp(1rem, 1.3vw, 1.2rem) !important;
+        font-weight: 500 !important;
+        letter-spacing: -0.02em !important;
+        line-height: 1.3 !important;
+        text-align: center;
       }
 
       @media (max-width: 980px) {
         .menu-preview__grid {
           grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          row-gap: 2.25rem !important;
+        }
+
+        .menu-preview-card__image {
+          height: 8.5rem;
         }
       }
 
       @media (max-width: 680px) {
         .menu-preview {
           overflow: hidden !important;
-          padding: 1rem 0 2rem !important;
+          padding: 2.65rem 0 3.1rem !important;
         }
 
         .menu-preview__heading {
-          align-items: flex-start !important;
+          width: 100%;
+          align-items: center !important;
+          justify-content: space-between;
           padding: 0 1rem;
           text-align: left !important;
+        }
+
+        .menu-preview__view-all {
+          border-bottom: 0;
+          color: var(--hot-dark);
+          font-size: 0.76rem;
+        }
+
+        .menu-preview__heading .eyebrow {
+          margin-bottom: 0.35rem;
+          font-size: 0.62rem;
+        }
+
+        .menu-preview__heading h2 {
+          font-size: clamp(2rem, 9vw, 2.65rem) !important;
+          letter-spacing: -0.055em !important;
         }
 
         .menu-preview__grid {
           display: grid !important;
           width: 100% !important;
-          grid-auto-columns: minmax(9.15rem, 41vw);
-          grid-auto-flow: column;
-          grid-template-columns: none !important;
-          gap: 0.8rem !important;
-          margin: 0.85rem 0 0 !important;
-          overflow-x: auto !important;
-          overflow-y: hidden !important;
-          padding: 0 1rem 0.65rem !important;
-          overscroll-behavior-inline: contain;
-          scroll-padding-inline: 1rem;
-          scroll-snap-type: x mandatory;
-          scrollbar-width: none;
-          touch-action: pan-x;
-          -webkit-overflow-scrolling: touch;
+          grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+          align-items: start;
+          gap: clamp(0.18rem, 1.4vw, 0.4rem) !important;
+          margin: 0.9rem 0 0 !important;
+          overflow: visible !important;
+          padding: 0 0.65rem 0.25rem !important;
+          cursor: default;
+          touch-action: auto;
+          scroll-snap-type: none;
           user-select: none;
           -webkit-user-select: none;
-        }
-
-        .menu-preview__grid::-webkit-scrollbar {
-          display: none;
         }
 
         .menu-preview__grid.is-dragging,
         .menu-preview__grid.is-overdragging,
         .menu-preview__grid.is-springing {
-          cursor: grabbing;
+          transform: none !important;
+          cursor: default;
         }
 
         .menu-preview-card--clean,
         .menu-preview-card--clean:first-child {
-          display: grid !important;
-          width: auto !important;
+          width: 100% !important;
           min-width: 0 !important;
-          scroll-snap-align: start;
-          scroll-snap-stop: always;
+          flex: none !important;
+          grid-column: auto !important;
+          min-height: 0 !important;
         }
 
         .menu-preview-card__image {
-          border-radius: 0.95rem;
-          background: #f7f3ed;
-        }
-
-        .menu-preview-card__image img:not(.home-menu-card__sticker) {
-          padding: 0.3rem;
+          width: 100%;
+          height: clamp(3.4rem, 15vw, 4.6rem);
         }
 
         .home-menu-card__sticker {
-          top: 0.4rem;
-          right: 0.4rem;
-          width: clamp(3.5rem, 18vw, 5rem);
+          top: 0.08rem;
+          right: 0.08rem;
+          width: clamp(2.4rem, 10vw, 3.1rem);
         }
 
         .menu-preview-card--clean strong {
-          font-size: 0.82rem !important;
+          max-width: 100% !important;
+          margin-top: 0.24rem;
+          font-size: clamp(0.56rem, 2.35vw, 0.68rem) !important;
+          font-weight: 650 !important;
+          line-height: 1.12 !important;
+          text-wrap: balance;
         }
       }
 
       @media (prefers-reduced-motion: reduce) {
-        .menu-preview-card__image img:not(.home-menu-card__sticker) {
-          transition: none;
-        }
-
         .menu-preview__grid {
           scroll-behavior: auto !important;
         }

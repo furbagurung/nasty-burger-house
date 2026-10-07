@@ -924,12 +924,17 @@ export default function OrderExperience({
                   <p>{slide.description}</p>
                   <div className="hero-actions">
                     {slide.href ? (
-                      <ButtonWithIcon href={slide.href} tone="light">
+                      <ButtonWithIcon
+                        href={slide.href}
+                        tone="light"
+                        className="hero-carousel__cta"
+                      >
                         {slide.ctaLabel}
                       </ButtonWithIcon>
                     ) : (
                       <ButtonWithIcon
                         tone="light"
+                        className="hero-carousel__cta"
                         onClick={
                           slide.action === "loyalty"
                             ? openLoyalty

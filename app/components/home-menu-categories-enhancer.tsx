@@ -486,63 +486,55 @@ export default function HomeMenuCategoriesEnhancer() {
         }
 
         .menu-preview__grid {
-          display: flex !important;
+          display: grid !important;
           width: 100% !important;
-          grid-template-columns: none !important;
-          align-items: flex-start;
-          gap: 0.45rem !important;
-          margin: 1.55rem 0 0 !important;
-          overflow-x: auto !important;
-          overflow-y: hidden !important;
-          padding: 0 1rem 0.5rem !important;
-          cursor: grab;
-          touch-action: pan-y pinch-zoom;
-          scroll-padding-inline: 1rem;
-          scroll-snap-type: x mandatory;
-          overscroll-behavior-x: contain;
-          -webkit-overflow-scrolling: touch;
-          scrollbar-width: none;
+          grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+          align-items: start;
+          gap: clamp(0.18rem, 1.4vw, 0.4rem) !important;
+          margin: 0.9rem 0 0 !important;
+          overflow: visible !important;
+          padding: 0 0.65rem 0.25rem !important;
+          cursor: default;
+          touch-action: auto;
+          scroll-snap-type: none;
           user-select: none;
           -webkit-user-select: none;
         }
 
-        .menu-preview__grid.is-dragging {
-          scroll-snap-type: none !important;
-          scroll-behavior: auto !important;
-          cursor: grabbing;
-        }
-
-        .menu-preview__grid.is-overdragging .menu-preview-card--clean,
-        .menu-preview__grid.is-springing .menu-preview-card--clean {
-          transform: translate3d(var(--menu-overdrag-offset, 0px), 0, 0) !important;
-        }
-
-        .menu-preview__grid::-webkit-scrollbar {
-          display: none;
+        .menu-preview__grid.is-dragging,
+        .menu-preview__grid.is-overdragging,
+        .menu-preview__grid.is-springing {
+          transform: none !important;
+          cursor: default;
         }
 
         .menu-preview-card--clean,
         .menu-preview-card--clean:first-child {
-          width: clamp(6.35rem, 27vw, 7.5rem) !important;
-          min-width: clamp(6.35rem, 27vw, 7.5rem) !important;
-          flex: 0 0 clamp(6.35rem, 27vw, 7.5rem) !important;
+          width: 100% !important;
+          min-width: 0 !important;
+          flex: none !important;
           grid-column: auto !important;
           min-height: 0 !important;
-          scroll-snap-align: start;
-          scroll-snap-stop: always;
         }
 
         .menu-preview-card__image {
           width: 100%;
-          height: clamp(5.4rem, 23vw, 6.4rem);
+          height: clamp(3.4rem, 15vw, 4.6rem);
+        }
+
+        .home-menu-card__sticker {
+          top: 0.08rem;
+          right: 0.08rem;
+          width: clamp(2.4rem, 10vw, 3.1rem);
         }
 
         .menu-preview-card--clean strong {
-          max-width: 7.5rem !important;
-          margin-top: 0.38rem;
-          font-size: clamp(0.7rem, 3vw, 0.8rem) !important;
+          max-width: 100% !important;
+          margin-top: 0.24rem;
+          font-size: clamp(0.56rem, 2.35vw, 0.68rem) !important;
           font-weight: 650 !important;
-          line-height: 1.2 !important;
+          line-height: 1.12 !important;
+          text-wrap: balance;
         }
       }
 

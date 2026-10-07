@@ -1,0 +1,260 @@
+/* Shared Nasty Burger House CTA system.
+   One pill component shape; only the tone changes between usages. */
+
+:root {
+  --nasty-cta-radius: 999px;
+  --nasty-cta-height: 2.7rem;
+  --nasty-cta-arrow-size: 1.85rem;
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta,
+.outline-button,
+.primary-button,
+.secondary-button,
+.standalone-primary-button,
+.catalogue-order-button,
+.cart-redesign-checkout,
+.cart-redesign-add-more,
+.product-add-button,
+.account-saas-order-button,
+.drip-points-banner__cta,
+.home-testimonials__cta,
+.home-feature__copy > button,
+.checkout-summary > button {
+  --cta-bg: #ffffff;
+  --cta-fg: var(--ink);
+  --cta-border: rgba(21, 19, 15, 0.1);
+  --cta-chip-bg: rgba(21, 19, 15, 0.065);
+  --cta-chip-border: rgba(21, 19, 15, 0.075);
+  --cta-shadow: 0 7px 18px rgba(21, 19, 15, 0.12);
+
+  position: relative;
+  display: inline-flex !important;
+  min-width: 0 !important;
+  min-height: var(--nasty-cta-height) !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 0.52rem !important;
+  border: 1px solid var(--cta-border) !important;
+  border-radius: var(--nasty-cta-radius) !important;
+  padding: 0.4rem 0.42rem 0.4rem 0.95rem !important;
+  background: var(--cta-bg) !important;
+  color: var(--cta-fg) !important;
+  font-family: var(--font-questrial), Arial, Helvetica, sans-serif !important;
+  font-size: 0.88rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  box-shadow: var(--cta-shadow) !important;
+  text-shadow: none !important;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    filter 180ms ease,
+    box-shadow 180ms ease !important;
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta::before,
+.outline-button::before,
+.primary-button::before,
+.secondary-button::before,
+.standalone-primary-button::before,
+.catalogue-order-button::before,
+.cart-redesign-checkout::before,
+.cart-redesign-add-more::before,
+.product-add-button::before,
+.account-saas-order-button::before,
+.drip-points-banner__cta::before,
+.home-testimonials__cta::before,
+.home-feature__copy > button::before,
+.checkout-summary > button::before {
+  display: none !important;
+  content: none !important;
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta::after,
+.outline-button::after,
+.primary-button::after,
+.secondary-button::after,
+.standalone-primary-button::after,
+.catalogue-order-button::after,
+.cart-redesign-checkout::after,
+.cart-redesign-add-more::after,
+.product-add-button::after,
+.account-saas-order-button::after,
+.drip-points-banner__cta::after,
+.home-testimonials__cta::after,
+.home-feature__copy > button::after,
+.checkout-summary > button::after {
+  display: grid !important;
+  width: var(--nasty-cta-arrow-size) !important;
+  height: var(--nasty-cta-arrow-size) !important;
+  place-items: center !important;
+  flex: 0 0 var(--nasty-cta-arrow-size) !important;
+  border: 1px solid var(--cta-chip-border) !important;
+  border-radius: 50% !important;
+  background: var(--cta-chip-bg) !important;
+  color: currentColor !important;
+  content: "→" !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 0.82rem !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: transform 180ms ease, background-color 180ms ease !important;
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta:hover,
+.outline-button:hover,
+.primary-button:hover,
+.secondary-button:hover,
+.standalone-primary-button:hover,
+.catalogue-order-button:hover,
+.cart-redesign-checkout:hover,
+.cart-redesign-add-more:hover,
+.product-add-button:hover,
+.account-saas-order-button:hover,
+.drip-points-banner__cta:hover,
+.home-testimonials__cta:hover,
+.home-feature__copy > button:hover,
+.checkout-summary > button:hover {
+  background: var(--cta-bg) !important;
+  color: var(--cta-fg) !important;
+  filter: brightness(0.97);
+  transform: translateY(-1px) !important;
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta:hover::after,
+.outline-button:hover::after,
+.primary-button:hover::after,
+.secondary-button:hover::after,
+.standalone-primary-button:hover::after,
+.catalogue-order-button:hover::after,
+.cart-redesign-checkout:hover::after,
+.cart-redesign-add-more:hover::after,
+.product-add-button:hover::after,
+.account-saas-order-button:hover::after,
+.drip-points-banner__cta:hover::after,
+.home-testimonials__cta:hover::after,
+.home-feature__copy > button:hover::after,
+.checkout-summary > button:hover::after {
+  transform: translateX(2px) !important;
+}
+
+.primary-button,
+.standalone-primary-button,
+.catalogue-order-button,
+.cart-redesign-checkout,
+.product-add-button,
+.drip-points-banner__cta,
+.home-feature__copy > button,
+.checkout-summary > button {
+  --cta-bg: var(--hot);
+  --cta-fg: #ffffff;
+  --cta-border: rgba(255, 255, 255, 0.15);
+  --cta-chip-bg: rgba(0, 0, 0, 0.13);
+  --cta-chip-border: rgba(255, 255, 255, 0.17);
+  --cta-shadow: 0 8px 20px rgba(232, 59, 24, 0.2);
+}
+
+.secondary-button,
+.outline-button,
+.hero-carousel .hero-slide__copy .hero-card__cta,
+.cart-redesign-add-more {
+  --cta-bg: #ffffff;
+  --cta-fg: var(--ink);
+  --cta-border: rgba(21, 19, 15, 0.11);
+  --cta-chip-bg: rgba(21, 19, 15, 0.06);
+  --cta-chip-border: rgba(21, 19, 15, 0.07);
+}
+
+.home-testimonials__cta,
+.account-saas-order-button {
+  --cta-bg: var(--ink);
+  --cta-fg: #ffffff;
+  --cta-border: rgba(255, 255, 255, 0.12);
+  --cta-chip-bg: rgba(255, 255, 255, 0.12);
+  --cta-chip-border: rgba(255, 255, 255, 0.13);
+  --cta-shadow: 0 8px 20px rgba(21, 19, 15, 0.16);
+}
+
+.full-width {
+  width: 100% !important;
+}
+
+.primary-button.full-width,
+.secondary-button.full-width,
+.standalone-primary-button.full-width {
+  justify-content: space-between !important;
+}
+
+.hero-carousel .hero-slide__copy .hero-card__cta:disabled,
+.primary-button:disabled,
+.secondary-button:disabled,
+.standalone-primary-button:disabled,
+.catalogue-order-button:disabled,
+.cart-redesign-checkout:disabled,
+.product-add-button:disabled,
+.home-feature__copy > button:disabled,
+.checkout-summary > button:disabled {
+  cursor: not-allowed !important;
+  filter: grayscale(0.18);
+  opacity: 0.55 !important;
+  transform: none !important;
+}
+
+@media (max-width: 680px) {
+  :root {
+    --nasty-cta-height: 2.4rem;
+    --nasty-cta-arrow-size: 1.72rem;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta,
+  .outline-button,
+  .primary-button,
+  .secondary-button,
+  .standalone-primary-button,
+  .catalogue-order-button,
+  .cart-redesign-checkout,
+  .cart-redesign-add-more,
+  .product-add-button,
+  .account-saas-order-button,
+  .drip-points-banner__cta,
+  .home-testimonials__cta,
+  .home-feature__copy > button,
+  .checkout-summary > button {
+    min-height: var(--nasty-cta-height) !important;
+    gap: 0.42rem !important;
+    padding: 0.34rem 0.36rem 0.34rem 0.78rem !important;
+    font-size: 0.74rem !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta::after {
+    width: var(--nasty-cta-arrow-size) !important;
+    height: var(--nasty-cta-arrow-size) !important;
+    flex-basis: var(--nasty-cta-arrow-size) !important;
+    background: var(--cta-chip-bg) !important;
+    color: currentColor !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-carousel .hero-slide__copy .hero-card__cta,
+  .outline-button,
+  .primary-button,
+  .secondary-button,
+  .standalone-primary-button,
+  .catalogue-order-button,
+  .cart-redesign-checkout,
+  .cart-redesign-add-more,
+  .product-add-button,
+  .account-saas-order-button,
+  .drip-points-banner__cta,
+  .home-testimonials__cta,
+  .home-feature__copy > button,
+  .checkout-summary > button {
+    transition: none !important;
+  }
+}

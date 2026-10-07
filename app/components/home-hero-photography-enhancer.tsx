@@ -27,7 +27,7 @@ const heroConfigs: HeroConfig[] = [
   {
     eyebrow: "Coming Soon",
     title: "Beast of the Month",
-    description: "A new limited Beast is on the way.",
+    description: "New Beast coming soon.",
     ctaLabel: "Coming Soon",
     image: "/images/hero-slider/hero-1.jpg",
     imageAlt: "Nasty Burger House Beast of the Month coming soon promotion",

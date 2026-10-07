@@ -1069,7 +1069,7 @@ main {
 .product-modal > p:not(.eyebrow, .pending-price),
 .loyalty-modal > p:not(.eyebrow),
 .monthly-modal > p:not(.eyebrow) {
-  color: var(--muted);
+  color: var(--muted-foreground);
   line-height: 1.55;
 }
 
@@ -1131,7 +1131,7 @@ legend {
 
 legend span {
   margin-left: 0.5rem;
-  color: var(--muted);
+  color: var(--muted-foreground);
   font-size: 0.78rem;
   font-weight: 700;
 }
@@ -1160,8 +1160,8 @@ legend span {
 .option-row small,
 .field-note {
   margin-top: 0.3rem;
-  color: var(--muted);
-  font-weight: 450;
+  color: var(--muted-foreground);
+  font-weight: 500;
   line-height: 1.4;
 }
 
@@ -1195,7 +1195,7 @@ legend span {
 }
 
 .stepper-row small {
-  color: var(--muted);
+  color: var(--muted-foreground);
   font-size: 0.76rem;
   font-weight: 600;
 }
@@ -3556,4 +3556,26 @@ a.order-type-option:hover {
   html {
     @apply font-sans;
   }
+}
+
+/* Product customisation contrast fix */
+.product-modal {
+  color: var(--ink);
+}
+
+.product-modal h2,
+.product-modal legend,
+.product-modal .pending-price,
+.product-modal .option-row,
+.product-modal .stepper-row,
+.product-modal .quantity-control {
+  color: var(--ink);
+}
+
+.product-modal > p:not(.eyebrow, .pending-price),
+.product-modal .option-row small,
+.product-modal .stepper-row small,
+.product-modal .field-note,
+.product-modal legend span {
+  color: var(--muted-foreground) !important;
 }

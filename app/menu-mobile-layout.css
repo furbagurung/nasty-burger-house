@@ -119,30 +119,51 @@
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-categories a {
+    position: relative !important;
     display: flex !important;
     width: 100% !important;
     min-width: 0 !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 0.25rem !important;
+    gap: 0.3rem !important;
     min-height: 5rem !important;
-    padding: 0.4rem 0.2rem !important;
+    padding: 0.42rem 0.28rem !important;
     border: 0 !important;
-    border-radius: 0.6rem !important;
+    border-radius: 0.9rem !important;
     background: transparent !important;
-    color: #51483f !important;
+    color: #292521 !important;
     font-size: 0.75rem !important;
     font-weight: 700 !important;
     line-height: 1.25 !important;
     text-align: center;
     white-space: normal;
+    transition:
+      background-color 160ms ease,
+      color 160ms ease,
+      transform 160ms ease !important;
+  }
+
+  .catalogue-shell.menu-catalogue-shell .catalogue-categories a:hover {
+    background: #fafafa !important;
+    color: #171513 !important;
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-categories a.is-active {
-    background: #fff0e8 !important;
-    color: #a42c15 !important;
+    background: #f4f4f4 !important;
+    color: #171513 !important;
     font-weight: 850 !important;
+  }
+
+  .catalogue-shell.menu-catalogue-shell .catalogue-categories a.is-active::before {
+    position: absolute;
+    top: 0.6rem;
+    bottom: 0.6rem;
+    left: 0;
+    width: 3px;
+    border-radius: 999px;
+    background: var(--hot);
+    content: "";
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-category-mark {
@@ -151,12 +172,19 @@
     flex: 0 0 auto;
     width: 3.1rem !important;
     height: 3.1rem !important;
-    border: 0 !important;
-    background: transparent !important;
+    overflow: hidden !important;
+    border: 1px solid #ece9e5 !important;
+    border-radius: 0.85rem !important;
+    background: #ffffff !important;
+  }
+
+  .catalogue-shell.menu-catalogue-shell .catalogue-categories a.is-active .catalogue-category-mark {
+    border-color: #cfc9c2 !important;
+    background: #ffffff !important;
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-category-image {
-    padding: 0.08rem !important;
+    padding: 0.16rem !important;
     object-fit: contain !important;
     object-position: center !important;
   }
@@ -178,9 +206,10 @@
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-heading h1 {
+    color: var(--hot) !important;
     font-size: clamp(1.5rem, 5vw, 2rem) !important;
     line-height: 1.15 !important;
-    letter-spacing: -0.04em;
+    letter-spacing: 0 !important;
     overflow-wrap: anywhere;
   }
 
@@ -204,6 +233,7 @@
   .catalogue-shell.menu-catalogue-shell .catalogue-product--browse h2 {
     max-width: 100% !important;
     margin: 0.5rem 0 0 !important;
+    font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif !important;
     font-size: 0.85rem !important;
     font-weight: 650 !important;
     line-height: 1.35 !important;

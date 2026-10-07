@@ -1271,7 +1271,7 @@ export default function OrderExperience({
       )}
 
       {selectedItem && (
-        <div className="modal-backdrop" role="presentation">
+        <div className="modal-backdrop product-modal-backdrop" role="presentation">
           <section
             className="product-modal"
             role="dialog"

@@ -326,10 +326,10 @@ export default function HomeMenuCategoriesEnhancer() {
       .menu-preview__heading h2 {
         margin: 0;
         color: #15130f;
-        font-size: clamp(3.2rem, 5.8vw, 5.5rem) !important;
-        font-weight: 950 !important;
-        letter-spacing: -0.065em !important;
-        line-height: 0.94 !important;
+        font-size: clamp(1.36rem, 2.472vw, 2.472rem) !important;
+        font-weight: 400 !important;
+        letter-spacing: 0 !important;
+        line-height: 1 !important;
       }
 
       .menu-preview__view-all {
@@ -489,8 +489,9 @@ export default function HomeMenuCategoriesEnhancer() {
         }
 
         .menu-preview__heading h2 {
-          font-size: clamp(2rem, 9vw, 2.65rem) !important;
-          letter-spacing: -0.055em !important;
+          font-size: 1.051rem !important;
+          letter-spacing: 0 !important;
+          line-height: 1.05 !important;
         }
 
         .menu-preview__grid {

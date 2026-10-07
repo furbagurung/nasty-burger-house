@@ -28,8 +28,8 @@
   }
 
   .home-main > .menu-preview {
-    padding-top: 1.4rem !important;
-    padding-bottom: 2.25rem !important;
+    padding-top: 0.95rem !important;
+    padding-bottom: 1.6rem !important;
   }
 
   .home-main > .menu-preview .outline-button {
@@ -37,6 +37,6 @@
   }
 
   .home-main > .menu-preview .menu-preview__grid {
-    margin-top: 1.05rem !important;
+    margin-top: 0.85rem !important;
   }
 }

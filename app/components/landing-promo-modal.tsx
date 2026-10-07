@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { readSignedInCustomerProfile } from "../lib/customer-store";
+import { getBrowserClientOrNull } from "../lib/supabase/client";
 
 
 export default function LandingPromoModal() {
@@ -10,16 +12,42 @@ export default function LandingPromoModal() {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const hasRequestedOverlay = ["item", "cart", "loyalty", "order"].some((key) =>
-      params.has(key),
-    );
+    let cancelled = false;
+    let frame = 0;
 
-    if (hasRequestedOverlay) return;
+    async function maybeOpenPromo() {
+      const params = new URLSearchParams(window.location.search);
+      const hasRequestedOverlay = ["item", "cart", "loyalty", "order"].some(
+        (key) => params.has(key),
+      );
 
-    const frame = window.requestAnimationFrame(() => setOpen(true));
+      if (hasRequestedOverlay || readSignedInCustomerProfile()) return;
 
-    return () => window.cancelAnimationFrame(frame);
+      const supabase = getBrowserClientOrNull();
+
+      if (supabase) {
+        try {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
+          if (cancelled || user) return;
+        } catch {
+          if (cancelled) return;
+        }
+      }
+
+      frame = window.requestAnimationFrame(() => {
+        if (!cancelled) setOpen(true);
+      });
+    }
+
+    void maybeOpenPromo();
+
+    return () => {
+      cancelled = true;
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   useEffect(() => {

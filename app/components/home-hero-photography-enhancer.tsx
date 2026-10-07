@@ -18,9 +18,8 @@ const heroConfigs: HeroConfig[] = [
   {
     eyebrow: "Nasty Rewards",
     title: "Get Drip Points",
-    description:
-      "Join Drip Points, get 500 points to start and unlock rewards made for hungry regulars.",
-    ctaLabel: "Join Drip Points",
+    description: "500 points on us. Earn more every order.",
+    ctaLabel: "Join Now",
     image: "/images/hero-slider/hero-2-loyalty-drip-points.jpg",
     imageAlt: "Nasty Burger House Drip Points loyalty promotion",
     variant: "loyalty",
@@ -28,8 +27,7 @@ const heroConfigs: HeroConfig[] = [
   {
     eyebrow: "Coming Soon",
     title: "Beast of the Month",
-    description:
-      "A new limited-time Beast is being cooked up. Watch this space — the next Beast of the Month is coming soon.",
+    description: "A new limited Beast is on the way.",
     ctaLabel: "Coming Soon",
     image: "/images/hero-slider/hero-1.jpg",
     imageAlt: "Nasty Burger House Beast of the Month coming soon promotion",
@@ -37,11 +35,10 @@ const heroConfigs: HeroConfig[] = [
     variant: "monthly",
   },
   {
-    eyebrow: "Flame-grilled favourites",
+    eyebrow: "Flame-grilled",
     title: "Beast Burgers",
-    description:
-      "From the OG Nasty to the Peri Beast, explore the full burger lineup and build your pickup order.",
-    ctaLabel: "Explore Burgers",
+    description: "Big flavour. Built your way.",
+    ctaLabel: "Explore",
     image: "/images/hero-slider/beast-burgers.jpg",
     imageAlt: "Nasty Burger House Beast Burgers selection",
     href: "/menu/burgers",
@@ -49,10 +46,9 @@ const heroConfigs: HeroConfig[] = [
   },
   {
     eyebrow: "Build Your Feed",
-    title: "Upgrade to Beast Combo",
-    description:
-      "Add Nasty Fries and choose your favourite drink to turn your burger into the full Beast Combo.",
-    ctaLabel: "Build Your Combo",
+    title: "Beast Combo",
+    description: "Add Nasty Fries and a drink.",
+    ctaLabel: "Build Combo",
     image: "/images/hero-slider/beast-combo.jpg",
     imageAlt: "Nasty Burger House Beast Combo with burger, fries and drinks",
     href: "/menu/burgers",

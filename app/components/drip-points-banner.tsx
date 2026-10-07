@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 export default function DripPointsBanner() {
   return (
@@ -18,12 +18,9 @@ export default function DripPointsBanner() {
               <span>500 points to start</span>
               <span>Earn every order</span>
             </div>
-            <Link
-              className="drip-points-banner__cta"
-              href="/drip-points"
-            >
+            <ButtonWithIcon href="/drip-points" tone="red">
               Join Drip Points
-            </Link>
+            </ButtonWithIcon>
           </div>
 
           <div className="drip-points-banner__art" aria-hidden="true">

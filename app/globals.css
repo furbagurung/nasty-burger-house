@@ -3579,3 +3579,11 @@ a.order-type-option:hover {
 .product-modal legend span {
   color: var(--muted-foreground) !important;
 }
+
+
+/* Disable native ghost dragging on images site-wide. */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+}

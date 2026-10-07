@@ -1,4 +1,4 @@
-/* Mobile homepage hero: full-width edge-to-edge treatment on small screens. */
+/* Compact mobile homepage hero inspired by app-style ordering experiences. */
 @media (max-width: 680px) {
   .site-shell > .home-main {
     padding-top: 0 !important;
@@ -6,22 +6,16 @@
   }
 
   .site-shell > .home-main > .hero-carousel {
-    width: 100% !important;
-    min-height: clamp(30rem, 62svh, 34rem) !important;
-    height: clamp(30rem, 62svh, 34rem) !important;
-    max-height: 34rem !important;
-    margin: 0 !important;
+    width: calc(100% - 1.5rem) !important;
+    min-height: 0 !important;
+    height: clamp(17.5rem, 72vw, 20rem) !important;
+    max-height: 20rem !important;
+    margin: 0.75rem auto 0 !important;
     overflow: hidden !important;
     border: 0 !important;
-    border-radius: 0 !important;
+    border-radius: 1.25rem !important;
     background: #0b0a09;
-    box-shadow: none !important;
-  }
-
-  .site-shell > .home-main > .hero-carousel .hero-slide,
-  .site-shell > .home-main > .hero-carousel .hero-slide__image,
-  .site-shell > .home-main > .hero-carousel .hero-slide__shade {
-    border-radius: 0 !important;
+    box-shadow: 0 10px 30px rgba(21, 19, 15, 0.12) !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-carousel__slides,
@@ -31,64 +25,144 @@
     overflow: hidden !important;
   }
 
+  .site-shell > .home-main > .hero-carousel .hero-slide,
+  .site-shell > .home-main > .hero-carousel .hero-slide__image,
+  .site-shell > .home-main > .hero-carousel .hero-slide__shade {
+    border-radius: 1.25rem !important;
+  }
+
   .site-shell > .home-main > .hero-carousel .hero-slide__image {
-    object-position: 66% center !important;
+    object-position: 64% center !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__shade {
+    background:
+      linear-gradient(
+        0deg,
+        rgba(5, 4, 4, 0.82) 0%,
+        rgba(5, 4, 4, 0.34) 48%,
+        rgba(5, 4, 4, 0.08) 76%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(5, 4, 4, 0.5) 0%,
+        rgba(5, 4, 4, 0.08) 72%
+      ) !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy {
-    right: 1rem !important;
-    bottom: 3.75rem !important;
-    left: 1rem !important;
+    position: absolute !important;
+    right: 0.95rem !important;
+    bottom: 2.55rem !important;
+    left: 0.95rem !important;
+    display: block !important;
+    width: auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #fff !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .eyebrow {
-    margin-bottom: 0.42rem !important;
-    font-size: 0.58rem !important;
-    letter-spacing: 0.22em !important;
+    margin: 0 0 0.35rem !important;
+    color: var(--gold) !important;
+    font-size: 0.52rem !important;
+    letter-spacing: 0.19em !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h1,
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h2 {
-    max-width: 9.25ch !important;
-    font-size: clamp(2.35rem, 11vw, 3.35rem) !important;
-    line-height: 0.9 !important;
+    max-width: 8.5ch !important;
+    margin: 0 !important;
+    color: #fff !important;
+    font-size: clamp(1.95rem, 9vw, 2.7rem) !important;
+    line-height: 0.92 !important;
+    letter-spacing: -0.055em !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy > p:not(.eyebrow) {
-    max-width: 20rem !important;
-    margin-top: 0.62rem !important;
-    font-size: 0.82rem !important;
+    display: -webkit-box !important;
+    max-width: 19rem !important;
+    margin: 0.48rem 0 0 !important;
+    overflow: hidden !important;
+    color: rgba(255, 255, 255, 0.82) !important;
+    font-size: 0.72rem !important;
     line-height: 1.35 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-actions {
-    margin-top: 0.82rem !important;
+    margin-top: 0.65rem !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta {
-    min-width: min(13.5rem, 72vw) !important;
-    min-height: 2.85rem !important;
-    padding: 0.66rem 1rem !important;
-    font-size: 0.84rem !important;
-    box-shadow: 0 10px 24px rgba(255, 47, 22, 0.2) !important;
+    min-width: 0 !important;
+    min-height: 2.35rem !important;
+    border-color: rgba(255, 255, 255, 0.78) !important;
+    padding: 0.5rem 0.85rem !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16) !important;
+    color: var(--ink) !important;
+    font-size: 0.72rem !important;
   }
 
-  .site-shell > .home-main > .hero-carousel .mobile-hero-motion-controls {
-    right: 0.65rem;
-    bottom: 0.65rem;
-    transform: scale(0.92);
-    transform-origin: right bottom;
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta:hover {
+    border-color: #fff !important;
+    background: #fff !important;
+    color: var(--ink) !important;
+  }
+
+  .mobile-hero-motion-controls {
+    left: 50% !important;
+    right: auto !important;
+    bottom: 0.78rem !important;
+    gap: 0 !important;
+    border-color: rgba(255, 255, 255, 0.16) !important;
+    padding: 0.34rem 0.55rem !important;
+    background: rgba(12, 10, 9, 0.5) !important;
+    box-shadow: none !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .mobile-hero-motion-controls > button {
+    display: none !important;
+  }
+
+  .mobile-hero-motion-dots {
+    gap: 0.34rem !important;
+    padding: 0 !important;
+  }
+
+  .mobile-hero-motion-dots button {
+    width: 0.32rem !important;
+    height: 0.32rem !important;
+    background: rgba(255, 255, 255, 0.44) !important;
+  }
+
+  .mobile-hero-motion-dots button.is-active {
+    width: 0.9rem !important;
+    background: #fff !important;
   }
 }
 
 @media (max-width: 390px) {
   .site-shell > .home-main > .hero-carousel {
-    min-height: 29rem !important;
-    height: 29rem !important;
+    height: 17.5rem !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h1,
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h2 {
-    font-size: clamp(2.18rem, 11.5vw, 3rem) !important;
+    font-size: clamp(1.82rem, 8.8vw, 2.35rem) !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy > p:not(.eyebrow) {
+    max-width: 16.5rem !important;
   }
 }

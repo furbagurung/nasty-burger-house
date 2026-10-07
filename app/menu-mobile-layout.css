@@ -3,7 +3,7 @@
 @media (max-width: 900px) {
   .catalogue-shell.menu-catalogue-shell {
     display: grid;
-    --menu-mobile-header-row: calc(5.1rem + env(safe-area-inset-top));
+    --menu-mobile-header-row: 0px;
     --menu-mobile-tabs-row: calc(4.85rem + env(safe-area-inset-bottom));
     grid-template-rows:
       var(--menu-mobile-header-row)
@@ -37,9 +37,9 @@
   }
 
   .catalogue-shell.menu-catalogue-shell > .catalogue-header {
+    display: none !important;
     position: relative !important;
     inset: auto !important;
-    display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
     align-items: center !important;
     width: 100% !important;

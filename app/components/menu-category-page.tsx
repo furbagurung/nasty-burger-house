@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 import Link from "next/link";
 import { useLayoutEffect, useRef } from "react";
 import type { MenuItem } from "../data/menu";
@@ -73,9 +74,9 @@ export default function MenuCategoryPage({
         </nav>
 
         <div className="catalogue-header-actions">
-          <Link className="catalogue-order-button" href="/menu/burgers">
+          <ButtonWithIcon href="/menu/burgers" tone="red">
             Order Now
-          </Link>
+          </ButtonWithIcon>
         </div>
       </header>
 

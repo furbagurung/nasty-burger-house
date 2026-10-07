@@ -22,6 +22,7 @@ import MobileBottomNav from "./mobile-bottom-nav";
 import HomepageTestimonials from "./homepage-testimonials";
 import ReviewStories from "./review-stories";
 import DripPointsBanner from "./drip-points-banner";
+import LandingPromoModal from "./landing-promo-modal";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 type OrderExperienceProps = {
@@ -769,6 +770,7 @@ export default function OrderExperience({
 
   return (
     <div className="site-shell">
+      <LandingPromoModal />
       <p className="sr-only" aria-live="polite">
         {announcement}
       </p>

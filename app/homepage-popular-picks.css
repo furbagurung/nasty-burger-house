@@ -139,9 +139,14 @@
   }
 
   .popular-picks__heading {
-    align-items: end;
+    align-items: center;
     margin-bottom: 0.8rem;
     padding-inline: 1rem;
+  }
+
+  .popular-picks__heading .eyebrow,
+  .popular-picks__heading p:not(.eyebrow) {
+    display: none;
   }
 
   .popular-picks__heading h2 {

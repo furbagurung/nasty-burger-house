@@ -171,13 +171,13 @@
   .popular-picks__rail {
     display: grid;
     width: 100%;
-    grid-auto-columns: minmax(9.15rem, 41vw);
+    grid-auto-columns: minmax(8rem, 36vw);
     grid-auto-flow: column;
     grid-template-columns: none;
-    gap: 0.8rem;
+    gap: 0.65rem;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 0 1rem 0.65rem;
+    padding: 0 1rem 0.55rem;
     overscroll-behavior-inline: contain;
     scroll-padding-inline: 1rem;
     scroll-snap-type: x mandatory;
@@ -212,17 +212,17 @@
   }
 
   .popular-pick-card__body strong {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
   }
 
   .popular-pick-card__body small {
-    font-size: 0.76rem;
+    font-size: 0.72rem;
   }
 
   .popular-pick-card__add {
-    width: 1.8rem;
-    height: 1.8rem;
-    font-size: 1.05rem;
+    width: 1.65rem;
+    height: 1.65rem;
+    font-size: 0.96rem;
   }
 }
 

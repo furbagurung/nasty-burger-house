@@ -108,6 +108,18 @@ const heroSlides: HeroSlide[] = [
   },
 ];
 
+function renderHeroTitle(title: string) {
+  return title.split(/(beast)/gi).map((part, index) =>
+    /^beast$/i.test(part) ? (
+      <span className="hero-title__accent" key={`${part}-${index}`}>
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  );
+}
+
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "AUD",
@@ -926,18 +938,9 @@ export default function OrderExperience({
                 <div className="hero-slide__copy">
                   <p className="eyebrow">{slide.eyebrow}</p>
                   {index === 0 ? (
-                    <h1>{slide.title}</h1>
+                    <h1>{renderHeroTitle(slide.title)}</h1>
                   ) : (
-                    <h2>
-                      {slide.id === "monthly" ? (
-                        <>
-                          <span className="hero-title__accent">Beast</span>{" "}
-                          of the Month
-                        </>
-                      ) : (
-                        slide.title
-                      )}
-                    </h2>
+                    <h2>{renderHeroTitle(slide.title)}</h2>
                   )}
                   <p>{slide.description}</p>
                   {slide.id !== "monthly" && (

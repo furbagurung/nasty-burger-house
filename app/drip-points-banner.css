@@ -40,5 +40,6 @@
     display: block;
     aspect-ratio: 3 / 4;
     border-radius: 1.25rem;
+    background: transparent;
   }
 }

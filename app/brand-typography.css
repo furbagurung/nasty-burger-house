@@ -1,5 +1,5 @@
 /* Nasty Burger House brand typography
-   Body/UI: Questrial
+   Body/UI: DM Sans
    Titles/headings: Bowlby One SC */
 
 html,
@@ -8,7 +8,7 @@ button,
 input,
 textarea,
 select {
-  font-family: var(--font-questrial), Arial, Helvetica, sans-serif !important;
+  font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif !important;
 }
 
 h1,
@@ -36,7 +36,7 @@ h6 {
   letter-spacing: 0 !important;
 }
 
-/* Keep supporting copy, nav and CTA typography consistently Questrial. */
+/* Keep supporting copy, nav and CTA typography consistently DM Sans. */
 .hero-carousel .hero-slide__copy .eyebrow,
 .hero-carousel .hero-slide__copy > p:not(.eyebrow),
 .hero-carousel .hero-slide__copy .hero-card__cta,
@@ -46,7 +46,7 @@ h6 {
 .mobile-tab-bar--v2,
 .site-footer,
 .eyebrow {
-  font-family: var(--font-questrial), Arial, Helvetica, sans-serif !important;
+  font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif !important;
 }
 
 

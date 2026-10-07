@@ -134,13 +134,13 @@
 
 @media (max-width: 680px) {
   .popular-picks {
-    padding: 1.35rem 0 2.25rem;
+    padding: 1rem 0 2rem;
     background: #fff;
   }
 
   .popular-picks__heading {
     align-items: end;
-    margin-bottom: 0.95rem;
+    margin-bottom: 0.8rem;
     padding-inline: 1rem;
   }
 
@@ -165,7 +165,7 @@
 
   .popular-picks__rail {
     display: grid;
-    grid-auto-columns: minmax(9.35rem, 42vw);
+    grid-auto-columns: minmax(9.15rem, 41vw);
     grid-auto-flow: column;
     grid-template-columns: none;
     gap: 0.8rem;
@@ -188,6 +188,12 @@
 
   .popular-pick-card__media {
     border-radius: 0.95rem;
+    background: #f7f3ed;
+  }
+
+  .popular-pick-card__media img {
+    object-fit: contain;
+    padding: 0.3rem;
   }
 
   .popular-pick-card__body {

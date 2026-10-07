@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 export default function AccountForgotPasswordPage() {
   const configured = isSupabaseBrowserConfigured();
@@ -54,9 +55,9 @@ export default function AccountForgotPasswordPage() {
                 If an account exists for {email}, a password reset link is on the
                 way.
               </p>
-              <Link className="standalone-primary-button" href="/account/sign-in">
+              <ButtonWithIcon href="/account/sign-in" tone="red">
                 Back to sign in
-              </Link>
+              </ButtonWithIcon>
             </div>
           ) : (
             <form className="account-auth-form" onSubmit={submit}>
@@ -81,13 +82,13 @@ export default function AccountForgotPasswordPage() {
                   {error}
                 </p>
               )}
-              <button
-                className="standalone-primary-button"
+              <ButtonWithIcon
+                tone="red"
                 type="submit"
                 disabled={submitting || !configured}
               >
                 {submitting ? "Sending…" : "Send reset link"}
-              </button>
+              </ButtonWithIcon>
               <Link className="standalone-secondary-link" href="/account/sign-in">
                 ← Back to sign in
               </Link>

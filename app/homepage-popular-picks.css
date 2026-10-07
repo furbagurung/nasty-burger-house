@@ -170,15 +170,20 @@
 
   .popular-picks__rail {
     display: grid;
+    width: 100%;
     grid-auto-columns: minmax(9.15rem, 41vw);
     grid-auto-flow: column;
     grid-template-columns: none;
     gap: 0.8rem;
     overflow-x: auto;
-    padding: 0 1rem 0.5rem;
+    overflow-y: hidden;
+    padding: 0 1rem 0.65rem;
+    overscroll-behavior-inline: contain;
     scroll-padding-inline: 1rem;
-    scroll-snap-type: x proximity;
+    scroll-snap-type: x mandatory;
     scrollbar-width: none;
+    touch-action: pan-x;
+    -webkit-overflow-scrolling: touch;
   }
 
   .popular-picks__rail::-webkit-scrollbar {
@@ -189,6 +194,7 @@
   .popular-pick-card:nth-child(n + 4) {
     display: grid;
     scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
   .popular-pick-card__media {

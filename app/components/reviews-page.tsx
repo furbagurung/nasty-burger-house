@@ -11,6 +11,7 @@ import {
 import type { CustomerOrder, CustomerReview } from "../lib/customer-store";
 import AccountDashboardSkeleton from "./account-dashboard-skeleton";
 import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 export default function ReviewsPage() {
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
@@ -123,7 +124,7 @@ export default function ReviewsPage() {
             <p className="standalone-eyebrow">No completed order to review</p>
             <h2>Your review form unlocks after pickup.</h2>
             <p>When an order is marked completed by the team, it becomes eligible for a 1–5 star review.</p>
-            <Link className="standalone-primary-button" href="/account/orders">View order history</Link>
+            <ButtonWithIcon href="/account/orders" tone="red">View order history</ButtonWithIcon>
           </section>
         ) : (
           <div className="reviews-layout">
@@ -156,7 +157,7 @@ export default function ReviewsPage() {
                 Tell us more <small>Optional</small>
                 <textarea value={message} onChange={(event) => setMessage(event.target.value)} rows={6} maxLength={1000} placeholder="What did you love? What should we improve?" />
               </label>
-              <button className="standalone-primary-button" type="submit">Save review</button>
+              <ButtonWithIcon tone="red" type="submit">Save review</ButtonWithIcon>
             </form>
 
             <aside className="reviews-history">

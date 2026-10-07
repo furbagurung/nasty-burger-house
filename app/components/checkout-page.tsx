@@ -11,6 +11,7 @@ import {
 } from "../lib/order";
 import type { ServiceStatus } from "../lib/service";
 import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 const CHECKOUT_CONTACT_KEY = "nasty-burger-checkout-contact";
@@ -349,8 +350,9 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
                 </ul>
               </div>
             )}
-            <button
-              className="standalone-primary-button"
+            <ButtonWithIcon
+              tone="red"
+              fullWidth
               type="submit"
               disabled={submitting || !serviceStatus.acceptingOrders}
             >
@@ -359,7 +361,7 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
                 : submitting
                   ? "Opening Square…"
                   : "Continue to secure payment"}
-            </button>
+            </ButtonWithIcon>
             <small>
               Orders, customer details and payment are handled through Square. Nasty Burger House
               never receives your card details.

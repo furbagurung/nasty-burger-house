@@ -219,7 +219,7 @@
     padding: 1rem 0 0.85rem !important;
     background: #fff !important;
     border-bottom: 1px solid #eee9e3;
-    text-align: left !important;
+    text-align: center !important;
   }
 
   .catalogue-shell.menu-catalogue-shell .catalogue-heading h1 {
@@ -254,6 +254,7 @@
     font-size: 0.85rem !important;
     font-weight: 800 !important;
     line-height: 1.35 !important;
+    text-align: center !important;
     overflow-wrap: anywhere;
   }
 

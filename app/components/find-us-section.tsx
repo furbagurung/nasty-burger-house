@@ -40,10 +40,6 @@ export default function FindUsSection() {
         <div className="find-us-section__copy">
           <p className="eyebrow">Find us</p>
           <h2 id="find-us-title">Come get Nasty in Belconnen.</h2>
-          <p>
-            Find Nasty Burger House in Belconnen, ACT. Plan your pickup, get
-            directions and come hungry.
-          </p>
           <div className="find-us-section__location">
             <small>Location</small>
             <strong>{LOCATION_NAME}</strong>

@@ -1,7 +1,6 @@
 /* Compact mobile homepage hero inspired by app-style ordering experiences. */
 @media (max-width: 680px) {
   .site-shell > .home-main {
-    padding-top: 0 !important;
     background: #ffffff;
   }
 

@@ -922,32 +922,34 @@ export default function OrderExperience({
                     <h2>{slide.title}</h2>
                   )}
                   <p>{slide.description}</p>
-                  <div className="hero-actions">
-                    {slide.href ? (
-                      <ButtonWithIcon
-                        href={slide.href}
-                        tone="light"
-                        className="hero-carousel__cta"
-                      >
-                        {slide.ctaLabel}
-                      </ButtonWithIcon>
-                    ) : (
-                      <ButtonWithIcon
-                        tone="light"
-                        className="hero-carousel__cta"
-                        onClick={
-                          slide.action === "loyalty"
-                            ? openLoyalty
-                            : () =>
-                                monthlyItem
-                                  ? beginProduct(monthlyItem)
-                                  : openOrderType()
-                        }
-                      >
-                        {slide.ctaLabel}
-                      </ButtonWithIcon>
-                    )}
-                  </div>
+                  {slide.id !== "monthly" && (
+                    <div className="hero-actions">
+                      {slide.href ? (
+                        <ButtonWithIcon
+                          href={slide.href}
+                          tone="light"
+                          className="hero-carousel__cta"
+                        >
+                          {slide.ctaLabel}
+                        </ButtonWithIcon>
+                      ) : (
+                        <ButtonWithIcon
+                          tone="light"
+                          className="hero-carousel__cta"
+                          onClick={
+                            slide.action === "loyalty"
+                              ? openLoyalty
+                              : () =>
+                                  monthlyItem
+                                    ? beginProduct(monthlyItem)
+                                    : openOrderType()
+                          }
+                        >
+                          {slide.ctaLabel}
+                        </ButtonWithIcon>
+                      )}
+                    </div>
+                  )}
                   <div className="hero-carousel__controls">
                     <button
                       type="button"

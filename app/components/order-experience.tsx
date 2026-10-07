@@ -219,9 +219,6 @@ export default function OrderExperience({
     "nasty-fries",
     "bbq-beast",
   ]);
-  const [popularPicksSource, setPopularPicksSource] = useState<
-    "loading" | "square" | "fallback"
-  >("loading");
 
   const burgerItems = useMemo(
     () => items.filter((item) => item.category === "burgers"),
@@ -305,9 +302,8 @@ export default function OrderExperience({
           .slice(0, 4);
 
         if (ids.length > 0) setPopularPickIds(ids);
-        setPopularPicksSource(result.source === "square" ? "square" : "fallback");
       } catch {
-        if (!cancelled) setPopularPicksSource("fallback");
+        // Keep the local fallback picks when live order data is unavailable.
       }
     }
 
@@ -1070,13 +1066,6 @@ export default function OrderExperience({
             <div>
               <p className="eyebrow">What people order</p>
               <h2 id="popular-picks-title">Popular Picks</h2>
-              <p>
-                {popularPicksSource === "square"
-                  ? "Based on recent completed Square orders."
-                  : popularPicksSource === "loading"
-                    ? "Loading recent customer favourites…"
-                    : "Nasty favourites while live order data refreshes."}
-              </p>
             </div>
             <Link href="/menu/burgers">View all <span aria-hidden="true">→</span></Link>
           </div>

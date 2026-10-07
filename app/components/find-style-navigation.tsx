@@ -34,7 +34,7 @@ export default function FindStyleNavigation() {
   const isHome = pathname === "/";
   const isMenuPage = pathname.startsWith("/menu/");
   const isProductPage = pathname.startsWith("/product/");
-  const supportsDrawer = isHome || isMenuPage || isProductPage;
+  const supportsDrawer = isHome || isProductPage;
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -170,7 +170,7 @@ export default function FindStyleNavigation() {
 
   return (
     <>
-      {!isHome && (
+      {isProductPage && (
         <button
           ref={burgerRef}
           className="nasty-find-burger is-catalogue-route"

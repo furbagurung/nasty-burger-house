@@ -17,6 +17,7 @@
   --amber: #e6a315;
   --closed: #c64b3c;
   --shadow: 0 22px 70px rgba(31, 22, 11, 0.14);
+  --font-geist-sans: var(--font-questrial);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -52,9 +53,9 @@
 @theme inline {
   --color-background: var(--paper);
   --color-foreground: var(--ink);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-questrial);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-anton-sc);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -106,7 +107,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-questrial), Arial, Helvetica, sans-serif;
 }
 
 button,

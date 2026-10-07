@@ -34,6 +34,16 @@ type CheckoutResult = {
   message: string;
 };
 
+type PopularPicksResponse = {
+  source?: "square" | "fallback";
+  windowDays?: number;
+  picks?: Array<{
+    id?: string;
+    quantity?: number;
+    orderCount?: number;
+  }>;
+};
+
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 const LEGACY_CART_STORAGE_KEY = "nasty-burger-phase-one-cart";
 const LOYALTY_STORAGE_KEY = "nasty-burger-drip-signup";
@@ -206,10 +216,27 @@ export default function OrderExperience({
   const [selectionError, setSelectionError] = useState("");
   const [announcement, setAnnouncement] = useState("");
   const [serviceStatus] = useState(initialServiceStatus);
+  const [popularPickIds, setPopularPickIds] = useState<string[]>([
+    "og-nasty",
+    "peri-beast",
+    "nasty-fries",
+    "bbq-beast",
+  ]);
+  const [popularPicksSource, setPopularPicksSource] = useState<
+    "loading" | "square" | "fallback"
+  >("loading");
 
   const burgerItems = useMemo(
     () => items.filter((item) => item.category === "burgers"),
     [items],
+  );
+
+  const popularItems = useMemo(
+    () =>
+      popularPickIds
+        .map((id) => items.find((item) => item.id === id))
+        .filter((item): item is MenuItem => Boolean(item)),
+    [items, popularPickIds],
   );
 
   const selectedModifiers = useMemo(
@@ -263,6 +290,35 @@ export default function OrderExperience({
     if (!cartHydrated) return;
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
   }, [cart, cartHydrated]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadPopularPicks() {
+      try {
+        const response = await fetch("/api/popular-picks", {
+          cache: "no-store",
+        });
+        const result = (await response.json()) as PopularPicksResponse;
+        if (!response.ok || cancelled) return;
+
+        const ids = (result.picks ?? [])
+          .map((pick) => pick.id)
+          .filter((id): id is string => typeof id === "string")
+          .slice(0, 4);
+
+        if (ids.length > 0) setPopularPickIds(ids);
+        setPopularPicksSource(result.source === "square" ? "square" : "fallback");
+      } catch {
+        if (!cancelled) setPopularPicksSource("fallback");
+      }
+    }
+
+    void loadPopularPicks();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -1007,6 +1063,57 @@ export default function OrderExperience({
               <span>05</span>
               <strong>Drinks</strong>
             </Link>
+          </div>
+        </section>
+
+        <section
+          className="popular-picks"
+          aria-labelledby="popular-picks-title"
+        >
+          <div className="popular-picks__heading">
+            <div>
+              <p className="eyebrow">What people order</p>
+              <h2 id="popular-picks-title">Popular Picks</h2>
+              <p>
+                {popularPicksSource === "square"
+                  ? "Based on recent completed Square orders."
+                  : popularPicksSource === "loading"
+                    ? "Loading recent customer favourites…"
+                    : "Nasty favourites while live order data refreshes."}
+              </p>
+            </div>
+            <Link href="/menu/burgers">View all <span aria-hidden="true">→</span></Link>
+          </div>
+
+          <div className="popular-picks__rail">
+            {popularItems.map((item) => (
+              <button
+                className="popular-pick-card"
+                type="button"
+                onClick={() => beginProduct(item)}
+                key={item.id}
+              >
+                <span className="popular-pick-card__media">
+                  {item.image ? (
+                    <Image
+                      src={item.image}
+                      alt=""
+                      fill
+                      sizes="(max-width: 680px) 42vw, 240px"
+                    />
+                  ) : null}
+                </span>
+                <span className="popular-pick-card__body">
+                  <span>
+                    <strong>{item.name}</strong>
+                    <small>{formatPrice(item.price)}</small>
+                  </span>
+                  <span className="popular-pick-card__add" aria-hidden="true">
+                    +
+                  </span>
+                </span>
+              </button>
+            ))}
           </div>
         </section>
 

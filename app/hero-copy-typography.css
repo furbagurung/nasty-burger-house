@@ -45,7 +45,7 @@
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif !important;
   font-size: clamp(3.9rem, 6.2vw, 6.7rem) !important;
   font-weight: 950 !important;
-  letter-spacing: -0.07em !important;
+  letter-spacing: 0.005em !important;
   line-height: 0.88 !important;
   text-transform: uppercase !important;
   text-wrap: balance;
@@ -245,7 +245,7 @@
   .hero-carousel .hero-slide__copy h2 {
     max-width: 9ch !important;
     font-size: clamp(2.85rem, 13vw, 4.4rem) !important;
-    letter-spacing: -0.065em !important;
+    letter-spacing: 0 !important;
     line-height: 0.9 !important;
   }
 

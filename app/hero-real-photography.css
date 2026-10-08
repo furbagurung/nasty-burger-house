@@ -124,6 +124,20 @@
 
 
 @media (min-width: 681px) {
+  .site-shell > .home-main > .hero-carousel {
+    width: min(calc(100% - 2rem), 1180px) !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    overflow: hidden !important;
+    border-radius: 1.5rem !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide,
+  .site-shell > .home-main > .hero-carousel .hero-slide__image,
+  .site-shell > .home-main > .hero-carousel .hero-slide__shade {
+    border-radius: 1.5rem !important;
+  }
+
   .site-shell > .home-main > .hero-carousel .hero-slide__image,
   .site-shell > .home-main > .hero-carousel .hero-slide.is-active .hero-slide__image {
     object-fit: contain !important;

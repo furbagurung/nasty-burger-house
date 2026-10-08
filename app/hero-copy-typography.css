@@ -318,3 +318,11 @@
     transition: none !important;
   }
 }
+
+/* Align desktop/tablet hero copy with the Explore Our Menu container. */
+@media (min-width: 681px) {
+  .hero-carousel .hero-slide__copy {
+    left: max(1.25rem, calc((100% - 1180px) / 2)) !important;
+    width: min(39rem, 42vw) !important;
+  }
+}

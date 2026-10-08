@@ -225,7 +225,6 @@ export default function OrderExperience({
   const transitions = drawerMotion(reducedMotion !== false, mobileCart);
   const [activeHeroSlide, setActiveHeroSlide] = useState(0);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
-  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [modifierQuantities, setModifierQuantities] = useState<
     Record<string, number>
@@ -449,8 +448,7 @@ export default function OrderExperience({
       isOrderTypeOpen ||
       isCheckoutOpen ||
       isLoyaltyOpen ||
-      isMonthlyOpen ||
-      isMobileNavOpen;
+      isMonthlyOpen;
     document.body.style.overflow = overlayOpen ? "hidden" : "";
 
     function closeOnEscape(event: KeyboardEvent) {
@@ -462,7 +460,6 @@ export default function OrderExperience({
       setIsCheckoutOpen(false);
       setIsLoyaltyOpen(false);
       setIsMonthlyOpen(false);
-      setIsMobileNavOpen(false);
     }
 
     window.addEventListener("keydown", closeOnEscape);
@@ -475,7 +472,6 @@ export default function OrderExperience({
     isOrderTypeOpen,
     isCheckoutOpen,
     isLoyaltyOpen,
-    isMobileNavOpen,
     isMonthlyOpen,
     selectedItem,
   ]);
@@ -493,7 +489,6 @@ export default function OrderExperience({
 
   function beginProduct(item: MenuItem) {
     resetProductForm();
-    setIsMobileNavOpen(false);
     setIsOrderTypeOpen(false);
     setIsLoyaltyOpen(false);
     setIsCheckoutOpen(false);
@@ -698,7 +693,6 @@ export default function OrderExperience({
   }
 
   function openLoyalty() {
-    setIsMobileNavOpen(false);
     setIsOrderTypeOpen(false);
     setSelectedItem(null);
     setEditingLineId(null);
@@ -709,7 +703,6 @@ export default function OrderExperience({
   }
 
   function openCart() {
-    setIsMobileNavOpen(false);
     setIsOrderTypeOpen(false);
     setIsLoyaltyOpen(false);
     setIsCheckoutOpen(false);
@@ -720,7 +713,6 @@ export default function OrderExperience({
   }
 
   function openOrderType() {
-    setIsMobileNavOpen(false);
     setSelectedItem(null);
     setEditingLineId(null);
     setIsCartOpen(false);
@@ -864,9 +856,9 @@ export default function OrderExperience({
               className="mobile-menu-button"
               type="button"
               aria-label="Open navigation"
-              aria-expanded={isMobileNavOpen}
-              aria-controls="mobile-navigation"
-              onClick={() => setIsMobileNavOpen(true)}
+              aria-expanded={false}
+              aria-controls="nasty-find-navigation"
+              onClick={() => window.dispatchEvent(new Event("nasty:toggle-mobile-navigation"))}
             >
               <span aria-hidden="true" />
               <span aria-hidden="true" />
@@ -888,67 +880,6 @@ export default function OrderExperience({
           </div>
         </div>
       </header>
-
-      {isMobileNavOpen && (
-        <div
-          className="drawer-backdrop mobile-nav-backdrop"
-          role="presentation"
-        >
-          <aside
-            className="mobile-nav-drawer"
-            id="mobile-navigation"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="mobile-navigation-title"
-          >
-            <div className="drawer-heading">
-              <div className="mobile-nav-brand">
-                <Image
-                  src="/logo.webp"
-                  alt="Nasty Burger House"
-                  width={256}
-                  height={256}
-                />
-                <div>
-                  <p className="eyebrow">Nasty Burger House</p>
-                  <h2 id="mobile-navigation-title">Choose your feed.</h2>
-                </div>
-              </div>
-              <button
-                className="close-button"
-                type="button"
-                onClick={() => setIsMobileNavOpen(false)}
-                aria-label="Close navigation"
-              >
-                ×
-              </button>
-            </div>
-            <nav className="mobile-nav-links" aria-label="Mobile navigation">
-              <Link
-                href="/menu/burgers"
-                onClick={() => setIsMobileNavOpen(false)}
-              >
-                Explore menu <span aria-hidden="true">→</span>
-              </Link>
-              <a href="#beast-month" onClick={() => setIsMobileNavOpen(false)}>
-                Beast of the Month <span aria-hidden="true">→</span>
-              </a>
-              <button type="button" onClick={openLoyalty}>
-                Join Drip Points <span aria-hidden="true">→</span>
-              </button>
-            </nav>
-            <ButtonWithIcon
-              tone="red"
-              fullWidth
-              onClick={cartCount > 0 ? openCart : openOrderType}
-            >
-              {cartCount > 0
-                ? `View order · ${formatPrice(cartSubtotal)}`
-                : "Order now"}
-            </ButtonWithIcon>
-          </aside>
-        </div>
-      )}
 
       <main className="home-main" id="top">
         <section

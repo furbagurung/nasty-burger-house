@@ -752,3 +752,59 @@
     box-shadow: none !important;
   }
 }
+
+/* Desktop product details: prominent price, tidy dietary badges and a quiet Halal note. */
+@media (min-width: 901px) {
+  .product-page-premium .product-detail__heading-row .product-detail__price {
+    display: flex !important;
+    align-items: baseline;
+    gap: 0.55rem;
+    width: fit-content;
+    margin: 1rem 0 0 !important;
+    color: #1d1d1d !important;
+    font-size: clamp(1.6rem, 2.15vw, 2rem) !important;
+    font-weight: 850 !important;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+    opacity: 1;
+  }
+
+  .product-page-premium .product-detail__content--premium > .product-detail__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    width: fit-content;
+    margin: 0.85rem 0 0 !important;
+  }
+
+  .product-page-premium .product-detail__content--premium > .product-detail__tags > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid #e4e9e3;
+    border-radius: 999px;
+    padding: 0.4rem 0.75rem;
+    background: #f7faf7;
+    color: #2e4938;
+    font-size: 0.78rem;
+    font-weight: 750;
+  }
+
+  .product-page-premium .product-detail__halal-note {
+    order: 2;
+    align-self: flex-start;
+    width: auto;
+    max-width: 100%;
+    margin: 0.65rem 0 0 !important;
+    border-left: 2px solid #70a384;
+    padding: 0.38rem 0.7rem;
+    background: #f6faf7;
+    color: #49705a;
+    font-size: 0.7rem;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    line-height: 1.5;
+    text-transform: none;
+  }
+}

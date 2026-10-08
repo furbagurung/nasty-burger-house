@@ -50,7 +50,7 @@
   display: inline-flex;
   width: fit-content;
   align-items: baseline;
-  gap: 0.65rem;
+  gap: 0.28rem;
   margin: 0;
   color: transparent !important;
   font-size: 0 !important;
@@ -78,9 +78,9 @@
   color: #a62212;
   content: "Beast Combo";
   font-size: 1.1rem;
-  font-weight: 950;
-  letter-spacing: -0.045em;
-  line-height: 1.02;
+  font-weight: 850;
+  letter-spacing: 0.005em;
+  line-height: 1.08;
   text-decoration-line: underline;
   text-decoration-color: #741428;
   text-decoration-thickness: 0.16rem;
@@ -130,7 +130,7 @@
   .product-page-premium
     .product-custom-section:not(.product-custom-section--extras)
     .product-custom-section__heading h2 {
-    gap: 0.55rem;
+    gap: 0.22rem;
   }
 
   .product-page-premium

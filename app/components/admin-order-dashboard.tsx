@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Bell, CircleCheck, Clock3, Flame, PackageCheck } from "lucide-react";
+import { CircleCheck, Clock3, Flame, PackageCheck } from "lucide-react";
 import { AdminWorkspaceHeader } from "./admin-workspace-header";
 import { AdminMetricCard } from "./admin-metric-card";
 import { Badge } from "@/components/ui/badge";
@@ -302,6 +302,9 @@ export default function AdminOrderDashboard({
             <p>Order alerts</p>
             <strong>Notification health</strong>
             <span>Every order is saved to Supabase first. Alerts are a secondary delivery channel.</span>
+            <Button type="button" size="sm" variant="outline" className="mt-2 w-fit" onClick={() => void enableNotifications()}>
+              {notificationsEnabled && soundEnabled ? "Order alerts enabled" : "Enable order alerts"}
+            </Button>
           </div>
           <div className="admin-alert-health__grid">
             <div><span>Browser</span><strong className={notificationsEnabled ? "is-good" : ""}>{browserAlertLabel}</strong></div>

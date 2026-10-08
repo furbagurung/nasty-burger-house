@@ -1589,3 +1589,12 @@ body:has(.checkout-page) .mobile-tab-bar--v2 {
     right: calc(25% + 1.125rem);
   }
 }
+
+/* Checkout form and review section headings — DM Sans Bold. */
+.checkout-page .checkout-panel__heading h2,
+.checkout-page .checkout-page-review__heading h2,
+.checkout-page .checkout-summary-heading > h2,
+.checkout-page .checkout-summary-heading > p {
+  font-family: var(--font-dm-sans), "DM Sans", Arial, sans-serif;
+  font-weight: 700;
+}

@@ -51,6 +51,20 @@ const LEGACY_CART_STORAGE_KEY = "nasty-burger-phase-one-cart";
 const LOYALTY_STORAGE_KEY = "nasty-burger-drip-signup";
 const MONTHLY_SEEN_KEY = "nasty-burger-monthly-seen";
 
+const modifierThumbnails: Record<string, string> = {
+  "beef-patty": "/images/extras/buff-patty.webp",
+  "chicken-patty": "/images/extras/chicken-patty.webp",
+  bacon: "/images/extras/bacon.webp",
+  cheese: "/images/extras/american-cheese.webp",
+  "house-sauce": "/images/extras/sauce.webp",
+  "signature-sauce": "/images/extras/sauce.webp",
+  "garlic-aioli": "/images/extras/Garlic aioli.webp",
+  "jalapeno-mint-mayo": "/images/extras/Jalapeño mint mayo.webp",
+  "tartare-sauce": "/images/extras/tartare-sauce.webp",
+  "tomato-sauce": "/images/extras/tomato sauce.webp",
+};
+
+
 type HeroSlide = {
   id: string;
   eyebrow: string;
@@ -1470,10 +1484,27 @@ export default function OrderExperience({
                 <legend>One-tap extras</legend>
                 <div className="stepper-list">
                   {allowedModifiers.map((modifier) => (
-                    <div className="stepper-row" key={modifier.id}>
-                      <span>
-                        {modifier.name}
-                        <small>+{formatPrice(modifier.price)} each</small>
+                    <div
+                      className="stepper-row product-stepper-row--extra"
+                      key={modifier.id}
+                    >
+                      <span className="product-extra-info">
+                        <span className="product-extra-thumb" aria-hidden="true">
+                          <Image
+                            src={
+                              modifierThumbnails[modifier.id] ??
+                              selectedItem.image ??
+                              "/logo.webp"
+                            }
+                            alt=""
+                            width={52}
+                            height={52}
+                          />
+                        </span>
+                        <span className="product-extra-copy">
+                          <strong>{modifier.name}</strong>
+                          <small>+{formatPrice(modifier.price)} each</small>
+                        </span>
                       </span>
                       <div
                         className="quantity-control"

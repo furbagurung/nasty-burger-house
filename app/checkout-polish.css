@@ -6,7 +6,7 @@
   --checkout-border: #e9e4dd;
   --checkout-hot: #e94725;
   min-height: 100svh;
-  background: #f7f5f2;
+  background: #fff;
   color: var(--checkout-ink);
 }
 
@@ -563,9 +563,7 @@ body:has(.checkout-page) .mobile-tab-bar--v2 {
     --checkout-muted: #7a746d;
     --checkout-border: #e8e2da;
     --checkout-hot: var(--hot, #e83b18);
-    background:
-      radial-gradient(circle at 92% 0%, rgba(232, 59, 24, 0.05), transparent 24rem),
-      #f6f3ee;
+    background: #fff;
     color: var(--checkout-ink);
   }
 

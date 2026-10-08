@@ -193,12 +193,19 @@
   .popular-pick-card,
   .popular-pick-card:nth-child(n + 4) {
     display: grid;
+    gap: 0.55rem;
+    overflow: hidden;
+    border: 1px solid #eee7dd;
+    border-radius: 1rem;
+    padding: 0.38rem 0.38rem 0.55rem;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(35, 28, 20, 0.05);
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }
 
   .popular-pick-card__media {
-    border-radius: 0.95rem;
+    border-radius: 0.72rem;
     background: #f7f3ed;
   }
 
@@ -208,7 +215,8 @@
   }
 
   .popular-pick-card__body {
-    gap: 0.45rem;
+    gap: 0.4rem;
+    padding: 0 0.08rem;
   }
 
   .popular-pick-card__body strong {

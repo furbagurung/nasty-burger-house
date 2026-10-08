@@ -27,9 +27,9 @@ const PENDING_ORDER_KEY = "nasty-square-pending-order";
 
 type ContactField = "name" | "email" | "phone";
 type ContactErrors = Partial<Record<ContactField, string>>;
-type CheckoutStep = 1 | 2 | 3;
+type CheckoutStep = 1 | 2;
 
-const checkoutStepNames = ["Pickup", "Your details", "Review & pay"] as const;
+const checkoutStepNames = ["Your details", "Review & pay"] as const;
 
 function validateContact(name: string, email: string, phone: string): ContactErrors {
   const errors: ContactErrors = {};
@@ -121,6 +121,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   const [fieldErrors, setFieldErrors] = useState<ContactErrors>({});
   const [hydrated, setHydrated] = useState(false);
   const [activeStep, setActiveStep] = useState<CheckoutStep>(1);
+  const [pickupConfirmed, setPickupConfirmed] = useState(false);
   const stepAnnouncementRef = useRef<HTMLHeadingElement>(null);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -175,11 +176,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
     setActiveStep(nextStep);
   }
 
-  function continueToDetails() {
-    if (!serviceStatus.acceptingOrders) return;
-    changeStep(2);
-  }
-
   function continueToReview() {
     const validation = validateContact(name, email, phone);
     if (Object.keys(validation).length > 0) {
@@ -187,7 +183,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
       setErrors(["Please correct the highlighted contact details."]);
       return;
     }
-    changeStep(3);
+    changeStep(2);
   }
 
   useEffect(() => {
@@ -223,13 +219,13 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (submitting || cart.length === 0 || activeStep !== 3) return;
+    if (submitting || cart.length === 0 || activeStep !== 2) return;
     setErrors([]);
     setFieldErrors({});
 
     const validation = validateContact(name, email, phone);
     if (Object.keys(validation).length > 0) {
-      setActiveStep(2);
+      setActiveStep(1);
       setFieldErrors(validation);
       setErrors(["Please correct the highlighted contact details."]);
       return;
@@ -237,6 +233,11 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
 
     if (!serviceStatus.acceptingOrders) {
       setErrors([serviceStatus.notice]);
+      return;
+    }
+
+    if (!pickupConfirmed) {
+      setErrors(["Please confirm that your order is for pickup before paying."]);
       return;
     }
 
@@ -298,7 +299,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
         setErrors(messages.length ? messages : [fallback]);
         const rejectedFields = serverContactErrors(messages);
         setFieldErrors(rejectedFields);
-        if (Object.keys(rejectedFields).length > 0) setActiveStep(2);
+        if (Object.keys(rejectedFields).length > 0) setActiveStep(1);
         if (response.status === 409) setServiceStatus(getServiceStatus());
         return;
       }
@@ -384,12 +385,12 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             <ChevronLeft size={24} strokeWidth={2.3} aria-hidden="true" />
           </Link>
           <div className="cart-redesign-title-wrap">
-            <p>Pickup checkout</p>
+            <p>Secure checkout</p>
             <div className="cart-redesign-title-row">
               <h1>Checkout</h1>
             </div>
             <p className="checkout-desktop-subtitle">
-              Confirm your pickup details and pay securely with Square.
+              Add your details, review your order and pay securely with Square.
             </p>
           </div>
         </header>
@@ -397,7 +398,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
         <div className="checkout-at-a-glance" aria-label="Checkout overview">
           <span className="checkout-at-a-glance__item">
             <Clock3 size={17} aria-hidden="true" />
-            <span>{serviceStatus.acceptingOrders ? "Pickup ASAP" : serviceStatus.statusLabel}</span>
+            <span>{serviceStatus.acceptingOrders ? `${itemCount} ${itemCount === 1 ? "item" : "items"} in your order` : serviceStatus.statusLabel}</span>
           </span>
           <span className="checkout-at-a-glance__separator" aria-hidden="true" />
           <span className="checkout-at-a-glance__item">
@@ -429,10 +430,10 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
           </ol>
         </nav>
         <h2 className="checkout-wizard__current-step" tabIndex={-1} ref={stepAnnouncementRef} aria-live="polite">
-          Step {activeStep} of 3 · {checkoutStepNames[activeStep - 1]}
+          Step {activeStep} of 2 · {checkoutStepNames[activeStep - 1]}
         </h2>
 
-        <form className={`checkout-page-layout${activeStep === 3 ? " is-review-step" : ""}`} onSubmit={submit} noValidate>
+        <form className={`checkout-page-layout${activeStep === 2 ? " is-review-step" : ""}`} onSubmit={submit} noValidate>
           {errors.length > 0 && (
             <div className="checkout-errors checkout-errors--top" role="alert" ref={errorSummaryRef} tabIndex={-1}>
               <AlertCircle size={19} aria-hidden="true" />
@@ -448,39 +449,8 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               <CardHeader className="checkout-panel__heading">
                 <Badge variant="secondary" className="checkout-step-badge">01</Badge>
                 <div>
-                  <h2>Pickup details</h2>
-                  <p>Collection from our food truck</p>
-                </div>
-              </CardHeader>
-              <CardContent className="checkout-panel__content">
-                <div className="checkout-location-card">
-                  <MapPin size={18} aria-hidden="true" />
-                  <div>
-                    <strong>{serviceStatus.locationName}</strong>
-                    <span>{serviceStatus.address}</span>
-                  </div>
-                </div>
-                <div
-                  className={`checkout-service-notice ${serviceStatus.acceptingOrders ? "is-open" : "is-closed"}`}
-                  role="status"
-                >
-                  {serviceStatus.acceptingOrders
-                    ? <CheckCircle2 size={18} aria-hidden="true" />
-                    : <Clock3 size={18} aria-hidden="true" />}
-                  <div>
-                    <strong>{serviceStatus.statusLabel}</strong>
-                    <p>{serviceStatus.notice}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="checkout-panel ring-0" hidden={activeStep !== 2}>
-              <CardHeader className="checkout-panel__heading">
-                <Badge variant="secondary" className="checkout-step-badge">02</Badge>
-                <div>
                   <h2>Your details</h2>
-                  <p>We&apos;ll use these to identify your order.</p>
+                  <p>How can we contact you about your order?</p>
                 </div>
               </CardHeader>
               <CardContent className="checkout-panel__content">
@@ -564,9 +534,9 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               </CardContent>
             </Card>
 
-            <Card className="checkout-panel ring-0" hidden={activeStep !== 3}>
+            <Card className="checkout-panel ring-0" hidden={activeStep !== 2}>
               <CardHeader className="checkout-panel__heading">
-                <Badge variant="secondary" className="checkout-step-badge">03</Badge>
+                <Badge variant="secondary" className="checkout-step-badge">02</Badge
                 <div>
                   <h2>Secure payment</h2>
                   <p>Complete payment after reviewing your order.</p>
@@ -590,17 +560,9 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             </Card>
             {activeStep === 1 && (
               <div className="checkout-wizard-actions">
-                <Link href="/cart" className="checkout-wizard-actions__back">Back to cart</Link>
-                <button type="button" className="checkout-wizard-actions__next" disabled={!serviceStatus.acceptingOrders} onClick={continueToDetails}>
-                  {serviceStatus.acceptingOrders ? "Continue to your details" : "Ordering unavailable"}
-                </button>
-              </div>
-            )}
-            {activeStep === 2 && (
-              <div className="checkout-wizard-actions">
-                <button type="button" className="checkout-wizard-actions__back" onClick={() => changeStep(1)}>
-                  <ChevronLeft size={17} aria-hidden="true" /> Back
-                </button>
+                <Link href="/cart" className="checkout-wizard-actions__back">
+                  <ChevronLeft size={17} aria-hidden="true" /> Back to cart
+                </Link>
                 <button type="button" className="checkout-wizard-actions__next" onClick={continueToReview}>
                   Review order
                 </button>
@@ -608,7 +570,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             )}
           </div>
 
-          <Card className="checkout-page-review ring-0" hidden={activeStep !== 3}>
+          <Card className="checkout-page-review ring-0" hidden={activeStep !== 2}>
             <CardHeader className="checkout-page-review__heading">
               <div className="checkout-summary-heading">
                 <p>Order summary</p>
@@ -618,9 +580,8 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             </CardHeader>
             <CardContent className="checkout-review-content">
               <div className="checkout-wizard-review-details">
-                <div><MapPin size={16} aria-hidden="true" /><span>{serviceStatus.locationName} · Pickup ASAP</span></div>
                 <div><CheckCircle2 size={16} aria-hidden="true" /><span>{name.trim()} · {email.trim()}</span></div>
-                <button type="button" onClick={() => changeStep(2)}>Edit details</button>
+                <button type="button" onClick={() => changeStep(1)}>Edit details</button>
               </div>
               <Separator />
               <div className="checkout-page-review__lines">
@@ -640,20 +601,37 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                 <span>Total</span>
                 <strong>{money.format(subtotal)}</strong>
               </div>
+              <div className="checkout-pickup-confirmation">
+                <input
+                  id="checkout-confirm-pickup"
+                  type="checkbox"
+                  checked={pickupConfirmed}
+                  onChange={(event) => {
+                    setPickupConfirmed(event.target.checked);
+                    setErrors([]);
+                  }}
+                  disabled={submitting}
+                  required
+                />
+                <label htmlFor="checkout-confirm-pickup">
+                  I understand this order is <strong>pickup only</strong> from{" "}
+                  <strong>{serviceStatus.locationName}</strong>, {serviceStatus.address}.
+                </label>
+              </div>
               {!serviceStatus.acceptingOrders && (
                 <div className="checkout-review-hours">
                   <Clock3 size={16} aria-hidden="true" />
                   <span>{serviceStatus.notice}</span>
                 </div>
               )}
-              <button className="checkout-wizard-review-back" type="button" onClick={() => changeStep(2)} disabled={submitting}>
+              <button className="checkout-wizard-review-back" type="button" onClick={() => changeStep(1)} disabled={submitting}>
                 <ChevronLeft size={17} aria-hidden="true" /> Back to details
               </button>
               <ButtonWithIcon
                 tone="red"
                 fullWidth
                 type="submit"
-                disabled={submitting || !serviceStatus.acceptingOrders}
+                disabled={submitting || !serviceStatus.acceptingOrders || !pickupConfirmed}
               >
                 {!serviceStatus.acceptingOrders
                   ? "Ordering unavailable"

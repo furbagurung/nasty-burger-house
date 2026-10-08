@@ -1135,10 +1135,9 @@ export default function OrderExperience({
 
           <div className="popular-picks__rail">
             {popularItems.map((item) => (
-              <button
+              <Link
                 className="popular-pick-card"
-                type="button"
-                onClick={() => beginProduct(item)}
+                href={`/product/${item.id}`}
                 key={item.id}
               >
                 <span className="popular-pick-card__media">
@@ -1147,7 +1146,7 @@ export default function OrderExperience({
                       src={item.image}
                       alt=""
                       fill
-                      sizes="(max-width: 680px) 42vw, 240px"
+                      sizes="(max-width: 680px) 36vw, 240px"
                     />
                   ) : null}
                 </span>
@@ -1160,7 +1159,7 @@ export default function OrderExperience({
                     +
                   </span>
                 </span>
-              </button>
+              </Link>
             ))}
           </div>
         </section>

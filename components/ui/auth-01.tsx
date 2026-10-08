@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent, type ReactNode } from "react";
+import Link from "next/link";
 import { MdEmail, MdLock, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ export interface Auth1Props {
   onBottomPromptClick?: () => void;
   onSubmit?: (identifier: string, password: string) => void | Promise<void>;
   footerNote?: string;
+  homeHref?: string;
   /** Local-only sign-in has no password; production uses Supabase. */
   showPasswordField?: boolean;
   submitting?: boolean;
@@ -67,6 +69,7 @@ export function Auth1({
   onBottomPromptClick,
   onSubmit,
   footerNote = "",
+  homeHref,
   showPasswordField = true,
   submitting = false,
   error = "",
@@ -213,6 +216,11 @@ export function Auth1({
         </Card>
 
         {footerNote && <p className="nbh-auth-footnote">{footerNote}</p>}
+        {homeHref && (
+          <Link className="nbh-auth-home-link" href={homeHref}>
+            ← Back to Home
+          </Link>
+        )}
       </div>
     </div>
   );

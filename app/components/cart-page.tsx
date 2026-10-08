@@ -11,6 +11,7 @@ import {
   type CartLine,
 } from "../lib/order";
 import MobileBottomNav from "./mobile-bottom-nav";
+import MobilePageHeader from "./mobile-page-header";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
@@ -150,8 +151,15 @@ export default function CartPage() {
 
   return (
     <div className="standalone-page standalone-cart-page cart-redesign-page">
+      <MobilePageHeader
+        title="Cart"
+        eyebrow="Your pickup order"
+        backHref="/menu/burgers"
+        backLabel="Back to menu"
+        detail={`${cartCount} item${cartCount === 1 ? "" : "s"}`}
+      />
       <main className="cart-redesign-main">
-        <header className="cart-redesign-header">
+        <header className="cart-redesign-header cart-redesign-header--desktop">
           <Link className="cart-redesign-back" href="/menu/burgers" aria-label="Back to menu">
             <ChevronLeft size={24} strokeWidth={2.3} aria-hidden="true" />
           </Link>

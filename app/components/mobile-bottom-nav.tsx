@@ -175,7 +175,8 @@ export default function MobileBottomNav({ active, cartCount }: MobileBottomNavPr
     pathname === "/account/create" ||
     pathname === "/account/forgot-password" ||
     pathname === "/account/reset-password" ||
-    pathname === "/checkout"
+    pathname === "/checkout" ||
+    pathname === "/cart"
   ) {
     return null;
   }

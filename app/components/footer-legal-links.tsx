@@ -56,6 +56,15 @@ export function FooterUtilityLinks() {
 export default function FooterLegalLinks() {
   const pathname = usePathname();
 
+  // Focused authentication screens use a Back to Home link instead of a
+  // distracting site footer or mobile tab bar.
+  if (
+    pathname === "/account/sign-in" ||
+    pathname === "/account/create" ||
+    pathname === "/account/forgot-password" ||
+    pathname === "/account/reset-password"
+  ) return null;
+
   // These pages render their utility links inside their own React-owned footer.
   if (pathname === "/" || pathname.startsWith("/menu/") || pathname.startsWith("/product/")) return null;
 

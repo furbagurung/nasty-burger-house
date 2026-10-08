@@ -416,7 +416,7 @@
     width: 100%;
     /* The announcement bar already reserves its own height on mobile.
        Avoid stacking an extra 5.8rem gap above the cart heading. */
-    padding: clamp(1rem, 3.6vw, 1.4rem) 0.85rem calc(7.3rem + env(safe-area-inset-bottom));
+    padding: clamp(1rem, 3.6vw, 1.4rem) 0.85rem calc(2rem + env(safe-area-inset-bottom));
   }
 
   .cart-redesign-header {

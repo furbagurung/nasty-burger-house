@@ -474,7 +474,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                       }}
                     />
                   </span>
-                  <span><strong>Add Nasty Fries + drink</strong><small>Upgrade to Beast Combo.</small></span>
+                  <span><strong>Add Nasty Fries + drink</strong></span>
                 </button>
 
                 {isCombo && (
@@ -488,6 +488,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                         <strong>Nasty Fries</strong>
                       </span>
                     </div>
+                    <span className="product-combo-includes__plus" aria-hidden="true">+</span>
                   <button
                     className={`product-combo-drink-trigger${drink ? " has-selection" : ""}`}
                     type="button"

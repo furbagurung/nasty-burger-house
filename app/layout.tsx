@@ -84,6 +84,7 @@ import "./brand-cta.css";
 import "./landing-promo-modal.css";
 import "./home-menu-categories.css";
 import "./hero-desktop-responsive.css";
+import "./homepage-ultrawide.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",

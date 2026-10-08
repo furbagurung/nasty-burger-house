@@ -116,6 +116,10 @@ export default function CartPage() {
   const [hydrated, setHydrated] = useState(false);
   const [summaryExpanded, setSummaryExpanded] = useState(false);
 
+  // Derive the visible cart from its contents, not from historical line IDs.
+  // This also heals duplicate React state preserved during local hot reloads.
+  const groupedCart = useMemo(() => mergeIdenticalCartLines(cart), [cart]);
+
   useEffect(() => {
     try {
       const stored = window.localStorage.getItem(CART_STORAGE_KEY);
@@ -129,16 +133,48 @@ export default function CartPage() {
 
   useEffect(() => {
     if (!hydrated) return;
-    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    // Persist only consolidated lines, including if the old React state was
+    // restored by Fast Refresh or another component created duplicate rows.
+    if (JSON.stringify(cart) !== JSON.stringify(groupedCart)) {
+      setCart(groupedCart);
+    }
+    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(groupedCart));
     window.dispatchEvent(new Event("nasty-cart-updated"));
-  }, [cart, hydrated]);
+  }, [cart, groupedCart, hydrated]);
 
-  const subtotal = useMemo(() => calculateCartSubtotal(cart), [cart]);
-  const cartCount = cart.reduce((total, line) => total + line.quantity, 0);
+  // Cart state can be changed by another tab or a product modal while this
+  // page is open. Read the shared storage back and merge it safely.
+  useEffect(() => {
+    function synchronizeCart() {
+      try {
+        const raw = window.localStorage.getItem(CART_STORAGE_KEY);
+        const latest = raw
+          ? mergeIdenticalCartLines(normaliseCart(JSON.parse(raw)))
+          : [];
+        setCart((current) =>
+          JSON.stringify(mergeIdenticalCartLines(current)) === JSON.stringify(latest)
+            ? current
+            : latest,
+        );
+      } catch {
+        // Malformed external storage should not destroy the on-screen cart.
+      }
+    }
+
+    window.addEventListener("storage", synchronizeCart);
+    window.addEventListener("nasty-cart-updated", synchronizeCart);
+    return () => {
+      window.removeEventListener("storage", synchronizeCart);
+      window.removeEventListener("nasty-cart-updated", synchronizeCart);
+    };
+  }, []);
+
+  const subtotal = useMemo(() => calculateCartSubtotal(groupedCart), [groupedCart]);
+  const cartCount = groupedCart.reduce((total, line) => total + line.quantity, 0);
 
   const changeQuantity = (lineId: string, amount: number) => {
     setCart((current) =>
-      current.map((line) =>
+      mergeIdenticalCartLines(current).map((line) =>
         line.lineId === lineId
           ? {
               ...line,
@@ -177,7 +213,7 @@ export default function CartPage() {
 
         {!hydrated ? (
           <div className="cart-page-loading cart-redesign-loading">Loading your cart…</div>
-        ) : cart.length === 0 ? (
+        ) : groupedCart.length === 0 ? (
           <section className="cart-empty-state cart-redesign-empty">
             <Image src="/images/bag.webp" alt="" width={140} height={140} />
             <p className="standalone-eyebrow">Nothing nasty yet</p>
@@ -188,7 +224,7 @@ export default function CartPage() {
         ) : (
           <div className="cart-redesign-layout">
             <section className="cart-redesign-items" aria-label="Cart items">
-              {cart.map((line) => {
+              {groupedCart.map((line) => {
                 const item = menuItems.find((entry) => entry.id === line.itemId);
                 if (!item) return null;
 

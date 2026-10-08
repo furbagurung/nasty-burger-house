@@ -56,55 +56,6 @@
 
 .nbh-auth-container { width: min(100%, 440px); margin-inline: auto; }
 
-.nbh-auth-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-  margin-bottom: 1rem;
-}
-
-.nbh-auth-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  min-width: 0;
-}
-
-.nbh-auth-brand-mark {
-  display: grid;
-  width: 2.7rem;
-  height: 2.7rem;
-  place-items: center;
-  border-radius: 0.9rem;
-  flex: 0 0 auto;
-  background: #161616;
-  color: #fff;
-  font-size: 1.55rem;
-  font-weight: 950;
-  letter-spacing: -0.13em;
-  padding-right: 0.2rem;
-}
-
-.nbh-auth-brand-mark span { color: #f05b34; }
-.nbh-auth-brand-copy { display: grid; gap: 0.1rem; min-width: 0; }
-.nbh-auth-brand-copy strong { color: var(--ink); font-size: 0.84rem; font-weight: 850; line-height: 1.2; }
-.nbh-auth-brand-copy > span { color: var(--muted-foreground); font-size: 0.67rem; line-height: 1.2; }
-
-.nbh-auth-shell .nbh-auth-theme-button {
-  display: inline-flex;
-  flex: 0 0 auto;
-  gap: 0.45rem;
-  min-height: 2.35rem;
-  padding-inline: 0.7rem;
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--ink);
-  border-radius: 0.7rem;
-  font-size: 0.74rem;
-}
-.nbh-auth-shell .nbh-auth-theme-button:hover { background: var(--muted); }
-
 .nbh-auth-shell .nbh-auth-card {
   border: 1px solid var(--border);
   background: var(--muted);
@@ -257,7 +208,6 @@
   }
   .nbh-auth-shell { min-height: calc(100svh - 9rem); padding: 1.2rem 0.55rem; }
   .nbh-auth-container { width: 100%; max-width: 440px; }
-  .nbh-auth-brand-copy strong { font-size: 0.75rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

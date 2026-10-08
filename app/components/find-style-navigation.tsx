@@ -40,42 +40,50 @@ export default function FindStyleNavigation() {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const burgerRef = useRef<HTMLButtonElement | null>(null);
 
-  // The homepage already owns a real hamburger button inside OrderExperience.
-  // Bind to that button without inserting a portal into the SSR-owned header.
-  // This keeps the header DOM identical during hydration and avoids the
-  // server/client mismatch that was caused by injecting .nasty-find-burger.
+  // The homepage button is rendered by OrderExperience. It dispatches this
+  // event from its React onClick, so hydration or React rerenders cannot break
+  // navigation by losing a manually attached DOM capture listener.
   useEffect(() => {
     if (!isHome) {
       triggerRef.current = null;
       return;
     }
 
-    const trigger = document.querySelector<HTMLButtonElement>(
+    triggerRef.current = document.querySelector<HTMLButtonElement>(
       ".site-shell > .site-header .mobile-menu-button",
     );
-    if (!trigger) return;
 
-    triggerRef.current = trigger;
-
-    const handleTrigger = (event: MouseEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      setIsOpen((current) => {
-        const next = !current;
-        trigger.setAttribute("aria-expanded", String(next));
-        trigger.setAttribute("aria-controls", "nasty-find-navigation");
-        return next;
-      });
+    const toggleFromHeader = () => {
+      setIsMenuOpen(false);
+      setIsOpen((current) => !current);
     };
 
-    // Capture the click before the legacy React handler can open its old drawer.
-    trigger.addEventListener("click", handleTrigger, true);
-
+    window.addEventListener("nasty:toggle-mobile-navigation", toggleFromHeader);
     return () => {
-      trigger.removeEventListener("click", handleTrigger, true);
+      window.removeEventListener("nasty:toggle-mobile-navigation", toggleFromHeader);
       triggerRef.current = null;
     };
-  }, [isHome, pathname]);
+  }, [isHome]);
+
+  // Keep the homepage's actual hamburger accessible and in sync with the
+  // drawer state; the same button becomes its Close navigation control.
+  useEffect(() => {
+    if (!isHome) return;
+    const trigger =
+      triggerRef.current ??
+      document.querySelector<HTMLButtonElement>(
+        ".site-shell > .site-header .mobile-menu-button",
+      );
+    if (!trigger) return;
+    triggerRef.current = trigger;
+    trigger.setAttribute("aria-expanded", String(isOpen));
+    trigger.setAttribute("aria-controls", "nasty-find-navigation");
+    trigger.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+
+    if (isOpen) {
+      document.documentElement.classList.remove("nasty-mobile-header-hidden");
+    }
+  }, [isHome, isOpen]);
 
   useEffect(() => {
     setIsOpen(false);

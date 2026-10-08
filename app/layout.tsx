@@ -87,7 +87,6 @@ import "./home-beast-boxes.css";
 import "./admin-modern.css";
 import "./auth-watermelon.css";
 import "./auth-05.css";
-import "./auth-10.css";
 import "./admin-jobtracker.css";
 import "./checkout-polish.css";
 import "./mobile-page-header.css";

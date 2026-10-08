@@ -1,6 +1,7 @@
 "use client";
 
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
+import { homepageReviews as designPreviewReviews } from "../data/homepage-reviews";
 import {
   useEffect,
   useRef,
@@ -12,10 +13,14 @@ type HomepageReview = {
   name: string;
   quote: string;
   rating: 1 | 2 | 3 | 4 | 5;
+  kind: "verified" | "design-preview";
 };
 
-// Only reviews approved through the customer review moderation flow belong
-// on the homepage. Never fall back to fictional design-preview testimonials.
+// Keep enough cards for the three-column desktop design while genuine reviews
+// accumulate. Demo cards are ALWAYS visibly identified as fictional samples.
+// Never insert samples in Supabase, count them as real reviews, or show the
+// "Verified purchase" label on one of them.
+const MIN_CAROUSEL_CARDS = 3;
 type PublishedReview = {
   id: string;
   displayName: string;
@@ -253,10 +258,25 @@ export default function HomepageTestimonials() {
             name: review.displayName,
             quote: review.message.trim() || "Left a verified rating.",
             rating: review.rating as HomepageReview["rating"],
+            kind: "verified",
           }));
 
+        // Real reviews always come first. Each additional real review removes
+        // one illustrative sample; at 3+ approved reviews no demos remain.
+        const placeholders = designPreviewReviews
+          .slice(0, Math.max(0, MIN_CAROUSEL_CARDS - verified.length))
+          .map(
+            (review): HomepageReview => ({
+              id: `sample:${review.id}`,
+              name: review.name,
+              quote: review.quote,
+              rating: review.rating,
+              kind: "design-preview",
+            }),
+          );
+
         if (!mounted) return;
-        setReviews(verified);
+        setReviews([...verified, ...placeholders]);
         setActive(0);
         setExpanded(null);
         setLoadState("ready");
@@ -304,19 +324,19 @@ export default function HomepageTestimonials() {
             Customer reviews are temporarily unavailable.
           </p>
         )}
-        {loadState === "ready" && reviews.length === 0 && (
-          <p className="home-testimonials__empty">
-            No published reviews yet. Be the first to share your experience.
+        {loadState === "ready" && reviews.some((review) => review.kind === "design-preview") && (
+          <p className="home-testimonials__preview-note">
+            Some cards are fictional design examples until more verified reviews arrive.
           </p>
         )}
 
-        {reviews.length > 0 && (
+        {loadState === "ready" && reviews.length > 0 && (
           <>
             <div
               ref={trackRef}
               className={`home-testimonials__track${isDragging ? " is-dragging" : ""}`}
               tabIndex={0}
-              aria-label="Verified customer reviews"
+              aria-label="Customer reviews and clearly labeled illustrative examples"
               onScroll={() => setActive(getClosestIndex())}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
@@ -336,12 +356,17 @@ export default function HomepageTestimonials() {
             >
               {reviews.map((review, index) => (
                 <article
-                  className="home-testimonial-card"
+                  className={`home-testimonial-card${review.kind === "design-preview" ? " home-testimonial-card--preview" : ""}`}
                   key={review.id}
                   role="group"
                   aria-roledescription="slide"
-                  aria-label={`${index + 1} of ${reviews.length}: ${review.name}`}
+                  aria-label={`${index + 1} of ${reviews.length}: ${review.name}${review.kind === "design-preview" ? " (fictional design example)" : " (verified review)"}`}
                 >
+                  {review.kind === "design-preview" && (
+                    <span className="home-testimonial-card__sample-tag">
+                      Fictional design example
+                    </span>
+                  )}
                   <span
                     className="home-testimonial-card__quote-mark"
                     aria-hidden="true"
@@ -384,7 +409,11 @@ export default function HomepageTestimonials() {
                         <strong>{review.name}</strong>
                         <RatingStars rating={review.rating} />
                       </div>
-                      <span>Verified purchase · Approved review</span>
+                      <span>
+                        {review.kind === "verified"
+                          ? "Verified purchase · Approved review"
+                          : "Sample only · Not customer feedback"}
+                      </span>
                     </div>
                   </div>
                 </article>

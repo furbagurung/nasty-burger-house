@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 import {
   useEffect,
@@ -8,38 +7,38 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import {
-  homepageReviews,
-  homepageReviewsArePreview,
-  type HomepageReview,
-} from "../data/homepage-reviews";
+type HomepageReview = {
+  id: string;
+  name: string;
+  quote: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+};
+
+// Only reviews approved through the customer review moderation flow belong
+// on the homepage. Never fall back to fictional design-preview testimonials.
+type PublishedReview = {
+  id: string;
+  displayName: string;
+  message: string;
+  rating: number;
+  verifiedPurchase: boolean;
+};
 
 function ReviewAvatar({ review }: { review: HomepageReview }) {
-  const [failed, setFailed] = useState(false);
   const initials = review.name
     .split(/\s+/)
+    .filter(Boolean)
     .map((part) => part[0])
     .join("")
     .slice(0, 2)
     .toUpperCase();
 
-  if (failed) {
-    return (
-      <span className="home-testimonial-card__avatar home-testimonial-card__avatar--fallback">
-        {initials}
-      </span>
-    );
-  }
-
   return (
-    <span className="home-testimonial-card__avatar">
-      <Image
-        src={review.avatar}
-        alt=""
-        width={48}
-        height={48}
-        onError={() => setFailed(true)}
-      />
+    <span
+      className="home-testimonial-card__avatar home-testimonial-card__avatar--fallback"
+      aria-hidden="true"
+    >
+      {initials || "NB"}
     </span>
   );
 }
@@ -68,6 +67,8 @@ export default function HomepageTestimonials() {
     moved: false,
   });
   const momentumFrameRef = useRef<number | null>(null);
+  const [reviews, setReviews] = useState<HomepageReview[]>([]);
+  const [loadState, setLoadState] = useState<"loading" | "ready" | "error">("loading");
   const [active, setActive] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -90,16 +91,16 @@ export default function HomepageTestimonials() {
       }
     });
 
-    return Math.min(closestIndex, homepageReviews.length - 1);
+    return Math.min(closestIndex, Math.max(0, reviews.length - 1));
   };
 
   const goTo = (index: number) => {
     const track = trackRef.current;
-    if (!track || homepageReviews.length === 0) return;
+    if (!track || reviews.length === 0) return;
 
     const cards = Array.from(track.children) as HTMLElement[];
     const targetIndex =
-      (index + homepageReviews.length) % homepageReviews.length;
+      (index + reviews.length) % reviews.length;
     const target = cards[targetIndex];
     if (!target) return;
 
@@ -199,7 +200,7 @@ export default function HomepageTestimonials() {
   };
 
   useEffect(() => {
-    if (homepageReviews.length < 2) return;
+    if (reviews.length < 2) return;
 
     const interval = window.setInterval(() => {
       if (dragRef.current.active) return;
@@ -207,7 +208,7 @@ export default function HomepageTestimonials() {
     }, 4200);
 
     return () => window.clearInterval(interval);
-  }, []);
+  }, [reviews.length]);
 
   useEffect(
     () => () => {
@@ -217,6 +218,61 @@ export default function HomepageTestimonials() {
     },
     [],
   );
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadPublishedReviews() {
+      try {
+        const response = await fetch("/api/reviews", { cache: "no-store" });
+        const result = (await response.json()) as {
+          ok?: boolean;
+          reviews?: PublishedReview[];
+        };
+
+        if (!response.ok || !result.ok || !Array.isArray(result.reviews)) {
+          throw new Error("Could not load published reviews");
+        }
+
+        // The API returns published reviews only. Validate public fields and
+        // don't render unverified entries or customer contact information.
+        const verified = result.reviews
+          .filter(
+            (review) =>
+              review.verifiedPurchase === true &&
+              typeof review.id === "string" &&
+              typeof review.displayName === "string" &&
+              typeof review.message === "string" &&
+              Number.isInteger(review.rating) &&
+              review.rating >= 1 &&
+              review.rating <= 5,
+          )
+          .slice(0, 12)
+          .map((review): HomepageReview => ({
+            id: review.id,
+            name: review.displayName,
+            quote: review.message.trim() || "Left a verified rating.",
+            rating: review.rating as HomepageReview["rating"],
+          }));
+
+        if (!mounted) return;
+        setReviews(verified);
+        setActive(0);
+        setExpanded(null);
+        setLoadState("ready");
+      } catch {
+        if (mounted) setLoadState("error");
+      }
+    }
+
+    void loadPublishedReviews();
+    // Also refresh when returning from admin moderation in another tab.
+    window.addEventListener("focus", loadPublishedReviews);
+    return () => {
+      mounted = false;
+      window.removeEventListener("focus", loadPublishedReviews);
+    };
+  }, []);
 
   return (
     <section
@@ -238,17 +294,29 @@ export default function HomepageTestimonials() {
           </ButtonWithIcon>
         </div>
 
-        {homepageReviews.length > 0 && (
+        {loadState === "loading" && (
+          <p className="home-testimonials__empty" role="status">
+            Loading verified customer reviews…
+          </p>
+        )}
+        {loadState === "error" && (
+          <p className="home-testimonials__empty" role="status">
+            Customer reviews are temporarily unavailable.
+          </p>
+        )}
+        {loadState === "ready" && reviews.length === 0 && (
+          <p className="home-testimonials__empty">
+            No published reviews yet. Be the first to share your experience.
+          </p>
+        )}
+
+        {reviews.length > 0 && (
           <>
             <div
               ref={trackRef}
               className={`home-testimonials__track${isDragging ? " is-dragging" : ""}`}
               tabIndex={0}
-              aria-label={
-                homepageReviewsArePreview
-                  ? "Fictional review design preview"
-                  : "Customer testimonials"
-              }
+              aria-label="Verified customer reviews"
               onScroll={() => setActive(getClosestIndex())}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
@@ -266,13 +334,13 @@ export default function HomepageTestimonials() {
                 }
               }}
             >
-              {homepageReviews.map((review, index) => (
+              {reviews.map((review, index) => (
                 <article
                   className="home-testimonial-card"
                   key={review.id}
                   role="group"
                   aria-roledescription="slide"
-                  aria-label={`${index + 1} of ${homepageReviews.length}: ${review.name}`}
+                  aria-label={`${index + 1} of ${reviews.length}: ${review.name}`}
                 >
                   <span
                     className="home-testimonial-card__quote-mark"
@@ -316,21 +384,7 @@ export default function HomepageTestimonials() {
                         <strong>{review.name}</strong>
                         <RatingStars rating={review.rating} />
                       </div>
-                      {review.sourceUrl ? (
-                        <a
-                          href={review.sourceUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {review.sourceLabel || "Customer review"} ↗
-                        </a>
-                      ) : (
-                        <span>
-                          {homepageReviewsArePreview
-                            ? "Design preview"
-                            : review.sourceLabel || "Customer review"}
-                        </span>
-                      )}
+                      <span>Verified purchase · Approved review</span>
                     </div>
                   </div>
                 </article>
@@ -341,7 +395,7 @@ export default function HomepageTestimonials() {
               className="home-testimonials__indicators"
               aria-label="Testimonial slides"
             >
-              {homepageReviews.map((review, index) => (
+              {reviews.map((review, index) => (
                 <button
                   key={review.id}
                   type="button"

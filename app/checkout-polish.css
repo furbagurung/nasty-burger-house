@@ -751,3 +751,53 @@ body:has(.checkout-page) .mobile-tab-bar--v2 {
     top: auto;
   }
 }
+
+/* Cart and Checkout share the same single-surface order flow on wider screens:
+   grouped form stages on the left and the summary on the right, divided by
+   a fine border instead of isolated bento cards. Mobile stays as designed. */
+@media (min-width: 681px) {
+  .checkout-page .checkout-page-layout {
+    align-items: stretch;
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid rgba(23, 21, 19, 0.08);
+    border-radius: 1.3rem;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(31, 25, 18, 0.035);
+  }
+
+  .checkout-page .checkout-page-sections {
+    min-width: 0;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .checkout-page [data-slot="card"].checkout-page-review {
+    position: static;
+    top: auto;
+    min-width: 0;
+    align-self: stretch;
+    border: 0;
+    border-left: 1px solid #e8e2da;
+    border-radius: 0;
+    padding: 1.35rem;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .checkout-page .checkout-page-layout > .checkout-errors--top {
+    margin: 1rem;
+  }
+}
+
+/* Shared panel stacks in one column on tablets; avoid a vertical separator
+   where the summary now appears below the form. */
+@media (min-width: 681px) and (max-width: 900px) {
+  .checkout-page [data-slot="card"].checkout-page-review {
+    border-left: 0;
+    border-top: 1px solid #e8e2da;
+  }
+}

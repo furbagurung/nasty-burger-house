@@ -63,6 +63,7 @@ export default function ReviewsPage() {
   const [publicReady, setPublicReady] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const [error, setError] = useState("");
+  const [submitError, setSubmitError] = useState("");
   const [publicError, setPublicError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -157,6 +158,7 @@ export default function ReviewsPage() {
     setMessage(existing?.message ?? "");
     setSaved(false);
     setError("");
+    setSubmitError("");
   }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -164,15 +166,24 @@ export default function ReviewsPage() {
     if (!orderId || submitting) return;
 
     setSubmitting(true);
-    setError("");
+    setSubmitError("");
     setSaved(false);
 
     try {
-      await saveReview({ orderId, rating, message });
-      setReviews(await loadCustomerReviews());
+      const review = await saveReview({ orderId, rating, message });
+      if (!review) {
+        throw new Error("Your review could not be saved. Please try again.");
+      }
+
+      // Use the confirmed API result immediately. A later history refresh
+      // must not turn an already-saved review into a false submission failure.
+      setReviews((current) => [
+        review,
+        ...current.filter((item) => item.orderId !== review.orderId),
+      ]);
       setSaved(true);
     } catch (saveError) {
-      setError(
+      setSubmitError(
         saveError instanceof Error
           ? saveError.message
           : "Could not submit your review.",
@@ -402,6 +413,12 @@ export default function ReviewsPage() {
                     {submitting ? "Submitting…" : "Submit review"}
                   </ButtonWithIcon>
                 </div>
+
+                {submitError && (
+                  <p className="account-form-error review-submit-error" role="alert">
+                    {submitError}
+                  </p>
+                )}
 
                 {saved && (
                   <p className="review-submit-success" role="status">

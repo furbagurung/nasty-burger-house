@@ -15,6 +15,7 @@ import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 import MobilePageHeader from "./mobile-page-header";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -400,18 +401,26 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
           <ol>
             {checkoutStepNames.map((label, index) => {
               const position = (index + 1) as CheckoutStep;
+              const isComplete = position < activeStep;
+              const isCurrent = position === activeStep;
               return (
-                <li key={label} className={position === activeStep ? "is-current" : position < activeStep ? "is-complete" : "is-upcoming"}>
+                <li key={label} className={isCurrent ? "is-current" : isComplete ? "is-complete" : "is-upcoming"}>
                   <button
                     type="button"
-                    aria-current={position === activeStep ? "step" : undefined}
-                    disabled={submitting || position >= activeStep}
+                    aria-current={isCurrent ? "step" : undefined}
+                    disabled={submitting || !isComplete}
                     onClick={() => changeStep(position)}
                   >
                     <span className="checkout-wizard-progress__number" aria-hidden="true">
-                      {position < activeStep ? <CheckCircle2 size={18} /> : position}
+                      {isComplete ? <CheckCircle2 size={20} strokeWidth={2.4} /> : position}
                     </span>
-                    <span className="checkout-wizard-progress__label">{label}</span>
+                    <span className="checkout-wizard-progress__info">
+                      <span className="checkout-wizard-progress__step">Step {position}</span>
+                      <span className="checkout-wizard-progress__label">{label}</span>
+                      <span className="checkout-wizard-progress__status">
+                        {isComplete ? "Completed" : isCurrent ? "In progress" : "Pending"}
+                      </span>
+                    </span>
                   </button>
                 </li>
               );
@@ -439,7 +448,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                 <Badge variant="secondary" className="checkout-step-badge">01</Badge>
                 <div>
                   <h2>Your details</h2>
-                  <p>How can we contact you about your order?</p>
                 </div>
               </CardHeader>
               <CardContent className="checkout-panel__content">
@@ -549,12 +557,15 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             </Card>
             {activeStep === 1 && (
               <div className="checkout-wizard-actions">
-                <Link href="/cart" className="checkout-wizard-actions__back">
-                  <ChevronLeft size={17} aria-hidden="true" /> Back to cart
-                </Link>
-                <button type="button" className="checkout-wizard-actions__next" onClick={continueToReview}>
+                <Button
+                  type="button"
+                  size="lg"
+                  className="checkout-wizard-actions__next"
+                  onClick={continueToReview}
+                  disabled={submitting}
+                >
                   Review order
-                </button>
+                </Button>
               </div>
             )}
           </div>

@@ -654,7 +654,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                             <span className="product-drink-drawer__copy">
                               <strong>{ingredient}</strong>
                             </span>
-                            <QuantityStepper label={`${ingredient} ingredient quantity`} value={ingredientQuantity} min={0} max={1} onChange={(next) => { if (next !== ingredientQuantity) toggleIngredient(ingredient); }} />
+                            <QuantityStepper className="product-extra-drawer__stepper" label={`${ingredient} ingredient quantity`} value={ingredientQuantity} min={0} max={1} onChange={(next) => { if (next !== ingredientQuantity) toggleIngredient(ingredient); }} />
                           </div>
                         );
                       })}
@@ -680,7 +680,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                               <strong>{modifier.name}</strong>
                               <small>+{money.format(modifier.price)} each</small>
                             </span>
-                            <QuantityStepper label={`${modifier.name} quantity`} value={selectedQuantity} min={0} max={10} onChange={(next) => changeModifier(modifier.id, next - selectedQuantity)} />
+                            <QuantityStepper className="product-extra-drawer__stepper" label={`${modifier.name} quantity`} value={selectedQuantity} min={0} max={10} onChange={(next) => changeModifier(modifier.id, next - selectedQuantity)} />
                           </div>
                         );
                       })}
@@ -706,7 +706,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                               <strong>{modifier.name}</strong>
                               <small>+{money.format(modifier.price)} each</small>
                             </span>
-                            <QuantityStepper label={`${modifier.name} quantity`} value={selectedQuantity} min={0} max={10} onChange={(next) => changeModifier(modifier.id, next - selectedQuantity)} />
+                            <QuantityStepper className="product-extra-drawer__stepper" label={`${modifier.name} quantity`} value={selectedQuantity} min={0} max={10} onChange={(next) => changeModifier(modifier.id, next - selectedQuantity)} />
                           </div>
                         );
                       })}
@@ -763,7 +763,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                             <strong>{burger.name}</strong>
                             <small>Included in your Beast Box</small>
                           </span>
-                          <QuantityStepper label={`${burger.name} quantity`} value={selected} min={0} max={item.boxConfig!.burgerCount} disableIncrement={boxBurgers.length >= item.boxConfig!.burgerCount} onChange={(next) => changeBoxSelection("burger", burger.id, next - selected)} />
+                          <QuantityStepper className="product-extra-drawer__stepper" label={`${burger.name} quantity`} value={selected} min={0} max={item.boxConfig!.burgerCount} disableIncrement={boxBurgers.length >= item.boxConfig!.burgerCount} onChange={(next) => changeBoxSelection("burger", burger.id, next - selected)} />
                         </div>
                       );
                     })}
@@ -792,7 +792,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                             <strong>{choice}</strong>
                             <small>Included in your Beast Box</small>
                           </span>
-                          <QuantityStepper label={`${choice} quantity`} value={selected} min={0} max={item.boxConfig!.drinkCount} disableIncrement={boxDrinks.length >= item.boxConfig!.drinkCount} onChange={(next) => changeBoxSelection("drink", choice, next - selected)} />
+                          <QuantityStepper className="product-extra-drawer__stepper" label={`${choice} quantity`} value={selected} min={0} max={item.boxConfig!.drinkCount} disableIncrement={boxDrinks.length >= item.boxConfig!.drinkCount} onChange={(next) => changeBoxSelection("drink", choice, next - selected)} />
                         </div>
                       );
                     })}

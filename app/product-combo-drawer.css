@@ -461,3 +461,53 @@
     animation: none;
   }
 }
+
+/* Combo includes: fixed Nasty Fries + changeable drink, side by side. */
+.product-page-premium .product-combo-includes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 0.6rem;
+  margin-top: 0.65rem;
+}
+.product-page-premium .product-combo-includes__fries,
+.product-page-premium .product-combo-includes > .product-combo-drink-trigger {
+  display: flex;
+  min-width: 0;
+  min-height: 6.1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  margin-top: 0;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.78rem;
+  padding: 0.55rem;
+  background: #fff;
+}
+.product-page-premium .product-combo-includes > .product-combo-drink-trigger {
+  cursor: pointer;
+}
+.product-page-premium .product-combo-includes .product-combo-drink-trigger__thumb {
+  width: 2.65rem;
+  height: 2.65rem;
+}
+.product-page-premium .product-combo-includes .product-combo-drink-trigger__copy {
+  width: 100%;
+}
+.product-page-premium .product-combo-includes .product-combo-drink-trigger__copy strong {
+  font-size: 0.81rem;
+}
+.product-page-premium .product-combo-includes .product-combo-drink-trigger__action {
+  margin-top: auto;
+  font-size: 0.72rem;
+}
+@media (max-width: 380px) {
+  .product-page-premium .product-combo-includes {
+    gap: 0.4rem;
+  }
+  .product-page-premium .product-combo-includes__fries,
+  .product-page-premium .product-combo-includes > .product-combo-drink-trigger {
+    padding: 0.45rem;
+  }
+}

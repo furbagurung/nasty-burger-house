@@ -356,11 +356,6 @@ export default function HomepageTestimonials() {
                   aria-roledescription="slide"
                   aria-label={`${index + 1} of ${reviews.length}: ${review.name}${review.kind === "design-preview" ? " (fictional design example)" : " (verified review)"}`}
                 >
-                  {review.kind === "design-preview" && (
-                    <span className="home-testimonial-card__sample-tag">
-                      Fictional design example
-                    </span>
-                  )}
                   <span
                     className="home-testimonial-card__quote-mark"
                     aria-hidden="true"

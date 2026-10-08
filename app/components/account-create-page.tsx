@@ -133,10 +133,10 @@ export default function AccountCreatePage() {
               Save your details, see order history, leave reviews and earn Drip
               Points whenever you order.
             </p>
-            <div className="account-auth-benefits">            <Link href="/" className="account-auth-home-link">
+            <Link href="/" className="account-auth-home-link">
               ← Back to Home
             </Link>
-
+            <div className="account-auth-benefits">
               <span>
                 <strong>500</strong> points for new loyalty members
               </span>

@@ -764,7 +764,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
         <span className="footer-credit">Made with love by Furba Gurung</span>
       </footer>
 
-      <MobileBottomNav active="menu" />
+      {/* Single-product pages keep the purchase bar, without the mobile tab navigation. */}
     </div>
   );
 }

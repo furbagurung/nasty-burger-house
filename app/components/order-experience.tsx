@@ -1171,30 +1171,47 @@ export default function OrderExperience({
         </div>
 
         <section
-          className="home-features"
-          aria-label="Popular Nasty Burger House picks"
+          className="home-promo-grid"
+          aria-label="Explore Beast Boxes and dessert"
         >
-          <article className="home-feature home-feature--boxes">
-            <div className="home-feature__image">
+          <article className="home-promo-card home-promo-card--boxes">
+            <div className="home-promo-card__image">
               <Image
                 src="/images/beast-box-hero.webp"
                 alt="Beast Box with burger, fries, wings and sides"
                 fill
-                sizes="(max-width: 760px) calc(100vw - 2rem), (max-width: 1212px) 52vw, 605px"
+                sizes="(max-width: 760px) 55vw, (max-width: 1212px) 28vw, 320px"
               />
             </div>
-            <div className="home-feature__copy">
-              <p className="eyebrow">Built for sharing</p>
-              <h2>
-                <span>Bring the</span>{" "}
-                <span>whole crew.</span>
-              </h2>
+            <div className="home-promo-card__copy">
+              <h2>Bring the whole crew.</h2>
               <p>
-                Solo, Duo and Family boxes loaded with burgers, wings, fries and
-                more.
+                Solo, Duo and Family boxes loaded with burgers, wings, fries
+                and more.
               </p>
-              <ButtonWithIcon tone="red" onClick={openOrderType}>
-                Order now
+              <ButtonWithIcon tone="light" href="/menu/beast-boxes">
+                Explore boxes
+              </ButtonWithIcon>
+            </div>
+          </article>
+
+          <article className="home-promo-card home-promo-card--dessert">
+            <div className="home-promo-card__image">
+              <Image
+                src="/images/final-menu-photo/mango-pudding-v2.jpeg"
+                alt="Mango pudding topped with lychee granita and lychee pearls"
+                fill
+                sizes="(max-width: 760px) 50vw, (max-width: 1212px) 26vw, 300px"
+              />
+            </div>
+            <div className="home-promo-card__copy">
+              <h2>Finish on a sweet note.</h2>
+              <p>
+                Silky mango pudding, lychee granita and lychee pearls.
+                Your tropical sweet finish.
+              </p>
+              <ButtonWithIcon tone="red" href="/menu/sweet">
+                Order dessert
               </ButtonWithIcon>
             </div>
           </article>

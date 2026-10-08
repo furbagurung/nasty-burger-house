@@ -507,7 +507,10 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
 
           <Card className="checkout-page-review ring-0">
             <CardHeader className="checkout-page-review__heading">
-              <h2>Order summary</h2>
+              <div className="checkout-summary-heading">
+                <p>Order summary</p>
+                <h2>Ready for pickup</h2>
+              </div>
               <Link href="/cart">Edit cart</Link>
             </CardHeader>
             <CardContent className="checkout-review-content">

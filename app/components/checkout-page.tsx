@@ -296,7 +296,9 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               ? "Some order details are invalid. Check your information and cart."
               : "We couldn't start Square checkout. Please try again.";
         setErrors(messages.length ? messages : [fallback]);
-        setFieldErrors(serverContactErrors(messages));
+        const rejectedFields = serverContactErrors(messages);
+        setFieldErrors(rejectedFields);
+        if (Object.keys(rejectedFields).length > 0) setActiveStep(2);
         if (response.status === 409) setServiceStatus(getServiceStatus());
         return;
       }

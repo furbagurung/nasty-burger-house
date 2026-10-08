@@ -225,7 +225,7 @@ body:has(.nbh-auth-page) {
     justify-content: center;
     /* Allow for mobile navigation, keyboard scroll and safe areas without
        pushing the compact sign-in card under the fixed bottom tab bar. */
-    padding: calc(4.35rem + 1rem + env(safe-area-inset-top)) 0.75rem calc(6.75rem + env(safe-area-inset-bottom));
+    padding: calc(4.35rem + 1rem + env(safe-area-inset-top)) 0.75rem calc(2rem + env(safe-area-inset-bottom));
   }
 
   .nbh-auth-shell {
@@ -287,5 +287,68 @@ body:has(.nbh-auth-page) {
 
   .nbh-auth-shell .nbh-auth-bottom-prompt {
     font-size: 0.8rem;
+  }
+}
+
+/* Authentication pages are focused, no-tab-bar flows. */
+.nbh-auth-home-link {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 2.6rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 1.15rem auto 0;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.65rem;
+  color: #bdb5ae;
+  font-size: 0.77rem;
+  font-weight: 760;
+  text-decoration: none;
+}
+.nbh-auth-home-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+}
+.nbh-auth-home-link:focus-visible,
+.account-auth-home-link:focus-visible {
+  outline: 3px solid #f04a28;
+  outline-offset: 3px;
+}
+
+.account-auth-flow-page .account-auth-main {
+  min-height: 100svh;
+}
+.account-auth-flow-page .account-auth-card__intro .account-auth-home-link {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 2.6rem;
+  align-items: center;
+  margin-top: 1.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+.account-auth-flow-page .account-auth-card__intro .account-auth-home-link:hover {
+  border-color: rgba(255, 255, 255, 0.48);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 900px) {
+  .account-auth-flow-page .standalone-main.account-auth-main {
+    padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
+  }
+}
+@media (max-width: 680px) {
+  .account-auth-flow-page .standalone-main.account-auth-main {
+    padding-top: calc(1.5rem + env(safe-area-inset-top));
+    padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
+  }
+  .account-auth-flow-page .account-auth-card__intro {
+    min-height: 0;
   }
 }

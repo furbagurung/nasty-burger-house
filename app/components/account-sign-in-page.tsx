@@ -65,8 +65,6 @@ export default function AccountSignInPage() {
     <div className="standalone-page account-page nbh-auth-page">
       <main className="standalone-main nbh-auth-main">
         <Auth1
-          brandName="Nasty Burger House"
-          brandDescriptor="Burgers. Rewards. Good times."
           badgeText="Nasty customer account"
           heading="Welcome back."
           subheading="Sign in to check your orders, collect Drip Points and keep the good stuff coming."

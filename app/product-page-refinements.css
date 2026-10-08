@@ -640,3 +640,19 @@
     margin-top: 0.5rem !important;
   }
 }
+
+/* Correct flex ordering: description belongs AFTER title, price and dietary tags. */
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__content--premium > .product-detail__heading-row {
+    order: 1;
+  }
+  .product-page-premium .product-detail__content--premium > .product-detail__tags {
+    order: 2;
+  }
+  .product-page-premium .product-detail__content--premium > .product-description--mobile {
+    order: 3;
+  }
+  .product-page-premium .product-detail__content--premium > .product-custom-section {
+    order: 4;
+  }
+}

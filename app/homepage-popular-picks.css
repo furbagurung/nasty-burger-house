@@ -414,7 +414,8 @@
 }
 @media (max-width: 680px) {
   .popular-picks__rail {
-    grid-auto-columns: clamp(9.5rem, 48vw, 12rem);
+    /* Two full cards plus half of the next, accounting for gutters and gaps. */
+    grid-auto-columns: calc((100% - 2rem - 1.3rem) / 2.5);
   }
   .popular-pick-card,
   .popular-pick-card:nth-child(n + 4) {

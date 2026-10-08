@@ -11,6 +11,7 @@ import {
   calculateLineUnitPrice,
   type CartLine,
 } from "../lib/order";
+import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import MobilePageHeader from "./mobile-page-header";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 import { Button } from "@/components/ui/button";
@@ -118,7 +119,7 @@ export default function CartPage() {
   useEffect(() => {
     try {
       const stored = window.localStorage.getItem(CART_STORAGE_KEY);
-      setCart(stored ? normaliseCart(JSON.parse(stored)) : []);
+      setCart(stored ? mergeIdenticalCartLines(normaliseCart(JSON.parse(stored))) : []);
     } catch {
       setCart([]);
     } finally {

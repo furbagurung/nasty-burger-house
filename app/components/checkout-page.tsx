@@ -536,7 +536,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
 
             <Card className="checkout-panel ring-0" hidden={activeStep !== 2}>
               <CardHeader className="checkout-panel__heading">
-                <Badge variant="secondary" className="checkout-step-badge">02</Badge
+                <Badge variant="secondary" className="checkout-step-badge">02</Badge>
                 <div>
                   <h2>Secure payment</h2>
                   <p>Complete payment after reviewing your order.</p>

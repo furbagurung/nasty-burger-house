@@ -156,7 +156,6 @@ export default function CartPage() {
         eyebrow="Your pickup order"
         backHref="/menu/burgers"
         backLabel="Back to menu"
-        detail={`${cartCount} item${cartCount === 1 ? "" : "s"}`}
       />
       <main className="cart-redesign-main">
         <header className="cart-redesign-header cart-redesign-header--desktop">
@@ -168,7 +167,6 @@ export default function CartPage() {
             <p>Your pickup order</p>
             <div className="cart-redesign-title-row">
               <h1>Cart</h1>
-              <span>{cartCount} item{cartCount === 1 ? "" : "s"}</span>
             </div>
           </div>
         </header>
@@ -314,9 +312,6 @@ export default function CartPage() {
                   Continue to checkout · {money.format(subtotal)}
                 </ButtonWithIcon>
 
-                <ButtonWithIcon href="/menu/burgers" tone="light">
-                  Add more items
-                </ButtonWithIcon>
               </div>
             </aside>
           </div>

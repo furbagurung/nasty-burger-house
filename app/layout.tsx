@@ -1,5 +1,3 @@
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Bowlby_One_SC, DM_Sans, Geist_Mono } from "next/font/google";
 
@@ -130,8 +128,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <CookieSettings />
         <ToastProvider />
 
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );

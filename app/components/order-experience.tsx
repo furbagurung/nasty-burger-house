@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { drawerMotion, useMobileCart } from "../lib/drawer-motion";
 import { FooterUtilityLinks } from "./footer-legal-links";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
@@ -216,6 +218,9 @@ export default function OrderExperience({
   items,
   initialServiceStatus,
 }: OrderExperienceProps) {
+  const reducedMotion = useReducedMotion();
+  const mobileCart = useMobileCart();
+  const transitions = drawerMotion(reducedMotion !== false, mobileCart);
   const [activeHeroSlide, setActiveHeroSlide] = useState(0);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -1684,145 +1689,148 @@ export default function OrderExperience({
         </div>
       )}
 
-      {isCartOpen && (
-        <div className="drawer-backdrop" role="presentation">
-          <aside
-            className="cart-drawer"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="cart-title"
-          >
-            <div className="drawer-heading">
-              <div>
-                <p className="eyebrow">Pickup order</p>
-                <h2 id="cart-title">Your order</h2>
+      <AnimatePresence>
+        {isCartOpen && (
+          <motion.div {...transitions.backdrop} key="cart" className="drawer-backdrop" role="presentation">
+            <motion.aside {...transitions.panel}
+              className="cart-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="cart-title"
+            >
+              <div className="drawer-heading">
+                <div>
+                  <p className="eyebrow">Pickup order</p>
+                  <h2 id="cart-title">Your order</h2>
+                </div>
+                <button
+                  className="close-button"
+                  type="button"
+                  onClick={() => setIsCartOpen(false)}
+                  aria-label="Close order drawer"
+                >
+                  ×
+                </button>
               </div>
-              <button
-                className="close-button"
-                type="button"
-                onClick={() => setIsCartOpen(false)}
-                aria-label="Close order drawer"
-              >
-                ×
-              </button>
-            </div>
 
-            {cart.length === 0 ? (
-              <div className="empty-cart">
-                <h3>Your order is empty.</h3>
-                <p>Choose an item from the menu to begin.</p>
-                <Link href="/menu/burgers" onClick={() => setIsCartOpen(false)}>
-                  Browse menu
-                </Link>
-              </div>
-            ) : (
-              <div className="cart-lines">
-                {cart.map((line) => {
-                  const item = items.find((entry) => entry.id === line.itemId);
-                  if (!item) return null;
-                  const details = lineDetails(line);
-                  const lineTotal =
-                    calculateLineUnitPrice(line, item) * line.quantity;
+              {cart.length === 0 ? (
+                <div className="empty-cart">
+                  <h3>Your order is empty.</h3>
+                  <p>Choose an item from the menu to begin.</p>
+                  <Link href="/menu/burgers" onClick={() => setIsCartOpen(false)}>
+                    Browse menu
+                  </Link>
+                </div>
+              ) : (
+                <div className="cart-lines">
+                  {cart.map((line) => {
+                    const item = items.find((entry) => entry.id === line.itemId);
+                    if (!item) return null;
+                    const details = lineDetails(line);
+                    const lineTotal =
+                      calculateLineUnitPrice(line, item) * line.quantity;
 
-                  return (
-                    <article className="cart-line" key={line.lineId}>
-                      <div className="cart-line__main">
-                        <h3>{item.name}</h3>
-                        {details.map((detail) => (
-                          <p key={detail}>{detail}</p>
-                        ))}
-                        <strong>{formatPrice(lineTotal)}</strong>
-                        <div className="cart-line__actions">
+                    return (
+                      <article className="cart-line" key={line.lineId}>
+                        <div className="cart-line__main">
+                          <h3>{item.name}</h3>
+                          {details.map((detail) => (
+                            <p key={detail}>{detail}</p>
+                          ))}
+                          <strong>{formatPrice(lineTotal)}</strong>
+                          <div className="cart-line__actions">
+                            <button
+                              type="button"
+                              onClick={() => editCartLine(line)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeLine(line.lineId)}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                        <div
+                          className="quantity-control"
+                          aria-label={`Quantity for ${item.name}`}
+                        >
                           <button
                             type="button"
-                            onClick={() => editCartLine(line)}
+                            onClick={() => updateQuantity(line.lineId, -1)}
                           >
-                            Edit
+                            −
                           </button>
+                          <span>{line.quantity}</span>
                           <button
                             type="button"
-                            onClick={() => removeLine(line.lineId)}
+                            onClick={() => updateQuantity(line.lineId, 1)}
                           >
-                            Remove
+                            +
                           </button>
                         </div>
-                      </div>
-                      <div
-                        className="quantity-control"
-                        aria-label={`Quantity for ${item.name}`}
+                      </article>
+                    );
+                  })}
+
+                  {!cart.some((line) => line.itemId.includes("beast-box")) &&
+                    soloBox && (
+                      <button
+                        className="cart-upsell"
+                        type="button"
+                        onClick={() => {
+                          setIsCartOpen(false);
+                          beginProduct(soloBox);
+                        }}
                       >
-                        <button
-                          type="button"
-                          onClick={() => updateQuantity(line.lineId, -1)}
-                        >
-                          −
-                        </button>
-                        <span>{line.quantity}</span>
-                        <button
-                          type="button"
-                          onClick={() => updateQuantity(line.lineId, 1)}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </article>
-                  );
-                })}
+                        <span>Ordering for a crew?</span>
+                        Build a Solo Beast Box · {formatPrice(soloBox.price)}
+                      </button>
+                    )}
 
-                {!cart.some((line) => line.itemId.includes("beast-box")) &&
-                  soloBox && (
-                    <button
-                      className="cart-upsell"
-                      type="button"
-                      onClick={() => {
-                        setIsCartOpen(false);
-                        beginProduct(soloBox);
-                      }}
+                  <div className="pickup-summary">
+                    <strong>Pickup details</strong>
+                    <p>{serviceStatus.locationName}</p>
+                    <p>Estimated preparation: {serviceStatus.prepTimeLabel}</p>
+                  </div>
+
+                  <div className="checkout-summary">
+                    <div className="checkout-total">
+                      <span>Subtotal</span>
+                      <strong>{formatPrice(cartSubtotal)}</strong>
+                    </div>
+                    <p>
+                      {serviceStatus.acceptingOrders
+                        ? pricingNotice
+                        : serviceStatus.notice}
+                    </p>
+                    <ButtonWithIcon
+                      tone="red"
+                      fullWidth
+                      onClick={openCheckout}
+                      disabled={!serviceStatus.acceptingOrders}
                     >
-                      <span>Ordering for a crew?</span>
-                      Build a Solo Beast Box · {formatPrice(soloBox.price)}
-                    </button>
-                  )}
-
-                <div className="pickup-summary">
-                  <strong>Pickup details</strong>
-                  <p>{serviceStatus.locationName}</p>
-                  <p>Estimated preparation: {serviceStatus.prepTimeLabel}</p>
-                </div>
-
-                <div className="checkout-summary">
-                  <div className="checkout-total">
-                    <span>Subtotal</span>
-                    <strong>{formatPrice(cartSubtotal)}</strong>
-                  </div>
-                  <p>
-                    {serviceStatus.acceptingOrders
-                      ? pricingNotice
-                      : serviceStatus.notice}
-                  </p>
-                  <ButtonWithIcon
-                    tone="red"
-                    fullWidth
-                    onClick={openCheckout}
-                    disabled={!serviceStatus.acceptingOrders}
-                  >
-                    {serviceStatus.acceptingOrders
-                      ? "Continue to checkout"
-                      : "Ordering unavailable"}
-                  </ButtonWithIcon>
-                  <div
-                    className="wallet-labels"
-                    aria-label="Planned express payments"
-                  >
-                    <span>Apple Pay</span>
-                    <span>Google Pay</span>
+                      {serviceStatus.acceptingOrders
+                        ? "Continue to checkout"
+                        : "Ordering unavailable"}
+                    </ButtonWithIcon>
+                    <div
+                      className="wallet-labels"
+                      aria-label="Planned express payments"
+                    >
+                      <span>Apple Pay</span>
+                      <span>Google Pay</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </aside>
-        </div>
-      )}
+              )}
+            </motion.aside>
+          </motion.div>
+        )}
+
+      </AnimatePresence>
 
       {isCheckoutOpen && (
         <div className="modal-backdrop checkout-backdrop" role="presentation">

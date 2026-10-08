@@ -361,7 +361,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
           </span>
           <span className="checkout-at-a-glance__separator" aria-hidden="true" />
           <span className="checkout-at-a-glance__item">
-            <span>{serviceStatus.prepTimeLabel} estimated prep</span>
+            <span>{serviceStatus.acceptingOrders ? `${serviceStatus.prepTimeLabel} estimated prep` : "Ordering currently unavailable"}</span>
           </span>
           <strong>{money.format(subtotal)}</strong>
         </div>

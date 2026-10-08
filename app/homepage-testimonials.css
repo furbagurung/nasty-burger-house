@@ -223,7 +223,7 @@
 }
 
 .home-testimonial-card__avatar--fallback {
-  color: #fff;
+  color: #171513;
   font-size: 0.7rem;
   font-weight: 800;
 }
@@ -241,7 +241,7 @@
 }
 
 .home-testimonial-card__identity strong {
-  color: #fff;
+  color: #171513;
   font-size: 0.86rem;
   font-weight: 800;
   line-height: 1.2;
@@ -264,7 +264,7 @@
 }
 
 .home-testimonial-card__identity a:hover {
-  color: #fff;
+  color: var(--testimonial-accent);
 }
 
 .home-testimonials__indicators {

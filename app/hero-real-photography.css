@@ -41,7 +41,7 @@
 /* Shorter desktop/tablet hero while retaining full image cover and centered copy. */
 @media (min-width: 681px) {
   .hero-carousel {
-    height: clamp(28rem, 33vw, 34rem) !important;
+    height: clamp(31rem, calc(33vw + 3rem), 37rem) !important;
     min-height: 0 !important;
   }
 }

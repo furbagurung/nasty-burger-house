@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { CircleCheck, ClipboardList, Crown, Users } from "lucide-react";
+import { CircleCheck, ClipboardList, Crown, Search, Users } from "lucide-react";
 import { AdminWorkspaceHeader } from "./admin-workspace-header";
 import { AdminMetricCard } from "./admin-metric-card";
 import { Badge } from "@/components/ui/badge";
@@ -101,7 +101,7 @@ export default function AdminCustomerDashboard({
 
   return (
     <div className="admin-shell admin-modern admin-customer-shell">
-      <AdminWorkspaceHeader title="Customer Portal" active="customers" adminEmail={adminEmail} />
+      <AdminWorkspaceHeader title="Customers" active="customers" adminEmail={adminEmail} />
 
       <main className="admin-main admin-customer-main">
         <section className="admin-summary-grid" aria-label="Customer summary">
@@ -111,27 +111,23 @@ export default function AdminCustomerDashboard({
           <AdminMetricCard label="Square only" value={squareOnlyCount} icon={<CircleCheck size={20} />} hint="No website account yet" index={3} />
         </section>
 
-        <Card className="admin-customer-toolbar">
-          <div>
-            <p>Customer directory</p>
-            <h2>Website accounts + Square loyalty</h2>
-            <span>
-              Website customers are matched with Square customers by phone first,
-              then email. Square directory customers may or may not be enrolled
-              in the Square loyalty program.
-            </span>
+        <section className="admin-customer-toolbar" aria-label="Customer directory controls">
+          <div className="admin-customer-toolbar__intro">
+            <h2>Customer directory</h2>
+            <p>Website accounts and Square loyalty members.</p>
           </div>
           <label className="admin-customer-search">
-            <span>Search</span>
+            <span className="sr-only">Search customers</span>
+            <Search size={18} aria-hidden="true" />
             <Input
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Name, email or phone"
+              placeholder="Search name, email or phone"
               autoComplete="off"
             />
           </label>
-        </Card>
+        </section>
 
         <Card
           className={`admin-square-sync ${squareStatus.connected ? "is-connected" : "is-warning"}`}
@@ -142,13 +138,13 @@ export default function AdminCustomerDashboard({
             <div>
               <strong>
                 {squareStatus.connected
-                  ? `Square connected · ${squareStatus.loyaltyCount} loyalty accounts loaded`
-                  : "Square loyalty data unavailable"}
+                  ? "Square connected"
+                  : "Square unavailable"}
               </strong>
               <span>
                 {squareStatus.connected
-                  ? `${squareStatus.directoryCount === null ? "Directory unavailable" : `${squareStatus.directoryCount} Square directory customers`} · ${bothCount} matched to website accounts · ${squareOnlyCount} Square-only`
-                  : "Website accounts are still shown. Check that the Square token has LOYALTY_READ and CUSTOMERS_READ permissions."}
+                  ? `${squareStatus.loyaltyCount} loyalty accounts · ${squareStatus.directoryCount === null ? "Directory unavailable" : `${squareStatus.directoryCount} in directory`} · ${bothCount} matched`
+                  : "Website accounts remain available. Check Square API permissions."}
               </span>
             </div>
           </div>
@@ -162,10 +158,10 @@ export default function AdminCustomerDashboard({
 
         <div className="admin-filter-bar" role="group" aria-label="Customer filters">
           {([
-            ["all", `All customers (${customers.length})`],
-            ["website", `Website accounts (${websiteCount})`],
+            ["all", `All (${customers.length})`],
+            ["website", `Website (${websiteCount})`],
             ["square-only", `Square only (${squareOnlyCount})`],
-            ["both", `Website + Square (${bothCount})`],
+            ["both", `Linked (${bothCount})`],
           ] as Array<[Filter, string]>).map(([value, label]) => (
             <Button
               variant={filter === value ? "default" : "outline"}

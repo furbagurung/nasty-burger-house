@@ -6,6 +6,31 @@ import { useEffect, useRef, useState } from "react";
 import { readSignedInCustomerProfile } from "../lib/customer-store";
 import { getBrowserClientOrNull } from "../lib/supabase/client";
 
+// Remember when the popup was last displayed, not when it was dismissed.
+// A rolling 24-hour cooldown also avoids a popup at 11:59pm and again at midnight.
+const LAST_SHOWN_KEY = "nbh-drip-points-promo-last-shown-at";
+const PROMO_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+
+function shownInLast24Hours() {
+  try {
+    const stored = window.localStorage.getItem(LAST_SHOWN_KEY);
+    if (!stored) return false;
+    const lastShownAt = Number(stored);
+    const elapsed = Date.now() - lastShownAt;
+    return Number.isFinite(lastShownAt) && elapsed >= 0 && elapsed < PROMO_COOLDOWN_MS;
+  } catch {
+    // Storage may be disabled; never break the homepage for a promotion.
+    return false;
+  }
+}
+
+function rememberPromoShown() {
+  try {
+    window.localStorage.setItem(LAST_SHOWN_KEY, String(Date.now()));
+  } catch {
+    // Storage unavailable: the modal still works for this visit.
+  }
+}
 
 export default function LandingPromoModal() {
   const [open, setOpen] = useState(false);
@@ -21,7 +46,7 @@ export default function LandingPromoModal() {
         (key) => params.has(key),
       );
 
-      if (hasRequestedOverlay || readSignedInCustomerProfile()) return;
+      if (hasRequestedOverlay || readSignedInCustomerProfile() || shownInLast24Hours()) return;
 
       const supabase = getBrowserClientOrNull();
 
@@ -38,7 +63,9 @@ export default function LandingPromoModal() {
       }
 
       frame = window.requestAnimationFrame(() => {
-        if (!cancelled) setOpen(true);
+        if (cancelled || shownInLast24Hours()) return;
+        rememberPromoShown();
+        setOpen(true);
       });
     }
 
@@ -48,6 +75,19 @@ export default function LandingPromoModal() {
       cancelled = true;
       if (frame) window.cancelAnimationFrame(frame);
     };
+  }, []);
+
+  useEffect(() => {
+    // Another tab may have shown the promotion first. Close this instance
+    // rather than showing duplicates across browser tabs.
+    function handleStorage(event: StorageEvent) {
+      if (event.key === LAST_SHOWN_KEY && shownInLast24Hours()) {
+        setOpen(false);
+      }
+    }
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
   useEffect(() => {

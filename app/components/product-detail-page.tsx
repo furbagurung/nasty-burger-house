@@ -446,8 +446,9 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                     <Image
                       src="/images/bag.webp"
                       alt=""
-                      width={48}
-                      height={48}
+                      width={192}
+                      height={192}
+                      quality={100}
                       onError={(event) => {
                         event.currentTarget.style.display = "none";
                       }}

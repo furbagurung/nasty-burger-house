@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, CheckCircle2, Clock3, CreditCard, MapPin, ShieldCheck } from "lucide-react";
+import { AlertCircle, CheckCircle2, ChevronLeft, Clock3, CreditCard, MapPin, ShieldCheck } from "lucide-react";
 import { menuItems } from "../data/menu";
 import {
   calculateCartSubtotal,
@@ -162,7 +162,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   }, []);
 
   const subtotal = useMemo(() => calculateCartSubtotal(cart), [cart]);
-  const count = cart.reduce((total, line) => total + line.quantity, 0);
 
   function updateContactField(field: ContactField, value: string) {
     if (field === "name") setName(value);
@@ -342,14 +341,20 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
         backLabel="Back to cart"
       />
       <main className="standalone-main checkout-page-main">
-        <div className="standalone-page-heading checkout-intro">
-          <div className="checkout-intro__topline">
-            <Link href="/cart" className="checkout-back-link">← Back to cart</Link>
-            <span className="checkout-intro__count">{count} item{count === 1 ? "" : "s"}</span>
+        <header className="checkout-intro checkout-desktop-header cart-redesign-header">
+          <Link className="cart-redesign-back" href="/cart" aria-label="Back to cart">
+            <ChevronLeft size={24} strokeWidth={2.3} aria-hidden="true" />
+          </Link>
+          <div className="cart-redesign-title-wrap">
+            <p>Your pickup order</p>
+            <div className="cart-redesign-title-row">
+              <h1>Checkout</h1>
+            </div>
+            <p className="checkout-desktop-subtitle">
+              Confirm your pickup details and pay securely with Square.
+            </p>
           </div>
-          <h1>Checkout</h1>
-          <p>Confirm your pickup details and pay securely with Square.</p>
-        </div>
+        </header>
 
         <form className="checkout-page-layout" onSubmit={submit} noValidate>
           {errors.length > 0 && (

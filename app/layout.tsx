@@ -90,6 +90,7 @@ import "./auth-05.css";
 import "./admin-jobtracker.css";
 import "./checkout-polish.css";
 import "./mobile-page-header.css";
+import "./quantity-stepper.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",

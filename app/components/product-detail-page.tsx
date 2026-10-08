@@ -341,7 +341,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
           </Link>
           <strong>Details</strong>
           <Link className="product-mobile-cart" href="/?cart=1" aria-label="View cart">
-            <ShoppingBag size={19} strokeWidth={1.8} aria-hidden="true" />
+            <Image src="/images/bag.webp" alt="" width={25} height={25} className="product-mobile-cart-bag" aria-hidden="true" />
           </Link>
         </div>
         <nav className="product-breadcrumb" aria-label="Breadcrumb">

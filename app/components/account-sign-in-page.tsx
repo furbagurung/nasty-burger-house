@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Auth5 } from "@/components/ui/nasty-auth-05";
-import { MdLocalOffer, MdReceiptLong } from "react-icons/md";
 import { signInCustomerByEmail } from "../lib/customer-store";
 import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import GoogleAuthButton from "./google-auth-button";
@@ -70,9 +69,8 @@ export default function AccountSignInPage() {
     <div className="standalone-page account-page nbh-auth-page">
       <main className="standalone-main nbh-auth-main">
         <Auth5
-          brandName="Nasty Burger House"
           heading="Welcome back."
-          subheading="Sign in to check your orders, collect Drip Points and keep the good stuff coming."
+          subheading="Sign in to view orders and Drip Points."
           identifierLabel={
             productionAuth ? "Email or mobile number" : "Email address"
           }
@@ -92,20 +90,8 @@ export default function AccountSignInPage() {
           homeHref="/"
           imageSrc="/images/Warmly lit food trailer at night-2.png"
           imageAlt="Warmly lit Nasty Burger House food trailer at night"
-          panelHeading="BIG BURGERS. BETTER REWARDS."
-          panelSubtext="Your next favourite bite is waiting. Sign in and make every order count."
-          features={[
-            {
-              icon: <MdLocalOffer size={20} />,
-              title: "Drip Points",
-              description: "Keep track of your rewards.",
-            },
-            {
-              icon: <MdReceiptLong size={20} />,
-              title: "Order history",
-              description: "Find your past orders.",
-            },
-          ]}
+          panelHeading="BIG BURGERS. BIG REWARDS."
+          panelSubtext="Order your favourites. Earn Drip Points."
           onSubmit={submit}
           error={error}
           submitting={submitting}

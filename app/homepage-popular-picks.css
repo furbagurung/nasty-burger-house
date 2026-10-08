@@ -441,3 +441,8 @@
 @media (prefers-reduced-motion: reduce) {
   .popular-pick-card { transition: none; }
 }
+
+/* Blend product photos into their media surface without altering the food artwork. */
+.popular-pick-card__media img {
+  mix-blend-mode: multiply;
+}

@@ -1180,12 +1180,15 @@ export default function OrderExperience({
                 src="/images/beast-box-hero.webp"
                 alt="Beast Box with burger, fries, wings and sides"
                 fill
-                sizes="(max-width: 760px) 100vw, 50vw"
+                sizes="(max-width: 760px) calc(100vw - 2rem), (max-width: 1212px) 52vw, 605px"
               />
             </div>
             <div className="home-feature__copy">
               <p className="eyebrow">Built for sharing</p>
-              <h2>Bring the whole crew.</h2>
+              <h2>
+                <span>Bring the</span>{" "}
+                <span>whole crew.</span>
+              </h2>
               <p>
                 Solo, Duo and Family boxes loaded with burgers, wings, fries and
                 more.

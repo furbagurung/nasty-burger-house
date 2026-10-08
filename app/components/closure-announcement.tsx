@@ -16,7 +16,13 @@ export default function ClosureAnnouncement() {
     pathname === "/account/reset-password";
   // Keep opening-hours messaging across the main website, but leave
   // authentication and administration flows distraction-free.
-  const isVisible = !dismissed && !pathname.startsWith("/admin") && !isAuthRoute;
+  // Checkout shows its own authoritative pickup-ordering status; the generic
+  // site-wide hours promotion could imply ordering is open when it is not.
+  const isVisible =
+    !dismissed &&
+    !pathname.startsWith("/admin") &&
+    !isAuthRoute &&
+    pathname !== "/checkout";
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".home-top-header");

@@ -66,7 +66,7 @@ export function Auth1({
   bottomPromptLinkText = "Create an account",
   onBottomPromptClick,
   onSubmit,
-  footerNote = "Secure customer access",
+  footerNote = "",
   showPasswordField = true,
   submitting = false,
   error = "",
@@ -212,7 +212,7 @@ export function Auth1({
           </CardFooter>
         </Card>
 
-        <p className="nbh-auth-footnote">{footerNote}</p>
+        {footerNote && <p className="nbh-auth-footnote">{footerNote}</p>}
       </div>
     </div>
   );

@@ -126,64 +126,9 @@ function enhanceCartDrawer() {
       }
     }
 
-    const nativeQuantity = line.querySelector<HTMLElement>(":scope > .quantity-control");
-    if (!nativeQuantity) return;
-    nativeQuantity.classList.add("cart-line__native-quantity");
+    // Quantity is controlled directly by the shared React Stepper.
+    // Do not inject a dropdown or hide React's animated control.
 
-    const quantityText = nativeQuantity.querySelector("span")?.textContent ?? "1";
-    const currentQuantity = Math.max(1, Number.parseInt(quantityText, 10) || 1);
-
-    let quantityControl = line.querySelector<HTMLLabelElement>(
-      ".cart-line__quantity-select",
-    );
-    if (!quantityControl) {
-      quantityControl = document.createElement("label");
-      quantityControl.className = "cart-line__quantity-select";
-      quantityControl.setAttribute("aria-label", `Quantity for ${itemName}`);
-
-      const select = document.createElement("select");
-      select.setAttribute("aria-label", `Quantity for ${itemName}`);
-      for (let quantity = 1; quantity <= 20; quantity += 1) {
-        const option = document.createElement("option");
-        option.value = String(quantity);
-        option.textContent = String(quantity);
-        select.appendChild(option);
-      }
-      select.addEventListener("change", () => {
-        const targetQuantity = Number.parseInt(select.value, 10);
-        const hiddenQuantity = line.querySelector<HTMLElement>(
-          ":scope > .quantity-control",
-        );
-        if (!hiddenQuantity) return;
-
-        const liveQuantity = Math.max(
-          1,
-          Number.parseInt(hiddenQuantity.querySelector("span")?.textContent ?? "1", 10) || 1,
-        );
-        const buttons = hiddenQuantity.querySelectorAll<HTMLButtonElement>("button");
-        const decrement = buttons[0];
-        const increment = buttons[1];
-        const difference = targetQuantity - liveQuantity;
-
-        if (difference > 0 && increment) {
-          for (let step = 0; step < difference; step += 1) increment.click();
-        } else if (difference < 0 && decrement) {
-          for (let step = 0; step < Math.abs(difference); step += 1) decrement.click();
-        }
-      });
-
-      const chevron = document.createElement("span");
-      chevron.className = "cart-line__quantity-chevron";
-      chevron.setAttribute("aria-hidden", "true");
-
-      quantityControl.append(select, chevron);
-      line.appendChild(quantityControl);
-    }
-
-    const select = quantityControl.querySelector<HTMLSelectElement>("select");
-    if (select && select.value !== String(currentQuantity)) {
-      select.value = String(currentQuantity);
-    }
   });
 
   const checkoutSummary = cartLines.querySelector<HTMLElement>(".checkout-summary");

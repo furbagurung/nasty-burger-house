@@ -600,3 +600,27 @@
     margin-bottom: 0.9rem;
   }
 }
+
+/* Brand Halal certification and clear burger-meat messaging. */
+.product-page-premium .product-detail__tag--halal img {
+  width: 1.2rem;
+  height: 1.2rem;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+.product-page-premium .product-detail__halal-note {
+  flex-basis: 100%;
+  width: 100%;
+  margin: 0.4rem 0 0;
+  color: #326d44;
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: 0.015em;
+}
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__halal-note {
+    margin-top: 0.55rem;
+    font-size: 0.72rem;
+  }
+}

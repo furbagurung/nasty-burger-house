@@ -38,6 +38,14 @@
     linear-gradient(0deg, rgba(7, 6, 5, 0.26), transparent 38%) !important;
 }
 
+/* Shorter desktop/tablet hero while retaining full image cover and centered copy. */
+@media (min-width: 681px) {
+  .hero-carousel {
+    height: clamp(28rem, 33vw, 34rem) !important;
+    min-height: 0 !important;
+  }
+}
+
 /* Keep the marketing copy as live HTML over the finished hero artwork. */
 .hero-slide__copy {
   position: absolute !important;

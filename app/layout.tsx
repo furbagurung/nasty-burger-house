@@ -85,6 +85,7 @@ import "./landing-promo-modal.css";
 import "./home-menu-categories.css";
 import "./home-beast-boxes.css";
 import "./admin-modern.css";
+import "./auth-watermelon.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",

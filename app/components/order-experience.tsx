@@ -20,6 +20,7 @@ import {
   type CartLine,
 } from "../lib/order";
 import { getServiceStatus, type ServiceStatus } from "../lib/service";
+import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import MobileBottomNav from "./mobile-bottom-nav";
 import HomepageTestimonials from "./homepage-testimonials";
 import ReviewStories from "./review-stories";
@@ -322,7 +323,7 @@ export default function OrderExperience({
 
     if (storedCart) {
       try {
-        parsedCart = normaliseCart(JSON.parse(storedCart));
+        parsedCart = mergeIdenticalCartLines(normaliseCart(JSON.parse(storedCart)));
       } catch {
         window.localStorage.removeItem(CART_STORAGE_KEY);
         window.localStorage.removeItem(LEGACY_CART_STORAGE_KEY);
@@ -599,11 +600,13 @@ export default function OrderExperience({
     };
 
     setCart((current) =>
-      editingLineId
-        ? current.map((entry) =>
-            entry.lineId === editingLineId ? line : entry,
-          )
-        : [...current, line],
+      mergeIdenticalCartLines(
+        editingLineId
+          ? current.map((entry) =>
+              entry.lineId === editingLineId ? line : entry,
+            )
+          : [...current, line],
+      ),
     );
     setAnnouncement(
       `${selectedItem.name} ${editingLineId ? "updated" : "added to your order"}.`,

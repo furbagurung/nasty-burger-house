@@ -30,10 +30,10 @@ function validateContact(name: string, email: string, phone: string): ContactErr
   if (trimmedName.length < 2 || trimmedName.length > 80) {
     errors.name = "Enter a pickup name (2–80 characters).";
   }
-  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(trimmedEmail) || trimmedEmail.length > 160) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail) || trimmedEmail.length > 160) {
     errors.email = "Enter a valid email address.";
   }
-  if (!/^[+()\\d\\s-]{8,24}$/.test(trimmedPhone)) {
+  if (!/^[+()\d\s-]{8,24}$/.test(trimmedPhone)) {
     errors.phone = "Enter a valid phone number (8–24 characters).";
   }
   return errors;
@@ -295,33 +295,49 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   return (
     <div className="standalone-page checkout-page">
       <main className="standalone-main checkout-page-main">
-        <div className="standalone-page-heading">
-          <p className="standalone-eyebrow">ASAP pickup · Secure Square checkout</p>
-          <div>
-            <h1>Checkout</h1>
-            <span>
-              {count} item{count === 1 ? "" : "s"}
-            </span>
+        <div className="standalone-page-heading checkout-intro">
+          <div className="checkout-intro__topline">
+            <Link href="/cart" className="checkout-back-link">← Back to cart</Link>
+            <span className="checkout-intro__count">{count} item{count === 1 ? "" : "s"}</span>
           </div>
-          <p>
-            Confirm your pickup details, then continue to Square for secure payment.
-          </p>
+          <h1>Checkout</h1>
+          <p>Confirm your pickup details and pay securely with Square.</p>
         </div>
 
-        <form className="checkout-page-layout" onSubmit={submit}>
+        <form className="checkout-page-layout" onSubmit={submit} noValidate>
+          {errors.length > 0 && (
+            <div className="checkout-errors checkout-errors--top" role="alert" ref={errorSummaryRef} tabIndex={-1}>
+              <AlertCircle size={19} aria-hidden="true" />
+              <div>
+                <strong>We couldn't continue to payment.</strong>
+                <ul>{errors.map((error, index) => <li key={index}>{error}</li>)}</ul>
+              </div>
+            </div>
+          )}
           <div className="checkout-page-sections">
             <section className="account-card checkout-panel">
               <div className="checkout-panel__heading">
                 <span>01</span>
                 <div>
                   <h2>Pickup</h2>
-                  <p>{serviceStatus.prepTimeLabel} estimated preparation.</p>
+                  <p>ASAP pickup · {serviceStatus.prepTimeLabel} prep estimate</p>
                 </div>
               </div>
               <div className="checkout-location-card">
-                <strong>{serviceStatus.locationName}</strong>
-                <span>{serviceStatus.address}</span>
-                <small>{serviceStatus.statusLabel}</small>
+                <MapPin size={18} aria-hidden="true" />
+                <div>
+                  <strong>{serviceStatus.locationName}</strong>
+                  <span>{serviceStatus.address}</span>
+                </div>
+              </div>
+              <div className={`checkout-service-notice ${serviceStatus.acceptingOrders ? "is-open" : "is-closed"}`} role="status">
+                {serviceStatus.acceptingOrders
+                  ? <CheckCircle2 size={18} aria-hidden="true" />
+                  : <Clock3 size={18} aria-hidden="true" />}
+                <div>
+                  <strong>{serviceStatus.statusLabel}</strong>
+                  <p>{serviceStatus.notice}</p>
+                </div>
               </div>
             </section>
 
@@ -330,74 +346,90 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                 <span>02</span>
                 <div>
                   <h2>Contact details</h2>
-                  <p>Used for your Square customer and pickup order.</p>
+                  <p>So we can identify your pickup order.</p>
                 </div>
               </div>
               <div className="account-form-grid">
-                <label>
+                <label htmlFor="checkout-name">
                   Pickup name
                   <input
+                    id="checkout-name"
+                    ref={nameInputRef}
                     value={name}
-                    onChange={(event) => setName(event.target.value)}
+                    onChange={(event) => updateContactField("name", event.target.value)}
                     minLength={2}
                     maxLength={80}
                     autoComplete="name"
+                    aria-invalid={Boolean(fieldErrors.name)}
+                    aria-describedby={fieldErrors.name ? "checkout-name-error" : undefined}
+                    disabled={submitting}
                     required
                   />
+                  {fieldErrors.name && <span id="checkout-name-error" className="checkout-field-error">{fieldErrors.name}</span>}
                 </label>
-                <label>
+                <label htmlFor="checkout-email">
                   Email address
                   <input
+                    id="checkout-email"
+                    ref={emailInputRef}
                     type="email"
+                    inputMode="email"
                     value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    onChange={(event) => updateContactField("email", event.target.value)}
                     maxLength={160}
                     autoComplete="email"
+                    aria-invalid={Boolean(fieldErrors.email)}
+                    aria-describedby={fieldErrors.email ? "checkout-email-error" : undefined}
+                    disabled={submitting}
                     required
                   />
+                  {fieldErrors.email && <span id="checkout-email-error" className="checkout-field-error">{fieldErrors.email}</span>}
                 </label>
-                <label>
+                <label htmlFor="checkout-phone">
                   Mobile number
                   <input
+                    id="checkout-phone"
+                    ref={phoneInputRef}
                     type="tel"
+                    inputMode="tel"
                     value={phone}
-                    onChange={(event) => setPhone(event.target.value)}
+                    onChange={(event) => updateContactField("phone", event.target.value)}
                     minLength={8}
                     maxLength={24}
                     autoComplete="tel"
+                    aria-invalid={Boolean(fieldErrors.phone)}
+                    aria-describedby={fieldErrors.phone ? "checkout-phone-error" : undefined}
+                    disabled={submitting}
                     required
                   />
+                  {fieldErrors.phone && <span id="checkout-phone-error" className="checkout-field-error">{fieldErrors.phone}</span>}
                 </label>
-                <label className="account-form-grid__full">
-                  Order notes <small>Optional</small>
+                <label className="account-form-grid__full" htmlFor="checkout-notes">
+                  <span>Order notes <small>Optional</small></span>
                   <textarea
+                    id="checkout-notes"
                     value={notes}
                     onChange={(event) => setNotes(event.target.value)}
-                    rows={3}
+                    placeholder="Anything the kitchen should know?"
+                    rows={2}
                     maxLength={300}
+                    disabled={submitting}
                   />
                 </label>
               </div>
-              <p className="checkout-member-note">
-                Your contact details are matched to the Square Customer Directory to help the
-                store identify your order.
-              </p>
             </section>
 
             <section className="account-card checkout-panel">
               <div className="checkout-panel__heading">
                 <span>03</span>
                 <div>
-                  <h2>Payment</h2>
-                  <p>Card details are entered securely on Square.</p>
+                  <h2>Secure payment</h2>
+                  <p>Pay on Square's secure checkout page.</p>
                 </div>
               </div>
               <div className="checkout-payment-card">
-                <strong>Secure checkout by Square</strong>
-                <span>
-                  You will continue to Square to complete payment, then return to Nasty Burger
-                  House.
-                </span>
+                <CreditCard size={19} aria-hidden="true" />
+                <span>No card details are collected on this website.</span>
               </div>
             </section>
           </div>
@@ -427,14 +459,10 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               <span>Total</span>
               <strong>{money.format(subtotal)}</strong>
             </div>
-            {errors.length > 0 && (
-              <div className="checkout-errors" role="alert">
-                <strong>Please check your order:</strong>
-                <ul>
-                  {errors.map((error) => (
-                    <li key={error}>{error}</li>
-                  ))}
-                </ul>
+            {!serviceStatus.acceptingOrders && (
+              <div className="checkout-review-hours">
+                <Clock3 size={16} aria-hidden="true" />
+                <span>{serviceStatus.notice}</span>
               </div>
             )}
             <ButtonWithIcon
@@ -449,9 +477,8 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                   ? "Opening Square…"
                   : "Continue to secure payment"}
             </ButtonWithIcon>
-            <small>
-              Orders, customer details and payment are handled through Square. Nasty Burger House
-              never receives your card details.
+            <small className="checkout-secure-note">
+              <ShieldCheck size={15} aria-hidden="true" /> Secure payment powered by Square.
             </small>
           </aside>
         </form>

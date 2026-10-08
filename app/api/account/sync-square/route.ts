@@ -67,7 +67,9 @@ export async function POST(request: Request) {
         requestId: `nbh-signup-loyalty-${user.id}`,
       });
 
-    const bonus = await ensureSquareSignupBonus(initialLoyaltyAccount.id);
+    const bonus = await ensureSquareSignupBonus(initialLoyaltyAccount.id, {
+      newlyCreated: loyaltyCreated,
+    });
     const loyaltyAccount =
       (await findSquareLoyaltyAccountByCustomerId(squareCustomer.id)) ??
       initialLoyaltyAccount;

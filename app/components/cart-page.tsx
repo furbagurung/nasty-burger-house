@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronDown, ChevronLeft, Minus, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronLeft, Trash2 } from "lucide-react";
+import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -274,26 +275,13 @@ export default function CartPage() {
                       )}
 
                       <div className="cart-redesign-item__footer">
-                        <div className="cart-redesign-quantity" aria-label={`Quantity for ${item.name}`}>
-                          <button
-                            type="button"
-                            onClick={() => changeQuantity(line.lineId, -1)}
-                            disabled={line.quantity === 1}
-                            aria-label={`Decrease ${item.name} quantity`}
-                          >
-                            <Minus size={16} strokeWidth={2.2} aria-hidden="true" />
-                          </button>
-                          <strong>{line.quantity}</strong>
-                          <button
-                            className="cart-redesign-quantity__plus"
-                            type="button"
-                            onClick={() => changeQuantity(line.lineId, 1)}
-                            disabled={line.quantity === 20}
-                            aria-label={`Increase ${item.name} quantity`}
-                          >
-                            <Plus size={16} strokeWidth={2.3} aria-hidden="true" />
-                          </button>
-                        </div>
+                        <QuantityStepper
+                           label={`${item.name} quantity`}
+                           value={line.quantity}
+                           min={1}
+                           max={20}
+                           onChange={(next) => changeQuantity(line.lineId, next - line.quantity)}
+                         />
 
                         <strong className="cart-redesign-item__total">{money.format(lineTotal)}</strong>
                       </div>

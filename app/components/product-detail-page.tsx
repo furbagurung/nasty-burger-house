@@ -478,6 +478,16 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                 </button>
 
                 {isCombo && (
+                  <div className="product-combo-includes">
+                    <div className="product-combo-includes__fries">
+                      <span className="product-combo-drink-trigger__thumb" aria-hidden="true">
+                        <Image src="/images/final-menu-photo/nasty-fries-v2.jpg" alt="" width={80} height={80} />
+                      </span>
+                      <span className="product-combo-drink-trigger__copy">
+                        <small>Beast Combo side</small>
+                        <strong>Nasty Fries</strong>
+                      </span>
+                    </div>
                   <button
                     className={`product-combo-drink-trigger${drink ? " has-selection" : ""}`}
                     type="button"
@@ -504,6 +514,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                       {drink ? "Change" : "Choose"} →
                     </span>
                   </button>
+                  </div>
                 )}
               </section>
             )}

@@ -113,6 +113,9 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   const nameInputRef = useRef<HTMLInputElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const phoneInputRef = useRef<HTMLInputElement>(null);
+  // Reuse the Square idempotency key on a retry of the same exact checkout
+  // payload. This avoids duplicate Square payment links after a lost response.
+  const checkoutAttemptRef = useRef<{ signature: string; requestId: string } | null>(null);
 
   useEffect(() => {
     const syncServiceStatus = () => setServiceStatus(getServiceStatus());
@@ -192,19 +195,25 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
     }
 
     setSubmitting(true);
-    const requestId = crypto.randomUUID();
+    const customer = { name: name.trim(), email: email.trim(), phone: phone.trim() };
+    const signature = JSON.stringify({ customer, notes, cart, subtotal });
+    if (checkoutAttemptRef.current?.signature !== signature) {
+      checkoutAttemptRef.current = { signature, requestId: crypto.randomUUID() };
+    }
+    const requestId = checkoutAttemptRef.current.requestId;
     try {
-      window.localStorage.setItem(
-        CHECKOUT_CONTACT_KEY,
-        JSON.stringify({ name: name.trim(), email: email.trim(), phone: phone.trim() }),
-      );
+      try {
+        window.localStorage.setItem(CHECKOUT_CONTACT_KEY, JSON.stringify(customer));
+      } catch {
+        // Optional contact autofill should never prevent order placement.
+      }
 
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           requestId,
-          customer: { name: name.trim(), email: email.trim(), phone: phone.trim() },
+          customer,
           notes,
           pickupMethod: "asap",
           paymentMethod: "square_checkout",
@@ -248,18 +257,23 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
 
       // Keep the cart until Square confirms payment and redirects back to the site.
       // Store both IDs so the confirmation page can verify the Square payment.
-      window.sessionStorage.setItem(
-        PENDING_ORDER_KEY,
-        JSON.stringify({
-          orderId: result.orderId,
-          squareOrderId: result.squareOrderId,
-          createdAt: Date.now(),
-        }),
-      );
+      try {
+        window.sessionStorage.setItem(
+          PENDING_ORDER_KEY,
+          JSON.stringify({
+            orderId: result.orderId,
+            squareOrderId: result.squareOrderId,
+            createdAt: Date.now(),
+          }),
+        );
+      } catch {
+        setErrors(["We couldn't save your checkout details in this browser. Please allow site storage and try again. No payment has been made on this page."]);
+        return;
+      }
       window.location.assign(result.checkoutUrl);
     } catch {
       setErrors([
-        "Checkout could not be completed. Check your connection and try again. If you already reached Square, check your payment status before retrying.",
+        "We couldn't connect to Square checkout. Check your internet connection and try again. Your cart is still saved.",
       ]);
     } finally {
       setSubmitting(false);

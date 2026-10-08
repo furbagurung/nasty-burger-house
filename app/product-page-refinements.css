@@ -688,3 +688,51 @@
 .product-page-premium .product-mobile-description-card .product-detail__description {
   margin-top: 0 !important;
 }
+
+/* Dietary badges share the product title row on mobile. */
+.product-mobile-title-tags { display: none; }
+@media (max-width: 680px) {
+  .product-page-premium .product-mobile-title-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+  .product-page-premium .product-mobile-title-line h1 {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .product-page-premium .product-mobile-title-tags {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
+  }
+  .product-page-premium .product-mobile-title-tags > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border: 1px solid #e8e3dc;
+    border-radius: 999px;
+    padding: 0.32rem 0.55rem;
+    background: #fff;
+    color: #39352f;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .product-page-premium .product-mobile-title-tags img {
+    width: 1.1rem;
+    height: 1.1rem;
+    object-fit: contain;
+  }
+  .product-page-premium .product-detail__content--premium > .product-detail__tags > span {
+    display: none;
+  }
+  .product-page-premium .product-detail__content--premium > .product-detail__tags {
+    margin-top: 0.45rem !important;
+  }
+}

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
-import MobileBottomNav from "./mobile-bottom-nav";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 export default function AccountForgotPasswordPage() {
@@ -39,13 +38,16 @@ export default function AccountForgotPasswordPage() {
   }
 
   return (
-    <div className="standalone-page account-page">
+    <div className="standalone-page account-page account-auth-flow-page">
       <main className="standalone-main account-auth-main">
         <section className="account-auth-card account-auth-card--compact">
           <div className="account-auth-card__intro">
             <p className="standalone-eyebrow">Account recovery</p>
             <h1>Reset your password.</h1>
             <p>We&apos;ll email you a secure link to choose a new password.</p>
+            <Link href="/" className="account-auth-home-link">
+              ← Back to Home
+            </Link>
           </div>
 
           {sent ? (
@@ -96,7 +98,6 @@ export default function AccountForgotPasswordPage() {
           )}
         </section>
       </main>
-      <MobileBottomNav active="more" />
     </div>
   );
 }

@@ -137,6 +137,26 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
   const [boxDrinks, setBoxDrinks] = useState<string[]>([]);
   const [selectionError, setSelectionError] = useState("");
   const [addedToCart, setAddedToCart] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const updateCount = () => {
+      setCartCount(
+        readStoredCart().reduce(
+          (sum, line) => sum + (Number.isFinite(line.quantity) ? Math.max(0, line.quantity) : 0),
+          0,
+        ),
+      );
+    };
+
+    updateCount();
+    window.addEventListener("nasty-cart-updated", updateCount);
+    window.addEventListener("storage", updateCount);
+    return () => {
+      window.removeEventListener("nasty-cart-updated", updateCount);
+      window.removeEventListener("storage", updateCount);
+    };
+  }, []);
 
   const availableModifiers = modifierChoices.filter((modifier) =>
     item.modifierIds?.includes(modifier.id),
@@ -340,8 +360,9 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             <span aria-hidden="true">←</span>
           </Link>
           <strong>Details</strong>
-          <Link className="product-mobile-cart" href="/?cart=1" aria-label="View cart">
-            <Image src="/images/bag.webp" alt="" width={25} height={25} className="product-mobile-cart-bag" aria-hidden="true" />
+          <Link className="product-mobile-cart" href="/?cart=1" aria-label={`View cart, ${cartCount} items`}>
+            <ShoppingBag size={19} strokeWidth={1.8} aria-hidden="true" />
+            {cartCount > 0 && <span className="product-mobile-cart-count" aria-hidden="true">{cartCount > 99 ? "99+" : cartCount}</span>}
           </Link>
         </div>
         <nav className="product-breadcrumb" aria-label="Breadcrumb">

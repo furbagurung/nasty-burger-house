@@ -409,3 +409,10 @@
     outline-offset: 2px;
   }
 }
+
+/* Hide redundant breadcrumbs on mobile product pages; keep the Back link. */
+@media (max-width: 680px) {
+  .product-page-premium .product-breadcrumb {
+    display: none !important;
+  }
+}

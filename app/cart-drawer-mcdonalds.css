@@ -176,59 +176,11 @@
   background: #f6f6f6 !important;
 }
 
-/* hide native quantity control */
-.cart-drawer--mcd .cart-line__native-quantity {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  margin: -1px !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  clip: rect(0 0 0 0) !important;
-  clip-path: inset(50%) !important;
-  white-space: nowrap !important;
-}
-
-/* quantity dropdown pill */
-.cart-drawer--mcd .cart-line__quantity-select {
+/* Place the actual reusable Motion Stepper in the drawer grid. */
+.cart-drawer--mcd .cart-line--mcd > .nbh-quantity-stepper {
   grid-area: qty;
-  position: relative;
-  display: flex;
-  min-width: 6.5rem;
-  height: 3.5rem;
-  align-items: center;
   justify-self: end;
-  border: 1px solid #b7b7b7;
-  border-radius: 999px;
-  padding: 0 1rem;
-  background: #fff;
-}
-
-.cart-drawer--mcd .cart-line__quantity-select select {
-  width: 100%;
-  border: 0;
-  outline: 0;
-  appearance: none;
-  background: transparent;
-  color: #171513;
-  font: inherit;
-  font-size: 1rem;
-  font-weight: 800;
-  text-align: center;
-  padding: 0 1.3rem 0 0.2rem;
-  cursor: pointer;
-}
-
-.cart-drawer--mcd .cart-line__quantity-chevron {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-right: 1.8px solid #171513;
-  border-bottom: 1.8px solid #171513;
-  pointer-events: none;
-  transform: translateY(-65%) rotate(45deg);
+  align-self: center;
 }
 
 /* remove unused sections */
@@ -414,12 +366,6 @@
   .cart-drawer--mcd .cart-line__icon-action svg {
     width: 1rem;
     height: 1rem;
-  }
-
-  .cart-drawer--mcd .cart-line__quantity-select {
-    min-width: 5.3rem;
-    height: 3rem;
-    padding-inline: 0.8rem;
   }
 
   .cart-drawer--mcd .checkout-summary--mcd .checkout-total,

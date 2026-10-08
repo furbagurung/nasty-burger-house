@@ -1,0 +1,134 @@
+/* Shared app-style page heading for mobile customer flows.
+   Import after page styles. Desktop pages keep their existing headings. */
+.mobile-page-header {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mobile-page-header {
+    position: sticky;
+    top: 0;
+    z-index: 75;
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid #eae5de;
+    background: rgba(250, 248, 245, 0.98);
+    color: #171513;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  /* The sitewide notice is fixed above the page on mobile. When it is
+     dismissed, the app header returns to the top without a reserved gap. */
+  html.nasty-closure-visible .mobile-page-header {
+    top: calc(var(--closure-mobile-bar-height, 2.45rem) + env(safe-area-inset-top));
+  }
+
+  .mobile-page-header__inner {
+    display: grid;
+    width: min(100%, 1120px);
+    min-height: 4.55rem;
+    grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.8rem;
+    margin-inline: auto;
+    padding: 0.5rem clamp(0.75rem, 3vw, 1.25rem);
+  }
+
+  .mobile-page-header__back {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border: 1px solid #e9e4de;
+    border-radius: 50%;
+    background: #fff;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .mobile-page-header__back:hover {
+    border-color: #e2c5b9;
+    background: #fff8f5;
+  }
+
+  .mobile-page-header__back:focus-visible {
+    outline: 3px solid #e84929;
+    outline-offset: 2px;
+  }
+
+  .mobile-page-header__identity {
+    display: grid;
+    min-width: 0;
+    align-content: center;
+    gap: 0.2rem;
+  }
+
+  .mobile-page-header__eyebrow {
+    overflow: hidden;
+    margin: 0;
+    color: #e24926;
+    font-size: 0.59rem;
+    font-weight: 850;
+    letter-spacing: 0.09em;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .mobile-page-header__title {
+    overflow: hidden;
+    margin: 0;
+    color: #171513;
+    font-family: var(--font-bowlby-one-sc), Arial, sans-serif;
+    font-size: clamp(1.3rem, 5.5vw, 1.65rem);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-page-header__detail {
+    color: #79716a;
+    font-size: 0.7rem;
+    font-weight: 780;
+    white-space: nowrap;
+  }
+
+  /* The extracted component replaces the old cart heading on phones only. */
+  .cart-redesign-page .cart-redesign-header--desktop {
+    display: none;
+  }
+
+  .cart-redesign-page .cart-redesign-main {
+    padding-top: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .mobile-page-header__inner {
+    gap: 0.55rem;
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  }
+
+  .mobile-page-header__back {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .mobile-page-header__title {
+    font-size: 1.28rem;
+  }
+
+  .mobile-page-header__detail {
+    font-size: 0.65rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-page-header__back {
+    transition: none;
+  }
+}

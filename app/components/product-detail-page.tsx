@@ -535,7 +535,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               </div>
             )}
 
-            <p className="product-detail__notice">Pickup ordering. Final availability and preparation details are confirmed with your order.</p>
+
           </section>
         </div>
       </main>

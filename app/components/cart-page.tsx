@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, Minus, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronLeft, Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -110,6 +110,7 @@ function lineDetails(line: CartLine) {
 export default function CartPage() {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [summaryExpanded, setSummaryExpanded] = useState(false);
 
   useEffect(() => {
     try {
@@ -259,42 +260,64 @@ export default function CartPage() {
               })}
             </section>
 
-            <aside className="cart-redesign-summary">
+            <aside
+              className={`cart-redesign-summary${summaryExpanded ? " is-expanded" : ""}`}
+              aria-label="Order summary"
+            >
+              <button
+                className="cart-redesign-summary__toggle"
+                type="button"
+                aria-label={summaryExpanded ? "Collapse order summary" : "Expand order summary"}
+                aria-expanded={summaryExpanded}
+                aria-controls="cart-summary-breakdown"
+                onClick={() => setSummaryExpanded((open) => !open)}
+              >
+                <ChevronDown size={24} strokeWidth={2.1} aria-hidden="true" />
+              </button>
+
               <div className="cart-redesign-summary__heading">
                 <div>
                   <p>Order summary</p>
                   <h2>Ready for pickup</h2>
+                  <h2 className="cart-redesign-summary__mobile-title">Order summary</h2>
                 </div>
                 <span>{cartCount} item{cartCount === 1 ? "" : "s"}</span>
               </div>
 
-              <div className="cart-redesign-summary__rows">
-                <div>
-                  <span>Subtotal</span>
+              <div
+                id="cart-summary-breakdown"
+                className="cart-redesign-summary__breakdown"
+              >
+                <div className="cart-redesign-summary__rows">
+                  <div>
+                    <span>Subtotal</span>
+                    <strong>{money.format(subtotal)}</strong>
+                  </div>
+                  <div>
+                    <span>Pickup</span>
+                    <strong>Free</strong>
+                  </div>
+                </div>
+
+                <div className="cart-redesign-summary__total">
+                  <span>Total</span>
                   <strong>{money.format(subtotal)}</strong>
                 </div>
-                <div>
-                  <span>Pickup</span>
-                  <strong>Free</strong>
-                </div>
+
+                <p className="cart-redesign-summary__note">
+                  Pickup only. Pay securely with Square at checkout.
+                </p>
               </div>
 
-              <div className="cart-redesign-summary__total">
-                <span>Total</span>
-                <strong>{money.format(subtotal)}</strong>
+              <div className="cart-redesign-summary__actions">
+                <ButtonWithIcon href="/checkout" tone="red" fullWidth>
+                  Continue to checkout · {money.format(subtotal)}
+                </ButtonWithIcon>
+
+                <ButtonWithIcon href="/menu/burgers" tone="light">
+                  Add more items
+                </ButtonWithIcon>
               </div>
-
-              <p className="cart-redesign-summary__note">
-                Pickup only. You&apos;ll pay when you collect your order.
-              </p>
-
-              <ButtonWithIcon href="/checkout" tone="red" fullWidth>
-                Continue to checkout · {money.format(subtotal)}
-              </ButtonWithIcon>
-
-              <ButtonWithIcon href="/menu/burgers" tone="light">
-                Add more items
-              </ButtonWithIcon>
             </aside>
           </div>
         )}

@@ -26,10 +26,10 @@ function publicDisplayName(value: string) {
   return parts[0] + " " + parts[parts.length - 1].charAt(0).toUpperCase() + ".";
 }
 
+// Moderation changes must take effect immediately. Do not serve a review
+// that was hidden or flagged from a stale public/CDN cache.
 function publicCacheHeaders() {
-  return {
-    "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600",
-  };
+  return NO_STORE_HEADERS;
 }
 
 export async function GET() {

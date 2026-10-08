@@ -15,7 +15,6 @@ import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 import MobilePageHeader from "./mobile-page-header";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -445,7 +444,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
           <div className="checkout-page-sections">
             <Card className="checkout-panel ring-0" hidden={activeStep !== 1}>
               <CardHeader className="checkout-panel__heading">
-                <Badge variant="secondary" className="checkout-step-badge">01</Badge>
                 <div>
                   <h2>Your details</h2>
                 </div>
@@ -533,7 +531,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
 
             <Card className="checkout-panel ring-0" hidden={activeStep !== 2}>
               <CardHeader className="checkout-panel__heading">
-                <Badge variant="secondary" className="checkout-step-badge">02</Badge>
                 <div>
                   <h2>Secure payment</h2>
                   <p>Complete payment after reviewing your order.</p>
@@ -557,15 +554,16 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             </Card>
             {activeStep === 1 && (
               <div className="checkout-wizard-actions">
-                <Button
+                <ButtonWithIcon
+                  tone="red"
+                  fullWidth
                   type="button"
-                  size="lg"
-                  className="checkout-wizard-actions__next"
+                  className="checkout-flow-cta"
                   onClick={continueToReview}
                   disabled={submitting}
                 >
                   Review order
-                </Button>
+                </ButtonWithIcon>
               </div>
             )}
           </div>
@@ -574,13 +572,19 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             <CardHeader className="checkout-page-review__heading">
               <div className="checkout-summary-heading">
                 <p>Order summary</p>
-                <h2>{itemCount} {itemCount === 1 ? "item" : "items"} for pickup</h2>
+                <h2>{itemCount} {itemCount === 1 ? "item" : "items"} in your order</h2>
               </div>
               <Link href="/cart">Edit cart</Link>
             </CardHeader>
             <CardContent className="checkout-review-content">
               <div className="checkout-wizard-review-details">
-                <div><CheckCircle2 size={16} aria-hidden="true" /><span>{name.trim()} · {email.trim()}</span></div>
+                <div>
+                  <CheckCircle2 size={18} aria-hidden="true" />
+                  <span className="checkout-review-contact">
+                    <strong>{name.trim()}</strong>
+                    <small>{email.trim()} · {phone.trim()}</small>
+                  </span>
+                </div>
                 <button type="button" onClick={() => changeStep(1)}>Edit details</button>
               </div>
               <Separator />
@@ -616,6 +620,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               <ButtonWithIcon
                 tone="red"
                 fullWidth
+                className="checkout-flow-cta"
                 type="submit"
                 disabled={submitting || !serviceStatus.acceptingOrders}
               >

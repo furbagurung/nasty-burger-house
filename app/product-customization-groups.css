@@ -227,12 +227,41 @@
     padding: 0.8rem !important;
   }
 
-  .product-ingredient-drawer__option {
-    grid-template-columns: auto minmax(0, 1fr);
+  .product-extras-drawer .product-ingredient-drawer__option {
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 4.75rem;
+    padding: 0.55rem 0.65rem;
   }
 
-  .product-ingredient-drawer__option .product-extra-drawer__stepper {
-    grid-column: 2;
-    justify-self: start;
+  .product-extras-drawer .product-ingredient-drawer__option .product-extra-drawer__stepper {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+    margin: 0;
+  }
+
+  .product-extras-drawer .product-ingredient-drawer__option .product-drink-drawer__copy {
+    min-width: 0;
+  }
+
+  .product-extras-drawer .product-ingredient-drawer__option .product-drink-drawer__thumb {
+    width: 3.4rem;
+    height: 3.4rem;
+  }
+
+  @media (max-width: 380px) {
+    .product-extras-drawer .product-ingredient-drawer__option {
+      grid-template-columns: 2.8rem minmax(0, 1fr) auto;
+      gap: 0.4rem;
+      padding-inline: 0.45rem;
+    }
+
+    .product-extras-drawer .product-ingredient-drawer__option .product-drink-drawer__thumb {
+      width: 2.8rem;
+      height: 2.8rem;
+    }
   }
 }

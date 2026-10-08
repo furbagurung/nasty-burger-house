@@ -396,7 +396,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               <div>
                 <p className="eyebrow">{category?.label ?? "Nasty Burger House menu"}</p>
                 <h1 id="product-title">{item.name}</h1>
-                <div className="product-mobile-description-card">
+                <div className="product-mobile-description-card product-description--desktop">
                   <strong className="product-mobile-description-label">Description</strong>
                   <p className="product-detail__description">{item.description}</p>
                 </div>
@@ -414,6 +414,11 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                 ))}
               </div>
             )}
+
+            <div className="product-mobile-description-card product-description--mobile">
+              <strong className="product-mobile-description-label">Description</strong>
+              <p className="product-detail__description">{item.description}</p>
+            </div>
 
             {item.canUpgrade && (
               <section className="product-custom-section">

@@ -624,3 +624,19 @@
     font-size: 0.72rem;
   }
 }
+
+/* Keep the description immediately before Beast Combo on mobile only. */
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__heading-row .product-description--desktop {
+    display: none !important;
+  }
+
+  .product-page-premium .product-detail__content--premium > .product-description--mobile {
+    display: block !important;
+    margin: 0.9rem 0 0.5rem !important;
+  }
+
+  .product-page-premium .product-detail__content--premium > .product-description--mobile + .product-custom-section {
+    margin-top: 0.5rem !important;
+  }
+}

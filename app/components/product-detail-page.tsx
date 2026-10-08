@@ -410,8 +410,18 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             {item.dietaryTags && item.dietaryTags.length > 0 && (
               <div className="product-detail__tags" aria-label="Dietary information">
                 {item.dietaryTags.map((tag) => (
-                  <span key={tag}><Check size={14} aria-hidden="true" />{tag}</span>
+                  <span key={tag} className={tag === "Halal" ? "product-detail__tag--halal" : undefined}>
+                    {tag === "Halal" ? (
+                      <Image src="/images/Halal_logo.svg" alt="" width={19} height={19} aria-hidden="true" />
+                    ) : (
+                      <Check size={14} aria-hidden="true" />
+                    )}
+                    {tag}
+                  </span>
                 ))}
+                {item.category === "burgers" && item.dietaryTags.includes("Halal") && (
+                  <p className="product-detail__halal-note">ALL BURGERS MADE WITH 100% HALAL MEAT</p>
+                )}
               </div>
             )}
 

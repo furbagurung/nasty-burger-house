@@ -353,7 +353,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
         </nav>
 
         <div className="catalogue-header-actions">
-          <Link className="product-cart-link" href="/?cart=1">
+          <Link className="product-cart-link" href="/cart">
             <ShoppingBag size={18} strokeWidth={1.8} aria-hidden="true" />
             Cart
           </Link>
@@ -366,7 +366,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             <span aria-hidden="true">←</span>
           </Link>
           <strong>Details</strong>
-          <Link className="product-mobile-cart" href="/?cart=1" aria-label={`View cart, ${cartCount} items`}>
+          <Link className="product-mobile-cart" href="/cart" aria-label={`View cart, ${cartCount} items`}>
             <ShoppingBag size={19} strokeWidth={1.8} aria-hidden="true" />
             {cartCount > 0 && <span className="product-mobile-cart-count" aria-hidden="true">{cartCount > 99 ? "99+" : cartCount}</span>}
           </Link>
@@ -568,7 +568,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             {addedToCart && (
               <div className="product-added-actions">
                 <span><Check size={16} /> Your item is in the cart.</span>
-                <ButtonWithIcon href="/?cart=1" tone="light">View cart</ButtonWithIcon>
+                <ButtonWithIcon href="/cart" tone="light">View cart</ButtonWithIcon>
               </div>
             )}
 

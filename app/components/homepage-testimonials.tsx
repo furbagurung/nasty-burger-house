@@ -238,12 +238,6 @@ export default function HomepageTestimonials() {
           </ButtonWithIcon>
         </div>
 
-        {homepageReviewsArePreview && (
-          <p className="home-testimonials__preview-note">
-            Review cards shown as design preview.
-          </p>
-        )}
-
         {homepageReviews.length > 0 && (
           <>
             <div

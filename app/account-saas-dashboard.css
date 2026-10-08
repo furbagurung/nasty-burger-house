@@ -253,7 +253,8 @@
 }
 
 .account-saas-content .account-saas-stats {
-  grid-template-columns: 1.35fr repeat(2, minmax(0, 0.75fr));
+  /* Three matching account summary items instead of one featured bento tile. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.85rem;
   margin-bottom: 0.85rem;
 }
@@ -617,11 +618,11 @@
   }
 
   .account-saas-content .account-saas-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .account-saas-content .account-saas-stats .account-overview-card--drip {
-    grid-column: 1 / -1;
+    grid-column: auto;
   }
 
   .account-saas-content .account-saas-stats .account-overview-card {

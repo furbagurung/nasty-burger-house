@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import { MdEmail, MdLock, MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { Moon, ShieldCheck, Sun } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -22,8 +22,6 @@ export interface SocialProvider {
 }
 
 export interface Auth1Props {
-  brandName?: string;
-  brandDescriptor?: string;
   badgeText?: string;
   heading?: string;
   subheading?: string;
@@ -50,11 +48,7 @@ export interface Auth1Props {
   identifierType?: "text" | "email";
 }
 
-const THEME_KEY = "nbh-auth-theme";
-
 export function Auth1({
-  brandName = "Nasty Burger House",
-  brandDescriptor = "Customer account",
   badgeText = "Secure sign-in",
   heading = "Welcome back",
   subheading = "Your orders, rewards and favourites are waiting.",
@@ -84,28 +78,15 @@ export function Auth1({
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    // Read the saved preference only after mount to avoid hydration mismatch.
-    try {
-      const storedTheme = window.localStorage.getItem(THEME_KEY);
-      if (storedTheme === "light" || storedTheme === "dark") {
-        setTheme(storedTheme);
-      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        setTheme("dark");
-      }
-    } catch {
-      // Auth must remain usable if storage is restricted by the browser.
-    }
-  }, []);
+    // Keep both Watermelon UI themes without the removed theme-control header.
+    // Follow the visitor's OS setting, including changes during their session.
+    const preference = window.matchMedia("(prefers-color-scheme: dark)");
+    const updateTheme = () => setTheme(preference.matches ? "dark" : "light");
 
-  function toggleTheme() {
-    const nextTheme = theme === "light" ? "dark" : "light";
-    setTheme(nextTheme);
-    try {
-      window.localStorage.setItem(THEME_KEY, nextTheme);
-    } catch {
-      // A storage error must not interrupt sign-in.
-    }
-  }
+    updateTheme();
+    preference.addEventListener("change", updateTheme);
+    return () => preference.removeEventListener("change", updateTheme);
+  }, []);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -116,31 +97,6 @@ export function Auth1({
   return (
     <div className={`nbh-auth-shell ${theme === "dark" ? "dark nbh-auth-shell--dark" : ""}`}>
       <div className="nbh-auth-container">
-        <div className="nbh-auth-topbar">
-          <div className="nbh-auth-brand">
-            <span className="nbh-auth-brand-mark" aria-hidden="true">
-              N<span>.</span>
-            </span>
-            <div className="nbh-auth-brand-copy">
-              <strong>{brandName}</strong>
-              <span>{brandDescriptor}</span>
-            </div>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="nbh-auth-theme-button"
-            onClick={toggleTheme}
-            aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
-            title={theme === "dark" ? "Light theme" : "Dark theme"}
-          >
-            {theme === "dark" ? <Sun size={17} aria-hidden="true" /> : <Moon size={17} aria-hidden="true" />}
-            <span>{theme === "dark" ? "Light" : "Dark"}</span>
-          </Button>
-        </div>
-
         <Card className="nbh-auth-card gap-0 rounded-[2rem] p-2">
           <div className="nbh-auth-card-inner rounded-[1.5rem] py-7">
             <CardHeader className="space-y-3 px-5 pb-6 text-center sm:px-7">

@@ -226,19 +226,63 @@
   line-height: 1.4;
 }
 
+/* The Square redirect is the only available payment method. Present it as
+   selected without suggesting an inactive second payment option. */
 .checkout-page .checkout-payment-card {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  border-radius: 0.8rem;
-  padding: 0.85rem 0.95rem;
-  background: #f7f6f4;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  border: 1.5px solid #e94b2a;
+  border-radius: 0.85rem;
+  padding: 0.95rem;
+  background: #fffaf7;
 }
-.checkout-page .checkout-payment-card svg { flex: 0 0 auto; color: #5a554f; }
-.checkout-page .checkout-payment-card span {
-  color: #69635d;
-  font-size: 0.76rem;
-  line-height: 1.4;
+.checkout-page .checkout-payment-card__icon {
+  display: grid;
+  width: 2.6rem;
+  height: 2.6rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.7rem;
+  background: #fceae3;
+  color: #c83c20;
+}
+.checkout-page .checkout-payment-card__details {
+  display: grid;
+  flex: 1 1 12rem;
+  min-width: 0;
+  gap: 0.22rem;
+}
+.checkout-page .checkout-payment-card__details strong {
+  color: #211d1a;
+  font-size: 0.83rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+.checkout-page .checkout-payment-card__details > span {
+  color: #78716b;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+.checkout-page .checkout-payment-card__selected {
+  display: inline-flex;
+  height: auto;
+  min-height: 1.65rem;
+  gap: 0.3rem;
+  margin-left: auto;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  background: #fcebe5;
+  color: #b9371b;
+  font-size: 0.67rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+.checkout-page .checkout-payment-card__selected svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  color: inherit;
 }
 
 /* Summary: same Card primitive, persistent alongside form on desktop. */

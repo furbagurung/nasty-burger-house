@@ -40,12 +40,10 @@ export default function AccountCreatePage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [confirmationSent, setConfirmationSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const reducedMotion = useReducedMotion();
 
@@ -84,10 +82,6 @@ export default function AccountCreatePage() {
     }
     if (productionAuth && password.length < 10) {
       setError("Use a password with at least 10 characters.");
-      return;
-    }
-    if (productionAuth && password !== confirmPassword) {
-      setError("Your passwords do not match.");
       return;
     }
     if (!agreedToTerms) {
@@ -285,32 +279,7 @@ export default function AccountCreatePage() {
                           </div>
                         </motion.div>
 
-                        <motion.div className="nbh-auth10__field" variants={signupItemMotion}>
-                          <label htmlFor="nbh-signup-confirm">Confirm password</label>
-                          <div className="nbh-auth10__password-wrap">
-                            <Input
-                              id="nbh-signup-confirm"
-                              type={showConfirmPassword ? "text" : "password"}
-                              autoComplete="new-password"
-                              placeholder="Re-enter your password"
-                              value={confirmPassword}
-                              onChange={(event) => setConfirmPassword(event.target.value)}
-                              minLength={10}
-                              maxLength={256}
-                              disabled={submitting}
-                              required
-                            />
-                            <button
-                              type="button"
-                              disabled={submitting}
-                              onClick={() => setShowConfirmPassword((visible) => !visible)}
-                              aria-label={showConfirmPassword ? "Hide confirmation password" : "Show confirmation password"}
-                              aria-pressed={showConfirmPassword}
-                            >
-                              {showConfirmPassword ? <MdVisibilityOff aria-hidden="true" /> : <MdVisibility aria-hidden="true" />}
-                            </button>
-                          </div>
-                        </motion.div>
+
                       </>
                     )}
 

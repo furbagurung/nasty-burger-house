@@ -1032,7 +1032,7 @@ body:has(.checkout-page) .mobile-tab-bar--v2 {
   z-index: 0;
   top: 1.15rem;
   left: 3.05rem;
-  right: calc(-1 * var(--stepper-gap) + 0.5rem);
+  right: calc(0.5rem - var(--stepper-gap));
   height: 0.2rem;
   border-radius: 999px;
   background: #e6e7ee;

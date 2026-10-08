@@ -335,6 +335,10 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
       </header>
 
       <main className="product-detail product-detail--premium">
+        <Link className="product-mobile-back" href={`/menu/${item.category}`} aria-label="Back to menu">
+          <span aria-hidden="true">←</span>
+          <span>Back</span>
+        </Link>
         <nav className="product-breadcrumb" aria-label="Breadcrumb">
           <Link href="/">Home</Link>
           <span aria-hidden="true">/</span>

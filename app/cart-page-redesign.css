@@ -705,10 +705,6 @@
     padding-top: 0.2rem;
   }
 
-  .cart-redesign-page .cart-redesign-summary__actions > :last-child {
-    display: none;
-  }
-
   .cart-redesign-page .cart-redesign-summary__actions > :first-child {
     min-height: 3.35rem;
     width: 100%;

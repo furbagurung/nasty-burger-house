@@ -416,6 +416,10 @@ function mergeCustomers(
       const website = merged.get(websiteKey);
       if (!website) continue;
 
+      // Never replace a verified loyalty balance with an unenrolled
+      // duplicate customer profile from Square's broader directory.
+      if (website.squareEnrolled && !square.loyaltyAccountId) continue;
+
       merged.set(websiteKey, {
         ...website,
         name:

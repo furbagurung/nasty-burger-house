@@ -1154,27 +1154,6 @@ export default function OrderExperience({
           className="home-features"
           aria-label="Popular Nasty Burger House picks"
         >
-          <article className="home-feature home-feature--bbq">
-            <div className="home-feature__image">
-              <Image
-                src="/images/bbq-beast-hero.webp"
-                alt="BBQ Beast burger with bacon, cheese and smoky sauce"
-                fill
-                sizes="(max-width: 760px) 100vw, 50vw"
-              />
-            </div>
-            <div className="home-feature__copy">
-              <p className="eyebrow">Beast of the Month</p>
-              <h2>Meet the BBQ Beast.</h2>
-              <p>
-                Smoky Bourbon BBQ, crispy bacon and American cheese stacked for
-                serious appetite.
-              </p>
-              <ButtonWithIcon tone="red" onClick={openOrderType}>
-                Order now
-              </ButtonWithIcon>
-            </div>
-          </article>
           <article className="home-feature home-feature--boxes">
             <div className="home-feature__image">
               <Image

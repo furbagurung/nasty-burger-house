@@ -207,13 +207,15 @@
   }
 
   .popular-pick-card__media {
-    border-radius: 0.72rem;
-    background: #f7f3ed;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 
   .popular-pick-card__media img {
     object-fit: contain;
-    padding: 0.3rem;
+    padding: 0;
   }
 
   .popular-pick-card__body {

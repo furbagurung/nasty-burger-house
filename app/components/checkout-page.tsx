@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, CheckCircle2, ChevronLeft, Clock3, CreditCard, MapPin, ShieldCheck } from "lucide-react";
+import { AlertCircle, CheckCircle2, ChevronLeft, Clock3, CreditCard, ShieldCheck } from "lucide-react";
 import { menuItems } from "../data/menu";
 import {
   calculateCartSubtotal,
@@ -618,6 +618,9 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                   <strong>{serviceStatus.locationName}</strong>, {serviceStatus.address}.
                 </label>
               </div>
+              <p className={`checkout-pickup-confirmation__hint${pickupConfirmed ? " is-confirmed" : ""}`} aria-live="polite">
+                {pickupConfirmed ? "Pickup confirmed. You can continue to Square." : "Tick the checkbox to enable secure payment."}
+              </p>
               {!serviceStatus.acceptingOrders && (
                 <div className="checkout-review-hours">
                   <Clock3 size={16} aria-hidden="true" />

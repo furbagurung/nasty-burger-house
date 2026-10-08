@@ -52,27 +52,8 @@
   flex-direction: column;
 }
 
-.nbh-auth5__brand {
-  display: inline-flex;
-  width: fit-content;
-  align-items: center;
-  gap: 0.7rem;
-  color: #f8f6f2;
-  font-size: 1.06rem;
-  font-weight: 900;
-  line-height: 1.2;
-  text-decoration: none;
-}
-
-.nbh-auth5__logo {
-  display: block;
-  width: 3.25rem;
-  height: 3.25rem;
-  object-fit: contain;
-}
-
 .nbh-auth5__intro {
-  margin-top: clamp(1.65rem, 3.5vw, 2.5rem);
+  margin-top: 0;
 }
 .nbh-auth5__intro h1 {
   margin: 0;
@@ -297,66 +278,22 @@
   left: clamp(1.5rem, 4vw, 3.5rem);
   color: #fff;
 }
-.nbh-auth5__eyebrow {
-  color: #ffbc83;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-}
 .nbh-auth5__hero-content h2 {
-  max-width: 13ch;
-  margin: 0.65rem 0 0;
-  font-size: clamp(2.25rem, 4.2vw, 4.75rem);
+  max-width: 100%;
+  margin: 0;
+  font-size: clamp(2.2rem, 3.2vw, 3.6rem);
   font-weight: 950;
-  letter-spacing: -0.07em;
-  line-height: 1.05;
+  letter-spacing: -0.06em;
+  line-height: 1.08;
+  white-space: pre-line;
 }
 .nbh-auth5__hero-content > p {
-  max-width: 29rem;
-  margin: 1rem 0 0;
+  max-width: 26rem;
+  margin: 0.75rem 0 0;
   color: rgba(255,255,255,0.82);
   font-size: 0.9rem;
-  line-height: 1.55;
+  line-height: 1.5;
 }
-.nbh-auth5__features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.6rem;
-}
-.nbh-auth5__feature {
-  display: flex;
-  flex: 1 1 11rem;
-  align-items: center;
-  gap: 0.65rem;
-  border: 1px solid rgba(255,255,255,0.16);
-  border-radius: 0.9rem;
-  padding: 0.8rem;
-  background: rgba(0,0,0,0.32);
-  backdrop-filter: blur(10px);
-}
-.nbh-auth5__feature-icon {
-  display: grid;
-  width: 2rem;
-  height: 2rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 0.6rem;
-  background: rgba(255,255,255,0.12);
-  color: #ff906d;
-}
-.nbh-auth5__feature strong,
-.nbh-auth5__feature small {
-  display: block;
-  line-height: 1.3;
-}
-.nbh-auth5__feature strong { font-size: 0.8rem; }
-.nbh-auth5__feature small {
-  margin-top: 0.2rem;
-  color: rgba(255,255,255,0.72);
-  font-size: 0.69rem;
-}
-
 @media (max-width: 1050px) and (min-width: 901px) {
   /* Header switches to 1.5rem side gutters in this range. */
   .standalone-page.nbh-auth-page .standalone-main.nbh-auth-main {
@@ -365,7 +302,6 @@
   .nbh-auth5__form-panel {
     padding: 1.75rem 1.5rem 1.75rem 0;
   }
-  .nbh-auth5__features { display: none; }
 }
 @media (max-width: 900px) {
   .standalone-page.nbh-auth-page .standalone-main.nbh-auth-main {
@@ -384,7 +320,6 @@
   }
   .nbh-auth5__form-content { width: min(100%, 420px); }
   .nbh-auth5__visual-panel { display: none; }
-  .nbh-auth5__intro { margin-top: 1.5rem; }
   .nbh-auth5__intro h1 { font-size: clamp(1.75rem, 6.7vw, 2.25rem); }
   .nbh-auth5__intro p { font-size: 0.85rem; }
   .nbh-auth5__social { margin-top: 1.35rem; }
@@ -392,9 +327,7 @@
   .nbh-auth5__form { gap: 1rem; }
 }
 @media (max-width: 380px) {
-  .nbh-auth5__brand { font-size: 0.95rem; }
   .nbh-auth5__form-panel { padding-inline: 0.15rem; }
-  .nbh-auth5__intro { margin-top: 1rem; }
   .nbh-auth5__signup { margin-top: 1.1rem; }
 }
 @media (prefers-reduced-motion: reduce) {

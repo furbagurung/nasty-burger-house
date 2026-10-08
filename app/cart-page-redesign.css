@@ -570,9 +570,10 @@
   }
 }
 
-/* Summary controls: desktop retains the original inline order review. */
-.cart-redesign-summary__toggle,
-.cart-redesign-summary__mobile-title {
+/* Mobile summary components are hidden on desktop; the existing inline
+   desktop summary and branded checkout link remain unchanged. */
+.cart-redesign-summary__mobile-toggle,
+.cart-redesign-summary__mobile-checkout {
   display: none;
 }
 
@@ -582,12 +583,15 @@
   gap: 1rem;
 }
 
-/* Inspired by the reference: a lightweight mobile checkout sheet with a
-   pull-tab. The cart remains scrollable behind it and receives enough bottom
-   padding for every item to be reachable. */
+.cart-redesign-summary__desktop-checkout {
+  width: 100%;
+}
+
+/* Compact and expandable mobile order summary, without a floating chevron.
+   The dynamic total lives in the heading and never repeats in the CTA. */
 @media (max-width: 680px) {
   .cart-redesign-page .cart-redesign-main {
-    padding-bottom: calc(11.5rem + env(safe-area-inset-bottom));
+    padding-bottom: calc(10.5rem + env(safe-area-inset-bottom));
   }
 
   .cart-redesign-page .cart-redesign-summary {
@@ -596,83 +600,104 @@
     z-index: 85;
     display: flex;
     width: 100%;
-    max-height: min(69dvh, 26rem);
+    max-height: min(70dvh, 24rem);
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.5rem;
     overflow-y: auto;
     overscroll-behavior: contain;
     margin: 0;
     border: 0;
-    border-top: 1px solid #e4e2de;
+    border-top: 1px solid #e5e0da;
     border-radius: 1.1rem 1.1rem 0 0;
-    padding: 1.1rem clamp(1rem, 4.5vw, 1.45rem)
-      calc(0.85rem + env(safe-area-inset-bottom));
+    padding: 0.75rem clamp(0.9rem, 4.5vw, 1.35rem)
+      calc(0.8rem + env(safe-area-inset-bottom));
     background: #fff;
-    box-shadow: 0 -9px 30px rgba(28, 24, 20, 0.1);
+    box-shadow: 0 -7px 24px rgba(28, 24, 20, 0.075);
     -webkit-overflow-scrolling: touch;
   }
 
-  .cart-redesign-page .cart-redesign-summary__toggle {
-    display: grid;
-    flex: 0 0 auto;
-    width: 3.5rem;
-    min-height: 2.1rem;
-    place-items: center;
-    align-self: center;
-    margin: -1.1rem 0 -0.35rem;
-    border: 1px solid #e4e2de;
-    border-top: 0;
-    border-radius: 0 0 1.75rem 1.75rem;
-    background: #fff;
-    color: #2b2926;
-    cursor: pointer;
-  }
-
-  .cart-redesign-page .cart-redesign-summary__toggle svg {
-    transform: rotate(180deg);
-    transition: transform 180ms ease;
-  }
-
-  .cart-redesign-page .cart-redesign-summary.is-expanded .cart-redesign-summary__toggle svg {
-    transform: rotate(0deg);
-  }
-
-  .cart-redesign-page .cart-redesign-summary__toggle:focus-visible {
-    outline: 3px solid var(--cart-accent);
-    outline-offset: -3px;
-  }
-
   .cart-redesign-page .cart-redesign-summary__heading {
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.3rem 0 0.1rem;
+    display: block;
+    width: 100%;
+    padding: 0;
   }
 
-  .cart-redesign-page .cart-redesign-summary__heading p,
-  .cart-redesign-page .cart-redesign-summary__heading h2:not(.cart-redesign-summary__mobile-title) {
+  .cart-redesign-page .cart-redesign-summary__desktop-heading,
+  .cart-redesign-page .cart-redesign-summary__desktop-count,
+  .cart-redesign-page .cart-redesign-summary__desktop-checkout {
     display: none;
   }
 
-  .cart-redesign-page .cart-redesign-summary__heading .cart-redesign-summary__mobile-title {
-    display: block;
-    margin: 0;
-    color: #211f1c;
-    font-family: var(--font-dm-sans), Arial, sans-serif;
-    font-size: 1.03rem;
-    font-weight: 820;
-    letter-spacing: -0.025em;
-    line-height: 1.25;
+  .cart-redesign-page .cart-redesign-summary__mobile-toggle {
+    display: flex;
+    width: 100%;
+    min-height: 3.2rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+    border: 0;
+    border-radius: 0.55rem;
+    padding: 0.15rem 0;
+    background: transparent;
+    color: #171513;
+    cursor: pointer;
+    text-align: left;
   }
 
-  .cart-redesign-page .cart-redesign-summary__heading > span {
-    padding: 0;
-    color: #77736f;
-    font-size: 0.73rem;
+  .cart-redesign-page .cart-redesign-summary__mobile-toggle:focus-visible {
+    outline: 2px solid var(--cart-accent);
+    outline-offset: 2px;
+  }
+
+  .cart-redesign-page .cart-redesign-summary__mobile-copy {
+    display: grid;
+    min-width: 0;
+    gap: 0.25rem;
+  }
+
+  .cart-redesign-page .cart-redesign-summary__mobile-copy strong {
+    color: #211e1c;
+    font-size: 0.93rem;
+    font-weight: 840;
+    line-height: 1.2;
+  }
+
+  .cart-redesign-page .cart-redesign-summary__mobile-copy small {
+    color: #77716a;
+    font-size: 0.72rem;
+    font-weight: 560;
+    line-height: 1.2;
+  }
+
+  .cart-redesign-page .cart-redesign-summary__mobile-amount {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.55rem;
+    color: #171513;
+  }
+
+  .cart-redesign-page .cart-redesign-summary__mobile-amount strong {
+    font-size: clamp(1.06rem, 4.5vw, 1.23rem);
+    font-weight: 860;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+  }
+
+  .cart-redesign-page .cart-redesign-summary__mobile-amount svg {
+    flex: 0 0 auto;
+    transform: rotate(180deg);
+    transition: transform 160ms ease;
+  }
+
+  .cart-redesign-page .cart-redesign-summary.is-expanded .cart-redesign-summary__mobile-amount svg {
+    transform: rotate(0deg);
   }
 
   .cart-redesign-page .cart-redesign-summary__breakdown {
     display: none;
-    gap: 0.45rem;
+    gap: 0.5rem;
+    padding: 0.25rem 0 0;
   }
 
   .cart-redesign-page .cart-redesign-summary.is-expanded .cart-redesign-summary__breakdown {
@@ -680,37 +705,53 @@
   }
 
   .cart-redesign-page .cart-redesign-summary__rows {
-    gap: 0.5rem;
-    border-top: 1px solid #efedea;
+    gap: 0.65rem;
+    border-top: 1px solid #efebe7;
     border-bottom: 0;
-    padding: 0.75rem 0 0.4rem;
+    padding: 0.8rem 0 0.35rem;
   }
 
-  .cart-redesign-page .cart-redesign-summary__total {
-    border-top: 1px solid #efedea;
-    padding: 0.75rem 0 0;
-  }
-
-  .cart-redesign-page .cart-redesign-summary__total strong {
-    font-size: 1.2rem;
-  }
-
+  /* The total is already visible beside the header at all times. */
+  .cart-redesign-page .cart-redesign-summary__total,
   .cart-redesign-page .cart-redesign-summary__note {
-    margin: 0.3rem 0 0;
-    font-size: 0.72rem;
+    display: none;
   }
 
   .cart-redesign-page .cart-redesign-summary__actions {
+    display: flex;
+    justify-content: flex-end;
     gap: 0;
-    padding-top: 0.2rem;
+    padding-top: 0.15rem;
   }
 
-  .cart-redesign-page .cart-redesign-summary__actions > :first-child {
-    min-height: 3.35rem;
-    width: 100%;
-    max-width: 100%;
-    font-size: 0.8rem;
-    white-space: nowrap;
+  /* Reuse the installed shadcn Button, with the approved black/white theme. */
+  .cart-redesign-page .cart-redesign-summary__mobile-checkout {
+    display: inline-flex;
+    width: 128px;
+    height: 44px;
+    min-height: 44px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #111;
+    border-radius: 0.7rem;
+    padding: 0 1.1rem;
+    background: #111;
+    color: #fff;
+    font-size: 0.86rem;
+    font-weight: 770;
+    box-shadow: none;
+  }
+
+  .cart-redesign-page .cart-redesign-summary__mobile-checkout:hover {
+    background: #282828;
+    border-color: #282828;
+    color: #fff;
+  }
+
+  .cart-redesign-page .cart-redesign-summary__mobile-checkout:focus-visible {
+    outline: 2px solid var(--cart-accent);
+    outline-offset: 2px;
   }
 }
 
@@ -718,13 +759,13 @@
   .cart-redesign-page .cart-redesign-summary {
     padding-inline: 0.85rem;
   }
-  .cart-redesign-page .cart-redesign-summary__actions > :first-child {
-    font-size: 0.74rem;
+  .cart-redesign-page .cart-redesign-summary__mobile-amount {
+    gap: 0.3rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cart-redesign-summary__toggle svg {
+  .cart-redesign-summary__mobile-amount svg {
     transition: none !important;
   }
 }

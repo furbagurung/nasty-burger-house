@@ -656,3 +656,23 @@
     order: 4;
   }
 }
+
+/* Collapse unused vertical space below mobile customization options. */
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__layout--premium {
+    min-height: 0 !important;
+    height: auto !important;
+    align-items: start;
+  }
+
+  .product-page-premium .product-detail__content--premium {
+    min-height: 0 !important;
+    height: auto !important;
+    padding-bottom: 1rem !important;
+  }
+
+  .product-page-premium .product-detail--premium {
+    min-height: 0 !important;
+    padding-bottom: calc(5.8rem + env(safe-area-inset-bottom)) !important;
+  }
+}

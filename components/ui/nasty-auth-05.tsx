@@ -177,7 +177,6 @@ export function Auth5({
           src={imageSrc}
           alt={imageAlt}
           fill
-          priority
           sizes="(min-width: 900px) 52vw, 100vw"
           className="nbh-auth5__hero-image"
         />

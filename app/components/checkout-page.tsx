@@ -458,14 +458,23 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               <CardHeader className="checkout-panel__heading">
                 <Badge variant="secondary" className="checkout-step-badge">03</Badge>
                 <div>
-                  <h2>Secure payment</h2>
-                  <p>Pay on Square&apos;s secure checkout page.</p>
+                  <h2>Payment method</h2>
+                  <p>You&apos;ll finish payment on Square.</p>
                 </div>
               </CardHeader>
               <CardContent className="checkout-panel__content">
-                <div className="checkout-payment-card">
-                  <CreditCard size={19} aria-hidden="true" />
-                  <span>No card details are collected on this website.</span>
+                <div className="checkout-payment-card" role="group" aria-label="Selected payment method">
+                  <span className="checkout-payment-card__icon" aria-hidden="true">
+                    <CreditCard size={20} />
+                  </span>
+                  <div className="checkout-payment-card__details">
+                    <strong>Pay online securely with Square</strong>
+                    <span>Credit/debit card and eligible digital wallets</span>
+                  </div>
+                  <Badge variant="secondary" className="checkout-payment-card__selected">
+                    <CheckCircle2 size={14} aria-hidden="true" />
+                    Selected
+                  </Badge>
                 </div>
               </CardContent>
             </Card>
@@ -511,7 +520,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                   ? "Ordering unavailable"
                   : submitting
                     ? "Opening Square…"
-                    : "Continue to secure payment"}
+                    : "Continue to Square"}
               </ButtonWithIcon>
               <small className="checkout-secure-note">
                 <ShieldCheck size={15} aria-hidden="true" /> Secure payment powered by Square.

@@ -7,7 +7,7 @@ import { AdminWorkspaceHeader } from "./admin-workspace-header";
 import { AdminMetricCard } from "./admin-metric-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import type { AdminCustomer } from "../lib/admin-customers";
 
@@ -160,7 +160,7 @@ export default function AdminCustomerDashboard({
           )}
         </Card>
 
-        <div className="admin-filter-bar" role="tablist" aria-label="Customer filters">
+        <div className="admin-filter-bar" role="group" aria-label="Customer filters">
           {([
             ["all", `All customers (${customers.length})`],
             ["website", `Website accounts (${websiteCount})`],

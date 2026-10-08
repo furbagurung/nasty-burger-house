@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { MdEmail, MdLock, MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { Moon, ShieldCheck, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -12,198 +14,262 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { MdLock, MdEmail, MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { FaGithub, FaMicrosoft, FaSlack } from "react-icons/fa";
 
 export interface SocialProvider {
-  /** Display name of the provider */
   name: string;
-  /** React node for the provider icon */
-  icon: React.ReactNode;
-  /** Callback fired when this provider is clicked */
-  onClick?: () => void;
+  icon: ReactNode;
+  onClick: () => void;
 }
 
 export interface Auth1Props {
-  /** Brand / product name */
   brandName?: string;
-  /** Short descriptor below the brand */
   brandDescriptor?: string;
-  /** Badge text shown above the heading */
   badgeText?: string;
-  /** Main heading */
   heading?: string;
-  /** Sub-copy below the heading */
   subheading?: string;
-  /** Email field label */
   emailLabel?: string;
-  /** Email field placeholder */
   emailPlaceholder?: string;
-  /** Password field label */
   passwordLabel?: string;
-  /** Password field placeholder */
   passwordPlaceholder?: string;
-  /** Label for the primary submit button */
   submitLabel?: string;
-  /** Social / OAuth providers */
   socialProviders?: SocialProvider[];
-  /** Text between social buttons and email form */
+  /** Use this slot for the existing real OAuth button and callback flow. */
+  socialContent?: ReactNode;
   dividerText?: string;
-  /** Forgot password link text */
   forgotPasswordText?: string;
-  /** Callback when forgot password is clicked */
   onForgotPassword?: () => void;
-  /** Bottom prompt text (before the link) */
   bottomPromptText?: string;
-  /** Bottom prompt link text */
   bottomPromptLinkText?: string;
-  /** Callback when bottom prompt link is clicked */
   onBottomPromptClick?: () => void;
-  /** Callback when form is submitted */
-  onSubmit?: (email: string, password: string) => void;
-  /** Footer note text */
+  onSubmit?: (identifier: string, password: string) => void | Promise<void>;
   footerNote?: string;
+  /** Local-only sign-in has no password; production uses Supabase. */
+  showPasswordField?: boolean;
+  submitting?: boolean;
+  error?: string;
+  identifierType?: "text" | "email";
 }
 
-const DEFAULT_SOCIAL_PROVIDERS: SocialProvider[] = [
-  {
-    name: "GitHub",
-    icon: <FaGithub className="h-4 w-4" />,
-  },
-  {
-    name: "Microsoft",
-    icon: <FaMicrosoft className="h-4 w-4" />,
-  },
-  {
-    name: "Slack",
-    icon: <FaSlack className="h-4 w-4" />,
-  },
-];
+const THEME_KEY = "nbh-auth-theme";
 
 export function Auth1({
-  heading = "Access your workspace",
-  subheading = "Connect with your team and deploy with confidence.",
-
-  submitLabel = "Continue to workspace",
-  socialProviders = DEFAULT_SOCIAL_PROVIDERS,
-  dividerText = "or use your credentials",
-
-  bottomPromptText = "First time here?",
-  bottomPromptLinkText = "Request an invite",
+  brandName = "Nasty Burger House",
+  brandDescriptor = "Customer account",
+  badgeText = "Secure sign-in",
+  heading = "Welcome back",
+  subheading = "Your orders, rewards and favourites are waiting.",
+  emailLabel = "Email address or mobile number",
+  emailPlaceholder = "Email or 04XX XXX XXX",
+  passwordLabel = "Password",
+  passwordPlaceholder = "Enter your password",
+  submitLabel = "Sign in",
+  socialProviders = [],
+  socialContent,
+  dividerText = "or continue with",
+  forgotPasswordText = "Forgot password?",
+  onForgotPassword,
+  bottomPromptText = "New to Nasty?",
+  bottomPromptLinkText = "Create an account",
   onBottomPromptClick,
   onSubmit,
+  footerNote = "Secure customer access",
+  showPasswordField = true,
+  submitting = false,
+  error = "",
+  identifierType = "text",
 }: Auth1Props) {
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onSubmit?.(email, password);
-  };
+  useEffect(() => {
+    // Read the saved preference only after mount to avoid hydration mismatch.
+    try {
+      const storedTheme = window.localStorage.getItem(THEME_KEY);
+      if (storedTheme === "light" || storedTheme === "dark") {
+        setTheme(storedTheme);
+      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        setTheme("dark");
+      }
+    } catch {
+      // Auth must remain usable if storage is restricted by the browser.
+    }
+  }, []);
+
+  function toggleTheme() {
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setTheme(nextTheme);
+    try {
+      window.localStorage.setItem(THEME_KEY, nextTheme);
+    } catch {
+      // A storage error must not interrupt sign-in.
+    }
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (submitting) return;
+    void onSubmit?.(identifier.trim(), password);
+  }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center px-4 py-12">
-      <div className="w-full max-w-sm space-y-5">
-        <Card className="border-border bg-muted dark:bg-muted gap-0 rounded-4xl p-2">
-          <div className="bg-background h-full w-full rounded-3xl px-2 py-6 shadow-[0_2px_4px_0px_rgba(0,0,0,0.12)]">
-            <CardHeader className="space-y-3 pb-4 text-center">
-              <div className="space-y-1">
-                <CardTitle className="text-xl font-extrabold tracking-tight sm:text-2xl">
-                  {heading}
-                </CardTitle>
-                <CardDescription className="text-sm leading-relaxed">
-                  {subheading}
-                </CardDescription>
-              </div>
+    <div className={`nbh-auth-shell ${theme === "dark" ? "dark nbh-auth-shell--dark" : ""}`}>
+      <div className="nbh-auth-container">
+        <div className="nbh-auth-topbar">
+          <div className="nbh-auth-brand">
+            <span className="nbh-auth-brand-mark" aria-hidden="true">
+              N<span>.</span>
+            </span>
+            <div className="nbh-auth-brand-copy">
+              <strong>{brandName}</strong>
+              <span>{brandDescriptor}</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="nbh-auth-theme-button"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+            title={theme === "dark" ? "Light theme" : "Dark theme"}
+          >
+            {theme === "dark" ? <Sun size={17} aria-hidden="true" /> : <Moon size={17} aria-hidden="true" />}
+            <span>{theme === "dark" ? "Light" : "Dark"}</span>
+          </Button>
+        </div>
+
+        <Card className="nbh-auth-card gap-0 rounded-[2rem] p-2">
+          <div className="nbh-auth-card-inner rounded-[1.5rem] py-7">
+            <CardHeader className="space-y-3 px-5 pb-6 text-center sm:px-7">
+              <span className="nbh-auth-badge">
+                <ShieldCheck size={14} aria-hidden="true" /> {badgeText}
+              </span>
+              <CardTitle className="nbh-auth-heading text-2xl font-extrabold tracking-tight sm:text-[1.75rem]">
+                {heading}
+              </CardTitle>
+              <CardDescription className="nbh-auth-subheading text-sm leading-relaxed">
+                {subheading}
+              </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-4">
-              <form onSubmit={handleSubmit} className="space-y-4">
+            <CardContent className="space-y-5 px-5 sm:px-7">
+              <form onSubmit={handleSubmit} className="space-y-4" aria-label="Customer sign-in form">
                 <div className="space-y-2">
+                  <label htmlFor="nbh-auth-identifier" className="nbh-auth-label">{emailLabel}</label>
                   <div className="relative">
-                    <MdEmail className="text-muted-foreground absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2" />
+                    <MdEmail aria-hidden="true" className="nbh-auth-input-icon absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2" />
                     <Input
-                      id="Auth1-email"
-                      type="email"
-                      placeholder="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="bg-muted focus-visible:ring-primary/20 focus-visible:border-primary/50 h-9 pl-10"
+                      id="nbh-auth-identifier"
+                      name="identifier"
+                      type={identifierType}
+                      autoComplete="username"
+                      inputMode={identifierType === "email" ? "email" : "text"}
+                      placeholder={emailPlaceholder}
+                      value={identifier}
+                      onChange={(event) => setIdentifier(event.target.value)}
+                      className="nbh-auth-input h-11 pl-10"
+                      maxLength={180}
+                      disabled={submitting}
                       required
                     />
-                  </div>
-
-                  <div className="relative">
-                    <MdLock className="text-muted-foreground absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2" />
-                    <Input
-                      id="Auth1-password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="bg-muted focus-visible:ring-primary/20 focus-visible:border-primary/50 h-9 pr-10 pl-10"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((v) => !v)}
-                      className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
-                      aria-label="Toggle password visibility"
-                    >
-                      {showPassword ? (
-                        <MdVisibilityOff className="h-4 w-4" />
-                      ) : (
-                        <MdVisibility className="h-4 w-4" />
-                      )}
-                    </button>
                   </div>
                 </div>
 
+                {showPasswordField && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <label htmlFor="nbh-auth-password" className="nbh-auth-label">{passwordLabel}</label>
+                      {onForgotPassword && (
+                        <button type="button" onClick={onForgotPassword} className="nbh-auth-text-link">
+                          {forgotPasswordText}
+                        </button>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <MdLock aria-hidden="true" className="nbh-auth-input-icon absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2" />
+                      <Input
+                        id="nbh-auth-password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder={passwordPlaceholder}
+                        autoComplete="current-password"
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                        className="nbh-auth-input h-11 pl-10 pr-11"
+                        maxLength={256}
+                        disabled={submitting}
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((value) => !value)}
+                        className="nbh-auth-password-toggle"
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        aria-pressed={showPassword}
+                      >
+                        {showPassword ? <MdVisibilityOff aria-hidden="true" size={19} /> : <MdVisibility aria-hidden="true" size={19} />}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {error && <p className="nbh-auth-error" role="alert">{error}</p>}
+
                 <Button
                   type="submit"
-                  className="from-primary to-primary/70 dark:to-primary/60 h-11 w-full bg-gradient-to-b text-sm font-semibold"
+                  className="nbh-auth-submit h-11 w-full rounded-xl text-sm font-bold"
+                  disabled={submitting}
                 >
-                  {submitLabel}
+                  {submitting ? "Signing in…" : submitLabel}
                 </Button>
               </form>
-              <div className="flex items-center gap-3">
-                <Separator className="flex-1" />
-                <span className="text-muted-foreground shrink-0 text-xs">
-                  {dividerText}
-                </span>
-                <Separator className="flex-1" />
-              </div>
 
-              <div className="grid grid-cols-3 gap-2.5">
-                {socialProviders.map((provider) => (
-                  <Button
-                    key={provider.name}
-                    variant="outline"
-                    type="button"
-                    className="bg-muted h-10 gap-1.5 border-0 text-xs font-medium shadow-xs"
-                    onClick={provider.onClick}
-                  >
-                    {provider.icon}
-                  </Button>
-                ))}
-              </div>
+              {(socialContent || socialProviders.length > 0) && (
+                <>
+                  <div className="flex items-center gap-3">
+                    <Separator className="flex-1" />
+                    <span className="nbh-auth-divider-text shrink-0 text-xs">{dividerText}</span>
+                    <Separator className="flex-1" />
+                  </div>
+                  <div className="nbh-auth-social">
+                    {socialContent}
+                    {socialProviders.map((provider) => (
+                      <Button
+                        key={provider.name}
+                        variant="outline"
+                        type="button"
+                        className="nbh-auth-social-provider h-10 w-full"
+                        onClick={provider.onClick}
+                        aria-label={`Continue with ${provider.name}`}
+                      >
+                        {provider.icon}
+                        <span>{provider.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </>
+              )}
             </CardContent>
           </div>
 
-          <CardFooter className="justify-center border-0 pt-5">
-            <p className="text-muted-foreground text-sm">
+          <CardFooter className="nbh-auth-card-footer justify-center border-0 py-5 text-center">
+            <p className="nbh-auth-bottom-prompt text-sm">
               {bottomPromptText}{" "}
               <button
                 type="button"
+                className="nbh-auth-text-link nbh-auth-sign-up"
                 onClick={onBottomPromptClick}
-                className="text-primary font-semibold underline-offset-4 transition-all hover:underline"
               >
                 {bottomPromptLinkText}
               </button>
             </p>
           </CardFooter>
         </Card>
+
+        <p className="nbh-auth-footnote">{footerNote}</p>
       </div>
     </div>
   );

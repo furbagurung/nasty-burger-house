@@ -555,3 +555,33 @@
     line-height: 1;
   }
 }
+
+/* Prominent product price between description and dietary information. */
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__heading-row .product-detail__price {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 0.45rem !important;
+    width: fit-content;
+    margin: 0.9rem 0 0 !important;
+    padding: 0 !important;
+    color: #191919 !important;
+    font-size: clamp(1.55rem, 6.2vw, 1.9rem) !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.045em;
+    line-height: 1.2 !important;
+    opacity: 1 !important;
+  }
+
+  .product-page-premium .product-detail__heading-row {
+    overflow: visible;
+  }
+
+  .product-page-premium .product-detail__tags {
+    margin-top: 0.85rem !important;
+  }
+
+  .product-page-premium .product-mobile-description-card {
+    margin-top: 0.8rem;
+  }
+}

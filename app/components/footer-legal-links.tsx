@@ -12,6 +12,7 @@ export function FooterUtilityLinks() {
   return (
     <nav className="footer-legal-links" aria-label="Support, social and legal links">
       <Link href="/help-support">Help &amp; Support</Link>
+      <Link href="/reviews">Customer Reviews</Link>
 
       <span className="footer-social-links" aria-label="Nasty Burger House social media">
         <a

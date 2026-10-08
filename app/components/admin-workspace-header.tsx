@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowUpRight, BellRing, ClipboardList, ExternalLink, LogOut, Users } from "lucide-react";
+import { ArrowUpRight, BellRing, ClipboardList, ExternalLink, LogOut, MessageSquareText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -10,7 +10,7 @@ export function AdminWorkspaceHeader({
   title, active, adminEmail, onEnableAlerts, alertsEnabled,
 }: {
   title: string;
-  active: "orders" | "customers";
+  active: "orders" | "customers" | "reviews";
   adminEmail?: string;
   onEnableAlerts?: () => void;
   alertsEnabled?: boolean;
@@ -39,6 +39,9 @@ export function AdminWorkspaceHeader({
           </Link>
           <Link href="/admin/customers" className={active === "customers" ? "is-current" : ""} aria-current={active === "customers" ? "page" : undefined}>
             <Users size={17} aria-hidden /> Customers
+          </Link>
+          <Link href="/admin/reviews" className={active === "reviews" ? "is-current" : ""} aria-current={active === "reviews" ? "page" : undefined}>
+            <MessageSquareText size={17} aria-hidden /> Reviews
           </Link>
         </nav>
 

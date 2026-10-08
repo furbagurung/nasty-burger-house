@@ -81,7 +81,7 @@
   background: transparent !important;
   box-shadow: none !important;
   pointer-events: none;
-  transform: translateY(-52%) rotate(-8deg) perspective(180px) rotateY(7deg);
+  transform: translateY(-52%) rotate(-5deg);
   transform-origin: 50% 65%;
   transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -136,7 +136,7 @@
 }
 
 .product-page-premium .product-choice-card:hover .product-choice-card__bag {
-  transform: translateY(-56%) rotate(-11deg) perspective(180px) rotateY(10deg) scale(1.04);
+  transform: translateY(-55%) rotate(-7deg) scale(1.025);
 }
 
 .product-page-premium .product-choice-card:hover::after {
@@ -185,7 +185,7 @@
     left: -0.8rem;
     width: 4.35rem !important;
     height: 4.35rem !important;
-    transform: translateY(-53%) rotate(-9deg) perspective(170px) rotateY(8deg);
+    transform: translateY(-53%) rotate(-5deg);
   }
 
   .product-page-premium .product-choice-card::after {

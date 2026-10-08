@@ -167,6 +167,18 @@ export default function MobileBottomNav({ active, cartCount }: MobileBottomNavPr
     window.dispatchEvent(new Event("nasty:open-cookie-settings"));
   };
 
+  // Authentication is an intentionally focused full-page flow. Guard here as
+  // well as at the call sites so any reused navigation cannot leak into it.
+  // Keep this after all hooks to preserve React hook ordering.
+  if (
+    pathname === "/account/sign-in" ||
+    pathname === "/account/create" ||
+    pathname === "/account/forgot-password" ||
+    pathname === "/account/reset-password"
+  ) {
+    return null;
+  }
+
   return (
     <>
       <nav

@@ -15,6 +15,31 @@ import {
 import MobileBottomNav from "./mobile-bottom-nav";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
+type SquareBalance = { balance: number; lifetimePoints: number | null };
+
+async function loadSquareBalance(): Promise<SquareBalance | null> {
+  try {
+    const response = await fetch("/api/account/loyalty", { cache: "no-store" });
+    if (!response.ok) return null;
+    const data = (await response.json()) as {
+      ok?: boolean;
+      source?: string;
+      balance?: number;
+      lifetimePoints?: number;
+    };
+    return data.ok && data.source === "square" && Number.isFinite(data.balance)
+      ? {
+          balance: Number(data.balance),
+          lifetimePoints: Number.isFinite(data.lifetimePoints)
+            ? Number(data.lifetimePoints)
+            : null,
+        }
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-AU", {
     day: "numeric",
@@ -27,6 +52,7 @@ export default function DripPointsPage() {
   const [profile, setProfile] = useState<CustomerProfile | null>(null);
   const [ledger, setLedger] = useState<DripLedgerEntry[]>([]);
   const [balance, setBalance] = useState(0);
+  const [squareLifetimePoints, setSquareLifetimePoints] = useState<number | null>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
 
@@ -35,15 +61,19 @@ export default function DripPointsPage() {
 
     async function load() {
       try {
-        const [customer, activity] = await Promise.all([
+        const [customer, activity, square] = await Promise.all([
           loadCurrentCustomer(),
           loadCustomerDripActivity(),
+          loadSquareBalance(),
         ]);
 
         if (!active) return;
         setProfile(customer);
         setLedger(activity.entries);
-        setBalance(activity.balance);
+        // Square is the source of truth for current loyalty points.
+        // The Supabase ledger still records website order history.
+        setBalance(square?.balance ?? activity.balance);
+        setSquareLifetimePoints(square?.lifetimePoints ?? null);
       } catch (loadError) {
         if (!active) return;
         setError(
@@ -80,6 +110,7 @@ export default function DripPointsPage() {
 
   const earnedPoints = useMemo(
     () =>
+      squareLifetimePoints ??
       ledger.reduce(
         (total, entry) =>
           entry.points > 0 && entry.status !== "void"
@@ -87,7 +118,7 @@ export default function DripPointsPage() {
             : total,
         0,
       ),
-    [ledger],
+    [ledger, squareLifetimePoints],
   );
 
   const redeemedPoints = useMemo(
@@ -327,7 +358,10 @@ export default function DripPointsPage() {
               <div className="drip-dashboard-section-heading drip-dashboard-section-heading--row">
                 <div>
                   <p className="standalone-eyebrow">Activity</p>
-                  <h2>Points history</h2>
+                  <h2>Website points history</h2>
+                  {squareLifetimePoints !== null && (
+                    <p>Available balance and lifetime points come directly from Square Loyalty.</p>
+                  )}
                 </div>
                 <Link href="/account">Account</Link>
               </div>

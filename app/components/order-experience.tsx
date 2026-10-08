@@ -27,6 +27,7 @@ import ReviewStories from "./review-stories";
 import DripPointsBanner from "./drip-points-banner";
 import LandingPromoModal from "./landing-promo-modal";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
+import { QuantityStepper } from "@/components/ui/quantity-stepper";
 
 type OrderExperienceProps = {
   items: MenuItem[];
@@ -1380,32 +1381,14 @@ export default function OrderExperience({
                       return (
                         <div className="stepper-row" key={burger.id}>
                           <span>{burger.name}</span>
-                          <div className="quantity-control">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                changeBoxSelection("burger", burger.id, -1)
-                              }
-                              aria-label={`Remove ${burger.name}`}
-                              disabled={count === 0}
-                            >
-                              −
-                            </button>
-                            <span>{count}</span>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                changeBoxSelection("burger", burger.id, 1)
-                              }
-                              aria-label={`Add ${burger.name}`}
-                              disabled={
-                                boxBurgers.length >=
-                                selectedItem.boxConfig!.burgerCount
-                              }
-                            >
-                              +
-                            </button>
-                          </div>
+                          <QuantityStepper
+                             label={`${burger.name} quantity`}
+                             value={count}
+                             min={0}
+                             max={selectedItem.boxConfig!.burgerCount}
+                             disableIncrement={boxBurgers.length >= selectedItem.boxConfig!.burgerCount}
+                             onChange={(next) => changeBoxSelection("burger", burger.id, next - count)}
+                           />
                         </div>
                       );
                     })}
@@ -1428,32 +1411,14 @@ export default function OrderExperience({
                       return (
                         <div className="stepper-row" key={drink}>
                           <span>{drink}</span>
-                          <div className="quantity-control">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                changeBoxSelection("drink", drink, -1)
-                              }
-                              aria-label={`Remove ${drink}`}
-                              disabled={count === 0}
-                            >
-                              −
-                            </button>
-                            <span>{count}</span>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                changeBoxSelection("drink", drink, 1)
-                              }
-                              aria-label={`Add ${drink}`}
-                              disabled={
-                                boxDrinks.length >=
-                                selectedItem.boxConfig!.drinkCount
-                              }
-                            >
-                              +
-                            </button>
-                          </div>
+                          <QuantityStepper
+                             label={`${drink} quantity`}
+                             value={count}
+                             min={0}
+                             max={selectedItem.boxConfig!.drinkCount}
+                             disableIncrement={boxDrinks.length >= selectedItem.boxConfig!.drinkCount}
+                             onChange={(next) => changeBoxSelection("drink", drink, next - count)}
+                           />
                         </div>
                       );
                     })}
@@ -1562,27 +1527,13 @@ export default function OrderExperience({
                           <small>+{formatPrice(modifier.price)} each</small>
                         </span>
                       </span>
-                      <div
-                        className="quantity-control"
-                        aria-label={`Quantity for ${modifier.name}`}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => changeModifier(modifier.id, -1)}
-                          disabled={
-                            (modifierQuantities[modifier.id] ?? 0) === 0
-                          }
-                        >
-                          −
-                        </button>
-                        <span>{modifierQuantities[modifier.id] ?? 0}</span>
-                        <button
-                          type="button"
-                          onClick={() => changeModifier(modifier.id, 1)}
-                        >
-                          +
-                        </button>
-                      </div>
+                      <QuantityStepper
+                         label={`${modifier.name} quantity`}
+                         value={modifierQuantities[modifier.id] ?? 0}
+                         min={0}
+                         max={10}
+                         onChange={(next) => changeModifier(modifier.id, next - (modifierQuantities[modifier.id] ?? 0))}
+                       />
                     </div>
                   ))}
                 </div>
@@ -1614,26 +1565,14 @@ export default function OrderExperience({
               )}
 
             <div className="product-total-row">
-              <div className="quantity-control" aria-label="Product quantity">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setProductQuantity((current) => Math.max(1, current - 1))
-                  }
-                  disabled={productQuantity === 1}
-                  aria-label="Decrease quantity"
-                >
-                  −
-                </button>
-                <span>{productQuantity}</span>
-                <button
-                  type="button"
-                  onClick={() => setProductQuantity((current) => current + 1)}
-                  aria-label="Increase quantity"
-                >
-                  +
-                </button>
-              </div>
+              <QuantityStepper
+                 label="Product quantity"
+                 value={productQuantity}
+                 min={1}
+                 max={20}
+                 size="regular"
+                 onChange={setProductQuantity}
+               />
               <strong>
                 {formatPrice(selectedUnitPrice * productQuantity)}
               </strong>
@@ -1753,24 +1692,13 @@ export default function OrderExperience({
                             </button>
                           </div>
                         </div>
-                        <div
-                          className="quantity-control"
-                          aria-label={`Quantity for ${item.name}`}
-                        >
-                          <button
-                            type="button"
-                            onClick={() => updateQuantity(line.lineId, -1)}
-                          >
-                            −
-                          </button>
-                          <span>{line.quantity}</span>
-                          <button
-                            type="button"
-                            onClick={() => updateQuantity(line.lineId, 1)}
-                          >
-                            +
-                          </button>
-                        </div>
+                        <QuantityStepper
+                          label={`${item.name} quantity`}
+                          value={line.quantity}
+                          min={0}
+                          max={20}
+                          onChange={(next) => updateQuantity(line.lineId, next - line.quantity)}
+                        />
                       </article>
                     );
                   })}

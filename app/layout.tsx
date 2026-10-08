@@ -86,6 +86,7 @@ import "./home-menu-categories.css";
 import "./home-beast-boxes.css";
 import "./admin-modern.css";
 import "./auth-watermelon.css";
+import "./auth-05.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",

@@ -1,0 +1,421 @@
+/*
+ * Nasty admin visual system adapted from the Watermelon UI Jobtracker
+ * dashboard: 17rem left navigation, compact top bar and clean work cards.
+ * All selectors are scoped to .admin-modern to protect the public site.
+ */
+.admin-modern {
+  --admin-jobtracker-sidebar-width: 17rem;
+  --admin-jobtracker-accent: #ea4e27;
+  --admin-jobtracker-line: #e5e8ed;
+  --admin-jobtracker-text: #172033;
+  --admin-jobtracker-muted: #6a7281;
+  --admin-jobtracker-canvas: #fff;
+  background: var(--admin-jobtracker-canvas);
+  color: var(--admin-jobtracker-text);
+}
+
+/* Desktop persistent sidebar, modeled on Jobtracker's AppSidebar. */
+.admin-modern .admin-jobtracker-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 95;
+  display: flex;
+  width: var(--admin-jobtracker-sidebar-width);
+  min-height: 0;
+  flex-direction: column;
+  border-right: 1px solid var(--admin-jobtracker-line);
+  background: #f8f9fb;
+  color: #485066;
+}
+
+.admin-jobtracker-sidebar-brand {
+  padding: 1.35rem 1rem 1.8rem;
+}
+
+.admin-jobtracker-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border-radius: 0.8rem;
+  color: #172033;
+  text-decoration: none;
+}
+.admin-jobtracker-brand-mark {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.75rem;
+  background: #161616;
+  color: #fff;
+  padding-right: 0.12rem;
+  font-size: 1.45rem;
+  font-weight: 950;
+  letter-spacing: -0.12em;
+}
+.admin-jobtracker-brand-mark > span { color: #f05b35; }
+
+.admin-jobtracker-brand-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.15rem;
+}
+.admin-jobtracker-brand-copy strong {
+  font-size: 0.83rem;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.admin-jobtracker-brand-copy small {
+  color: var(--admin-jobtracker-muted);
+  font-size: 0.72rem;
+  font-weight: 630;
+}
+
+.admin-jobtracker-navigation {
+  display: grid;
+  align-content: start;
+  gap: 0.28rem;
+  padding: 0 0.8rem;
+}
+
+.admin-jobtracker-nav-label {
+  margin: 0 0 0.45rem;
+  padding-inline: 0.85rem;
+  color: #8b93a2;
+  font-size: 0.66rem;
+  font-weight: 850;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.admin-jobtracker-nav-link,
+.admin-jobtracker-nav-logout {
+  display: flex !important;
+  width: 100%;
+  min-height: 2.85rem !important;
+  align-items: center;
+  justify-content: flex-start !important;
+  gap: 0.8rem !important;
+  border: 1px solid transparent !important;
+  border-radius: 0.8rem !important;
+  padding: 0.7rem 0.85rem !important;
+  background: transparent !important;
+  color: #636d7c !important;
+  font-size: 0.87rem !important;
+  font-weight: 720 !important;
+  line-height: 1.25;
+  text-decoration: none;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+.admin-jobtracker-nav-link svg,
+.admin-jobtracker-nav-logout svg { flex: 0 0 auto; }
+
+.admin-jobtracker-nav-link:hover,
+.admin-jobtracker-nav-logout:hover {
+  background: #fff !important;
+  color: #172033 !important;
+}
+.admin-jobtracker-nav-link.is-current {
+  border-color: #f0ece8 !important;
+  background: #fff !important;
+  color: var(--admin-jobtracker-accent) !important;
+  box-shadow: 0 1px 5px rgba(15, 25, 42, 0.04);
+}
+.admin-jobtracker-nav-indicator {
+  width: 0.34rem;
+  height: 0.34rem;
+  margin-left: auto;
+  border-radius: 100%;
+  background: var(--admin-jobtracker-accent);
+}
+.admin-jobtracker-sidebar-bottom {
+  display: grid;
+  align-content: end;
+  gap: 0.25rem;
+  margin-top: auto;
+  padding: 1rem 0.8rem 0.85rem;
+  border-top: 1px solid var(--admin-jobtracker-line);
+}
+.admin-jobtracker-sidebar-bottom form {
+  width: 100%;
+  margin: 0;
+}
+.admin-jobtracker-nav-logout { color: #a24638 !important; }
+.admin-jobtracker-sidebar-profile {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.65rem;
+  border: 1px solid #e9ebf0;
+  border-radius: 0.85rem;
+  padding: 0.7rem;
+  background: #fff;
+}
+.admin-jobtracker-sidebar-profile > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 0.2rem;
+}
+.admin-jobtracker-sidebar-profile strong {
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+.admin-jobtracker-sidebar-profile small {
+  overflow: hidden;
+  color: #858c99;
+  font-size: 0.69rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Content inset mirrors Jobtracker's SidebarInset. */
+.admin-modern .admin-main {
+  width: calc(100% - var(--admin-jobtracker-sidebar-width));
+  max-width: none;
+  min-width: 0;
+  margin: 0 0 0 var(--admin-jobtracker-sidebar-width);
+  padding: clamp(1.25rem, 3vw, 2.2rem) clamp(1rem, 3vw, 2.5rem) 5rem;
+}
+.admin-modern .admin-modern-header.admin-jobtracker-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 88;
+  min-height: 4.5rem;
+  margin-left: var(--admin-jobtracker-sidebar-width);
+  border-bottom: 1px solid var(--admin-jobtracker-line);
+  background: rgba(255,255,255,0.97);
+  box-shadow: none;
+  backdrop-filter: blur(14px);
+}
+.admin-jobtracker-topbar-inner {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 4.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem clamp(1rem, 3vw, 2.5rem);
+}
+.admin-jobtracker-topbar-title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.65rem;
+}
+.admin-jobtracker-page-identity {
+  display: grid;
+  min-width: 0;
+  gap: 0.15rem;
+}
+.admin-jobtracker-page-identity p {
+  overflow: hidden;
+  margin: 0;
+  color: var(--admin-jobtracker-muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-jobtracker-page-identity p span {
+  padding: 0 0.25rem;
+  color: #b8bdc6;
+}
+.admin-jobtracker-page-identity h1 {
+  overflow: hidden;
+  margin: 0;
+  color: #111b30;
+  font-size: clamp(1.1rem, 1.7vw, 1.35rem);
+  font-weight: 830;
+  letter-spacing: -0.035em;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-jobtracker-topbar-tools {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.55rem;
+}
+.admin-jobtracker-topbar-tools [data-slot="button"],
+.admin-jobtracker-topbar .admin-jobtracker-site-button {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid var(--admin-jobtracker-line);
+  border-radius: 0.75rem;
+  padding: 0.45rem 0.65rem;
+  background: #fff;
+  color: #384253;
+  font-size: 0.75rem;
+  font-weight: 760;
+  text-decoration: none;
+}
+.admin-jobtracker-topbar-tools [data-slot="button"]:hover,
+.admin-jobtracker-topbar .admin-jobtracker-site-button:hover {
+  background: #f5f6f8;
+}
+.admin-jobtracker-topbar-user {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.25rem;
+  color: #5c6472;
+  font-size: 0.73rem;
+  font-weight: 680;
+}
+.admin-jobtracker-topbar-user > span:last-child {
+  display: inline-block;
+  max-width: 11rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-jobtracker-profile-avatar {
+  display: grid !important;
+  width: 2.1rem;
+  height: 2.1rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50% !important;
+  background: #eceef3 !important;
+  color: #242a35 !important;
+  padding: 0 !important;
+  font-size: 0.75rem;
+}
+
+.admin-modern .admin-summary-grid { gap: 1rem; }
+.admin-modern .admin-modern-metric {
+  border: 1px solid var(--admin-jobtracker-line) !important;
+  border-radius: 1rem !important;
+  box-shadow: none !important;
+}
+.admin-modern .admin-modern-metric-icon {
+  background: #fff1eb;
+  color: var(--admin-jobtracker-accent);
+}
+.admin-modern .admin-filter-bar button.is-active {
+  border-color: var(--admin-jobtracker-accent);
+  background: var(--admin-jobtracker-accent);
+  color: #fff;
+}
+.admin-modern .admin-order-card,
+.admin-modern .admin-customer-table-wrap,
+.admin-modern .admin-customer-toolbar,
+.admin-modern .admin-review-card,
+.admin-modern .admin-review-guidance,
+.admin-modern .admin-alert-health {
+  border-radius: 1rem;
+  box-shadow: none;
+}
+.admin-modern .admin-review-card__actions button {
+  min-height: 2.4rem;
+  border: 1px solid #e1e4e8;
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.8rem;
+  background: #fff;
+  color: #424d5b;
+  font-size: 0.76rem;
+  font-weight: 780;
+}
+.admin-modern .admin-review-card__actions .admin-primary-action {
+  border-color: var(--admin-jobtracker-accent);
+  background: var(--admin-jobtracker-accent);
+  color: #fff;
+}
+.admin-modern .admin-review-card__actions button:disabled { opacity: 0.55; }
+.admin-modern .admin-review-card__actions button:hover:not(:disabled) { filter: brightness(0.96); }
+.admin-jobtracker-menu-button { display: none !important; }
+.admin-jobtracker-drawer-root { display: none; }
+
+@media (max-width: 1100px) {
+  .admin-jobtracker-topbar-user > span:last-child { display: none; }
+  .admin-modern .admin-summary-grid { gap: 0.7rem; }
+}
+
+@media (max-width: 900px) {
+  .admin-modern .admin-jobtracker-sidebar { display: none; }
+  .admin-modern .admin-main {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    padding: 1.15rem 1rem 4rem;
+  }
+  .admin-modern .admin-modern-header.admin-jobtracker-topbar { margin-left: 0; }
+  .admin-jobtracker-menu-button {
+    display: inline-flex !important;
+    width: 2.5rem;
+    height: 2.5rem;
+    min-width: 2.5rem;
+    padding: 0 !important;
+  }
+  .admin-jobtracker-topbar-tools .admin-jobtracker-alert-button span { display: none; }
+  .admin-jobtracker-page-identity h1 { font-size: 1.1rem; }
+  .admin-jobtracker-drawer-root {
+    position: fixed;
+    inset: 0;
+    z-index: 160;
+    display: block;
+  }
+  .admin-jobtracker-drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    border: 0;
+    background: rgba(12,18,30,0.5);
+  }
+  .admin-jobtracker-mobile-drawer {
+    position: absolute;
+    inset: 0 auto 0 0;
+    display: flex;
+    width: min(82vw, 18rem);
+    max-height: 100dvh;
+    flex-direction: column;
+    overflow-y: auto;
+    border-right: 1px solid var(--admin-jobtracker-line);
+    background: #f8f9fb;
+    box-shadow: 15px 0 35px rgba(0,0,0,0.13);
+  }
+  .admin-jobtracker-drawer-close {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.75rem;
+    z-index: 1;
+    width: 2.1rem;
+    height: 2.1rem;
+    padding: 0;
+    color: #3c4655;
+  }
+  .admin-jobtracker-mobile-drawer .admin-jobtracker-sidebar-brand {
+    padding-top: 1.2rem;
+    padding-right: 3.2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-jobtracker-topbar-inner { padding: 0.6rem 0.8rem; gap: 0.5rem; }
+  .admin-modern .admin-main { padding: 1rem 0.75rem 4rem; }
+  .admin-jobtracker-page-identity p { font-size: 0.61rem; }
+  .admin-jobtracker-topbar-tools { gap: 0.35rem; }
+  .admin-jobtracker-topbar-user { margin: 0; }
+  .admin-jobtracker-topbar-user .admin-jobtracker-profile-avatar { width: 1.8rem; height: 1.8rem; }
+  .admin-jobtracker-topbar .admin-jobtracker-site-button { display: none; }
+  .admin-modern .admin-summary-grid { gap: 0.6rem; }
+  .admin-modern .admin-order-card__actions { flex-direction: row; }
+}
+
+@media (max-width: 390px) {
+  .admin-jobtracker-page-identity p { display: none; }
+  .admin-jobtracker-topbar-user { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-jobtracker-nav-link { transition: none; }
+}

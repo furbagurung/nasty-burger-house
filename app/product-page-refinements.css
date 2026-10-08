@@ -737,3 +737,18 @@
     margin-top: 0.45rem !important;
   }
 }
+
+/* Consistent white background across mobile single-product pages. */
+@media (max-width: 680px) {
+  .product-page-shell.product-page-premium,
+  .product-page-premium .product-detail--premium,
+  .product-page-premium .product-detail__layout--premium,
+  .product-page-premium .product-detail__content--premium {
+    background: #ffffff !important;
+  }
+
+  .product-page-premium .product-detail__content--premium {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+}

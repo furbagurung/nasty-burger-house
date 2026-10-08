@@ -1,25 +1,21 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
+import { Auth1 } from "@/components/ui/auth-01";
 import { signInCustomerByEmail } from "../lib/customer-store";
 import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import GoogleAuthButton from "./google-auth-button";
 import MobileBottomNav from "./mobile-bottom-nav";
-import PasswordInput from "./password-input";
-import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 export default function AccountSignInPage() {
   const router = useRouter();
   const productionAuth = isSupabaseBrowserConfigured();
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function submit(identifier: string, password: string) {
+    if (submitting) return;
     setError("");
 
     const destination =
@@ -66,63 +62,35 @@ export default function AccountSignInPage() {
   }
 
   return (
-    <div className="standalone-page account-page">
-      <main className="standalone-main account-auth-main">
-        <section className="account-auth-card account-auth-card--compact">
-          <div className="account-auth-card__intro">
-            <p className="standalone-eyebrow">Welcome back</p>
-            <h1>Sign in.</h1>
-            <p>Open your Nasty account, Drip Points and order history.</p>
-          </div>
-          <form className="account-auth-form" onSubmit={submit}>
-            {productionAuth && (
-              <>
-                <GoogleAuthButton onError={setError} />
-                <div className="account-auth-divider" aria-hidden="true">
-                  <span>or</span>
-                </div>
-              </>
-            )}
-
-            <label>
-              {productionAuth ? "Email address or mobile number" : "Email address"}
-              <input
-                type="text"
-                value={identifier}
-                onChange={(event) => setIdentifier(event.target.value)}
-                autoComplete="username"
-                inputMode="email"
-                placeholder={productionAuth ? "Email or 04XX XXX XXX" : undefined}
-                maxLength={180}
-                required
-              />
-            </label>
-            {productionAuth && (
-              <PasswordInput
-                label="Password"
-                value={password}
-                onChange={setPassword}
-                autoComplete="current-password"
-              />
-            )}
-            {error && (
-              <p className="account-form-error" role="alert">
-                {error}
-              </p>
-            )}
-            <ButtonWithIcon tone="red" type="submit" disabled={submitting}>
-              {submitting ? "Signing in…" : "Sign in"}
-            </ButtonWithIcon>
-            {productionAuth && (
-              <Link className="standalone-secondary-link" href="/account/forgot-password">
-                Forgot password?
-              </Link>
-            )}
-            <p className="account-auth-switch">
-              New here? <Link href="/account/create">Create an account</Link>
-            </p>
-          </form>
-        </section>
+    <div className="standalone-page account-page nbh-auth-page">
+      <main className="standalone-main nbh-auth-main">
+        <Auth1
+          brandName="Nasty Burger House"
+          brandDescriptor="Burgers. Rewards. Good times."
+          badgeText="Nasty customer account"
+          heading="Welcome back."
+          subheading="Sign in to check your orders, collect Drip Points and keep the good stuff coming."
+          emailLabel={productionAuth ? "Email or mobile number" : "Email address"}
+          emailPlaceholder={productionAuth ? "you@example.com or 04XX XXX XXX" : "you@example.com"}
+          identifierType={productionAuth ? "text" : "email"}
+          passwordLabel="Password"
+          passwordPlaceholder="Your password"
+          showPasswordField={productionAuth}
+          submitLabel="Sign in"
+          dividerText="or sign in with"
+          socialContent={
+            productionAuth ? <GoogleAuthButton onError={setError} /> : undefined
+          }
+          forgotPasswordText="Forgot password?"
+          onForgotPassword={() => router.push("/account/forgot-password")}
+          bottomPromptText="New to Nasty?"
+          bottomPromptLinkText="Create an account"
+          onBottomPromptClick={() => router.push("/account/create")}
+          onSubmit={submit}
+          error={error}
+          submitting={submitting}
+          footerNote="Your account, orders and Drip Points — all in one place."
+        />
       </main>
       <MobileBottomNav active="more" />
     </div>

@@ -259,11 +259,8 @@ export default function AccountCreatePage() {
                             </button>
                           </div>
                         </div>
-
-
                       </>
                     )}
-
 
                     <div className="nbh-auth5__terms">
                       <input

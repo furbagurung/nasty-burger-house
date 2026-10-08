@@ -6,7 +6,6 @@ import { Auth1 } from "@/components/ui/auth-01";
 import { signInCustomerByEmail } from "../lib/customer-store";
 import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import GoogleAuthButton from "./google-auth-button";
-import MobileBottomNav from "./mobile-bottom-nav";
 
 export default function AccountSignInPage() {
   const router = useRouter();
@@ -81,6 +80,7 @@ export default function AccountSignInPage() {
           }
           forgotPasswordText="Forgot password?"
           onForgotPassword={() => router.push("/account/forgot-password")}
+          homeHref="/"
           bottomPromptText="New to Nasty?"
           bottomPromptLinkText="Create an account"
           onBottomPromptClick={() => router.push("/account/create")}
@@ -89,7 +89,6 @@ export default function AccountSignInPage() {
           submitting={submitting}
         />
       </main>
-      <MobileBottomNav active="more" />
     </div>
   );
 }

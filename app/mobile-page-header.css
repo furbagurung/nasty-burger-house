@@ -105,6 +105,23 @@
   .cart-redesign-page .cart-redesign-main {
     padding-top: 1rem;
   }
+
+  /* Checkout reuses this app header in place of its large page heading,
+     while desktop keeps the existing full Checkout introduction. */
+  .checkout-page .checkout-intro {
+    display: none;
+  }
+
+  .checkout-page .standalone-main.checkout-page-main {
+    padding-top: 1rem;
+  }
+
+  /* The sitewide announcement is disabled on checkout, so the sticky
+     app header should never reserve space for an invisible promo bar. */
+  .checkout-page .mobile-page-header,
+  html.nasty-closure-visible .checkout-page .mobile-page-header {
+    top: 0;
+  }
 }
 
 @media (max-width: 360px) {

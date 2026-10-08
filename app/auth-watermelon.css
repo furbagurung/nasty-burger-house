@@ -220,9 +220,72 @@ body:has(.nbh-auth-page) {
 @media (max-width: 700px) {
   .standalone-main.nbh-auth-main {
     min-height: 100svh;
-    /* Allow room for mobile navigation/safe areas before the sign-in card. */
-    padding: calc(5.1rem + 1.5rem + env(safe-area-inset-top)) 0.75rem calc(7.5rem + env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Allow for mobile navigation, keyboard scroll and safe areas without
+       pushing the compact sign-in card under the fixed bottom tab bar. */
+    padding: calc(4.35rem + 1rem + env(safe-area-inset-top)) 0.75rem calc(6.75rem + env(safe-area-inset-bottom));
   }
-  .nbh-auth-shell { padding: 0; }
-  .nbh-auth-container { width: 100%; max-width: 440px; }
+
+  .nbh-auth-shell {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+  }
+
+  .nbh-auth-container { width: 100%; max-width: 25rem; }
+
+  .nbh-auth-shell .nbh-auth-card {
+    border-radius: 1.45rem;
+    padding: 0.4rem;
+  }
+
+  .nbh-auth-shell .nbh-auth-card-inner {
+    border-radius: 1.1rem;
+    padding-top: 1.4rem;
+    padding-bottom: 1.15rem;
+  }
+
+  .nbh-auth-shell [data-slot="card-header"] {
+    gap: 0.4rem;
+    padding-inline: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .nbh-auth-shell .nbh-auth-heading {
+    font-size: clamp(1.45rem, 6vw, 1.7rem);
+  }
+
+  .nbh-auth-shell .nbh-auth-subheading {
+    font-size: 0.79rem;
+    line-height: 1.45;
+  }
+
+  .nbh-auth-shell [data-slot="card-content"] {
+    padding-inline: 1rem;
+  }
+
+  .nbh-auth-shell [data-slot="card-content"] > :not(:last-child),
+  .nbh-auth-shell form.space-y-4 > :not(:last-child) {
+    margin-block-end: 0.75rem;
+  }
+
+  .nbh-auth-shell .nbh-auth-input {
+    height: 2.75rem;
+    font-size: 1rem; /* Prevent mobile Safari input-focus zoom. */
+  }
+
+  .nbh-auth-shell .nbh-auth-submit {
+    height: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  .nbh-auth-shell [data-slot="card-footer"] {
+    padding-block: 0.9rem 1rem;
+  }
+
+  .nbh-auth-shell .nbh-auth-bottom-prompt {
+    font-size: 0.8rem;
+  }
 }

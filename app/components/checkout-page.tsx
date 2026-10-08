@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, CheckCircle2, ChevronLeft, Clock3, CreditCard, ShieldCheck } from "lucide-react";
+import { AlertCircle, CheckCircle2, ChevronLeft, CreditCard, ShieldCheck } from "lucide-react";
 import { menuItems } from "../data/menu";
 import {
   calculateCartSubtotal,
@@ -39,7 +39,7 @@ function validateContact(name: string, email: string, phone: string): ContactErr
 
   // Match the rules enforced on /api/orders so validation is consistent.
   if (trimmedName.length < 2 || trimmedName.length > 80) {
-    errors.name = "Enter a pickup name (2–80 characters).";
+    errors.name = "Enter your name (2–80 characters).";
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail) || trimmedEmail.length > 160) {
     errors.email = "Enter a valid email address.";
@@ -121,7 +121,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   const [fieldErrors, setFieldErrors] = useState<ContactErrors>({});
   const [hydrated, setHydrated] = useState(false);
   const [activeStep, setActiveStep] = useState<CheckoutStep>(1);
-  const [pickupConfirmed, setPickupConfirmed] = useState(false);
   const stepAnnouncementRef = useRef<HTMLHeadingElement>(null);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -236,11 +235,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
       return;
     }
 
-    if (!pickupConfirmed) {
-      setErrors(["Please confirm that your order is for pickup before paying."]);
-      return;
-    }
-
     setSubmitting(true);
     const customer = { name: name.trim(), email: email.trim(), phone: phone.trim() };
     const signature = JSON.stringify({ customer, notes, cart, subtotal });
@@ -292,7 +286,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
         const fallback = response.status === 429
           ? "Too many checkout attempts. Please wait a few minutes before trying again."
           : response.status === 409
-            ? "Ordering is not available right now. Check the pickup hours below."
+            ? "Ordering is unavailable right now. Please try again when online ordering reopens."
             : response.status === 422
               ? "Some order details are invalid. Check your information and cart."
               : "We couldn't start Square checkout. Please try again.";
@@ -397,12 +391,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
 
         <div className="checkout-at-a-glance" aria-label="Checkout overview">
           <span className="checkout-at-a-glance__item">
-            <Clock3 size={17} aria-hidden="true" />
-            <span>{serviceStatus.acceptingOrders ? `${itemCount} ${itemCount === 1 ? "item" : "items"} in your order` : serviceStatus.statusLabel}</span>
-          </span>
-          <span className="checkout-at-a-glance__separator" aria-hidden="true" />
-          <span className="checkout-at-a-glance__item">
-            <span>{serviceStatus.acceptingOrders ? `${serviceStatus.prepTimeLabel} estimated prep` : "Ordering currently unavailable"}</span>
+            {itemCount} {itemCount === 1 ? "item" : "items"} in your order
           </span>
           <strong>{money.format(subtotal)}</strong>
         </div>
@@ -456,7 +445,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               <CardContent className="checkout-panel__content">
                 <div className="account-form-grid">
                   <div className="checkout-field">
-                    <Label htmlFor="checkout-name">Pickup name</Label>
+                    <Label htmlFor="checkout-name">Full name</Label>
                     <Input
                       id="checkout-name"
                       ref={nameInputRef}
@@ -465,7 +454,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                       minLength={2}
                       maxLength={80}
                       autoComplete="name"
-                      placeholder="Name for pickup"
+                      placeholder="Your full name"
                       aria-invalid={Boolean(fieldErrors.name)}
                       aria-describedby={fieldErrors.name ? "checkout-name-error" : undefined}
                       disabled={submitting}
@@ -523,7 +512,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                         id="checkout-notes"
                         value={notes}
                         onChange={(event) => setNotes(event.target.value)}
-                        placeholder="e.g. any special pickup instructions"
+                        placeholder="e.g. any special preparation instructions"
                         rows={2}
                         maxLength={300}
                         disabled={submitting}
@@ -601,30 +590,13 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                 <span>Total</span>
                 <strong>{money.format(subtotal)}</strong>
               </div>
-              <div className="checkout-pickup-confirmation">
-                <input
-                  id="checkout-confirm-pickup"
-                  type="checkbox"
-                  checked={pickupConfirmed}
-                  onChange={(event) => {
-                    setPickupConfirmed(event.target.checked);
-                    setErrors([]);
-                  }}
-                  disabled={submitting}
-                  required
-                />
-                <label htmlFor="checkout-confirm-pickup">
-                  I understand this order is <strong>pickup only</strong> from{" "}
-                  <strong>{serviceStatus.locationName}</strong>, {serviceStatus.address}.
-                </label>
-              </div>
-              <p className={`checkout-pickup-confirmation__hint${pickupConfirmed ? " is-confirmed" : ""}`} aria-live="polite">
-                {pickupConfirmed ? "Pickup confirmed. You can continue to Square." : "Tick the checkbox to enable secure payment."}
-              </p>
               {!serviceStatus.acceptingOrders && (
-                <div className="checkout-review-hours">
-                  <Clock3 size={16} aria-hidden="true" />
-                  <span>{serviceStatus.notice}</span>
+                <div className="checkout-service-notice is-closed" role="status">
+                  <AlertCircle size={17} aria-hidden="true" />
+                  <div>
+                    <strong>Ordering unavailable</strong>
+                    <p>{serviceStatus.notice}</p>
+                  </div>
                 </div>
               )}
               <button className="checkout-wizard-review-back" type="button" onClick={() => changeStep(1)} disabled={submitting}>
@@ -634,7 +606,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                 tone="red"
                 fullWidth
                 type="submit"
-                disabled={submitting || !serviceStatus.acceptingOrders || !pickupConfirmed}
+                disabled={submitting || !serviceStatus.acceptingOrders}
               >
                 {!serviceStatus.acceptingOrders
                   ? "Ordering unavailable"

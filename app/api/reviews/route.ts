@@ -277,10 +277,24 @@ export async function POST(request: Request) {
     .single();
 
   if (reviewError || !review) {
-    console.error("[NBH review save failed]", reviewError?.code);
+    // Older databases reject 'pending' until the review-moderation migration
+    // is applied. Surface a useful message without exposing internal details
+    // or ever publishing an unmoderated submission.
+    const moderationSchemaMissing =
+      reviewError?.code === "23514" &&
+      reviewError?.message?.includes("reviews_status_check");
+    console.error("[NBH review save failed]", {
+      code: reviewError?.code,
+      migrationRequired: moderationSchemaMissing,
+    });
     return Response.json(
-      { ok: false, error: "We could not submit your review." },
-      { status: 500, headers: NO_STORE_HEADERS },
+      {
+        ok: false,
+        error: moderationSchemaMissing
+          ? "Reviews are temporarily unavailable while approval is being set up."
+          : "We could not submit your review. Please try again.",
+      },
+      { status: moderationSchemaMissing ? 503 : 500, headers: NO_STORE_HEADERS },
     );
   }
 

@@ -438,11 +438,13 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                     {tag}
                   </span>
                 ))}
-                {item.category === "burgers" && item.dietaryTags.includes("Halal") && (
-                  <p className="product-detail__halal-note">ALL BURGERS MADE WITH 100% HALAL MEAT</p>
-                )}
               </div>
             )}
+
+            {(item.dietaryTags?.includes("Halal") || item.category === "beast-boxes") &&
+              !item.dietaryTags?.includes("Vegetarian") && (
+                <p className="product-detail__halal-note">ALL BURGERS MADE WITH 100% HALAL MEAT</p>
+              )}
 
             <div className="product-mobile-description-card product-description--mobile">
               <p className="product-detail__description">{item.description}</p>

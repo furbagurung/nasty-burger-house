@@ -319,7 +319,7 @@ export default function AdminOrderDashboard({
           )}
         </Card>
 
-        <div className="admin-filter-bar" role="tablist" aria-label="Order filters">
+        <div className="admin-filter-bar" role="group" aria-label="Order filters">
           {filters.map((entry) => (
             <Button
               variant={filter === entry.value ? "default" : "outline"}

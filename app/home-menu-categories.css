@@ -254,3 +254,19 @@
           scroll-behavior: auto !important;
         }
       }
+
+/* Start the first category at the heading's shared container edge. */
+@media (min-width: 681px) {
+  .menu-preview__grid {
+    width: min(100%, 1180px);
+  }
+
+  .menu-preview-card--clean:first-child {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .menu-preview-card--clean:first-child .menu-preview-card__image img:not(.home-menu-card__sticker) {
+    object-position: left center !important;
+  }
+}

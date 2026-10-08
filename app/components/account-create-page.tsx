@@ -10,7 +10,6 @@ import {
 } from "../lib/customer-store";
 import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import GoogleAuthButton from "./google-auth-button";
-import MobileBottomNav from "./mobile-bottom-nav";
 import PasswordInput from "./password-input";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
@@ -125,7 +124,7 @@ export default function AccountCreatePage() {
   }
 
   return (
-    <div className="standalone-page account-page">
+    <div className="standalone-page account-page account-auth-flow-page">
       <main className="standalone-main account-auth-main">
         <section className="account-auth-card">
           <div className="account-auth-card__intro">
@@ -134,7 +133,10 @@ export default function AccountCreatePage() {
               Save your details, see order history, leave reviews and earn Drip
               Points whenever you order.
             </p>
-            <div className="account-auth-benefits">
+            <div className="account-auth-benefits">            <Link href="/" className="account-auth-home-link">
+              ← Back to Home
+            </Link>
+
               <span>
                 <strong>500</strong> points for new loyalty members
               </span>
@@ -240,7 +242,6 @@ export default function AccountCreatePage() {
           )}
         </section>
       </main>
-      <MobileBottomNav active="more" />
     </div>
   );
 }

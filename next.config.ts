@@ -53,6 +53,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   images: {
+    // Serve source assets directly so optimizer quota failures cannot hide images.
+    unoptimized: true,
     qualities: [75, 100],
   },
   async headers() {

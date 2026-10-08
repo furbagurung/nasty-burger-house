@@ -7,7 +7,6 @@ import {
   getBrowserClientOrNull,
   isSupabaseBrowserConfigured,
 } from "../lib/supabase/client";
-import MobileBottomNav from "./mobile-bottom-nav";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 export default function AccountResetPasswordPage() {
@@ -54,13 +53,16 @@ export default function AccountResetPasswordPage() {
   }
 
   return (
-    <div className="standalone-page account-page">
+    <div className="standalone-page account-page account-auth-flow-page">
       <main className="standalone-main account-auth-main">
         <section className="account-auth-card account-auth-card--compact">
           <div className="account-auth-card__intro">
             <p className="standalone-eyebrow">Account security</p>
             <h1>Choose a new password.</h1>
             <p>Use at least 10 characters and keep it unique to your Nasty account.</p>
+            <Link href="/" className="account-auth-home-link">
+              ← Back to Home
+            </Link>
           </div>
           <form className="account-auth-form" onSubmit={submit}>
             <label>
@@ -110,7 +112,6 @@ export default function AccountResetPasswordPage() {
           </form>
         </section>
       </main>
-      <MobileBottomNav active="more" />
     </div>
   );
 }

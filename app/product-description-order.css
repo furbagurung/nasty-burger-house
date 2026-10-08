@@ -157,3 +157,44 @@
     padding: 0.72rem 0.78rem 0.85rem !important;
   }
 }
+
+/* Treat customization as its own card, not an extension of Beast Combo. */
+.product-page-premium
+  .product-detail__content--premium
+  > .product-custom-section:not(.product-custom-section--extras) {
+  border: 1px solid #ece5df !important;
+  border-radius: 1.2rem !important;
+  padding-bottom: 1rem !important;
+}
+.product-page-premium
+  .product-detail__content--premium
+  > .product-custom-section:not(.product-custom-section--extras)
+  + .product-custom-section--extras {
+  margin-top: 0.9rem !important;
+  border: 1px solid #ece5df !important;
+  border-radius: 1.05rem !important;
+  padding: 0.75rem !important;
+  background: #fff !important;
+  box-shadow: 0 6px 18px rgba(45, 30, 20, 0.035) !important;
+}
+.product-page-premium
+  .product-detail__content--premium
+  > .product-custom-section--extras::before {
+  border-radius: 1.05rem 0 0 1.05rem;
+}
+@media (max-width: 680px) {
+  .product-page-premium
+    .product-detail__content--premium
+    > .product-custom-section:not(.product-custom-section--extras) {
+    border-radius: 1rem !important;
+    padding-bottom: 0.85rem !important;
+  }
+  .product-page-premium
+    .product-detail__content--premium
+    > .product-custom-section:not(.product-custom-section--extras)
+    + .product-custom-section--extras {
+    margin-top: 0.8rem !important;
+    border-radius: 1rem !important;
+    padding: 0.6rem !important;
+  }
+}

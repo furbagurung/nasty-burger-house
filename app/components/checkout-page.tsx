@@ -11,6 +11,7 @@ import {
   type CartLine,
 } from "../lib/order";
 import { getServiceStatus, type ServiceStatus } from "../lib/service";
+import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -135,7 +136,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(CART_STORAGE_KEY);
-      setCart(raw ? normaliseCart(JSON.parse(raw)) : []);
+      setCart(raw ? mergeIdenticalCartLines(normaliseCart(JSON.parse(raw))) : []);
     } catch {
       setCart([]);
     }

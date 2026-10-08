@@ -1,13 +1,27 @@
-/* Watermelon Auth1 customer sign-in. Scoped: no changes to global header,
-   admin login, or the checkout and registration forms. */
+/* Full-bleed dark customer sign-in. Scoped to /account/sign-in only.
+   The shared header and other account/admin pages retain their own styling. */
+body:has(.nbh-auth-page) {
+  background: #111110;
+  color: #f8f6f2;
+}
+
+.standalone-page.account-page.nbh-auth-page {
+  min-height: 100svh;
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(235, 72, 34, 0.12), transparent 54%),
+    #111110;
+  color: #f8f6f2;
+}
+
 .standalone-main.nbh-auth-main {
   display: grid;
-  min-height: calc(100svh - 5rem);
+  min-height: calc(100svh - 6rem);
   width: 100%;
   max-width: none;
   place-items: center;
   margin: 0;
-  padding: clamp(7rem, 9vw, 9rem) clamp(0.8rem, 3vw, 1.5rem) 4rem;
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(0.85rem, 3vw, 1.5rem) 4rem;
+  background: transparent;
 }
 
 .nbh-auth-shell {
@@ -26,14 +40,13 @@
   --secondary: #f0efec;
   --secondary-foreground: #171513;
   width: 100%;
-  min-height: 40rem;
   display: grid;
   place-items: center;
-  border-radius: clamp(1rem, 2vw, 2rem);
-  padding: clamp(1.5rem, 5vw, 3rem) 0.9rem;
-  background: radial-gradient(circle at 48% 12%, rgba(232, 70, 34, 0.075), transparent 45%), #f8f7f5;
+  min-height: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
   color: var(--ink);
-  transition: background-color 200ms ease, color 200ms ease;
 }
 
 .nbh-auth-shell--dark {
@@ -51,7 +64,7 @@
   --primary-foreground: #ffffff;
   --secondary: #33312e;
   --secondary-foreground: #f8f6f2;
-  background: radial-gradient(circle at 48% 12%, rgba(235, 72, 34, 0.12), transparent 48%), #111110;
+  background: transparent;
 }
 
 .nbh-auth-container { width: min(100%, 440px); margin-inline: auto; }
@@ -204,12 +217,9 @@
 
 @media (max-width: 700px) {
   .standalone-main.nbh-auth-main {
-    padding: 1.5rem 0.5rem calc(7.5rem + env(safe-area-inset-bottom));
+    min-height: calc(100svh - 5rem);
+    padding: 1.5rem 0.75rem calc(7.5rem + env(safe-area-inset-bottom));
   }
-  .nbh-auth-shell { min-height: calc(100svh - 9rem); padding: 1.2rem 0.55rem; }
+  .nbh-auth-shell { padding: 0; }
   .nbh-auth-container { width: 100%; max-width: 440px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .nbh-auth-shell { transition: none; }
 }

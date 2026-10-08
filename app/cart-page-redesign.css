@@ -769,3 +769,48 @@
     transition: none !important;
   }
 }
+
+/* Unified desktop/tablet cart surface: item list and totals are sections of
+   one continuous panel, not two bento-style cards. */
+@media (min-width: 681px) {
+  .cart-redesign-page .cart-redesign-layout {
+    align-items: stretch;
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid rgba(23, 21, 19, 0.08);
+    border-radius: 1.3rem;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(31, 25, 18, 0.035);
+  }
+
+  .cart-redesign-page .cart-redesign-items {
+    min-width: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .cart-redesign-page .cart-redesign-summary {
+    position: static;
+    top: auto;
+    min-width: 0;
+    align-self: stretch;
+    align-content: start;
+    border: 0;
+    border-left: 1px solid var(--cart-line);
+    border-radius: 0;
+    padding: 1.35rem;
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+/* When the content stacks on a small tablet it remains one panel with
+   a horizontal divider, not two separated cards. */
+@media (min-width: 681px) and (max-width: 880px) {
+  .cart-redesign-page .cart-redesign-summary {
+    border-left: 0;
+    border-top: 1px solid var(--cart-line);
+  }
+}

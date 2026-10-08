@@ -317,20 +317,6 @@
 .checkout-page .checkout-page-review__total > span { font-size: 0.83rem; font-weight: 750; }
 .checkout-page .checkout-page-review__total strong { font-size: 1.5rem; font-weight: 850; }
 
-.checkout-page .checkout-review-hours {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.55rem;
-  padding: 0.7rem 0.8rem;
-  border: 1px solid #f1dcc7;
-  border-radius: 0.75rem;
-  background: #fff9f1;
-  color: #925120;
-  font-size: 0.73rem;
-  line-height: 1.45;
-}
-.checkout-page .checkout-review-hours > svg { flex: 0 0 auto; }
-
 .checkout-page .checkout-page-review [type="submit"] {
   min-height: 3.3rem;
   justify-content: center;
@@ -1324,67 +1310,5 @@ body:has(.checkout-page) .mobile-tab-bar--v2 {
 
   .checkout-page .checkout-wizard-actions__back {
     margin-inline: auto;
-  }
-}
-
-/* Final-step pickup acknowledgement: this replaces the old pickup step. */
-.checkout-page .checkout-pickup-confirmation {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.85rem;
-  border: 1px solid #e7ddd2;
-  border-radius: 0.85rem;
-  padding: 1rem;
-  background: #faf7f2;
-}
-
-.checkout-page .checkout-pickup-confirmation input {
-  width: 1.2rem;
-  height: 1.2rem;
-  flex: 0 0 auto;
-  margin: 0.1rem 0 0;
-  accent-color: #e83b18;
-  cursor: pointer;
-}
-
-.checkout-page .checkout-pickup-confirmation input:focus-visible {
-  outline: 2px solid #e83b18;
-  outline-offset: 3px;
-}
-
-.checkout-page .checkout-pickup-confirmation label {
-  flex: 1;
-  min-width: 0;
-  color: #494138;
-  font-size: 0.81rem;
-  line-height: 1.6;
-  cursor: pointer;
-}
-
-.checkout-page .checkout-pickup-confirmation label strong {
-  color: #211b17;
-  font-weight: 820;
-}
-
-.checkout-page .checkout-pickup-confirmation__hint {
-  margin: -0.4rem 0 0;
-  color: #795e4b;
-  font-size: 0.75rem;
-  font-weight: 650;
-  line-height: 1.45;
-}
-
-.checkout-page .checkout-pickup-confirmation__hint.is-confirmed {
-  color: #267047;
-}
-
-@media (max-width: 680px) {
-  .checkout-page .checkout-pickup-confirmation {
-    gap: 0.75rem;
-    padding: 0.85rem;
-  }
-
-  .checkout-page .checkout-pickup-confirmation label {
-    font-size: 0.79rem;
   }
 }

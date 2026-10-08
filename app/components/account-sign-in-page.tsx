@@ -90,7 +90,7 @@ export default function AccountSignInPage() {
           homeHref="/"
           imageSrc="/images/Warmly lit food trailer at night-2.png"
           imageAlt="Warmly lit Nasty Burger House food trailer at night"
-          panelHeading="BIG BURGERS. BIG REWARDS."
+          panelHeading={"BIG BURGERS.\nBIG REWARDS."}
           panelSubtext="Order your favourites. Earn Drip Points."
           onSubmit={submit}
           error={error}

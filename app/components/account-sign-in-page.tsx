@@ -28,7 +28,9 @@ export default function AccountSignInPage() {
     if (!productionAuth) {
       const profile = signInCustomerByEmail(identifier);
       if (!profile) {
-        setError("No saved local account with that email exists on this device yet.");
+        setError(
+          "No saved local account with that email exists on this device yet.",
+        );
         return;
       }
       router.push(safeDestination);
@@ -45,7 +47,10 @@ export default function AccountSignInPage() {
           password,
         }),
       });
-      const result = (await response.json()) as { ok?: boolean; error?: string };
+      const result = (await response.json()) as {
+        ok?: boolean;
+        error?: string;
+      };
 
       if (!response.ok || !result.ok) {
         setError(result.error || "We could not sign you in. Please try again.");
@@ -68,17 +73,25 @@ export default function AccountSignInPage() {
           brandName="Nasty Burger House"
           heading="Welcome back."
           subheading="Sign in to check your orders, collect Drip Points and keep the good stuff coming."
-          identifierLabel={productionAuth ? "Email or mobile number" : "Email address"}
-          identifierPlaceholder={productionAuth ? "you@example.com or 04XX XXX XXX" : "you@example.com"}
+          identifierLabel={
+            productionAuth ? "Email or mobile number" : "Email address"
+          }
+          identifierPlaceholder={
+            productionAuth
+              ? "you@example.com or 04XX XXX XXX"
+              : "you@example.com"
+          }
           identifierType={productionAuth ? "text" : "email"}
           showPasswordField={productionAuth}
           submitLabel="Sign in"
-          socialContent={productionAuth ? <GoogleAuthButton onError={setError} /> : undefined}
+          socialContent={
+            productionAuth ? <GoogleAuthButton onError={setError} /> : undefined
+          }
           signUpHref="/account/create"
           forgotPasswordHref="/account/forgot-password"
           homeHref="/"
-          imageSrc="/images/bbq-beast-hero.webp"
-          imageAlt="BBQ Beast burger from Nasty Burger House"
+          imageSrc="/images/Warmly lit food trailer at night-2.png"
+          imageAlt="Warmly lit Nasty Burger House food trailer at night"
           panelHeading="BIG BURGERS. BETTER REWARDS."
           panelSubtext="Your next favourite bite is waiting. Sign in and make every order count."
           features={[

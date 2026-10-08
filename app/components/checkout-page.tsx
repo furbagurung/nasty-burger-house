@@ -12,6 +12,12 @@ import {
 } from "../lib/order";
 import { getServiceStatus, type ServiceStatus } from "../lib/service";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 const CHECKOUT_CONTACT_KEY = "nasty-burger-checkout-contact";
@@ -284,7 +290,14 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
     return (
       <div className="standalone-page">
         <main className="standalone-main">
-          <div className="cart-page-loading">Loading checkout…</div>
+          <Card className="checkout-loading-card" role="status" aria-label="Loading checkout">
+            <CardContent className="checkout-loading-content">
+              <Skeleton className="checkout-loading-title" />
+              <Skeleton className="checkout-loading-line" />
+              <Skeleton className="checkout-loading-panel" />
+              <Skeleton className="checkout-loading-panel" />
+            </CardContent>
+          </Card>
         </main>
       </div>
     );
@@ -323,178 +336,188 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             <div className="checkout-errors checkout-errors--top" role="alert" ref={errorSummaryRef} tabIndex={-1}>
               <AlertCircle size={19} aria-hidden="true" />
               <div>
-                <strong>We couldn't continue to payment.</strong>
+                <strong>We couldn&apos;t continue to payment.</strong>
                 <ul>{errors.map((error, index) => <li key={index}>{error}</li>)}</ul>
               </div>
             </div>
           )}
+
           <div className="checkout-page-sections">
-            <section className="account-card checkout-panel">
-              <div className="checkout-panel__heading">
-                <span>01</span>
+            <Card className="checkout-panel ring-0">
+              <CardHeader className="checkout-panel__heading">
+                <Badge variant="secondary" className="checkout-step-badge">01</Badge>
                 <div>
                   <h2>Pickup</h2>
                   <p>ASAP pickup · {serviceStatus.prepTimeLabel} prep estimate</p>
                 </div>
-              </div>
-              <div className="checkout-location-card">
-                <MapPin size={18} aria-hidden="true" />
-                <div>
-                  <strong>{serviceStatus.locationName}</strong>
-                  <span>{serviceStatus.address}</span>
+              </CardHeader>
+              <CardContent className="checkout-panel__content">
+                <div className="checkout-location-card">
+                  <MapPin size={18} aria-hidden="true" />
+                  <div>
+                    <strong>{serviceStatus.locationName}</strong>
+                    <span>{serviceStatus.address}</span>
+                  </div>
                 </div>
-              </div>
-              <div className={`checkout-service-notice ${serviceStatus.acceptingOrders ? "is-open" : "is-closed"}`} role="status">
-                {serviceStatus.acceptingOrders
-                  ? <CheckCircle2 size={18} aria-hidden="true" />
-                  : <Clock3 size={18} aria-hidden="true" />}
-                <div>
-                  <strong>{serviceStatus.statusLabel}</strong>
-                  <p>{serviceStatus.notice}</p>
+                <div
+                  className={`checkout-service-notice ${serviceStatus.acceptingOrders ? "is-open" : "is-closed"}`}
+                  role="status"
+                >
+                  {serviceStatus.acceptingOrders
+                    ? <CheckCircle2 size={18} aria-hidden="true" />
+                    : <Clock3 size={18} aria-hidden="true" />}
+                  <div>
+                    <strong>{serviceStatus.statusLabel}</strong>
+                    <p>{serviceStatus.notice}</p>
+                  </div>
                 </div>
-              </div>
-            </section>
+              </CardContent>
+            </Card>
 
-            <section className="account-card checkout-panel">
-              <div className="checkout-panel__heading">
-                <span>02</span>
+            <Card className="checkout-panel ring-0">
+              <CardHeader className="checkout-panel__heading">
+                <Badge variant="secondary" className="checkout-step-badge">02</Badge>
                 <div>
                   <h2>Contact details</h2>
                   <p>So we can identify your pickup order.</p>
                 </div>
-              </div>
-              <div className="account-form-grid">
-                <label htmlFor="checkout-name">
-                  Pickup name
-                  <input
-                    id="checkout-name"
-                    ref={nameInputRef}
-                    value={name}
-                    onChange={(event) => updateContactField("name", event.target.value)}
-                    minLength={2}
-                    maxLength={80}
-                    autoComplete="name"
-                    aria-invalid={Boolean(fieldErrors.name)}
-                    aria-describedby={fieldErrors.name ? "checkout-name-error" : undefined}
-                    disabled={submitting}
-                    required
-                  />
-                  {fieldErrors.name && <span id="checkout-name-error" className="checkout-field-error">{fieldErrors.name}</span>}
-                </label>
-                <label htmlFor="checkout-email">
-                  Email address
-                  <input
-                    id="checkout-email"
-                    ref={emailInputRef}
-                    type="email"
-                    inputMode="email"
-                    value={email}
-                    onChange={(event) => updateContactField("email", event.target.value)}
-                    maxLength={160}
-                    autoComplete="email"
-                    aria-invalid={Boolean(fieldErrors.email)}
-                    aria-describedby={fieldErrors.email ? "checkout-email-error" : undefined}
-                    disabled={submitting}
-                    required
-                  />
-                  {fieldErrors.email && <span id="checkout-email-error" className="checkout-field-error">{fieldErrors.email}</span>}
-                </label>
-                <label htmlFor="checkout-phone">
-                  Mobile number
-                  <input
-                    id="checkout-phone"
-                    ref={phoneInputRef}
-                    type="tel"
-                    inputMode="tel"
-                    value={phone}
-                    onChange={(event) => updateContactField("phone", event.target.value)}
-                    minLength={8}
-                    maxLength={24}
-                    autoComplete="tel"
-                    aria-invalid={Boolean(fieldErrors.phone)}
-                    aria-describedby={fieldErrors.phone ? "checkout-phone-error" : undefined}
-                    disabled={submitting}
-                    required
-                  />
-                  {fieldErrors.phone && <span id="checkout-phone-error" className="checkout-field-error">{fieldErrors.phone}</span>}
-                </label>
-                <label className="account-form-grid__full" htmlFor="checkout-notes">
-                  <span>Order notes <small>Optional</small></span>
-                  <textarea
-                    id="checkout-notes"
-                    value={notes}
-                    onChange={(event) => setNotes(event.target.value)}
-                    placeholder="Anything the kitchen should know?"
-                    rows={2}
-                    maxLength={300}
-                    disabled={submitting}
-                  />
-                </label>
-              </div>
-            </section>
+              </CardHeader>
+              <CardContent className="checkout-panel__content">
+                <div className="account-form-grid">
+                  <div className="checkout-field">
+                    <Label htmlFor="checkout-name">Pickup name</Label>
+                    <Input
+                      id="checkout-name"
+                      ref={nameInputRef}
+                      value={name}
+                      onChange={(event) => updateContactField("name", event.target.value)}
+                      minLength={2}
+                      maxLength={80}
+                      autoComplete="name"
+                      aria-invalid={Boolean(fieldErrors.name)}
+                      aria-describedby={fieldErrors.name ? "checkout-name-error" : undefined}
+                      disabled={submitting}
+                      required
+                    />
+                    {fieldErrors.name && <span id="checkout-name-error" className="checkout-field-error">{fieldErrors.name}</span>}
+                  </div>
+                  <div className="checkout-field">
+                    <Label htmlFor="checkout-email">Email address</Label>
+                    <Input
+                      id="checkout-email"
+                      ref={emailInputRef}
+                      type="email"
+                      inputMode="email"
+                      value={email}
+                      onChange={(event) => updateContactField("email", event.target.value)}
+                      maxLength={160}
+                      autoComplete="email"
+                      aria-invalid={Boolean(fieldErrors.email)}
+                      aria-describedby={fieldErrors.email ? "checkout-email-error" : undefined}
+                      disabled={submitting}
+                      required
+                    />
+                    {fieldErrors.email && <span id="checkout-email-error" className="checkout-field-error">{fieldErrors.email}</span>}
+                  </div>
+                  <div className="checkout-field">
+                    <Label htmlFor="checkout-phone">Mobile number</Label>
+                    <Input
+                      id="checkout-phone"
+                      ref={phoneInputRef}
+                      type="tel"
+                      inputMode="tel"
+                      value={phone}
+                      onChange={(event) => updateContactField("phone", event.target.value)}
+                      minLength={8}
+                      maxLength={24}
+                      autoComplete="tel"
+                      aria-invalid={Boolean(fieldErrors.phone)}
+                      aria-describedby={fieldErrors.phone ? "checkout-phone-error" : undefined}
+                      disabled={submitting}
+                      required
+                    />
+                    {fieldErrors.phone && <span id="checkout-phone-error" className="checkout-field-error">{fieldErrors.phone}</span>}
+                  </div>
+                  <div className="checkout-field account-form-grid__full">
+                    <Label htmlFor="checkout-notes">Order notes <span className="checkout-optional">Optional</span></Label>
+                    <textarea
+                      id="checkout-notes"
+                      value={notes}
+                      onChange={(event) => setNotes(event.target.value)}
+                      placeholder="Anything the kitchen should know?"
+                      rows={2}
+                      maxLength={300}
+                      disabled={submitting}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-            <section className="account-card checkout-panel">
-              <div className="checkout-panel__heading">
-                <span>03</span>
+            <Card className="checkout-panel ring-0">
+              <CardHeader className="checkout-panel__heading">
+                <Badge variant="secondary" className="checkout-step-badge">03</Badge>
                 <div>
                   <h2>Secure payment</h2>
-                  <p>Pay on Square's secure checkout page.</p>
+                  <p>Pay on Square&apos;s secure checkout page.</p>
                 </div>
-              </div>
-              <div className="checkout-payment-card">
-                <CreditCard size={19} aria-hidden="true" />
-                <span>No card details are collected on this website.</span>
-              </div>
-            </section>
+              </CardHeader>
+              <CardContent className="checkout-panel__content">
+                <div className="checkout-payment-card">
+                  <CreditCard size={19} aria-hidden="true" />
+                  <span>No card details are collected on this website.</span>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          <aside className="checkout-page-review">
-            <div className="checkout-page-review__heading">
+          <Card className="checkout-page-review ring-0">
+            <CardHeader className="checkout-page-review__heading">
               <h2>Order summary</h2>
               <Link href="/cart">Edit cart</Link>
-            </div>
-            <div className="checkout-page-review__lines">
-              {cart.map((line) => {
-                const item = menuItems.find((entry) => entry.id === line.itemId);
-                if (!item) return null;
-                return (
-                  <div key={line.lineId}>
-                    <span>
-                      {line.quantity}× {item.name}
-                    </span>
-                    <strong>
-                      {money.format(calculateLineUnitPrice(line, item) * line.quantity)}
-                    </strong>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="checkout-page-review__total">
-              <span>Total</span>
-              <strong>{money.format(subtotal)}</strong>
-            </div>
-            {!serviceStatus.acceptingOrders && (
-              <div className="checkout-review-hours">
-                <Clock3 size={16} aria-hidden="true" />
-                <span>{serviceStatus.notice}</span>
+            </CardHeader>
+            <CardContent className="checkout-review-content">
+              <Separator />
+              <div className="checkout-page-review__lines">
+                {cart.map((line) => {
+                  const item = menuItems.find((entry) => entry.id === line.itemId);
+                  if (!item) return null;
+                  return (
+                    <div key={line.lineId}>
+                      <span>{line.quantity}× {item.name}</span>
+                      <strong>{money.format(calculateLineUnitPrice(line, item) * line.quantity)}</strong>
+                    </div>
+                  );
+                })}
               </div>
-            )}
-            <ButtonWithIcon
-              tone="red"
-              fullWidth
-              type="submit"
-              disabled={submitting || !serviceStatus.acceptingOrders}
-            >
-              {!serviceStatus.acceptingOrders
-                ? "Ordering unavailable"
-                : submitting
-                  ? "Opening Square…"
-                  : "Continue to secure payment"}
-            </ButtonWithIcon>
-            <small className="checkout-secure-note">
-              <ShieldCheck size={15} aria-hidden="true" /> Secure payment powered by Square.
-            </small>
-          </aside>
+              <Separator />
+              <div className="checkout-page-review__total">
+                <span>Total</span>
+                <strong>{money.format(subtotal)}</strong>
+              </div>
+              {!serviceStatus.acceptingOrders && (
+                <div className="checkout-review-hours">
+                  <Clock3 size={16} aria-hidden="true" />
+                  <span>{serviceStatus.notice}</span>
+                </div>
+              )}
+              <ButtonWithIcon
+                tone="red"
+                fullWidth
+                type="submit"
+                disabled={submitting || !serviceStatus.acceptingOrders}
+              >
+                {!serviceStatus.acceptingOrders
+                  ? "Ordering unavailable"
+                  : submitting
+                    ? "Opening Square…"
+                    : "Continue to secure payment"}
+              </ButtonWithIcon>
+              <small className="checkout-secure-note">
+                <ShieldCheck size={15} aria-hidden="true" /> Secure payment powered by Square.
+              </small>
+            </CardContent>
+          </Card>
         </form>
       </main>
     </div>

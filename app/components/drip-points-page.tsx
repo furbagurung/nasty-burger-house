@@ -147,13 +147,13 @@ export default function DripPointsPage() {
                 <p className="standalone-eyebrow">Nasty Rewards</p>
                 <h1>Get Nasty. Earn Drip Points. Eat Free.</h1>
                 <p>
-                  Create a Nasty account, start with {DRIP_SIGNUP_BONUS} points
+                  New Square Loyalty members can get {DRIP_SIGNUP_BONUS} welcome points
                   and earn {DRIP_POINTS_PER_AUD} points for every A$1 of eligible
                   order value.
                 </p>
                 <div className="drip-page-hero__stat">
                   <strong>{DRIP_SIGNUP_BONUS}</strong>
-                  <span>Drip Points to start</span>
+                  <span>Welcome points for new members</span>
                 </div>
               </div>
 
@@ -182,7 +182,7 @@ export default function DripPointsPage() {
                 <article>
                   <span>01</span>
                   <strong>Join +{DRIP_SIGNUP_BONUS}</strong>
-                  <p>Create a verified account and receive the one-time signup bonus.</p>
+                  <p>New Square Loyalty members receive one welcome bonus; existing members keep their balance.</p>
                 </article>
                 <article>
                   <span>02</span>
@@ -201,7 +201,7 @@ export default function DripPointsPage() {
               <div className="drip-page-signup__copy">
                 <p className="standalone-eyebrow">Join Drip Points</p>
                 <h2 id="drip-signup-title">
-                  Start with {DRIP_SIGNUP_BONUS} Drip Points.
+                  New loyalty members get {DRIP_SIGNUP_BONUS} welcome points.
                 </h2>
               </div>
               <div className="drip-page-success">
@@ -212,7 +212,7 @@ export default function DripPointsPage() {
                   height={90}
                 />
                 <strong>{DRIP_SIGNUP_BONUS} welcome points</strong>
-                <span>Create your account to activate your rewards balance.</span>
+                <span>Existing Square members keep their points when they link their website account.</span>
                 <ButtonWithIcon
                   href="/account/create?return=/drip-points"
                   tone="red"
@@ -339,7 +339,7 @@ export default function DripPointsPage() {
                       order value.
                     </li>
                     <li>
-                      New verified members receive {DRIP_SIGNUP_BONUS} welcome points.
+                      New Square Loyalty members receive {DRIP_SIGNUP_BONUS} welcome points once.
                     </li>
                     <li>
                       Points become available after the pickup order is completed.

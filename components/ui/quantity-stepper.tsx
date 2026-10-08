@@ -75,11 +75,11 @@ export function QuantityStepper({
             custom={direction}
             initial={reducedMotion ? false : { y: direction > 0 ? 14 : -14, opacity: 0, scale: 0.7 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={reducedMotion ? undefined : (dir: number) => ({
-              y: dir > 0 ? -14 : 14,
+            exit={reducedMotion ? undefined : {
+              y: direction > 0 ? -14 : 14,
               opacity: 0,
               scale: 0.7,
-            })}
+            }}
             transition={reducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 22 }}
             className="nbh-quantity-stepper__digit"
           >

@@ -511,3 +511,54 @@
     padding: 0.45rem;
   }
 }
+
+/* Dark paired combo cards with the joining plus badge. */
+.product-page-premium .product-combo-includes {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  position: relative;
+  gap: 0.65rem;
+}
+.product-page-premium .product-combo-includes__fries,
+.product-page-premium .product-combo-includes > .product-combo-drink-trigger {
+  border: 1px solid rgba(255, 125, 92, 0.28);
+  background: linear-gradient(145deg, #211c1a, #39231d);
+  box-shadow: 0 7px 16px rgba(25, 13, 10, 0.12);
+  color: #fff;
+}
+.product-page-premium .product-combo-includes > .product-combo-drink-trigger:hover {
+  border-color: #f16b48;
+  background: linear-gradient(145deg, #30231d, #513024);
+}
+.product-page-premium .product-combo-includes .product-combo-drink-trigger__copy small {
+  color: #e0b7a9;
+}
+.product-page-premium .product-combo-includes .product-combo-drink-trigger__copy strong {
+  color: #fff;
+}
+.product-page-premium .product-combo-includes .product-combo-drink-trigger__action {
+  color: #ff9879;
+}
+.product-page-premium .product-combo-includes .product-combo-drink-trigger__thumb {
+  background: #fff;
+  border-color: rgba(255,255,255,0.15);
+}
+.product-page-premium .product-combo-includes__plus {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  display: grid;
+  width: 1.9rem;
+  height: 1.9rem;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff633d, #e53619);
+  color: #fff;
+  font-size: 1.18rem;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 12px rgba(72, 17, 9, 0.25);
+}

@@ -288,8 +288,8 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
 
   if (!hydrated) {
     return (
-      <div className="standalone-page">
-        <main className="standalone-main">
+      <div className="standalone-page checkout-page">
+        <main className="standalone-main checkout-page-main">
           <Card className="checkout-loading-card" role="status" aria-label="Loading checkout">
             <CardContent className="checkout-loading-content">
               <Skeleton className="checkout-loading-title" />
@@ -306,7 +306,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   if (cart.length === 0) {
     return (
       <div className="standalone-page checkout-page">
-        <main className="standalone-main">
+        <main className="standalone-main checkout-page-main">
           <section className="cart-empty-state">
             <Image src="/images/bag.webp" alt="" width={140} height={140} />
             <p className="standalone-eyebrow">Checkout</p>

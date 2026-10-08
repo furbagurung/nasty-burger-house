@@ -223,9 +223,8 @@ body:has(.nbh-auth-page) {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Allow for mobile navigation, keyboard scroll and safe areas without
-       pushing the compact sign-in card under the fixed bottom tab bar. */
-    padding: calc(4.35rem + 1rem + env(safe-area-inset-top)) 0.75rem calc(2rem + env(safe-area-inset-bottom));
+    /* No auth tab bar: use the full mobile viewport with safe-area padding. */
+    padding: calc(1.5rem + env(safe-area-inset-top)) 0.75rem calc(2rem + env(safe-area-inset-bottom));
   }
 
   .nbh-auth-shell {

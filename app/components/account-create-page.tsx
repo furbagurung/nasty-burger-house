@@ -4,18 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import {
-  MdArrowForward,
-  MdEmail,
-  MdLock,
-  MdPerson,
-  MdPhone,
-  MdVisibility,
-  MdVisibilityOff,
-} from "react-icons/md";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { motion, useReducedMotion, type Variants } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import {
   ensureSignupBonus,
   readCustomerProfile,
@@ -23,6 +15,23 @@ import {
 } from "../lib/customer-store";
 import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import GoogleAuthButton from "./google-auth-button";
+
+const signupContainerMotion: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.07, delayChildren: 0.08 },
+  },
+};
+
+const signupItemMotion: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
+  },
+};
 
 export default function AccountCreatePage() {
   const router = useRouter();
@@ -37,6 +46,8 @@ export default function AccountCreatePage() {
   const [confirmationSent, setConfirmationSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (productionAuth) return;
@@ -77,6 +88,10 @@ export default function AccountCreatePage() {
     }
     if (productionAuth && password !== confirmPassword) {
       setError("Your passwords do not match.");
+      return;
+    }
+    if (!agreedToTerms) {
+      setError("Please agree to the Terms and Privacy Policy.");
       return;
     }
 
@@ -139,103 +154,113 @@ export default function AccountCreatePage() {
   return (
     <div className="standalone-page account-page nbh-auth-page nbh-signup-page">
       <main className="standalone-main nbh-auth-main">
-        <div className="nbh-auth5 nbh-auth5--signup dark">
-          <section className="nbh-auth5__form-panel" aria-label="Create a Nasty Burger House account">
-            <div className="nbh-auth5__form-content">
-              <div className="nbh-auth5__intro">
-                <h1>Create your account.</h1>
-                <p>Join Nasty Burger House to save your details, track orders and collect Drip Points.</p>
-              </div>
+        <div className="nbh-auth10">
+          <aside className="nbh-auth10__visual" aria-label="Welcome to Nasty Burger House">
+            <Image
+              src="/images/Warmly lit food trailer at night-2.png"
+              alt="Nasty Burger House food truck serving burgers at night"
+              fill
+              sizes="(min-width: 901px) 48vw, 100vw"
+              className="nbh-auth10__visual-image"
+              priority
+            />
+            <div className="nbh-auth10__visual-overlay" aria-hidden="true" />
+            <div className="nbh-auth10__visual-brand">
+              <Image src="/logo.webp" alt="" width={48} height={48} />
+              <span>Nasty Burger House</span>
+            </div>
+            <div className="nbh-auth10__visual-copy">
+              <p>THE GOOD STUFF STARTS HERE</p>
+              <h2>BIG BURGERS.
+                <span>BETTER REWARDS.</span>
+              </h2>
+              <p>Join the crew. Order your favourites and earn Drip Points.</p>
+            </div>
+          </aside>
+
+          <section className="nbh-auth10__form-side" aria-label="Sign up for Nasty Burger House">
+            <motion.div
+              className="nbh-auth10__form-content"
+              variants={signupContainerMotion}
+              initial={reducedMotion ? "visible" : "hidden"}
+              animate="visible"
+            >
+              <motion.header className="nbh-auth10__heading" variants={signupItemMotion}>
+                <p>JOIN NASTY BURGER HOUSE</p>
+                <h1>{confirmationSent ? "Check your inbox." : "Get started now."}</h1>
+                <span>
+                  {confirmationSent
+                    ? "One more step to get your account ready."
+                    : "Create an account to track your orders and collect Drip Points."}
+                </span>
+              </motion.header>
 
               {confirmationSent ? (
-                <div className="nbh-auth5__success" role="status">
-                  <h2>Confirm your email.</h2>
+                <motion.div className="nbh-auth10__confirmation" variants={signupItemMotion} role="status">
+                  <h2>Confirm your email</h2>
                   <p>
                     If your details can be registered, we&apos;ll send a confirmation
                     link to <strong>{email}</strong>.
                   </p>
-                  <Link className="nbh-auth5__submit nbh-auth5__success-link" href="/account/sign-in">
-                    Go to sign in <MdArrowForward aria-hidden="true" />
+                  <Link href="/account/sign-in" className="nbh-auth10__confirmation-link">
+                    Go to sign in
                   </Link>
-                </div>
+                </motion.div>
               ) : (
                 <>
-                  {productionAuth && (
-                    <>
-                      <div className="nbh-auth5__social">
-                        <GoogleAuthButton label="Sign up with Google" onError={setError} />
-                      </div>
-                      <div className="nbh-auth5__divider">
-                        <Separator className="flex-1" />
-                        <span>or continue with email</span>
-                        <Separator className="flex-1" />
-                      </div>
-                    </>
-                  )}
-
-                  <form className="nbh-auth5__form" onSubmit={submit} aria-busy={submitting}>
-                    <div className="nbh-auth5__field">
+                  <form className="nbh-auth10__form" onSubmit={submit} aria-busy={submitting}>
+                    <motion.div className="nbh-auth10__field" variants={signupItemMotion}>
                       <label htmlFor="nbh-signup-name">Full name</label>
-                      <div className="nbh-auth5__input-wrap">
-                        <MdPerson className="nbh-auth5__input-icon" aria-hidden="true" />
-                        <Input
-                          id="nbh-signup-name"
-                          type="text"
-                          autoComplete="name"
-                          placeholder="Your full name"
-                          value={name}
-                          onChange={(event) => setName(event.target.value)}
-                          minLength={2}
-                          maxLength={80}
-                          disabled={submitting}
-                          required
-                        />
-                      </div>
-                    </div>
+                      <Input
+                        id="nbh-signup-name"
+                        type="text"
+                        autoComplete="name"
+                        placeholder="Enter your full name"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        minLength={2}
+                        maxLength={80}
+                        disabled={submitting}
+                        required
+                      />
+                    </motion.div>
 
-                    <div className="nbh-auth5__field">
+                    <motion.div className="nbh-auth10__field" variants={signupItemMotion}>
                       <label htmlFor="nbh-signup-email">Email address</label>
-                      <div className="nbh-auth5__input-wrap">
-                        <MdEmail className="nbh-auth5__input-icon" aria-hidden="true" />
-                        <Input
-                          id="nbh-signup-email"
-                          type="email"
-                          autoComplete="email"
-                          placeholder="you@example.com"
-                          value={email}
-                          onChange={(event) => setEmail(event.target.value)}
-                          maxLength={160}
-                          disabled={submitting}
-                          required
-                        />
-                      </div>
-                    </div>
+                      <Input
+                        id="nbh-signup-email"
+                        type="email"
+                        autoComplete="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
+                        maxLength={160}
+                        disabled={submitting}
+                        required
+                      />
+                    </motion.div>
 
-                    <div className="nbh-auth5__field">
+                    <motion.div className="nbh-auth10__field" variants={signupItemMotion}>
                       <label htmlFor="nbh-signup-phone">Mobile number</label>
-                      <div className="nbh-auth5__input-wrap">
-                        <MdPhone className="nbh-auth5__input-icon" aria-hidden="true" />
-                        <Input
-                          id="nbh-signup-phone"
-                          type="tel"
-                          autoComplete="tel"
-                          placeholder="04XX XXX XXX"
-                          value={phone}
-                          onChange={(event) => setPhone(event.target.value)}
-                          minLength={8}
-                          maxLength={24}
-                          disabled={submitting}
-                          required
-                        />
-                      </div>
-                    </div>
+                      <Input
+                        id="nbh-signup-phone"
+                        type="tel"
+                        autoComplete="tel"
+                        placeholder="04XX XXX XXX"
+                        value={phone}
+                        onChange={(event) => setPhone(event.target.value)}
+                        minLength={8}
+                        maxLength={24}
+                        disabled={submitting}
+                        required
+                      />
+                    </motion.div>
 
                     {productionAuth && (
                       <>
-                        <div className="nbh-auth5__field">
+                        <motion.div className="nbh-auth10__field" variants={signupItemMotion}>
                           <label htmlFor="nbh-signup-password">Password</label>
-                          <div className="nbh-auth5__input-wrap">
-                            <MdLock className="nbh-auth5__input-icon" aria-hidden="true" />
+                          <div className="nbh-auth10__password-wrap">
                             <Input
                               id="nbh-signup-password"
                               type={showPassword ? "text" : "password"}
@@ -247,24 +272,22 @@ export default function AccountCreatePage() {
                               maxLength={256}
                               disabled={submitting}
                               required
-                              className="nbh-auth5__password-input"
                             />
                             <button
                               type="button"
-                              className="nbh-auth5__password-toggle"
-                              onClick={() => setShowPassword((current) => !current)}
+                              disabled={submitting}
+                              onClick={() => setShowPassword((visible) => !visible)}
                               aria-label={showPassword ? "Hide password" : "Show password"}
                               aria-pressed={showPassword}
                             >
                               {showPassword ? <MdVisibilityOff aria-hidden="true" /> : <MdVisibility aria-hidden="true" />}
                             </button>
                           </div>
-                        </div>
+                        </motion.div>
 
-                        <div className="nbh-auth5__field">
+                        <motion.div className="nbh-auth10__field" variants={signupItemMotion}>
                           <label htmlFor="nbh-signup-confirm">Confirm password</label>
-                          <div className="nbh-auth5__input-wrap">
-                            <MdLock className="nbh-auth5__input-icon" aria-hidden="true" />
+                          <div className="nbh-auth10__password-wrap">
                             <Input
                               id="nbh-signup-confirm"
                               type={showConfirmPassword ? "text" : "password"}
@@ -276,53 +299,72 @@ export default function AccountCreatePage() {
                               maxLength={256}
                               disabled={submitting}
                               required
-                              className="nbh-auth5__password-input"
                             />
                             <button
                               type="button"
-                              className="nbh-auth5__password-toggle"
-                              onClick={() => setShowConfirmPassword((current) => !current)}
+                              disabled={submitting}
+                              onClick={() => setShowConfirmPassword((visible) => !visible)}
                               aria-label={showConfirmPassword ? "Hide confirmation password" : "Show confirmation password"}
                               aria-pressed={showConfirmPassword}
                             >
                               {showConfirmPassword ? <MdVisibilityOff aria-hidden="true" /> : <MdVisibility aria-hidden="true" />}
                             </button>
                           </div>
-                        </div>
+                        </motion.div>
                       </>
                     )}
 
-                    {error && <p className="nbh-auth5__error" role="alert">{error}</p>}
+                    <motion.div className="nbh-auth10__terms" variants={signupItemMotion}>
+                      <input
+                        id="nbh-signup-terms"
+                        type="checkbox"
+                        checked={agreedToTerms}
+                        onChange={(event) => setAgreedToTerms(event.target.checked)}
+                        disabled={submitting}
+                        required
+                      />
+                      <label htmlFor="nbh-signup-terms">
+                        I agree to the <Link href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms and Conditions</Link> and{" "}
+                        <Link href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</Link>.
+                      </label>
+                    </motion.div>
 
-                    <Button className="nbh-auth5__submit" type="submit" disabled={submitting}>
-                      <span>{submitting ? "Creating account…" : "Create account"}</span>
-                      <MdArrowForward aria-hidden="true" />
-                    </Button>
+                    {error && <p className="nbh-auth10__error" role="alert">{error}</p>}
+
+                    <motion.div variants={signupItemMotion}>
+                      <Button className="nbh-auth10__submit" type="submit" disabled={submitting}>
+                        {submitting ? "Creating account…" : "Create account"}
+                      </Button>
+                    </motion.div>
                   </form>
 
-                  <p className="nbh-auth5__signup">
+                  {productionAuth && (
+                    <>
+                      <motion.div className="nbh-auth10__divider" variants={signupItemMotion}>
+                        <span>or</span>
+                      </motion.div>
+                      <motion.div className="nbh-auth10__social" variants={signupItemMotion}>
+                        <GoogleAuthButton label="Continue with Google" onError={setError} />
+                      </motion.div>
+                      <p className="nbh-auth10__social-note">
+                        By continuing with Google, you acknowledge our{" "}
+                        <Link href="/terms-and-conditions">Terms</Link> and{" "}
+                        <Link href="/privacy-policy">Privacy Policy</Link>.
+                      </p>
+                    </>
+                  )}
+
+                  <motion.p className="nbh-auth10__signin" variants={signupItemMotion}>
                     Already have an account? <Link href="/account/sign-in">Sign in</Link>
-                  </p>
+                  </motion.p>
                 </>
               )}
-              <Link href="/" className="nbh-auth5__home-link">← Back to Home</Link>
-            </div>
-          </section>
 
-          <aside className="nbh-auth5__visual-panel" aria-label="Nasty Burger House">
-            <Image
-              src="/images/Warmly lit food trailer at night-2.png"
-              alt="Warmly lit Nasty Burger House food trailer at night"
-              fill
-              sizes="(min-width: 900px) 52vw, 100vw"
-              className="nbh-auth5__hero-image"
-            />
-            <div className="nbh-auth5__hero-shade" aria-hidden="true" />
-            <div className="nbh-auth5__hero-content">
-              <h2>{"BIG BURGERS.\nBIG REWARDS."}</h2>
-              <p>Order your favourites. Earn Drip Points.</p>
-            </div>
-          </aside>
+              <motion.div className="nbh-auth10__home" variants={signupItemMotion}>
+                <Link href="/">← Back to Home</Link>
+              </motion.div>
+            </motion.div>
+          </section>
         </div>
       </main>
     </div>

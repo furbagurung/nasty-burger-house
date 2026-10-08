@@ -154,11 +154,9 @@ export default function AccountCreatePage() {
                     If your details can be registered, we&apos;ll send a confirmation
                     link to <strong>{email}</strong>.
                   </p>
-                  <Button asChild className="nbh-auth5__submit">
-                    <Link href="/account/sign-in">
-                      Go to sign in <MdArrowForward aria-hidden="true" />
-                    </Link>
-                  </Button>
+                  <Link className="nbh-auth5__submit nbh-auth5__success-link" href="/account/sign-in">
+                    Go to sign in <MdArrowForward aria-hidden="true" />
+                  </Link>
                 </div>
               ) : (
                 <>

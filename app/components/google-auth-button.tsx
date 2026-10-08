@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FcGoogle } from "react-icons/fc";
 import { getBrowserClientOrNull } from "../lib/supabase/client";
 
 type GoogleAuthButtonProps = {
@@ -74,7 +75,7 @@ export default function GoogleAuthButton({
       disabled={loading}
     >
       <span className="account-google-icon" aria-hidden="true">
-        G
+        <FcGoogle size={20} focusable="false" />
       </span>
       <span>{loading ? "Opening Google…" : label}</span>
     </button>

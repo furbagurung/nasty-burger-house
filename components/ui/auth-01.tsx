@@ -18,7 +18,7 @@ import {
 export interface SocialProvider {
   name: string;
   icon: ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export interface Auth1Props {
@@ -236,7 +236,7 @@ export function Auth1({
                   </div>
                   <div className="nbh-auth-social">
                     {socialContent}
-                    {socialProviders.map((provider) => (
+                    {socialProviders.filter((provider) => typeof provider.onClick === "function").map((provider) => (
                       <Button
                         key={provider.name}
                         variant="outline"

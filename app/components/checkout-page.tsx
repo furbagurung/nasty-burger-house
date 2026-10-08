@@ -612,9 +612,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                   </div>
                 </div>
               )}
-              <button className="checkout-wizard-review-back" type="button" onClick={() => changeStep(1)} disabled={submitting}>
-                <ChevronLeft size={17} aria-hidden="true" /> Back to details
-              </button>
               <ButtonWithIcon
                 tone="red"
                 fullWidth

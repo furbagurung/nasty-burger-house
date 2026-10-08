@@ -17,6 +17,13 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
+function notificationRecipients(value: string | undefined) {
+  return (value ?? "")
+    .split(",")
+    .map((email) => email.trim())
+    .filter(Boolean);
+}
+
 function money(value: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -63,10 +70,10 @@ export async function sendAdminOrderEmail(
   payload: OrderNotificationPayload,
 ): Promise<EmailNotificationResult> {
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  const to = process.env.ORDER_NOTIFICATION_EMAIL?.trim();
+  const to = notificationRecipients(process.env.ORDER_NOTIFICATION_EMAIL);
   const from = process.env.ORDER_NOTIFICATION_FROM?.trim();
 
-  if (!apiKey || !to || !from) {
+  if (!apiKey || to.length === 0 || !from) {
     return { ok: false, reason: "not-configured" };
   }
 
@@ -143,7 +150,7 @@ export async function sendAdminOrderEmail(
       },
       body: JSON.stringify({
         from,
-        to: [to],
+        to,
         subject: `New Nasty order ${payload.orderId} · ${money(payload.totals.total)}`,
         html,
         text,

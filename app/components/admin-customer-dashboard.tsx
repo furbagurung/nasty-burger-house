@@ -231,7 +231,7 @@ export default function AdminCustomerDashboard({
                     </div>
 
                     <div className="admin-customer-cell" data-label="Source">
-                      <Badge variant={customer.source === "both" ? "success" : "secondary"} className={`admin-customer-source ${sourceClass(customer)}`}>
+                      <Badge variant="secondary" className={`admin-customer-source ${sourceClass(customer)}`}>
                         {sourceLabel(customer)}
                       </Badge>
                       {customer.websiteAccount && (

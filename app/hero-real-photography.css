@@ -122,30 +122,6 @@
   transform: none !important;
 }
 
-
-@media (min-width: 681px) {
-  .site-shell > .home-main > .hero-carousel {
-    width: min(calc(100% - 2rem), 1180px) !important;
-    margin-right: auto !important;
-    margin-left: auto !important;
-    overflow: hidden !important;
-    border-radius: 1.5rem !important;
-  }
-
-  .site-shell > .home-main > .hero-carousel .hero-slide,
-  .site-shell > .home-main > .hero-carousel .hero-slide__image,
-  .site-shell > .home-main > .hero-carousel .hero-slide__shade {
-    border-radius: 1.5rem !important;
-  }
-
-  .site-shell > .home-main > .hero-carousel .hero-slide__image,
-  .site-shell > .home-main > .hero-carousel .hero-slide.is-active .hero-slide__image {
-    object-fit: contain !important;
-    object-position: center center !important;
-    transform: scale(0.92) !important;
-  }
-}
-
 @media (max-width: 980px) {
   .hero-slide__copy {
     width: min(30rem, calc(100% - 2.4rem)) !important;

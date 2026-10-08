@@ -821,7 +821,9 @@
 @media (min-width: 681px) {
   .cart-redesign-page .cart-redesign-main {
     background: #fff;
-    padding-top: clamp(2rem, 3.5vw, 3rem);
+    /* Leave room for the fixed desktop header and hours announcement.
+       The previous reduced padding hid the Cart title beneath them. */
+    padding-top: 8.5rem;
     padding-bottom: clamp(2.5rem, 4.5vw, 3.75rem);
   }
 

@@ -585,3 +585,18 @@
     margin-top: 0.8rem;
   }
 }
+
+/* Product description follows price and dietary tags only on mobile. */
+.product-page-premium .product-description--mobile {
+  display: none;
+}
+@media (max-width: 680px) {
+  .product-page-premium .product-description--desktop {
+    display: none;
+  }
+  .product-page-premium .product-description--mobile {
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 0.9rem;
+  }
+}

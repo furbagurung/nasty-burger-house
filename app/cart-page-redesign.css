@@ -119,15 +119,18 @@
   width: 100%;
   min-height: 8.4rem;
   place-items: center;
-  overflow: hidden;
-  border-radius: 1.15rem;
-  background: #f2eee8;
+  /* Product photos sit directly on the cart's white list surface. */
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .cart-redesign-item__media img {
   width: 100%;
   height: 100%;
-  padding: 0.5rem;
+  padding: 0;
   object-fit: contain;
   transition: transform 180ms ease;
 }
@@ -478,11 +481,6 @@
 
   .cart-redesign-item__media {
     min-height: 6.65rem;
-    border-radius: 0.95rem;
-  }
-
-  .cart-redesign-item__media img {
-    padding: 0.3rem;
   }
 
   .cart-redesign-item__content {

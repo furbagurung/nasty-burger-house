@@ -174,13 +174,18 @@ export async function POST(request: Request) {
       requestId: validation.order.requestId,
     });
 
-    const { account: loyaltyAccount } = await findOrCreateSquareLoyaltyAccount({
-      customerId: customer.id,
-      phone: customer.phone,
-      requestId: `nbh-checkout-loyalty-${validation.order.requestId}`,
-    });
+    const { account: loyaltyAccount, created: loyaltyCreated } =
+      await findOrCreateSquareLoyaltyAccount({
+        customerId: customer.id,
+        phone: customer.phone,
+        requestId: `nbh-checkout-loyalty-${validation.order.requestId}`,
+      });
 
-    await ensureSquareSignupBonus(loyaltyAccount.id);
+    // Existing Square loyalty members already have their welcome balance.
+    // Never award another 500 points when they place a website order.
+    await ensureSquareSignupBonus(loyaltyAccount.id, {
+      newlyCreated: loyaltyCreated,
+    });
 
     const checkout = await createSquareCheckout(
       orderPayload,

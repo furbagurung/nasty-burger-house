@@ -814,3 +814,32 @@
     border-top: 1px solid var(--cart-line);
   }
 }
+
+/* Cart page is one white content canvas, including its main title.
+   Keep the warm site background outside the centered content width and
+   remove the nested 'card within card' visual treatment entirely. */
+@media (min-width: 681px) {
+  .cart-redesign-page .cart-redesign-main {
+    background: #fff;
+    padding-top: clamp(2rem, 3.5vw, 3rem);
+    padding-bottom: clamp(2.5rem, 4.5vw, 3.75rem);
+  }
+
+  .cart-redesign-page .cart-redesign-header--desktop {
+    margin-bottom: 1.75rem;
+  }
+
+  .cart-redesign-page .cart-redesign-layout {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  /* Only the divider between the cart list and totals remains visible. */
+  .cart-redesign-page .cart-redesign-summary {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}

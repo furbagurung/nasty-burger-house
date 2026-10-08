@@ -6,6 +6,7 @@ import { Bowlby_One_SC, DM_Sans, Geist_Mono } from "next/font/google";
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import ClosureAnnouncement from "./components/closure-announcement";
 import CookieSettings from "./components/cookie-settings";
+import ErrorMonitorClient from "./components/error-monitor-client";
 import FindStyleNavigation from "./components/find-style-navigation";
 import FooterLegalLinks from "./components/footer-legal-links";
 import HomeTopHeader from "./components/home-top-header";
@@ -117,6 +118,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <MobileHomeLocation />
         <FindStyleNavigation />
         <ImageDragGuard />
+        <ErrorMonitorClient />
 
         {children}
 

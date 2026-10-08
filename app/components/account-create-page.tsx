@@ -136,7 +136,7 @@ export default function AccountCreatePage() {
             </p>
             <div className="account-auth-benefits">
               <span>
-                <strong>500</strong> signup Drip Points
+                <strong>500</strong> points for new loyalty members
               </span>
               <span>Order history</span>
               <span>Faster checkout</span>
@@ -230,7 +230,7 @@ export default function AccountCreatePage() {
               <ButtonWithIcon tone="red" type="submit" disabled={submitting}>
                 {submitting
                   ? "Creating account…"
-                  : "Create account + get 500 points"}
+                  : "Create account"}
               </ButtonWithIcon>
               <p className="account-auth-switch">
                 Already have an account?{" "}

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { AlertCircle, CheckCircle2, Clock3, CreditCard, MapPin, ShieldCheck } from "lucide-react";
 import { menuItems } from "../data/menu";
 import {
   calculateCartSubtotal,
@@ -10,12 +11,43 @@ import {
   type CartLine,
 } from "../lib/order";
 import { getServiceStatus, type ServiceStatus } from "../lib/service";
-import MobileBottomNav from "./mobile-bottom-nav";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 const CHECKOUT_CONTACT_KEY = "nasty-burger-checkout-contact";
 const PENDING_ORDER_KEY = "nasty-square-pending-order";
+
+type ContactField = "name" | "email" | "phone";
+type ContactErrors = Partial<Record<ContactField, string>>;
+
+function validateContact(name: string, email: string, phone: string): ContactErrors {
+  const errors: ContactErrors = {};
+  const trimmedName = name.trim();
+  const trimmedEmail = email.trim();
+  const trimmedPhone = phone.trim();
+
+  // Match the rules enforced on /api/orders so validation is consistent.
+  if (trimmedName.length < 2 || trimmedName.length > 80) {
+    errors.name = "Enter a pickup name (2–80 characters).";
+  }
+  if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(trimmedEmail) || trimmedEmail.length > 160) {
+    errors.email = "Enter a valid email address.";
+  }
+  if (!/^[+()\\d\\s-]{8,24}$/.test(trimmedPhone)) {
+    errors.phone = "Enter a valid phone number (8–24 characters).";
+  }
+  return errors;
+}
+
+function serverContactErrors(messages: string[]): ContactErrors {
+  const fields: ContactErrors = {};
+  for (const message of messages) {
+    if (/pickup name/i.test(message)) fields.name = message;
+    if (/email address/i.test(message)) fields.email = message;
+    if (/phone number/i.test(message)) fields.phone = message;
+  }
+  return fields;
+}
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -75,7 +107,12 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+  const [fieldErrors, setFieldErrors] = useState<ContactErrors>({});
   const [hydrated, setHydrated] = useState(false);
+  const errorSummaryRef = useRef<HTMLDivElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const syncServiceStatus = () => setServiceStatus(getServiceStatus());
@@ -116,12 +153,45 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   const subtotal = useMemo(() => calculateCartSubtotal(cart), [cart]);
   const count = cart.reduce((total, line) => total + line.quantity, 0);
 
+  function updateContactField(field: ContactField, value: string) {
+    if (field === "name") setName(value);
+    if (field === "email") setEmail(value);
+    if (field === "phone") setPhone(value);
+    setFieldErrors((current) => ({ ...current, [field]: undefined }));
+    setErrors([]);
+  }
+
+  useEffect(() => {
+    if (errors.length === 0) return;
+    const frame = window.requestAnimationFrame(() => {
+      const firstInvalid = fieldErrors.name ? nameInputRef.current
+        : fieldErrors.email ? emailInputRef.current
+          : fieldErrors.phone ? phoneInputRef.current : null;
+      if (firstInvalid) firstInvalid.focus({ preventScroll: true });
+      errorSummaryRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [errors, fieldErrors]);
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (submitting || cart.length === 0) return;
-    setSubmitting(true);
     setErrors([]);
+    setFieldErrors({});
 
+    const validation = validateContact(name, email, phone);
+    if (Object.keys(validation).length > 0) {
+      setFieldErrors(validation);
+      setErrors(["Please correct the highlighted contact details."]);
+      return;
+    }
+
+    if (!serviceStatus.acceptingOrders) {
+      setErrors([serviceStatus.notice]);
+      return;
+    }
+
+    setSubmitting(true);
     const requestId = crypto.randomUUID();
     try {
       window.localStorage.setItem(
@@ -134,7 +204,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           requestId,
-          customer: { name, email, phone },
+          customer: { name: name.trim(), email: email.trim(), phone: phone.trim() },
           notes,
           pickupMethod: "asap",
           paymentMethod: "square_checkout",
@@ -142,7 +212,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
           clientSubtotal: subtotal,
         }),
       });
-      const result = (await response.json()) as {
+      const result = (await response.json().catch(() => null)) as {
         ok?: boolean;
         errors?: string[];
         orderId?: string;
@@ -150,21 +220,29 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
         checkoutUrl?: string;
         subtotal?: number;
         storageMode?: "square";
-      };
+      } | null;
 
       if (
         !response.ok ||
-        !result.ok ||
+        !result?.ok ||
         !result.orderId ||
         !result.squareOrderId ||
         !result.checkoutUrl ||
         typeof result.subtotal !== "number"
       ) {
-        setErrors(
-          result.errors?.length
-            ? result.errors
-            : ["The secure checkout could not be started. Please try again."],
-        );
+        const messages = Array.isArray(result?.errors)
+          ? result.errors.filter((message): message is string => typeof message === "string").slice(0, 6)
+          : [];
+        const fallback = response.status === 429
+          ? "Too many checkout attempts. Please wait a few minutes before trying again."
+          : response.status === 409
+            ? "Ordering is not available right now. Check the pickup hours below."
+            : response.status === 422
+              ? "Some order details are invalid. Check your information and cart."
+              : "We couldn't start Square checkout. Please try again.";
+        setErrors(messages.length ? messages : [fallback]);
+        setFieldErrors(serverContactErrors(messages));
+        if (response.status === 409) setServiceStatus(getServiceStatus());
         return;
       }
 
@@ -181,7 +259,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
       window.location.assign(result.checkoutUrl);
     } catch {
       setErrors([
-        "We could not reach the order service. Check your connection and try again.",
+        "Checkout could not be completed. Check your connection and try again. If you already reached Square, check your payment status before retrying.",
       ]);
     } finally {
       setSubmitting(false);
@@ -210,7 +288,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             <Link href="/menu/burgers">Explore the menu</Link>
           </section>
         </main>
-        <MobileBottomNav active="cart" cartCount={0} />
       </div>
     );
   }
@@ -379,7 +456,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
           </aside>
         </form>
       </main>
-      <MobileBottomNav active="cart" cartCount={count} />
     </div>
   );
 }

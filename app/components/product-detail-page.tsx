@@ -24,7 +24,6 @@ import { findMenuPageCategory } from "../data/menu-pages";
 import type { CartLine } from "../lib/order";
 import CatalogueMobileMenu from "./catalogue-mobile-menu";
 import MenuItemMedia from "./menu-item-media";
-import MobileBottomNav from "./mobile-bottom-nav";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 type ProductDetailPageProps = {

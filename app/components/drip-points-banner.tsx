@@ -1,7 +1,7 @@
 import Image from "next/image";
 
-const DESKTOP_AD = "/images/horizotnal-Join-drip-points.webp";
-const MOBILE_AD = "/images/verticalJoin-drip-points.webp";
+const DESKTOP_AD = "/images/horizotnal-Join-drip-points-new.webp";
+const MOBILE_AD = "/images/verticalJoin-drip-points-new.webp";
 
 export default function DripPointsBanner() {
   return (

@@ -1,4 +1,6 @@
+import { after } from "next/server";
 import { sendAdminOrderEmail } from "../../lib/admin-notifications";
+import { reportAdminError } from "../../lib/error-monitoring";
 import { consumeRateLimit, requestIp } from "../../lib/rate-limit";
 import { validateOrderPayload } from "../../lib/order";
 import {
@@ -100,6 +102,19 @@ export async function POST(request: Request) {
 
   const squareState = squareConfigurationState();
   if (!squareState.configured) {
+    after(() =>
+      reportAdminError(new Error("Square checkout is not configured."), {
+        source: "checkout",
+        path: "/api/orders",
+        method: "POST",
+        routePath: "/api/orders",
+        routeType: "route",
+        metadata: {
+          squareConfigured: false,
+        },
+      }),
+    );
+
     return Response.json(
       {
         ok: false,
@@ -214,6 +229,22 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error("[NBH Square checkout failed]", error);
+
+    after(() =>
+      reportAdminError(error, {
+        source: "checkout",
+        path: "/api/orders",
+        method: "POST",
+        routePath: "/api/orders",
+        routeType: "route",
+        metadata: {
+          orderId,
+          requestId: validation.order.requestId,
+          squareStatus:
+            error instanceof SquareApiError ? error.status : undefined,
+        },
+      }),
+    );
 
     const status =
       error instanceof SquareApiError && error.status >= 400 && error.status < 500

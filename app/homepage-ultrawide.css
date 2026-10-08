@@ -1,0 +1,135 @@
+/* Ultra-wide homepage scaling.
+   Only applies when the CSS viewport is very wide (large monitors or
+   zoomed-out desktop), leaving normal desktop/tablet/mobile unchanged. */
+
+@media (min-width: 1800px) {
+  .home-main > .menu-preview {
+    padding-right: 5vw !important;
+    padding-left: 5vw !important;
+  }
+
+  .home-main > .menu-preview .menu-preview__heading,
+  .home-main > .menu-preview .menu-preview__grid {
+    width: min(90vw, 1800px) !important;
+    max-width: none !important;
+  }
+
+  .home-main > .menu-preview .menu-preview__heading h2 {
+    font-size: clamp(2.5rem, 2.4vw, 4.5rem) !important;
+  }
+
+  .home-main > .menu-preview .menu-preview__view-all {
+    font-size: clamp(0.95rem, 0.8vw, 1.25rem) !important;
+  }
+
+  .home-main > .menu-preview .menu-preview-card__image {
+    height: clamp(10rem, 10vw, 14rem) !important;
+  }
+
+  .home-main > .menu-preview .menu-preview-card--clean strong {
+    max-width: 16rem !important;
+    font-size: clamp(1.15rem, 1vw, 1.55rem) !important;
+  }
+
+  .home-main > .popular-picks {
+    padding-right: 5vw !important;
+    padding-left: 5vw !important;
+  }
+
+  .home-main > .popular-picks .popular-picks__heading,
+  .home-main > .popular-picks .popular-picks__rail {
+    width: min(90vw, 1800px) !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+
+  .home-main > .popular-picks .popular-picks__heading h2 {
+    font-size: clamp(2.8rem, 2.9vw, 5rem) !important;
+  }
+
+  .home-main > .popular-picks .popular-picks__heading > a {
+    font-size: clamp(0.95rem, 0.8vw, 1.25rem) !important;
+  }
+
+  .home-main > .popular-picks .popular-pick-card__body strong {
+    font-size: clamp(1.05rem, 0.9vw, 1.4rem) !important;
+  }
+
+  .home-main > .popular-picks .popular-pick-card__body small {
+    font-size: clamp(0.9rem, 0.75vw, 1.15rem) !important;
+  }
+
+  .home-main > .popular-picks .popular-pick-card__add {
+    width: clamp(2.25rem, 2vw, 3rem) !important;
+    height: clamp(2.25rem, 2vw, 3rem) !important;
+    font-size: clamp(1.2rem, 1vw, 1.6rem) !important;
+  }
+
+  .home-story-highlights {
+    padding-right: 5vw !important;
+    padding-left: 5vw !important;
+  }
+
+  .home-story-highlights__heading,
+  .home-story-highlights__row {
+    width: min(90vw, 1800px) !important;
+    max-width: none !important;
+  }
+
+  .home-story-highlights__heading h2 {
+    font-size: clamp(2.8rem, 3vw, 5rem) !important;
+  }
+
+  .home-story-highlights__row {
+    gap: clamp(1.25rem, 1.5vw, 2rem) !important;
+  }
+
+  .home-story-highlight {
+    min-width: clamp(6.5rem, 6vw, 9rem) !important;
+  }
+
+  .home-story-highlight__ring {
+    width: clamp(6rem, 5.5vw, 8rem) !important;
+    height: clamp(6rem, 5.5vw, 8rem) !important;
+  }
+
+  .home-story-highlight__label {
+    max-width: 8rem !important;
+    font-size: clamp(0.82rem, 0.68vw, 1.05rem) !important;
+  }
+
+  .drip-ad-display {
+    width: min(88vw, 1800px) !important;
+  }
+
+  .drip-ad-display__desktop {
+    height: clamp(22rem, 22vw, 31rem) !important;
+  }
+
+  .home-testimonials {
+    padding-right: 5vw !important;
+    padding-left: 5vw !important;
+  }
+
+  .home-testimonials__inner {
+    width: min(90vw, 1800px) !important;
+    max-width: none !important;
+  }
+
+  .home-testimonials__heading h2 {
+    font-size: clamp(3.2rem, 3.5vw, 6rem) !important;
+  }
+
+  .home-testimonial-card {
+    min-height: clamp(20rem, 20vw, 25rem) !important;
+    padding: clamp(1.5rem, 1.5vw, 2rem) !important;
+  }
+
+  .home-testimonial-card blockquote {
+    font-size: clamp(0.95rem, 0.82vw, 1.25rem) !important;
+  }
+
+  .home-testimonial-card__identity strong {
+    font-size: clamp(0.9rem, 0.72vw, 1.1rem) !important;
+  }
+}

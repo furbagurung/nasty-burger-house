@@ -13,6 +13,7 @@ import {
 import { getServiceStatus, type ServiceStatus } from "../lib/service";
 import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
+import MobilePageHeader from "./mobile-page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -290,6 +291,12 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   if (!hydrated) {
     return (
       <div className="standalone-page checkout-page">
+        <MobilePageHeader
+          title="Checkout"
+          eyebrow="Your pickup order"
+          backHref="/cart"
+          backLabel="Back to cart"
+        />
         <main className="standalone-main checkout-page-main">
           <Card className="checkout-loading-card" role="status" aria-label="Loading checkout">
             <CardContent className="checkout-loading-content">
@@ -307,6 +314,12 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   if (cart.length === 0) {
     return (
       <div className="standalone-page checkout-page">
+        <MobilePageHeader
+          title="Checkout"
+          eyebrow="Your pickup order"
+          backHref="/cart"
+          backLabel="Back to cart"
+        />
         <main className="standalone-main checkout-page-main">
           <section className="cart-empty-state">
             <Image src="/images/bag.webp" alt="" width={140} height={140} />
@@ -322,6 +335,12 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
 
   return (
     <div className="standalone-page checkout-page">
+      <MobilePageHeader
+        title="Checkout"
+        eyebrow="Your pickup order"
+        backHref="/cart"
+        backLabel="Back to cart"
+      />
       <main className="standalone-main checkout-page-main">
         <div className="standalone-page-heading checkout-intro">
           <div className="checkout-intro__topline">

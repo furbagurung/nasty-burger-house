@@ -383,3 +383,29 @@
     padding-left: 0.65rem !important;
   }
 }
+
+/* Simple return navigation for headerless mobile product pages. */
+.product-mobile-back { display: none; }
+@media (max-width: 680px) {
+  .product-page-premium .product-mobile-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    min-height: 2.75rem;
+    margin: 0 1rem 0.15rem;
+    color: #292929;
+    font-size: 0.9rem;
+    font-weight: 750;
+    text-decoration: none;
+  }
+  .product-page-premium .product-mobile-back span:first-child {
+    font-size: 1.45rem;
+    line-height: 1;
+  }
+  .product-page-premium .product-mobile-back:focus-visible {
+    border-radius: 0.35rem;
+    outline: 2px solid #e83b18;
+    outline-offset: 2px;
+  }
+}

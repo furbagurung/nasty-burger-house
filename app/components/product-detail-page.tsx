@@ -335,10 +335,15 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
       </header>
 
       <main className="product-detail product-detail--premium">
-        <Link className="product-mobile-back" href={`/menu/${item.category}`} aria-label="Back to menu">
-          <span aria-hidden="true">←</span>
-          <span>Back</span>
-        </Link>
+        <div className="product-mobile-topbar">
+          <Link className="product-mobile-back" href={`/menu/${item.category}`} aria-label="Back to menu">
+            <span aria-hidden="true">←</span>
+          </Link>
+          <strong>Details</strong>
+          <Link className="product-mobile-cart" href="/?cart=1" aria-label="View cart">
+            <ShoppingBag size={19} strokeWidth={1.8} aria-hidden="true" />
+          </Link>
+        </div>
         <nav className="product-breadcrumb" aria-label="Breadcrumb">
           <Link href="/">Home</Link>
           <span aria-hidden="true">/</span>
@@ -377,7 +382,10 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               </div>
             </div>
 
-            <p className="product-detail__description">{item.description}</p>
+            <div className="product-mobile-description-card">
+              <strong className="product-mobile-description-label">Description</strong>
+              <p className="product-detail__description">{item.description}</p>
+            </div>
 
             {item.dietaryTags && item.dietaryTags.length > 0 && (
               <div className="product-detail__tags" aria-label="Dietary information">

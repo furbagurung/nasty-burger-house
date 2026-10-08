@@ -676,3 +676,15 @@
     padding-bottom: calc(5.8rem + env(safe-area-inset-bottom)) !important;
   }
 }
+
+/* Description is plain text, without a separate card or backdrop. */
+.product-page-premium .product-mobile-description-card {
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.product-page-premium .product-mobile-description-card .product-detail__description {
+  margin-top: 0 !important;
+}

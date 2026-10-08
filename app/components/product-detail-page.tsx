@@ -413,6 +413,8 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                   <span key={tag} className={tag === "Halal" ? "product-detail__tag--halal" : undefined}>
                     {tag === "Halal" ? (
                       <Image src="/images/Halal_logo.svg" alt="" width={19} height={19} aria-hidden="true" />
+                    ) : tag === "Vegetarian" ? (
+                      <Image src="/images/veg-icon.png" alt="" width={19} height={19} className="product-detail__veg-icon" aria-hidden="true" />
                     ) : (
                       <Check size={14} aria-hidden="true" />
                     )}

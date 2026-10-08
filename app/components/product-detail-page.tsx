@@ -375,16 +375,15 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               <div>
                 <p className="eyebrow">{category?.label ?? "Nasty Burger House menu"}</p>
                 <h1 id="product-title">{item.name}</h1>
+                <div className="product-mobile-description-card">
+                  <strong className="product-mobile-description-label">Description</strong>
+                  <p className="product-detail__description">{item.description}</p>
+                </div>
                 <p className="product-detail__price">
                   {money.format(item.price)}
                   {item.priceConfirmed === false && <small>Provisional</small>}
                 </p>
               </div>
-            </div>
-
-            <div className="product-mobile-description-card">
-              <strong className="product-mobile-description-label">Description</strong>
-              <p className="product-detail__description">{item.description}</p>
             </div>
 
             {item.dietaryTags && item.dietaryTags.length > 0 && (

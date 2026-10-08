@@ -48,11 +48,9 @@ export function TopNavbar() {
       <div className="flex shrink-0 items-center gap-2">
         <NotificationsMenu
           align={isMobile ? "center" : "end"}
-          collisionPadding={isMobile ? 16 : 5}
         />
         <ProfileMenu
           align={isMobile ? "center" : "end"}
-          collisionPadding={isMobile ? 16 : 5}
         />
       </div>
     </header>
@@ -61,10 +59,9 @@ export function TopNavbar() {
 
 type MenuPositioningProps = {
   align: "center" | "end";
-  collisionPadding: number;
 };
 
-function NotificationsMenu({ align, collisionPadding }: MenuPositioningProps) {
+function NotificationsMenu({ align }: MenuPositioningProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -80,7 +77,6 @@ function NotificationsMenu({ align, collisionPadding }: MenuPositioningProps) {
       <DropdownMenuContent
         align={align}
         sideOffset={8}
-        collisionPadding={collisionPadding}
         className="w-72 rounded-xl p-2"
       >
         <DropdownMenuGroup>
@@ -119,7 +115,7 @@ function NotificationsMenu({ align, collisionPadding }: MenuPositioningProps) {
   );
 }
 
-function ProfileMenu({ align, collisionPadding }: MenuPositioningProps) {
+function ProfileMenu({ align }: MenuPositioningProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -138,7 +134,6 @@ function ProfileMenu({ align, collisionPadding }: MenuPositioningProps) {
       <DropdownMenuContent
         align={align}
         sideOffset={8}
-        collisionPadding={collisionPadding}
         className="w-72 rounded-xl p-2"
       >
         <DropdownMenuGroup>

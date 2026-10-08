@@ -89,6 +89,7 @@ import "./auth-watermelon.css";
 import "./auth-05.css";
 import "./admin-jobtracker.css";
 import "./checkout-polish.css";
+import "./mobile-page-header.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",

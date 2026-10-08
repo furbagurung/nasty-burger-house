@@ -7,8 +7,6 @@ import { FooterUtilityLinks } from "./footer-legal-links";
 import Link from "next/link";
 import {
   Check,
-  Minus,
-  Plus,
   ShoppingBag,
   X,
 } from "lucide-react";
@@ -28,6 +26,7 @@ import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import CatalogueMobileMenu from "./catalogue-mobile-menu";
 import MenuItemMedia from "./menu-item-media";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
+import { QuantityStepper } from "@/components/ui/quantity-stepper";
 
 type ProductDetailPageProps = {
   item: MenuItem;
@@ -546,11 +545,14 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             )}
 
             <div className="product-purchase-panel">
-              <div className="product-quantity" aria-label="Quantity selector">
-                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setQuantity((current) => Math.max(1, current - 1))} disabled={quantity === 1} aria-label="Decrease quantity"><Minus size={17} /></motion.button>
-                <strong>{quantity}</strong>
-                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setQuantity((current) => Math.min(20, current + 1))} disabled={quantity === 20} aria-label="Increase quantity"><Plus size={17} /></motion.button>
-              </div>
+              <QuantityStepper
+                 label="Product quantity"
+                 value={quantity}
+                 min={1}
+                 max={20}
+                 size="regular"
+                 onChange={setQuantity}
+               />
 
               <ButtonWithIcon
                 tone={addedToCart ? "dark" : "red"}
@@ -652,15 +654,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                             <span className="product-drink-drawer__copy">
                               <strong>{ingredient}</strong>
                             </span>
-                            <div className="product-stepper product-extra-drawer__stepper">
-                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => toggleIngredient(ingredient)} disabled={removed} aria-label={`Remove ${ingredient}`}>
-                                <Minus size={15} />
-                              </motion.button>
-                              <strong>{ingredientQuantity}</strong>
-                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => toggleIngredient(ingredient)} disabled={!removed} aria-label={`Add back ${ingredient}`}>
-                                <Plus size={15} />
-                              </motion.button>
-                            </div>
+                            <QuantityStepper label={`${ingredient} ingredient quantity`} value={ingredientQuantity} min={0} max={1} onChange={(next) => { if (next !== ingredientQuantity) toggleIngredient(ingredient); }} />
                           </div>
                         );
                       })}
@@ -686,15 +680,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                               <strong>{modifier.name}</strong>
                               <small>+{money.format(modifier.price)} each</small>
                             </span>
-                            <div className="product-stepper product-extra-drawer__stepper">
-                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={selectedQuantity === 0} aria-label={`Remove ${modifier.name}`}>
-                                <Minus size={15} />
-                              </motion.button>
-                              <strong>{selectedQuantity}</strong>
-                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, 1)} aria-label={`Add ${modifier.name}`}>
-                                <Plus size={15} />
-                              </motion.button>
-                            </div>
+                            <QuantityStepper label={`${modifier.name} quantity`} value={selectedQuantity} min={0} max={10} onChange={(next) => changeModifier(modifier.id, next - selectedQuantity)} />
                           </div>
                         );
                       })}
@@ -720,15 +706,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                               <strong>{modifier.name}</strong>
                               <small>+{money.format(modifier.price)} each</small>
                             </span>
-                            <div className="product-stepper product-extra-drawer__stepper">
-                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={selectedQuantity === 0} aria-label={`Remove ${modifier.name}`}>
-                                <Minus size={15} />
-                              </motion.button>
-                              <strong>{selectedQuantity}</strong>
-                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, 1)} aria-label={`Add ${modifier.name}`}>
-                                <Plus size={15} />
-                              </motion.button>
-                            </div>
+                            <QuantityStepper label={`${modifier.name} quantity`} value={selectedQuantity} min={0} max={10} onChange={(next) => changeModifier(modifier.id, next - selectedQuantity)} />
                           </div>
                         );
                       })}
@@ -785,11 +763,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                             <strong>{burger.name}</strong>
                             <small>Included in your Beast Box</small>
                           </span>
-                          <div className="product-stepper product-extra-drawer__stepper">
-                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("burger", burger.id, -1)} disabled={selected === 0} aria-label={`Remove ${burger.name}`}><Minus size={15} /></motion.button>
-                            <strong>{selected}</strong>
-                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("burger", burger.id, 1)} disabled={boxBurgers.length >= item.boxConfig!.burgerCount} aria-label={`Add ${burger.name}`}><Plus size={15} /></motion.button>
-                          </div>
+                          <QuantityStepper label={`${burger.name} quantity`} value={selected} min={0} max={item.boxConfig!.burgerCount} disableIncrement={boxBurgers.length >= item.boxConfig!.burgerCount} onChange={(next) => changeBoxSelection("burger", burger.id, next - selected)} />
                         </div>
                       );
                     })}
@@ -818,11 +792,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                             <strong>{choice}</strong>
                             <small>Included in your Beast Box</small>
                           </span>
-                          <div className="product-stepper product-extra-drawer__stepper">
-                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("drink", choice, -1)} disabled={selected === 0} aria-label={`Remove ${choice}`}><Minus size={15} /></motion.button>
-                            <strong>{selected}</strong>
-                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("drink", choice, 1)} disabled={boxDrinks.length >= item.boxConfig!.drinkCount} aria-label={`Add ${choice}`}><Plus size={15} /></motion.button>
-                          </div>
+                          <QuantityStepper label={`${choice} quantity`} value={selected} min={0} max={item.boxConfig!.drinkCount} disableIncrement={boxDrinks.length >= item.boxConfig!.drinkCount} onChange={(next) => changeBoxSelection("drink", choice, next - selected)} />
                         </div>
                       );
                     })}

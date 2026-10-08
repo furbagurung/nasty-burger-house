@@ -490,7 +490,7 @@ export default function OrderExperience({
     setIsOrderTypeOpen(false);
     setIsLoyaltyOpen(false);
     setIsCheckoutOpen(false);
-    setSelectedItem(item);
+    window.location.assign(`/product/${item.id}`);
   }
 
   function continueAfterMonthly(item: MenuItem | null) {

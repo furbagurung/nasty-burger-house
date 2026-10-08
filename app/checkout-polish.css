@@ -552,3 +552,202 @@ body:has(.checkout-page) .mobile-tab-bar--v2 {
     font-size: 0.69rem;
   }
 }
+
+/* Desktop Cart / Checkout visual system.
+   Use Cart's editorial header, matched page alignment, one grouped form
+   surface and the same distinct sticky order-summary panel.
+   The shadcn form fields and payment integrations remain unchanged. */
+@media (min-width: 901px) {
+  .checkout-page {
+    --checkout-ink: #171513;
+    --checkout-muted: #7a746d;
+    --checkout-border: #e8e2da;
+    --checkout-hot: var(--hot, #e83b18);
+    background:
+      radial-gradient(circle at 92% 0%, rgba(232, 59, 24, 0.05), transparent 24rem),
+      #f6f3ee;
+    color: var(--checkout-ink);
+  }
+
+  .checkout-page .standalone-main.checkout-page-main {
+    width: min(100%, 1120px);
+    padding: clamp(3.5rem, 5.6vw, 6rem) clamp(1.1rem, 4vw, 3.25rem) 6rem;
+  }
+
+  .checkout-page .checkout-desktop-header.cart-redesign-header {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    max-width: 46rem;
+    margin: 0 0 2rem;
+  }
+
+  .checkout-page .checkout-desktop-header .cart-redesign-title-row h1 {
+    font-size: clamp(2.5rem, 5vw, 4.3rem);
+    line-height: 0.95;
+  }
+
+  .checkout-page .checkout-desktop-header .cart-redesign-title-wrap > p.checkout-desktop-subtitle {
+    max-width: 36rem;
+    margin: 0.75rem 0 0;
+    color: #746e67;
+    font-family: var(--font-dm-sans), Arial, sans-serif;
+    font-size: 0.84rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.5;
+    text-transform: none;
+  }
+
+  .checkout-page .checkout-page-layout {
+    grid-template-columns: minmax(0, 1.45fr) minmax(19rem, 0.78fr);
+    gap: 1.35rem;
+  }
+
+  /* Group the three form stages into a single bordered white surface.
+     Divider rhythm mirrors the cart's continuous list of products. */
+  .checkout-page .checkout-page-sections {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid rgba(23, 21, 19, 0.08);
+    border-radius: 1.3rem;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(31, 25, 18, 0.035);
+  }
+
+  .checkout-page .checkout-page-sections > [data-slot="card"].checkout-panel {
+    flex: 0 0 auto;
+    gap: 1.1rem;
+    min-width: 0;
+    border: 0;
+    border-bottom: 1px solid #e8e2da;
+    border-radius: 0;
+    padding: 1.3rem;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .checkout-page .checkout-page-sections > [data-slot="card"].checkout-panel:last-child {
+    border-bottom: 0;
+  }
+
+  .checkout-page .checkout-step-badge {
+    width: 2.15rem;
+    height: 2.15rem;
+    min-width: 2.15rem;
+    background: #171513;
+  }
+
+  .checkout-page .checkout-panel__heading h2 {
+    font-size: 1.18rem;
+    line-height: 1.28;
+  }
+
+  .checkout-page .checkout-panel__heading p {
+    color: #847d76;
+    font-size: 0.76rem;
+  }
+
+  .checkout-page .checkout-location-card {
+    justify-content: flex-start;
+    border: 1px solid #f0ebe4;
+    background: #f6f3ee;
+  }
+
+  .checkout-page .checkout-field [data-slot="input"],
+  .checkout-page .checkout-field textarea {
+    border-color: #ded8d0;
+  }
+
+  /* The summary uses Cart's separated, floating white order panel. */
+  .checkout-page [data-slot="card"].checkout-page-review {
+    position: sticky;
+    top: 7rem;
+    gap: 1rem;
+    border: 1px solid rgba(23, 21, 19, 0.075);
+    border-radius: 1.5rem;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 16px 38px rgba(31, 25, 18, 0.075);
+  }
+
+  .checkout-page .checkout-page-review__heading {
+    align-items: flex-end;
+  }
+
+  .checkout-page .checkout-summary-heading {
+    display: grid;
+    gap: 0.24rem;
+  }
+
+  .checkout-page .checkout-summary-heading > p {
+    margin: 0;
+    color: var(--checkout-hot);
+    font-family: var(--font-dm-sans), Arial, sans-serif;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+
+  .checkout-page .checkout-summary-heading > h2 {
+    margin: 0;
+    color: #171513;
+    font-size: 1.18rem;
+    line-height: 1.3;
+  }
+
+  .checkout-page .checkout-page-review__heading > a {
+    flex: 0 0 auto;
+    color: #c43a20;
+    text-underline-offset: 0.2rem;
+  }
+
+  .checkout-page .checkout-review-content {
+    gap: 0.9rem;
+  }
+
+  .checkout-page .checkout-review-content > [data-slot="separator"] {
+    background: #e8e2da;
+  }
+
+  .checkout-page .checkout-page-review__lines > div {
+    color: #5f5851;
+  }
+
+  .checkout-page .checkout-page-review__total strong {
+    color: #171513;
+    font-size: 1.55rem;
+    font-weight: 900;
+  }
+
+  .checkout-page .checkout-page-review [type="submit"] {
+    min-height: 3.55rem;
+    border-radius: 999px;
+    background: var(--checkout-hot);
+    box-shadow: 0 10px 22px rgba(232, 59, 24, 0.16);
+    font-size: 0.84rem;
+    font-weight: 850;
+  }
+
+  .checkout-page .checkout-page-review [type="submit"]:hover:not(:disabled) {
+    background: #d93216;
+  }
+}
+
+/* Tablets use the same shared mobile app header and an uncramped
+   one-column payment flow, without touching the smaller-phone design. */
+@media (min-width: 681px) and (max-width: 900px) {
+  .checkout-page .checkout-page-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .checkout-page [data-slot="card"].checkout-page-review {
+    position: static;
+    top: auto;
+  }
+}

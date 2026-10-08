@@ -287,6 +287,13 @@ export default function OrderExperience({
     [modifierQuantities],
   );
 
+  const comboDrinkImage =
+    items.find(
+      (item) =>
+        item.category === "drinks" &&
+        item.name === (selectedDrink || "Coke"),
+    )?.image ?? "/images/final-menu-photo/coke-v2.jpeg";
+
   const selectedUnitPrice = useMemo(() => {
     if (!selectedItem) return 0;
     const modifiersTotal = selectedModifiers.reduce(
@@ -1434,7 +1441,7 @@ export default function OrderExperience({
             {selectedItem.canUpgrade && (
               <fieldset>
                 <legend>Upgrade</legend>
-                <label className="option-row">
+                <label className="option-row option-row--combo">
                   <input
                     type="checkbox"
                     checked={isCombo}
@@ -1444,9 +1451,34 @@ export default function OrderExperience({
                       setSelectionError("");
                     }}
                   />
-                  <span>
-                    Make it a combo · +{formatPrice(comboUpgradePrice)}
-                    <small>Nasty Fries plus your choice of drink.</small>
+                  <span className="product-extra-info">
+                    <span
+                      className="product-upgrade-thumb-group"
+                      aria-hidden="true"
+                    >
+                      <span className="product-extra-thumb">
+                        <Image
+                          src="/images/final-menu-photo/nasty-fries-v2.jpg"
+                          alt=""
+                          width={52}
+                          height={52}
+                        />
+                      </span>
+                      <span className="product-extra-thumb">
+                        <Image
+                          src={comboDrinkImage}
+                          alt=""
+                          width={52}
+                          height={52}
+                        />
+                      </span>
+                    </span>
+                    <span className="product-extra-copy">
+                      <strong>
+                        Make it a combo · +{formatPrice(comboUpgradePrice)}
+                      </strong>
+                      <small>Nasty Fries plus your choice of drink.</small>
+                    </span>
                   </span>
                 </label>
               </fieldset>

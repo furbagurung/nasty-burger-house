@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, Minus, Plus, X } from "lucide-react";
+import { ChevronLeft, Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -217,7 +217,7 @@ export default function CartPage() {
                           onClick={() => removeLine(line.lineId)}
                           aria-label={`Remove ${item.name}`}
                         >
-                          <X size={17} strokeWidth={2.2} aria-hidden="true" />
+                          <Trash2 size={17} strokeWidth={2.2} aria-hidden="true" />
                         </button>
                       </div>
 

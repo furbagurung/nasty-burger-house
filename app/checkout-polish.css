@@ -424,3 +424,131 @@
   .checkout-page .checkout-page-review__total strong { font-size: 1.36rem; }
   .checkout-page .checkout-errors--top { padding: 0.85rem; scroll-margin-top: 5.5rem; }
 }
+
+/* Checkout intentionally excludes promotions and app tabs. As well as the
+   route-level React guards, these selectors protect against shared layouts
+   reintroducing them during client-side navigation or stale UI state. */
+body:has(.checkout-page) .closure-announcement,
+body:has(.checkout-page) .closure-announcement-spacer,
+body:has(.checkout-page) .mobile-tab-bar,
+body:has(.checkout-page) .mobile-tab-bar--v2 {
+  display: none !important;
+}
+
+.checkout-page {
+  width: 100%;
+  overflow-x: clip;
+}
+
+.checkout-page .checkout-page-layout,
+.checkout-page .checkout-page-sections,
+.checkout-page [data-slot="card"].checkout-panel,
+.checkout-page [data-slot="card"].checkout-page-review,
+.checkout-page .checkout-panel__heading > div,
+.checkout-page .checkout-review-content,
+.checkout-page .account-form-grid {
+  min-width: 0;
+}
+
+/* On phones the form and its order summary scroll as one continuous flow;
+   nothing is fixed to the bottom and no content hides behind mobile browser UI. */
+@media (max-width: 850px) {
+  .checkout-page .checkout-page-layout {
+    width: min(100%, 42rem);
+    margin-inline: auto;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  html:has(.checkout-page) {
+    scroll-padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
+
+  body:has(.checkout-page) .site-shell {
+    padding-bottom: 0;
+  }
+
+  .checkout-page .standalone-main.checkout-page-main {
+    padding: calc(1.15rem + env(safe-area-inset-top))
+      clamp(0.75rem, 3.8vw, 1rem)
+      calc(1.75rem + env(safe-area-inset-bottom));
+  }
+
+  .checkout-page .checkout-intro__topline {
+    align-items: center !important;
+    flex-wrap: wrap;
+    min-width: 0;
+    margin: 0 0 0.45rem !important;
+  }
+
+  .checkout-page .checkout-intro h1 {
+    max-width: 100%;
+    font-size: clamp(1.95rem, 9vw, 2.7rem);
+    letter-spacing: -0.045em;
+    line-height: 1.1;
+    overflow-wrap: break-word;
+  }
+
+  .checkout-page .checkout-intro > p {
+    max-width: 32ch;
+    font-size: 0.81rem;
+    line-height: 1.5;
+  }
+
+  .checkout-page .checkout-page-layout,
+  .checkout-page .account-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .checkout-page [data-slot="card"].checkout-panel,
+  .checkout-page [data-slot="card"].checkout-page-review {
+    min-width: 0;
+    padding: 1rem;
+  }
+
+  .checkout-page [data-slot="card-header"].checkout-panel__heading {
+    gap: 0.65rem;
+  }
+
+  .checkout-page .checkout-panel__heading h2 {
+    font-size: clamp(0.99rem, 4vw, 1.09rem);
+    line-height: 1.25;
+  }
+
+  .checkout-page .checkout-field [data-slot="input"],
+  .checkout-page .checkout-field textarea {
+    width: 100%;
+    min-width: 0;
+    font-size: 16px; /* Avoid Safari zoom on field focus. */
+  }
+
+  .checkout-page .checkout-payment-card {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+    gap: 0.45rem 0.75rem;
+    padding: 0.85rem;
+  }
+
+  .checkout-page .checkout-payment-card__selected {
+    grid-column: 2;
+    justify-self: start;
+    margin-left: 0;
+  }
+
+  .checkout-page .checkout-page-review [type="submit"] {
+    width: 100%;
+    min-width: 0;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .checkout-page [data-slot="card"].checkout-panel,
+  .checkout-page [data-slot="card"].checkout-page-review {
+    padding: 0.85rem;
+  }
+  .checkout-page .checkout-panel__heading p {
+    font-size: 0.69rem;
+  }
+}

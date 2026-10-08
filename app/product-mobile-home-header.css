@@ -133,3 +133,14 @@
     display: none !important;
   }
 }
+
+/* The location and hamburger are mounted at document level, outside the
+   catalogue header. Hide them too on mobile single-product pages. */
+@media (max-width: 680px) {
+  body:has(.product-page-shell) > .mobile-home-location,
+  body:has(.product-page-shell) > .nasty-find-burger,
+  body:has(.product-page-shell) .product-page-shell > .mobile-home-location,
+  body:has(.product-page-shell) .product-page-shell > .nasty-find-burger {
+    display: none !important;
+  }
+}

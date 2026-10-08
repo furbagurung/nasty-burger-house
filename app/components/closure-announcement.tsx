@@ -9,7 +9,14 @@ export default function ClosureAnnouncement() {
   const [desktopHeaderHidden, setDesktopHeaderHidden] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const isMenuRoute = pathname === "/menu" || pathname.startsWith("/menu/");
-  const isVisible = !dismissed && !pathname.startsWith("/admin");
+  const isAuthRoute =
+    pathname === "/account/sign-in" ||
+    pathname === "/account/create" ||
+    pathname === "/account/forgot-password" ||
+    pathname === "/account/reset-password";
+  // Keep opening-hours messaging across the main website, but leave
+  // authentication and administration flows distraction-free.
+  const isVisible = !dismissed && !pathname.startsWith("/admin") && !isAuthRoute;
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".home-top-header");

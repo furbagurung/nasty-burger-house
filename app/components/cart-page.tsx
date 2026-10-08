@@ -133,14 +133,19 @@ export default function CartPage() {
 
   useEffect(() => {
     if (!hydrated) return;
-    // Persist only consolidated lines, including if the old React state was
-    // restored by Fast Refresh or another component created duplicate rows.
-    if (JSON.stringify(cart) !== JSON.stringify(groupedCart)) {
-      setCart(groupedCart);
+
+    // Rendering uses groupedCart directly. Persist it only when the saved
+    // payload actually changes, avoiding a write → cart event → state cycle.
+    // In particular, never set React cart state from its own persistence effect.
+    const serialized = JSON.stringify(groupedCart);
+    try {
+      if (window.localStorage.getItem(CART_STORAGE_KEY) === serialized) return;
+      window.localStorage.setItem(CART_STORAGE_KEY, serialized);
+      window.dispatchEvent(new Event("nasty-cart-updated"));
+    } catch {
+      // Private browsing/storage restrictions must not trigger a render loop.
     }
-    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(groupedCart));
-    window.dispatchEvent(new Event("nasty-cart-updated"));
-  }, [cart, groupedCart, hydrated]);
+  }, [groupedCart, hydrated]);
 
   // Cart state can be changed by another tab or a product modal while this
   // page is open. Read the shared storage back and merge it safely.
@@ -186,7 +191,9 @@ export default function CartPage() {
   };
 
   const removeLine = (lineId: string) => {
-    setCart((current) => current.filter((line) => line.lineId !== lineId));
+    setCart((current) =>
+      mergeIdenticalCartLines(current).filter((line) => line.lineId !== lineId),
+    );
   };
 
   return (

@@ -13,14 +13,7 @@ import { Separator } from "@/components/ui/separator";
  * The installed registry demo is presentation-only; this component accepts
  * the existing working authentication callbacks instead of fake login actions.
  */
-export interface AuthFeature {
-  icon: ReactNode;
-  title: string;
-  description: string;
-}
-
 export interface Auth5Props {
-  brandName?: string;
   heading?: string;
   subheading?: string;
   identifierLabel?: string;
@@ -39,11 +32,9 @@ export interface Auth5Props {
   imageAlt?: string;
   panelHeading?: string;
   panelSubtext?: string;
-  features?: AuthFeature[];
 }
 
 export function Auth5({
-  brandName = "Nasty Burger House",
   heading = "Welcome back.",
   subheading = "Sign in to check your orders and collect Drip Points.",
   identifierLabel = "Email or mobile number",
@@ -62,7 +53,6 @@ export function Auth5({
   imageAlt = "Nasty Burger House burger",
   panelHeading = "Good food. Great rewards.",
   panelSubtext = "Your next Nasty Burger House order is only a few taps away.",
-  features = [],
 }: Auth5Props) {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -78,11 +68,6 @@ export function Auth5({
     <div className="nbh-auth5 dark">
       <section className="nbh-auth5__form-panel" aria-label="Customer account sign in">
         <div className="nbh-auth5__form-content">
-          <Link className="nbh-auth5__brand" href={homeHref} aria-label="Nasty Burger House home">
-            <Image src="/logo.webp" alt="" width={52} height={52} className="nbh-auth5__logo" />
-            <span>{brandName}</span>
-          </Link>
-
           <div className="nbh-auth5__intro">
             <h1>{heading}</h1>
             <p>{subheading}</p>
@@ -182,19 +167,8 @@ export function Auth5({
         />
         <div className="nbh-auth5__hero-shade" aria-hidden="true" />
         <div className="nbh-auth5__hero-content">
-          <span className="nbh-auth5__eyebrow">NASTY BURGER HOUSE</span>
           <h2>{panelHeading}</h2>
           <p>{panelSubtext}</p>
-          {features.length > 0 && (
-            <div className="nbh-auth5__features">
-              {features.map((feature) => (
-                <div className="nbh-auth5__feature" key={feature.title}>
-                  <span className="nbh-auth5__feature-icon" aria-hidden="true">{feature.icon}</span>
-                  <div><strong>{feature.title}</strong><small>{feature.description}</small></div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </aside>
     </div>

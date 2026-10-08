@@ -357,7 +357,7 @@ export default function AdminOrderDashboard({
                   <div className="admin-order-card__top">
                     <div>
                       <div className="admin-status-row">
-                        <Badge variant={order.status === "ready" ? "success" : order.status === "received" ? "destructive" : "secondary"} className={`admin-status admin-status--${order.status}`}>{statusLabels[order.status]}</Badge>
+                        <Badge variant={order.status === "received" ? "destructive" : "secondary"} className={`admin-status admin-status--${order.status}`}>{statusLabels[order.status]}</Badge>
                         {isNew && <Badge variant="destructive" className="admin-new-order-badge">New order</Badge>}
                       </div>
                       <h2>{order.id}</h2>

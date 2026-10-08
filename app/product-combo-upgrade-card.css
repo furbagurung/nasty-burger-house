@@ -20,7 +20,7 @@
     0 8px 20px rgba(128, 31, 12, 0.08) !important;
   text-align: left;
   isolation: isolate;
-  transition:
+  --nbh-motion-transition:
     border-color 180ms ease,
     box-shadow 180ms ease,
     transform 180ms ease,
@@ -29,36 +29,36 @@
 
 .product-page-premium .product-choice-card::before {
   position: absolute;
-  top: 50%;
-  left: 0.55rem;
+  top: var(--nbh-before-top, 50%);
+  left: var(--nbh-before-left, 0.55rem);
   z-index: 0;
-  width: 3.6rem;
-  height: 1.05rem;
+  width: var(--nbh-before-width, 3.6rem);
+  height: var(--nbh-before-height, 1.05rem);
   border-radius: 50%;
-  background: rgba(105, 23, 9, 0.16);
-  filter: blur(8px);
+  background: var(--nbh-before-background, rgba(105, 23, 9, 0.16));
+  filter: var(--nbh-before-filter, blur(8px));
   content: "";
   pointer-events: none;
-  transform: translate(-24%, 115%) rotate(-7deg);
+  transform: var(--nbh-before-transform, translate(-24%, 115%) rotate(-7deg));
 }
 
 .product-page-premium .product-choice-card::after {
   display: grid;
-  width: 2.65rem;
-  height: 2.65rem;
+  width: var(--nbh-after-width, 2.65rem);
+  height: var(--nbh-after-height, 2.65rem);
   place-items: center;
   grid-column: 2;
   grid-row: 1;
   border: 1px solid rgba(232, 59, 24, 0.13);
   border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 5px 14px rgba(112, 28, 12, 0.1);
-  color: #e83b18;
+  background: var(--nbh-after-background, #ffffff);
+  box-shadow: var(--nbh-after-box-shadow, 0 5px 14px rgba(112, 28, 12, 0.1));
+  color: var(--nbh-after-color, #e83b18);
   content: "→";
   font-size: 1.2rem;
   font-weight: 800;
   line-height: 1;
-  transition:
+  --nbh-motion-transition:
     background-color 180ms ease,
     color 180ms ease,
     transform 180ms ease,
@@ -83,7 +83,7 @@
   pointer-events: none;
   transform: translateY(-52%) rotate(-5deg);
   transform-origin: 50% 65%;
-  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  --nbh-motion-transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .product-page-premium .product-choice-card__bag-fallback {
@@ -140,10 +140,10 @@
 }
 
 .product-page-premium .product-choice-card:hover::after {
-  background: #e83b18;
-  color: #ffffff;
-  box-shadow: 0 7px 18px rgba(232, 59, 24, 0.24);
-  transform: translateX(2px);
+  background: var(--nbh-after-background, #e83b18);
+  color: var(--nbh-after-color, #ffffff);
+  box-shadow: var(--nbh-after-box-shadow, 0 7px 18px rgba(232, 59, 24, 0.24));
+  transform: var(--nbh-after-transform, translateX(2px));
 }
 
 .product-page-premium .product-choice-card.is-selected {
@@ -156,9 +156,9 @@
 }
 
 .product-page-premium .product-choice-card.is-selected::after {
-  background: #e83b18;
-  color: #ffffff;
-  box-shadow: 0 6px 16px rgba(232, 59, 24, 0.24);
+  background: var(--nbh-after-background, #e83b18);
+  color: var(--nbh-after-color, #ffffff);
+  box-shadow: var(--nbh-after-box-shadow, 0 6px 16px rgba(232, 59, 24, 0.24));
   content: "✓";
 }
 
@@ -176,9 +176,9 @@
   }
 
   .product-page-premium .product-choice-card::before {
-    left: 0.35rem;
-    width: 3.15rem;
-    transform: translate(-25%, 112%) rotate(-7deg);
+    left: var(--nbh-before-left, 0.35rem);
+    width: var(--nbh-before-width, 3.15rem);
+    transform: var(--nbh-before-transform, translate(-25%, 112%) rotate(-7deg));
   }
 
   .product-page-premium .product-choice-card__bag {
@@ -189,8 +189,8 @@
   }
 
   .product-page-premium .product-choice-card::after {
-    width: 2.45rem;
-    height: 2.45rem;
+    width: var(--nbh-after-width, 2.45rem);
+    height: var(--nbh-after-height, 2.45rem);
     font-size: 1.05rem;
   }
 
@@ -207,7 +207,7 @@
   .product-page-premium .product-choice-card,
   .product-page-premium .product-choice-card::after,
   .product-page-premium .product-choice-card__bag {
-    transition: none !important;
+    --nbh-motion-transition: none !important;
   }
 }
 
@@ -229,8 +229,8 @@
 .product-page-premium .product-choice-card::after,
 .product-page-premium .product-choice-card.is-selected::after {
   border: 0;
-  background: linear-gradient(140deg, #fa582e, #df3017);
-  color: #fff;
+  background: var(--nbh-after-background, linear-gradient(140deg, #fa582e, #df3017));
+  color: var(--nbh-after-color, #fff);
 }
 .product-page-premium .product-choice-card:hover {
   background: linear-gradient(125deg, #1b1817, #302018 55%, #58271a) !important;

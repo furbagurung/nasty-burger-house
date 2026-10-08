@@ -112,7 +112,7 @@
   color: #171513;
   text-align: left;
   cursor: pointer;
-  transition:
+  --nbh-motion-transition:
     background-color 150ms ease,
     color 150ms ease,
     border-color 150ms ease,
@@ -141,7 +141,7 @@
   color: #8a8177;
   font-size: 0.65rem;
   font-weight: 700;
-  transition: color 150ms ease;
+  --nbh-motion-transition: color 150ms ease;
 }
 
 .product-extras-trigger__copy strong {
@@ -163,7 +163,7 @@
   color: #bd2e16;
   font-size: 1.05rem;
   font-weight: 800;
-  transition: color 150ms ease;
+  --nbh-motion-transition: color 150ms ease;
 }
 
 .product-extras-trigger:hover .product-extras-trigger__copy small,
@@ -179,7 +179,7 @@
   display: flex;
   justify-content: flex-end;
   background: rgba(0, 0, 0, 0.34);
-  animation: product-drawer-fade 160ms ease-out;
+
 }
 
 .product-drink-drawer {
@@ -191,7 +191,7 @@
   border-left: 1px solid #e5e5e5;
   background: #ffffff;
   box-shadow: -20px 0 55px rgba(0, 0, 0, 0.16);
-  animation: product-drawer-slide 220ms cubic-bezier(0.22, 1, 0.36, 1);
+
 }
 
 .product-drink-drawer__header {
@@ -255,7 +255,7 @@
   background: #f8f8f8;
   color: #171513;
   text-align: left;
-  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+  --nbh-motion-transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
 }
 
 .product-drink-drawer__option:hover {
@@ -333,7 +333,7 @@
   padding: 0.68rem 0.78rem;
   background: #f8f8f8;
   color: #171513;
-  transition: border-color 140ms ease, background-color 140ms ease;
+  --nbh-motion-transition: border-color 140ms ease, background-color 140ms ease;
 }
 
 .product-extra-drawer__option.is-selected {
@@ -395,16 +395,6 @@
   color: #ffffff !important;
 }
 
-@keyframes product-drawer-slide {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}
-
-@keyframes product-drawer-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 @media (max-width: 680px) {
   .product-combo-drink-trigger {
     grid-template-columns: auto minmax(0, 1fr);
@@ -458,7 +448,7 @@
 @media (prefers-reduced-motion: reduce) {
   .product-drink-drawer-backdrop,
   .product-drink-drawer {
-    animation: none;
+
   }
 }
 

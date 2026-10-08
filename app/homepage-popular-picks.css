@@ -74,7 +74,7 @@
 
 .popular-pick-card__media img {
   object-fit: cover;
-  transition: transform 220ms ease;
+  --nbh-motion-transition: transform 220ms ease;
 }
 
 .popular-pick-card:hover .popular-pick-card__media img {
@@ -240,7 +240,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .popular-pick-card__media img {
-    transition: none;
+    --nbh-motion-transition: none;
   }
 }
 
@@ -258,7 +258,7 @@
   line-height: 1.05;
 }
 .popular-picks__heading > a {
-  transition: color 180ms ease;
+  --nbh-motion-transition: color 180ms ease;
 }
 .popular-picks__heading > a:hover {
   color: var(--hot-dark);
@@ -274,12 +274,12 @@
   border: 1px solid rgba(28, 22, 17, 0.035);
   border-radius: 1.05rem;
   background: #fff;
-  transition: box-shadow 220ms ease, border-color 220ms ease;
+  --nbh-motion-transition: box-shadow 220ms ease, border-color 220ms ease;
 }
 .popular-pick-card__media img {
   object-fit: contain;
   padding: clamp(0.45rem, 1.2vw, 0.9rem);
-  transition: transform 260ms ease;
+  --nbh-motion-transition: transform 260ms ease;
 }
 .popular-pick-card:hover .popular-pick-card__media,
 .popular-pick-card:focus-visible .popular-pick-card__media {
@@ -310,7 +310,7 @@
   width: 2rem;
   height: 2rem;
   font-size: 1.2rem;
-  transition: transform 180ms ease, background-color 180ms ease;
+  --nbh-motion-transition: transform 180ms ease, background-color 180ms ease;
 }
 .popular-pick-card:hover .popular-pick-card__add {
   background: var(--hot-dark);
@@ -368,7 +368,7 @@
   .popular-pick-card__media img,
   .popular-pick-card__add,
   .popular-picks__heading > a {
-    transition: none;
+    --nbh-motion-transition: none;
   }
 }
 
@@ -384,7 +384,7 @@
   padding: 0.9rem;
   background: #fff;
   box-shadow: 0 6px 18px rgba(20, 16, 12, 0.04);
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  --nbh-motion-transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 .popular-pick-card__media {
   width: 100%;
@@ -440,7 +440,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .popular-pick-card { transition: none; }
+  .popular-pick-card { --nbh-motion-transition: none; }
 }
 
 /* Blend product photos into their media surface without altering the food artwork. */

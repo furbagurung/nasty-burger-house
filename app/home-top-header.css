@@ -18,7 +18,7 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
   transform: translateY(0);
   will-change: transform;
-  transition:
+  --nbh-motion-transition:
     transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
     background-color 180ms ease,
     border-color 180ms ease,
@@ -60,7 +60,7 @@
   height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.24));
-  transition: transform 180ms ease;
+  --nbh-motion-transition: transform 180ms ease;
 }
 
 .home-top-header__brand:hover img {
@@ -87,7 +87,7 @@
   text-decoration: none;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
   white-space: nowrap;
-  transition: color 160ms ease;
+  --nbh-motion-transition: color 160ms ease;
 }
 
 .home-top-header__nav .home-top-header__drip {
@@ -115,16 +115,16 @@
 .home-top-header__nav a::after,
 .home-top-header__nav button::after {
   position: absolute;
-  right: 0;
-  bottom: 0.22rem;
-  left: 0;
-  height: 2px;
+  right: var(--nbh-after-right, 0);
+  bottom: var(--nbh-after-bottom, 0.22rem);
+  left: var(--nbh-after-left, 0);
+  height: var(--nbh-after-height, 2px);
   border-radius: 999px;
-  background: var(--hot);
+  background: var(--nbh-after-background, var(--hot));
   content: "";
-  transform: scaleX(0);
+  transform: var(--nbh-after-transform, scaleX(0));
   transform-origin: left;
-  transition: transform 180ms ease;
+  --nbh-motion-transition: transform 180ms ease;
 }
 
 .home-top-header__nav a:hover,
@@ -134,7 +134,7 @@
 
 .home-top-header__nav a:hover::after,
 .home-top-header__nav button:hover::after {
-  transform: scaleX(1);
+  transform: var(--nbh-after-transform, scaleX(1));
 }
 
 .home-top-header__actions {
@@ -158,7 +158,7 @@
   padding: 0.42rem 0.72rem;
   color: #fff;
   text-decoration: none;
-  transition:
+  --nbh-motion-transition:
     background-color 170ms ease,
     border-color 170ms ease,
     transform 170ms ease;
@@ -292,7 +292,7 @@
   font-weight: 760;
   text-align: left;
   text-decoration: none;
-  transition: background-color 140ms ease, color 140ms ease;
+  --nbh-motion-transition: background-color 140ms ease, color 140ms ease;
 }
 
 .home-top-header__account-dropdown > a:hover,
@@ -467,6 +467,6 @@
   .home-top-header__nav button::after,
   .home-top-header__account,
   .home-top-header__cart {
-    transition: none;
+    --nbh-motion-transition: none;
   }
 }

@@ -311,7 +311,7 @@
 
 .drip-page .drip-dashboard-earn__copy > a span {
   font-size: 1.1rem;
-  transition: transform 160ms ease;
+  --nbh-motion-transition: transform 160ms ease;
 }
 
 .drip-page .drip-dashboard-earn__copy > a:hover span {
@@ -647,13 +647,13 @@
     inset: 0;
     z-index: 1;
     content: "";
-    background: linear-gradient(
+    background: var(--nbh-after-background, linear-gradient(
       180deg,
       rgba(11, 10, 9, 0.02) 0%,
       rgba(11, 10, 9, 0.42) 34%,
       rgba(11, 10, 9, 0.96) 58%,
       #0b0a09 100%
-    );
+    ));
     pointer-events: none;
   }
 
@@ -741,7 +741,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .drip-page .drip-dashboard-earn__copy > a span {
-    transition: none;
+    --nbh-motion-transition: none;
   }
 }
 

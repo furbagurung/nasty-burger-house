@@ -27,26 +27,26 @@
   -webkit-backdrop-filter: blur(18px) saturate(145%);
   backdrop-filter: blur(18px) saturate(145%);
   pointer-events: auto;
-  animation: nasty-toast-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --nbh-motion-animation: nasty-toast-enter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .nasty-toast::before {
   position: absolute;
-  top: 0.8rem;
-  bottom: 0.8rem;
-  left: 0;
-  width: 3px;
+  top: var(--nbh-before-top, 0.8rem);
+  bottom: var(--nbh-before-bottom, 0.8rem);
+  left: var(--nbh-before-left, 0);
+  width: var(--nbh-before-width, 3px);
   border-radius: 0 999px 999px 0;
-  background: var(--gold);
+  background: var(--nbh-before-background, var(--gold));
   content: "";
 }
 
 .nasty-toast--success::before {
-  background: #49b978;
+  background: var(--nbh-before-background, #49b978);
 }
 
 .nasty-toast--error::before {
-  background: var(--hot);
+  background: var(--nbh-before-background, var(--hot));
 }
 
 .nasty-toast__icon {
@@ -104,7 +104,7 @@
   font-size: 0.7rem;
   font-weight: 800;
   text-decoration: none;
-  transition: background-color 150ms ease, transform 150ms ease;
+  --nbh-motion-transition: background-color 150ms ease, transform 150ms ease;
 }
 
 .nasty-toast__action:hover {
@@ -122,7 +122,7 @@
   padding: 0;
   background: transparent;
   color: rgba(255, 255, 255, 0.52);
-  transition: background-color 150ms ease, color 150ms ease;
+  --nbh-motion-transition: background-color 150ms ease, color 150ms ease;
 }
 
 .nasty-toast__close:hover {
@@ -138,7 +138,7 @@
   height: 2px;
   transform-origin: left;
   background: rgba(255, 255, 255, 0.24);
-  animation: nasty-toast-progress var(--nasty-toast-duration, 3800ms) linear forwards;
+  --nbh-motion-animation: nasty-toast-progress var(--nasty-toast-duration, 3800ms) linear forwards;
 }
 
 .nasty-toast--success .nasty-toast__progress {
@@ -147,26 +147,6 @@
 
 .nasty-toast--error .nasty-toast__progress {
   background: rgba(255, 104, 72, 0.78);
-}
-
-@keyframes nasty-toast-enter {
-  from {
-    opacity: 0;
-    transform: translate3d(1.2rem, -0.2rem, 0) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
-
-@keyframes nasty-toast-progress {
-  from {
-    transform: scaleX(1);
-  }
-  to {
-    transform: scaleX(0);
-  }
 }
 
 @media (max-width: 680px) {
@@ -187,17 +167,6 @@
     width: 2.15rem;
     height: 2.15rem;
   }
-
-  @keyframes nasty-toast-enter {
-    from {
-      opacity: 0;
-      transform: translate3d(0, 0.8rem, 0) scale(0.985);
-    }
-    to {
-      opacity: 1;
-      transform: translate3d(0, 0, 0) scale(1);
-    }
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -205,7 +174,7 @@
   .nasty-toast__progress,
   .nasty-toast__action,
   .nasty-toast__close {
-    animation: none !important;
-    transition: none !important;
+    --nbh-motion-animation: none !important;
+    --nbh-motion-transition: none !important;
   }
 }

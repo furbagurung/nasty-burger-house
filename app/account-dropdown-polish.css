@@ -93,7 +93,7 @@
   cursor: pointer;
   font: inherit;
   text-decoration: none;
-  transition:
+  --nbh-motion-transition:
     transform 150ms ease,
     box-shadow 150ms ease,
     filter 150ms ease;
@@ -176,7 +176,7 @@
   font-weight: 670;
   text-align: left;
   text-decoration: none;
-  transition:
+  --nbh-motion-transition:
     background-color 140ms ease,
     box-shadow 140ms ease,
     color 140ms ease,
@@ -234,6 +234,6 @@
   .home-top-header__account-dropdown > .home-top-header__drip-entry,
   .home-top-header__account-links > a,
   .home-top-header__account-dropdown > .home-top-header__signout {
-    transition: none;
+    --nbh-motion-transition: none;
   }
 }

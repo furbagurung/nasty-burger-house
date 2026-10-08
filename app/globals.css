@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "tw-animate-css";
+
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
@@ -244,7 +244,7 @@ button:disabled {
 .brand-logo--header {
   width: 4.4rem;
   height: 4.4rem;
-  transition: transform 180ms ease;
+  --nbh-motion-transition: transform 180ms ease;
 }
 
 .wordmark:hover .brand-logo--header {
@@ -357,7 +357,7 @@ main {
 .hero-slide {
   visibility: hidden;
   opacity: 0;
-  transition:
+  --nbh-motion-transition:
     opacity 700ms ease,
     visibility 700ms ease;
 }
@@ -371,7 +371,7 @@ main {
   object-fit: cover;
   object-position: 64% center;
   transform: scale(1.025);
-  transition: transform 7s ease;
+  --nbh-motion-transition: transform 7s ease;
 }
 
 .hero-slide.is-active .hero-slide__image {
@@ -466,7 +466,7 @@ main {
   border-radius: 999px;
   padding: 0;
   background: rgba(255, 255, 255, 0.38);
-  transition:
+  --nbh-motion-transition:
     width 180ms ease,
     background-color 180ms ease;
 }
@@ -1363,12 +1363,12 @@ legend span {
 
 .catalogue-desktop-nav a.is-active::after {
   position: absolute;
-  right: 0;
-  bottom: 0.35rem;
-  left: 0;
-  height: 3px;
+  right: var(--nbh-after-right, 0);
+  bottom: var(--nbh-after-bottom, 0.35rem);
+  left: var(--nbh-after-left, 0);
+  height: var(--nbh-after-height, 3px);
   border-radius: 99px;
-  background: var(--hot);
+  background: var(--nbh-after-background, var(--hot));
   content: "";
 }
 
@@ -1514,11 +1514,11 @@ legend span {
 
 .catalogue-categories a.is-active::before {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 0.28rem;
-  background: var(--hot);
+  top: var(--nbh-before-top, 0);
+  bottom: var(--nbh-before-bottom, 0);
+  left: var(--nbh-before-left, 0);
+  width: var(--nbh-before-width, 0.28rem);
+  background: var(--nbh-before-background, var(--hot));
   content: "";
 }
 
@@ -1582,7 +1582,7 @@ legend span {
   color: #f8f4ec;
   text-align: center;
   text-decoration: none;
-  transition:
+  --nbh-motion-transition:
     background-color 180ms ease,
     transform 180ms ease;
 }
@@ -2241,7 +2241,7 @@ legend span {
   .hero-slide,
   .hero-slide__image,
   .hero-carousel__dots button {
-    transition: none;
+    --nbh-motion-transition: none;
   }
 }
 
@@ -2306,10 +2306,10 @@ legend span {
   }
 
   .catalogue-categories a.is-active::before {
-    top: auto;
-    right: 0;
-    width: auto;
-    height: 0.25rem;
+    top: var(--nbh-before-top, auto);
+    right: var(--nbh-before-right, 0);
+    width: var(--nbh-before-width, auto);
+    height: var(--nbh-before-height, 0.25rem);
   }
 
   .catalogue-category-mark {
@@ -2731,20 +2731,20 @@ legend span {
 .desktop-nav a::after,
 .desktop-nav .nav-button::after {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  background: var(--hot);
+  right: var(--nbh-after-right, 0);
+  bottom: var(--nbh-after-bottom, 0);
+  left: var(--nbh-after-left, 0);
+  height: var(--nbh-after-height, 2px);
+  background: var(--nbh-after-background, var(--hot));
   content: "";
-  transform: scaleX(0);
+  transform: var(--nbh-after-transform, scaleX(0));
   transform-origin: right;
-  transition: transform 180ms ease;
+  --nbh-motion-transition: transform 180ms ease;
 }
 
 .desktop-nav a:hover::after,
 .desktop-nav .nav-button:hover::after {
-  transform: scaleX(1);
+  transform: var(--nbh-after-transform, scaleX(1));
   transform-origin: left;
 }
 
@@ -2834,13 +2834,13 @@ legend span {
   background: white;
   color: var(--ink);
   text-decoration: none;
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  --nbh-motion-transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
 .menu-preview-card::before {
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(9, 8, 7, 0.9) 0%, transparent 68%);
+  background: var(--nbh-before-background, linear-gradient(0deg, rgba(9, 8, 7, 0.9) 0%, transparent 68%));
   content: "";
 }
 
@@ -3265,7 +3265,7 @@ a.order-type-option:hover {
   .menu-preview-card,
   .desktop-nav a::after,
   .desktop-nav .nav-button::after {
-    transition: none;
+    --nbh-motion-transition: none;
   }
 }
 
@@ -3339,7 +3339,7 @@ a.order-type-option:hover {
   color: var(--ink);
   font-weight: 850;
   text-decoration: none;
-  transition:
+  --nbh-motion-transition:
     border-color 180ms ease,
     background-color 180ms ease,
     color 180ms ease;

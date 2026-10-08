@@ -120,12 +120,12 @@
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta::after {
-    width: 1.45rem !important;
-    height: 1.45rem !important;
-    border-color: rgba(21, 19, 15, 0.08) !important;
-    background: rgba(21, 19, 15, 0.06) !important;
-    box-shadow: none !important;
-    color: var(--ink) !important;
+    width: var(--nbh-after-width, 1.45rem) !important;
+    height: var(--nbh-after-height, 1.45rem) !important;
+    border-color: var(--nbh-after-border-color, rgba(21, 19, 15, 0.08)) !important;
+    background: var(--nbh-after-background, rgba(21, 19, 15, 0.06)) !important;
+    box-shadow: var(--nbh-after-box-shadow, none) !important;
+    color: var(--nbh-after-color, var(--ink)) !important;
     font-size: 0.72rem !important;
   }
 

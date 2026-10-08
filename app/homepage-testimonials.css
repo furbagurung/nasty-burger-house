@@ -66,7 +66,7 @@
   font-size: 0.88rem;
   font-weight: 800;
   text-decoration: none;
-  transition:
+  --nbh-motion-transition:
     background-color 160ms ease,
     border-color 160ms ease,
     transform 160ms ease;
@@ -263,7 +263,7 @@
   padding: 0;
   background: rgba(255, 255, 255, 0.28);
   cursor: pointer;
-  transition:
+  --nbh-motion-transition:
     width 220ms ease,
     background-color 220ms ease;
 }
@@ -340,6 +340,6 @@
   .home-testimonials__cta,
   .home-testimonials__indicators button {
     scroll-behavior: auto;
-    transition: none;
+    --nbh-motion-transition: none;
   }
 }

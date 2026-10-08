@@ -109,17 +109,12 @@
   font-weight: 950;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  animation: nbh-admin-new-order-pulse 1.5s ease-in-out infinite;
+  --nbh-motion-animation: nbh-admin-new-order-pulse 1.5s ease-in-out infinite;
 }
 
 .admin-order-card.is-new-order {
   border-color: rgba(239, 61, 29, 0.42);
   box-shadow: 0 0 0 3px rgba(239, 61, 29, 0.08), 0 12px 34px rgba(22, 19, 15, 0.06);
-}
-
-@keyframes nbh-admin-new-order-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.66; }
 }
 
 .admin-login-page {
@@ -264,7 +259,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .admin-new-order-badge {
-    animation: none;
+    --nbh-motion-animation: none;
   }
 }
 

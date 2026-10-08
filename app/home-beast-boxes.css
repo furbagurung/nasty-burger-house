@@ -42,7 +42,7 @@
 .home-promo-card--boxes .home-promo-card__image::after {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #70130d, rgba(112, 19, 13, 0.38) 30%, transparent 64%);
+  background: var(--nbh-after-background, linear-gradient(90deg, #70130d, rgba(112, 19, 13, 0.38) 30%, transparent 64%));
   content: "";
 }
 
@@ -164,6 +164,6 @@
 @media (prefers-reduced-motion: reduce) {
   .home-promo-card__copy > a,
   .home-promo-card__copy > a span {
-    transition: none;
+    --nbh-motion-transition: none;
   }
 }

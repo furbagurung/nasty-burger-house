@@ -19,7 +19,7 @@
   text-align: center;
   text-decoration: none;
   transform: none;
-  transition: none;
+  --nbh-motion-transition: none;
 }
 
 .catalogue-product--browse:hover,

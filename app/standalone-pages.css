@@ -848,7 +848,7 @@
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: linear-gradient(0deg, #0b0a09 0%, rgba(11, 10, 9, 0.72) 46%, rgba(11, 10, 9, 0.05) 80%);
+    background: var(--nbh-after-background, linear-gradient(0deg, #0b0a09 0%, rgba(11, 10, 9, 0.72) 46%, rgba(11, 10, 9, 0.05) 80%));
     content: "";
   }
 

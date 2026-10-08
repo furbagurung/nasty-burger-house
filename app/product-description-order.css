@@ -62,7 +62,7 @@
 .product-page-premium
   .product-custom-section:not(.product-custom-section--extras)
   .product-custom-section__heading h2::before {
-  color: #171513;
+  color: var(--nbh-before-color, #171513);
   content: "Make it the";
   font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif;
   font-size: 1rem;
@@ -75,14 +75,14 @@
   .product-custom-section__heading h2::after {
   display: inline-block;
   padding-bottom: 0.04em;
-  color: #a62212;
+  color: var(--nbh-after-color, #a62212);
   content: "BEAST COMBO";
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.005em;
   line-height: 1.08;
   text-decoration: none;
-  transform: none;
+  transform: var(--nbh-after-transform, none);
 }
 
 /* Visually group Beast Combo + Customize into one dedicated order-options panel. */

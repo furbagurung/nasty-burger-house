@@ -17,8 +17,8 @@
 .product-custom-section--extras::before {
   position: absolute;
   inset: 0 auto 0 0;
-  width: 4px;
-  background: #ef3d1d;
+  width: var(--nbh-before-width, 4px);
+  background: var(--nbh-before-background, #ef3d1d);
   content: "";
 }
 
@@ -40,7 +40,7 @@
   line-height: 1.1;
   text-align: left;
   box-shadow: 0 8px 22px rgba(74, 31, 20, 0.06);
-  transition:
+  --nbh-motion-transition:
     transform 160ms ease,
     box-shadow 160ms ease,
     background-color 160ms ease,
@@ -49,13 +49,13 @@
 
 .product-extras-trigger::before {
   display: grid;
-  width: 2rem;
-  height: 2rem;
+  width: var(--nbh-before-width, 2rem);
+  height: var(--nbh-before-height, 2rem);
   flex: 0 0 2rem;
   place-items: center;
   border-radius: 0.65rem;
-  background: #ef3d1d;
-  color: #ffffff;
+  background: var(--nbh-before-background, #ef3d1d);
+  color: var(--nbh-before-color, #ffffff);
   content: "+";
   font-size: 1.25rem;
   font-weight: 850;
@@ -63,8 +63,8 @@
 
 .product-extras-trigger::after {
   position: absolute;
-  right: 1rem;
-  color: #ef3d1d;
+  right: var(--nbh-after-right, 1rem);
+  color: var(--nbh-after-color, #ef3d1d);
   content: "→";
   font-size: 1.1rem;
 }
@@ -77,7 +77,7 @@
 }
 
 .product-extras-trigger:hover::after {
-  color: #ff6a49;
+  color: var(--nbh-after-color, #ff6a49);
 }
 
 .product-drawer-group {
@@ -141,7 +141,7 @@
   background: #f8f8f8;
   color: #171513;
   text-align: left;
-  transition:
+  --nbh-motion-transition:
     border-color 140ms ease,
     background-color 140ms ease,
     opacity 140ms ease;
@@ -195,7 +195,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .product-extras-trigger {
-    transition: none;
+    --nbh-motion-transition: none;
   }
 }
 
@@ -212,8 +212,8 @@
   }
 
   .product-extras-trigger::before {
-    width: 1.8rem;
-    height: 1.8rem;
+    width: var(--nbh-before-width, 1.8rem);
+    height: var(--nbh-before-height, 1.8rem);
     flex-basis: 1.8rem;
   }
 

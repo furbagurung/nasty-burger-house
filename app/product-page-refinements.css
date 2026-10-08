@@ -299,3 +299,35 @@
     font-size: 1rem;
   }
 }
+
+/* Compact product photography on mobile: remove oversized blank image area. */
+@media (max-width: 680px) {
+  .product-page-premium .product-detail--premium {
+    padding-top: 0.25rem;
+  }
+
+  .product-page-premium .product-breadcrumb {
+    margin-bottom: 0.25rem;
+  }
+
+  .product-page-premium .product-detail__visual {
+    height: 17rem;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .product-page-premium .product-detail__media--premium {
+    position: relative;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .product-page-premium .product-detail__media--premium > img {
+    padding: 0.5rem 1rem;
+    object-fit: contain;
+  }
+
+  .product-page-premium .product-detail__content--premium {
+    padding-top: 0.5rem;
+  }
+}

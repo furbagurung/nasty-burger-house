@@ -265,3 +265,55 @@
     }
   }
 }
+
+/* Mobile Add It On and Extra Sauce: compact image | details | stepper rows. */
+@media (max-width: 680px) {
+  .product-extras-drawer .product-drawer-group--addons .product-extra-drawer__option,
+  .product-extras-drawer .product-drawer-group--sauces .product-extra-drawer__option {
+    display: grid;
+    grid-template-columns: 3.4rem minmax(0, 1fr) auto;
+    align-items: center;
+    min-height: 4.75rem;
+    gap: 0.65rem;
+    padding: 0.55rem 0.65rem;
+  }
+
+  .product-extras-drawer .product-drawer-group--addons .product-extra-drawer__option > .product-drink-drawer__thumb,
+  .product-extras-drawer .product-drawer-group--sauces .product-extra-drawer__option > .product-drink-drawer__thumb {
+    width: 3.4rem;
+    height: 3.4rem;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .product-extras-drawer .product-drawer-group--addons .product-extra-drawer__option > .product-drink-drawer__copy,
+  .product-extras-drawer .product-drawer-group--sauces .product-extra-drawer__option > .product-drink-drawer__copy {
+    min-width: 0;
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .product-extras-drawer .product-drawer-group--addons .product-extra-drawer__option > .product-extra-drawer__stepper,
+  .product-extras-drawer .product-drawer-group--sauces .product-extra-drawer__option > .product-extra-drawer__stepper {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+    margin: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .product-extras-drawer .product-drawer-group--addons .product-extra-drawer__option,
+  .product-extras-drawer .product-drawer-group--sauces .product-extra-drawer__option {
+    grid-template-columns: 2.7rem minmax(0, 1fr) auto;
+    gap: 0.4rem;
+    padding-inline: 0.4rem;
+  }
+
+  .product-extras-drawer .product-drawer-group--addons .product-extra-drawer__option > .product-drink-drawer__thumb,
+  .product-extras-drawer .product-drawer-group--sauces .product-extra-drawer__option > .product-drink-drawer__thumb {
+    width: 2.7rem;
+    height: 2.7rem;
+  }
+}

@@ -11,7 +11,10 @@
   max-width: none;
   min-height: 100svh;
   margin: 0;
-  padding: calc(5.85rem + 0.9rem) 0.9rem 0.9rem;
+  /* Match the header's 1180px centered desktop content boundaries. */
+  padding: calc(5.85rem + 0.9rem)
+    max(1.25rem, calc((100% - 1180px) / 2))
+    0.9rem;
   background: #111110;
 }
 
@@ -26,8 +29,10 @@
   --primary-foreground: #fff;
   display: grid;
   width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
   min-height: calc(100svh - 5.85rem - 1.8rem);
-  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
+  grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
   background: #111110;
   color: #f8f6f2;
 }
@@ -36,8 +41,8 @@
   display: flex;
   min-width: 0;
   align-items: center;
-  justify-content: center;
-  padding: clamp(2rem, 4.3vw, 4.5rem);
+  justify-content: flex-start;
+  padding: clamp(1.5rem, 3vw, 3rem) clamp(1.25rem, 3.3vw, 3rem) clamp(1.5rem, 3vw, 3rem) 0;
 }
 
 .nbh-auth5__form-content {
@@ -352,8 +357,14 @@
   font-size: 0.69rem;
 }
 
-@media (max-width: 1050px) {
-  .nbh-auth5__form-panel { padding: 2rem; }
+@media (max-width: 1050px) and (min-width: 901px) {
+  /* Header switches to 1.5rem side gutters in this range. */
+  .standalone-page.nbh-auth-page .standalone-main.nbh-auth-main {
+    padding-inline: 1.5rem;
+  }
+  .nbh-auth5__form-panel {
+    padding: 1.75rem 1.5rem 1.75rem 0;
+  }
   .nbh-auth5__features { display: none; }
 }
 @media (max-width: 900px) {
@@ -368,6 +379,7 @@
   }
   .nbh-auth5__form-panel {
     flex: 1;
+    justify-content: center;
     padding: 1.25rem 0.6rem;
   }
   .nbh-auth5__form-content { width: min(100%, 420px); }

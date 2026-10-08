@@ -396,7 +396,10 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
           <strong>{money.format(subtotal)}</strong>
         </div>
 
-        <nav className="checkout-wizard-progress" aria-label="Checkout progress">
+        <nav
+          className={`checkout-wizard-progress${activeStep === 2 ? " is-review-step" : ""}`}
+          aria-label="Checkout progress"
+        >
           <ol>
             {checkoutStepNames.map((label, index) => {
               const position = (index + 1) as CheckoutStep;
@@ -406,6 +409,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                 <li key={label} className={isCurrent ? "is-current" : isComplete ? "is-complete" : "is-upcoming"}>
                   <button
                     type="button"
+                    aria-label={`Step ${position}: ${label}${isComplete ? ", completed" : isCurrent ? ", current" : ", upcoming"}`}
                     aria-current={isCurrent ? "step" : undefined}
                     disabled={submitting || !isComplete}
                     onClick={() => changeStep(position)}
@@ -413,13 +417,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                     <span className="checkout-wizard-progress__number" aria-hidden="true">
                       {isComplete ? <CheckCircle2 size={20} strokeWidth={2.4} /> : position}
                     </span>
-                    <span className="checkout-wizard-progress__info">
-                      <span className="checkout-wizard-progress__step">Step {position}</span>
-                      <span className="checkout-wizard-progress__label">{label}</span>
-                      <span className="checkout-wizard-progress__status">
-                        {isComplete ? "Completed" : isCurrent ? "In progress" : "Pending"}
-                      </span>
-                    </span>
+                    <span className="checkout-wizard-progress__step" aria-hidden="true">Step {position}</span>
                   </button>
                 </li>
               );

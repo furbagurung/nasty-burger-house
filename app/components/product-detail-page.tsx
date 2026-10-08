@@ -459,7 +459,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                   <div><span>01</span><h2>Upgrade to the Beast Combo</h2></div>
                   <strong>+{money.format(comboUpgradePrice)}</strong>
                 </div>
-                <motion.button whileTap={press}
+                <motion.button tabIndex={0} whileTap={press}
                   className={`product-choice-card${isCombo ? " is-selected" : ""}`}
                   type="button"
                   onClick={toggleCombo}
@@ -492,7 +492,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                       </span>
                     </div>
                     <span className="product-combo-includes__plus" aria-hidden="true">+</span>
-                  <motion.button whileTap={press}
+                  <motion.button tabIndex={0} whileTap={press}
                     className={`product-combo-drink-trigger${drink ? " has-selection" : ""}`}
                     type="button"
                     onClick={() => {
@@ -528,7 +528,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                 <div className="product-custom-section__heading">
                   <div><span>01</span><h2>Build your Beast Box</h2></div>
                 </div>
-                <motion.button whileTap={press} className="product-extras-trigger" type="button" onClick={openBoxDrawer}>
+                <motion.button tabIndex={0} whileTap={press} className="product-extras-trigger" type="button" onClick={openBoxDrawer}>
                   Customize
                 </motion.button>
               </section>
@@ -536,7 +536,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
 
             {!item.boxConfig && hasDrawerOptions && (
               <section className="product-custom-section product-custom-section--extras">
-                <motion.button whileTap={press} className="product-extras-trigger" type="button" onClick={openExtrasDrawer}>
+                <motion.button tabIndex={0} whileTap={press} className="product-extras-trigger" type="button" onClick={openExtrasDrawer}>
                   Customize your food
                 </motion.button>
               </section>
@@ -544,9 +544,9 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
 
             <div className="product-purchase-panel">
               <div className="product-quantity" aria-label="Quantity selector">
-                <motion.button whileTap={press} type="button" onClick={() => setQuantity((current) => Math.max(1, current - 1))} disabled={quantity === 1} aria-label="Decrease quantity"><Minus size={17} /></motion.button>
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setQuantity((current) => Math.max(1, current - 1))} disabled={quantity === 1} aria-label="Decrease quantity"><Minus size={17} /></motion.button>
                 <strong>{quantity}</strong>
-                <motion.button whileTap={press} type="button" onClick={() => setQuantity((current) => Math.min(20, current + 1))} disabled={quantity === 20} aria-label="Increase quantity"><Plus size={17} /></motion.button>
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setQuantity((current) => Math.min(20, current + 1))} disabled={quantity === 20} aria-label="Increase quantity"><Plus size={17} /></motion.button>
               </div>
 
               <ButtonWithIcon
@@ -583,7 +583,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                   <p>Beast Combo</p>
                   <h2 id="product-drink-drawer-title">Choose your drink</h2>
                 </div>
-                <motion.button whileTap={press} type="button" onClick={() => setIsDrinkDrawerOpen(false)} aria-label="Close drink selection">
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setIsDrinkDrawerOpen(false)} aria-label="Close drink selection">
                   <X size={22} />
                 </motion.button>
               </div>
@@ -593,7 +593,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                   const selected = drink === choice;
                   const choiceImage = drinkThumbnail(choice);
                   return (
-                    <motion.button whileTap={press} className={`product-drink-drawer__option${selected ? " is-selected" : ""}`} type="button" key={choice} onClick={() => chooseDrink(choice)} aria-pressed={selected}>
+                    <motion.button tabIndex={0} whileTap={press} className={`product-drink-drawer__option${selected ? " is-selected" : ""}`} type="button" key={choice} onClick={() => chooseDrink(choice)} aria-pressed={selected}>
                       <span className="product-drink-drawer__thumb" aria-hidden="true">
                         {choiceImage ? (
                           <Image src={choiceImage} alt="" width={68} height={68} />
@@ -625,7 +625,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                   <p>Customize</p>
                   <h2 id="product-extras-drawer-title">Make it yours</h2>
                 </div>
-                <motion.button whileTap={press} type="button" onClick={() => setIsExtrasDrawerOpen(false)} aria-label="Close customization drawer">
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setIsExtrasDrawerOpen(false)} aria-label="Close customization drawer">
                   <X size={22} />
                 </motion.button>
               </div>
@@ -650,11 +650,11 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                               <strong>{ingredient}</strong>
                             </span>
                             <div className="product-stepper product-extra-drawer__stepper">
-                              <motion.button whileTap={press} type="button" onClick={() => toggleIngredient(ingredient)} disabled={removed} aria-label={`Remove ${ingredient}`}>
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => toggleIngredient(ingredient)} disabled={removed} aria-label={`Remove ${ingredient}`}>
                                 <Minus size={15} />
                               </motion.button>
                               <strong>{ingredientQuantity}</strong>
-                              <motion.button whileTap={press} type="button" onClick={() => toggleIngredient(ingredient)} disabled={!removed} aria-label={`Add back ${ingredient}`}>
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => toggleIngredient(ingredient)} disabled={!removed} aria-label={`Add back ${ingredient}`}>
                                 <Plus size={15} />
                               </motion.button>
                             </div>
@@ -684,11 +684,11 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                               <small>+{money.format(modifier.price)} each</small>
                             </span>
                             <div className="product-stepper product-extra-drawer__stepper">
-                              <motion.button whileTap={press} type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={selectedQuantity === 0} aria-label={`Remove ${modifier.name}`}>
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={selectedQuantity === 0} aria-label={`Remove ${modifier.name}`}>
                                 <Minus size={15} />
                               </motion.button>
                               <strong>{selectedQuantity}</strong>
-                              <motion.button whileTap={press} type="button" onClick={() => changeModifier(modifier.id, 1)} aria-label={`Add ${modifier.name}`}>
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, 1)} aria-label={`Add ${modifier.name}`}>
                                 <Plus size={15} />
                               </motion.button>
                             </div>
@@ -718,11 +718,11 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                               <small>+{money.format(modifier.price)} each</small>
                             </span>
                             <div className="product-stepper product-extra-drawer__stepper">
-                              <motion.button whileTap={press} type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={selectedQuantity === 0} aria-label={`Remove ${modifier.name}`}>
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={selectedQuantity === 0} aria-label={`Remove ${modifier.name}`}>
                                 <Minus size={15} />
                               </motion.button>
                               <strong>{selectedQuantity}</strong>
-                              <motion.button whileTap={press} type="button" onClick={() => changeModifier(modifier.id, 1)} aria-label={`Add ${modifier.name}`}>
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, 1)} aria-label={`Add ${modifier.name}`}>
                                 <Plus size={15} />
                               </motion.button>
                             </div>
@@ -742,7 +742,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                   </small>
                   <strong>+{money.format(selectedExtrasPrice)}</strong>
                 </span>
-                <motion.button whileTap={press} type="button" onClick={() => setIsExtrasDrawerOpen(false)}>Done</motion.button>
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setIsExtrasDrawerOpen(false)}>Done</motion.button>
               </div>
             </motion.aside>
           </motion.div>
@@ -759,7 +759,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                   <p>Beast Box</p>
                   <h2 id="product-box-drawer-title">Customize your Beast Box</h2>
                 </div>
-                <motion.button whileTap={press} type="button" onClick={() => setIsBoxDrawerOpen(false)} aria-label="Close Beast Box customization">
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setIsBoxDrawerOpen(false)} aria-label="Close Beast Box customization">
                   <X size={22} />
                 </motion.button>
               </div>
@@ -783,9 +783,9 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                             <small>Included in your Beast Box</small>
                           </span>
                           <div className="product-stepper product-extra-drawer__stepper">
-                            <motion.button whileTap={press} type="button" onClick={() => changeBoxSelection("burger", burger.id, -1)} disabled={selected === 0} aria-label={`Remove ${burger.name}`}><Minus size={15} /></motion.button>
+                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("burger", burger.id, -1)} disabled={selected === 0} aria-label={`Remove ${burger.name}`}><Minus size={15} /></motion.button>
                             <strong>{selected}</strong>
-                            <motion.button whileTap={press} type="button" onClick={() => changeBoxSelection("burger", burger.id, 1)} disabled={boxBurgers.length >= item.boxConfig!.burgerCount} aria-label={`Add ${burger.name}`}><Plus size={15} /></motion.button>
+                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("burger", burger.id, 1)} disabled={boxBurgers.length >= item.boxConfig!.burgerCount} aria-label={`Add ${burger.name}`}><Plus size={15} /></motion.button>
                           </div>
                         </div>
                       );
@@ -816,9 +816,9 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                             <small>Included in your Beast Box</small>
                           </span>
                           <div className="product-stepper product-extra-drawer__stepper">
-                            <motion.button whileTap={press} type="button" onClick={() => changeBoxSelection("drink", choice, -1)} disabled={selected === 0} aria-label={`Remove ${choice}`}><Minus size={15} /></motion.button>
+                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("drink", choice, -1)} disabled={selected === 0} aria-label={`Remove ${choice}`}><Minus size={15} /></motion.button>
                             <strong>{selected}</strong>
-                            <motion.button whileTap={press} type="button" onClick={() => changeBoxSelection("drink", choice, 1)} disabled={boxDrinks.length >= item.boxConfig!.drinkCount} aria-label={`Add ${choice}`}><Plus size={15} /></motion.button>
+                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("drink", choice, 1)} disabled={boxDrinks.length >= item.boxConfig!.drinkCount} aria-label={`Add ${choice}`}><Plus size={15} /></motion.button>
                           </div>
                         </div>
                       );
@@ -832,7 +832,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                   <small>{boxBurgers.length}/{item.boxConfig!.burgerCount} burgers · {boxDrinks.length}/{item.boxConfig!.drinkCount} drinks</small>
                   <strong>{money.format(item.price)}</strong>
                 </span>
-                <motion.button whileTap={press} type="button" onClick={() => setIsBoxDrawerOpen(false)}>Done</motion.button>
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setIsBoxDrawerOpen(false)}>Done</motion.button>
               </div>
             </motion.aside>
           </motion.div>

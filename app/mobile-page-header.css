@@ -149,3 +149,11 @@
     transition: none;
   }
 }
+
+/* Cart and Checkout use a pure-white mobile page header to match the page canvas. */
+@media (max-width: 900px) {
+  .cart-redesign-page .mobile-page-header,
+  .checkout-page .mobile-page-header {
+    background: #fff;
+  }
+}

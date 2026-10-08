@@ -81,12 +81,8 @@
   font-weight: 850;
   letter-spacing: 0.005em;
   line-height: 1.08;
-  text-decoration-line: underline;
-  text-decoration-color: #741428;
-  text-decoration-thickness: 0.16rem;
-  text-underline-offset: 0.17em;
-  text-decoration-skip-ink: none;
-  transform: rotate(-0.35deg);
+  text-decoration: none;
+  transform: none;
 }
 
 /* Visually group Beast Combo + Customize into one dedicated order-options panel. */
@@ -143,8 +139,6 @@
     .product-custom-section:not(.product-custom-section--extras)
     .product-custom-section__heading h2::after {
     font-size: 1.04rem;
-    text-decoration-thickness: 0.14rem;
-    text-underline-offset: 0.16em;
   }
 
   .product-page-premium

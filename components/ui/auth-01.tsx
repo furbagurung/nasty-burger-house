@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { MdEmail, MdLock, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -75,19 +75,6 @@ export function Auth1({
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-
-  useEffect(() => {
-    // Keep both Watermelon UI themes without the removed theme-control header.
-    // Follow the visitor's OS setting, including changes during their session.
-    const preference = window.matchMedia("(prefers-color-scheme: dark)");
-    const updateTheme = () => setTheme(preference.matches ? "dark" : "light");
-
-    updateTheme();
-    preference.addEventListener("change", updateTheme);
-    return () => preference.removeEventListener("change", updateTheme);
-  }, []);
-
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (submitting) return;
@@ -95,7 +82,7 @@ export function Auth1({
   }
 
   return (
-    <div className={`nbh-auth-shell ${theme === "dark" ? "dark nbh-auth-shell--dark" : ""}`}>
+    <div className="nbh-auth-shell dark nbh-auth-shell--dark">
       <div className="nbh-auth-container">
         <Card className="nbh-auth-card gap-0 rounded-[2rem] p-2">
           <div className="nbh-auth-card-inner rounded-[1.5rem] py-7">

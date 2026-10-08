@@ -371,3 +371,73 @@
     transition: none;
   }
 }
+
+/* Unified product cards: image, title, price and action share one surface. */
+.popular-pick-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid rgba(22, 17, 12, 0.08);
+  border-radius: 1.1rem;
+  padding: 0.9rem;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(20, 16, 12, 0.04);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+.popular-pick-card__media {
+  width: 100%;
+  border: 0;
+  border-radius: 0.85rem;
+  background: #fbf9f5;
+  box-shadow: none;
+}
+.popular-pick-card__media img {
+  object-fit: contain;
+  padding: 0.65rem;
+}
+.popular-pick-card__body {
+  margin-top: auto;
+  padding: 0.85rem 0.15rem 0.1rem;
+}
+.popular-pick-card:hover,
+.popular-pick-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(22, 17, 12, 0.14);
+  box-shadow: 0 14px 30px rgba(20, 16, 12, 0.08);
+}
+.popular-pick-card:hover .popular-pick-card__media,
+.popular-pick-card:focus-visible .popular-pick-card__media {
+  border-color: transparent;
+  box-shadow: none;
+}
+@media (max-width: 680px) {
+  .popular-picks__rail {
+    grid-auto-columns: minmax(12.5rem, 72vw);
+  }
+  .popular-pick-card,
+  .popular-pick-card:nth-child(n + 4) {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid rgba(22, 17, 12, 0.08);
+    border-radius: 1rem;
+    padding: 0.8rem;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(20, 16, 12, 0.04);
+  }
+  .popular-pick-card__media {
+    border: 0;
+    border-radius: 0.8rem;
+    background: #fbf9f5;
+  }
+  .popular-pick-card__body {
+    margin-top: auto;
+    padding: 0.7rem 0.1rem 0.1rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .popular-pick-card { transition: none; }
+}

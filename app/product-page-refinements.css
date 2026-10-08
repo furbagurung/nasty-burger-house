@@ -609,6 +609,7 @@
   object-fit: contain;
 }
 .product-page-premium .product-detail__halal-note {
+  order: 2;
   flex-basis: 100%;
   width: 100%;
   margin: 0.4rem 0 0;

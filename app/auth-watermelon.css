@@ -300,7 +300,7 @@ body:has(.account-auth-flow-page) .mobile-tab-bar--v2 {
 
 /* Authentication pages are focused, no-tab-bar flows. */
 .nbh-auth-home-link {
-  display: inline-flex;
+  display: flex;
   width: fit-content;
   min-height: 2.6rem;
   align-items: center;

@@ -395,7 +395,25 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             <div className="product-detail__heading-row">
               <div>
                 <p className="eyebrow">{category?.label ?? "Nasty Burger House menu"}</p>
-                <h1 id="product-title">{item.name}</h1>
+                <div className="product-mobile-title-line">
+                  <h1 id="product-title">{item.name}</h1>
+                  {item.dietaryTags && item.dietaryTags.length > 0 && (
+                    <div className="product-mobile-title-tags" aria-label="Dietary information">
+                      {item.dietaryTags.map((tag) => (
+                        <span key={tag}>
+                          {tag === "Halal" ? (
+                            <Image src="/images/Halal_logo.svg" alt="" width={19} height={19} aria-hidden="true" />
+                          ) : tag === "Vegetarian" ? (
+                            <Image src="/images/veg-icon.png" alt="" width={19} height={19} aria-hidden="true" />
+                          ) : (
+                            <Check size={14} aria-hidden="true" />
+                          )}
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <div className="product-mobile-description-card product-description--desktop">
                       <p className="product-detail__description">{item.description}</p>
                 </div>

@@ -32,7 +32,9 @@ type Filter = "all" | "website" | "square-only" | "both";
 
 function sourceLabel(customer: AdminCustomer) {
   if (customer.source === "both") return "Website + Square";
-  if (customer.source === "square") return "Square only";
+  if (customer.source === "square") {
+    return customer.squareEnrolled ? "Square only" : "Square directory";
+  }
   return "Website only";
 }
 
@@ -52,6 +54,8 @@ export default function AdminCustomerDashboard({
   squareStatus: {
     connected: boolean;
     loyaltyCount: number;
+    directoryCount: number | null;
+    directoryError: string | null;
     error: string | null;
   };
 }) {
@@ -129,9 +133,9 @@ export default function AdminCustomerDashboard({
             <p>Customer directory</p>
             <h2>Website accounts + Square loyalty</h2>
             <span>
-              Website customers are matched with Square loyalty customers by phone first,
-              then email. Square-only customers have enrolled in the POS loyalty program but
-              have not created a website account yet.
+              Website customers are matched with Square customers by phone first,
+              then email. Square directory customers may or may not be enrolled
+              in the Square loyalty program.
             </span>
           </div>
           <label className="admin-customer-search">
@@ -160,13 +164,16 @@ export default function AdminCustomerDashboard({
               </strong>
               <span>
                 {squareStatus.connected
-                  ? `${bothCount} matched to website accounts · ${squareOnlyCount} Square-only`
+                  ? `${squareStatus.directoryCount === null ? "Directory unavailable" : `${squareStatus.directoryCount} Square directory customers`} · ${bothCount} matched to website accounts · ${squareOnlyCount} Square-only`
                   : "Website accounts are still shown. Check that the Square token has LOYALTY_READ and CUSTOMERS_READ permissions."}
               </span>
             </div>
           </div>
           {!squareStatus.connected && squareStatus.error && (
             <small>{squareStatus.error}</small>
+          )}
+          {squareStatus.directoryError && (
+            <small>{squareStatus.directoryError}</small>
           )}
         </section>
 
@@ -273,7 +280,11 @@ export default function AdminCustomerDashboard({
                     </div>
 
                     <div className="admin-customer-cell" data-label="Drip Points">
-                      <strong>{points.toLocaleString("en-AU")}</strong>
+                      <strong>
+                        {customer.squareDripPoints !== null || customer.websiteAccount
+                          ? points.toLocaleString("en-AU")
+                          : "—"}
+                      </strong>
                       <span>
                         {customer.squareDripPoints !== null
                           ? `Square${
@@ -281,7 +292,11 @@ export default function AdminCustomerDashboard({
                                 ? ` · ${customer.squareLifetimePoints.toLocaleString("en-AU")} lifetime`
                                 : ""
                             }`
-                          : "Website ledger"}
+                          : customer.squareCustomerId
+                            ? customer.websiteAccount
+                              ? "Website ledger · Square loyalty not enrolled"
+                              : "Square loyalty not enrolled"
+                            : "Website ledger"}
                       </span>
                     </div>
                   </article>

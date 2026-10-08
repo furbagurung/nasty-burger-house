@@ -1,8 +1,21 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
+import {
+  MdArrowForward,
+  MdEmail,
+  MdLock,
+  MdPerson,
+  MdPhone,
+  MdVisibility,
+  MdVisibilityOff,
+} from "react-icons/md";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import {
   ensureSignupBonus,
   readCustomerProfile,
@@ -10,8 +23,6 @@ import {
 } from "../lib/customer-store";
 import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import GoogleAuthButton from "./google-auth-button";
-import PasswordInput from "./password-input";
-import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 export default function AccountCreatePage() {
   const router = useRouter();
@@ -24,6 +35,8 @@ export default function AccountCreatePage() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [confirmationSent, setConfirmationSent] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (productionAuth) return;
@@ -124,123 +137,195 @@ export default function AccountCreatePage() {
   }
 
   return (
-    <div className="standalone-page account-page account-auth-flow-page">
-      <main className="standalone-main account-auth-main">
-        <section className="account-auth-card">
-          <div className="account-auth-card__intro">
-            <h1>Create your account.</h1>
-            <p>
-              Save your details, see order history, leave reviews and earn Drip
-              Points whenever you order.
-            </p>
-            <Link href="/" className="account-auth-home-link">
-              ← Back to Home
-            </Link>
-            <div className="account-auth-benefits">
-              <span>
-                <strong>500</strong> points for new loyalty members
-              </span>
-              <span>Order history</span>
-              <span>Faster checkout</span>
-            </div>
-          </div>
+    <div className="standalone-page account-page nbh-auth-page nbh-signup-page">
+      <main className="standalone-main nbh-auth-main">
+        <div className="nbh-auth5 nbh-auth5--signup dark">
+          <section className="nbh-auth5__form-panel" aria-label="Create a Nasty Burger House account">
+            <div className="nbh-auth5__form-content">
+              <div className="nbh-auth5__intro">
+                <h1>Create your account.</h1>
+                <p>Join Nasty Burger House to save your details, track orders and collect Drip Points.</p>
+              </div>
 
-          {confirmationSent ? (
-            <div className="account-auth-form account-auth-success">
-              <p className="standalone-eyebrow">Check your inbox</p>
-              <h2>Confirm your email.</h2>
-              <p>
-                If the details can be registered, a confirmation link will be sent to{" "}
-                <strong>{email}</strong>.
-              </p>
-              <ButtonWithIcon href="/account/sign-in" tone="red">
-                Go to sign in
-              </ButtonWithIcon>
-            </div>
-          ) : (
-            <form className="account-auth-form" onSubmit={submit}>
-              {productionAuth && (
+              {confirmationSent ? (
+                <div className="nbh-auth5__success" role="status">
+                  <h2>Confirm your email.</h2>
+                  <p>
+                    If your details can be registered, we&apos;ll send a confirmation
+                    link to <strong>{email}</strong>.
+                  </p>
+                  <Button asChild className="nbh-auth5__submit">
+                    <Link href="/account/sign-in">
+                      Go to sign in <MdArrowForward aria-hidden="true" />
+                    </Link>
+                  </Button>
+                </div>
+              ) : (
                 <>
-                  <GoogleAuthButton
-                    label="Sign up with Google"
-                    onError={setError}
-                  />
-                  <div className="account-auth-divider" aria-hidden="true">
-                    <span>or create with email</span>
-                  </div>
+                  {productionAuth && (
+                    <>
+                      <div className="nbh-auth5__social">
+                        <GoogleAuthButton label="Sign up with Google" onError={setError} />
+                      </div>
+                      <div className="nbh-auth5__divider">
+                        <Separator className="flex-1" />
+                        <span>or continue with email</span>
+                        <Separator className="flex-1" />
+                      </div>
+                    </>
+                  )}
+
+                  <form className="nbh-auth5__form" onSubmit={submit} aria-busy={submitting}>
+                    <div className="nbh-auth5__field">
+                      <label htmlFor="nbh-signup-name">Full name</label>
+                      <div className="nbh-auth5__input-wrap">
+                        <MdPerson className="nbh-auth5__input-icon" aria-hidden="true" />
+                        <Input
+                          id="nbh-signup-name"
+                          type="text"
+                          autoComplete="name"
+                          placeholder="Your full name"
+                          value={name}
+                          onChange={(event) => setName(event.target.value)}
+                          minLength={2}
+                          maxLength={80}
+                          disabled={submitting}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="nbh-auth5__field">
+                      <label htmlFor="nbh-signup-email">Email address</label>
+                      <div className="nbh-auth5__input-wrap">
+                        <MdEmail className="nbh-auth5__input-icon" aria-hidden="true" />
+                        <Input
+                          id="nbh-signup-email"
+                          type="email"
+                          autoComplete="email"
+                          placeholder="you@example.com"
+                          value={email}
+                          onChange={(event) => setEmail(event.target.value)}
+                          maxLength={160}
+                          disabled={submitting}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="nbh-auth5__field">
+                      <label htmlFor="nbh-signup-phone">Mobile number</label>
+                      <div className="nbh-auth5__input-wrap">
+                        <MdPhone className="nbh-auth5__input-icon" aria-hidden="true" />
+                        <Input
+                          id="nbh-signup-phone"
+                          type="tel"
+                          autoComplete="tel"
+                          placeholder="04XX XXX XXX"
+                          value={phone}
+                          onChange={(event) => setPhone(event.target.value)}
+                          minLength={8}
+                          maxLength={24}
+                          disabled={submitting}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {productionAuth && (
+                      <>
+                        <div className="nbh-auth5__field">
+                          <label htmlFor="nbh-signup-password">Password</label>
+                          <div className="nbh-auth5__input-wrap">
+                            <MdLock className="nbh-auth5__input-icon" aria-hidden="true" />
+                            <Input
+                              id="nbh-signup-password"
+                              type={showPassword ? "text" : "password"}
+                              autoComplete="new-password"
+                              placeholder="At least 10 characters"
+                              value={password}
+                              onChange={(event) => setPassword(event.target.value)}
+                              minLength={10}
+                              maxLength={256}
+                              disabled={submitting}
+                              required
+                              className="nbh-auth5__password-input"
+                            />
+                            <button
+                              type="button"
+                              className="nbh-auth5__password-toggle"
+                              onClick={() => setShowPassword((current) => !current)}
+                              aria-label={showPassword ? "Hide password" : "Show password"}
+                              aria-pressed={showPassword}
+                            >
+                              {showPassword ? <MdVisibilityOff aria-hidden="true" /> : <MdVisibility aria-hidden="true" />}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="nbh-auth5__field">
+                          <label htmlFor="nbh-signup-confirm">Confirm password</label>
+                          <div className="nbh-auth5__input-wrap">
+                            <MdLock className="nbh-auth5__input-icon" aria-hidden="true" />
+                            <Input
+                              id="nbh-signup-confirm"
+                              type={showConfirmPassword ? "text" : "password"}
+                              autoComplete="new-password"
+                              placeholder="Re-enter your password"
+                              value={confirmPassword}
+                              onChange={(event) => setConfirmPassword(event.target.value)}
+                              minLength={10}
+                              maxLength={256}
+                              disabled={submitting}
+                              required
+                              className="nbh-auth5__password-input"
+                            />
+                            <button
+                              type="button"
+                              className="nbh-auth5__password-toggle"
+                              onClick={() => setShowConfirmPassword((current) => !current)}
+                              aria-label={showConfirmPassword ? "Hide confirmation password" : "Show confirmation password"}
+                              aria-pressed={showConfirmPassword}
+                            >
+                              {showConfirmPassword ? <MdVisibilityOff aria-hidden="true" /> : <MdVisibility aria-hidden="true" />}
+                            </button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {error && <p className="nbh-auth5__error" role="alert">{error}</p>}
+
+                    <Button className="nbh-auth5__submit" type="submit" disabled={submitting}>
+                      <span>{submitting ? "Creating account…" : "Create account"}</span>
+                      <MdArrowForward aria-hidden="true" />
+                    </Button>
+                  </form>
+
+                  <p className="nbh-auth5__signup">
+                    Already have an account? <Link href="/account/sign-in">Sign in</Link>
+                  </p>
                 </>
               )}
+              <Link href="/" className="nbh-auth5__home-link">← Back to Home</Link>
+            </div>
+          </section>
 
-              <label>
-                Full name
-                <input
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  autoComplete="name"
-                  minLength={2}
-                  maxLength={80}
-                  required
-                />
-              </label>
-              <label>
-                Email address
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  autoComplete="email"
-                  maxLength={160}
-                  required
-                />
-              </label>
-              <label>
-                Mobile number
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(event) => setPhone(event.target.value)}
-                  autoComplete="tel"
-                  minLength={8}
-                  maxLength={24}
-                  placeholder="04XX XXX XXX"
-                  required
-                />
-              </label>
-              {productionAuth && (
-                <>
-                  <PasswordInput
-                    label="Password"
-                    value={password}
-                    onChange={setPassword}
-                    autoComplete="new-password"
-                    minLength={10}
-                  />
-                  <PasswordInput
-                    label="Confirm password"
-                    value={confirmPassword}
-                    onChange={setConfirmPassword}
-                    autoComplete="new-password"
-                    minLength={10}
-                  />
-                </>
-              )}
-              {error && (
-                <p className="account-form-error" role="alert">
-                  {error}
-                </p>
-              )}
-              <ButtonWithIcon tone="red" type="submit" disabled={submitting}>
-                {submitting
-                  ? "Creating account…"
-                  : "Create account"}
-              </ButtonWithIcon>
-              <p className="account-auth-switch">
-                Already have an account?{" "}
-                <Link href="/account/sign-in">Sign in</Link>
-              </p>
-            </form>
-          )}
-        </section>
+          <aside className="nbh-auth5__visual-panel" aria-label="Nasty Burger House">
+            <Image
+              src="/images/Warmly lit food trailer at night-2.png"
+              alt="Warmly lit Nasty Burger House food trailer at night"
+              fill
+              sizes="(min-width: 900px) 52vw, 100vw"
+              className="nbh-auth5__hero-image"
+            />
+            <div className="nbh-auth5__hero-shade" aria-hidden="true" />
+            <div className="nbh-auth5__hero-content">
+              <h2>{"BIG BURGERS.\nBIG REWARDS."}</h2>
+              <p>Order your favourites. Earn Drip Points.</p>
+            </div>
+          </aside>
+        </div>
       </main>
     </div>
   );

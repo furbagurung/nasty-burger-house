@@ -137,6 +137,10 @@ export default function SiteMotion() {
         try { document.querySelectorAll<ElementWithStyle>(selector).forEach(element => candidates.add(element)); } catch { /* An inactive selector needs no animation. */ }
       }
       candidates.forEach(element => {
+        // A sibling's effect can run while React is still hydrating this tree.
+        // Only mutate a client boundary after its own mount effect has run.
+        const boundary = element.closest("[data-nbh-motion-boundary]");
+        if (boundary && boundary.getAttribute("data-nbh-hydrated") !== "true") return;
         if (states.has(element)) return;
         const surfaces: RecordState[] = [];
         for (const surface of prefixes) {
@@ -223,7 +227,7 @@ export default function SiteMotion() {
       });
       schedule();
     });
-    observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["class", "hidden", "aria-expanded", "disabled", "data-state"] });
+    observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["class", "hidden", "aria-expanded", "disabled", "data-state", "data-nbh-hydrated"] });
     const events = ["pointerover", "pointerout", "pointerdown", "pointerup", "focusin", "focusout", "keydown", "keyup"];
     events.forEach(event => document.addEventListener(event, onState, true));
     reduced.addEventListener("change", onPreference);

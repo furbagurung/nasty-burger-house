@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { drawerMotion, useMobileCart } from "../lib/drawer-motion";
 import { FooterUtilityLinks } from "./footer-legal-links";
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   adultDrinkChoices,
   comboUpgradePrice,
@@ -218,6 +218,13 @@ export default function OrderExperience({
   items,
   initialServiceStatus,
 }: OrderExperienceProps) {
+  const shellRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return;
+    shell.setAttribute("data-nbh-hydrated", "true");
+    return () => shell.removeAttribute("data-nbh-hydrated");
+  }, []);
   const reducedMotion = useReducedMotion();
   const mobileCart = useMobileCart();
   const transitions = drawerMotion(reducedMotion !== false, mobileCart);
@@ -826,7 +833,7 @@ export default function OrderExperience({
   const soloBox = items.find((item) => item.id === "solo-beast-box");
 
   return (
-    <div className="site-shell">
+    <div className="site-shell" ref={shellRef} data-nbh-motion-boundary="">
       <LandingPromoModal />
       <p className="sr-only" aria-live="polite">
         {announcement}

@@ -24,6 +24,7 @@ import {
 } from "../data/menu";
 import { findMenuPageCategory } from "../data/menu-pages";
 import type { CartLine } from "../lib/order";
+import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import CatalogueMobileMenu from "./catalogue-mobile-menu";
 import MenuItemMedia from "./menu-item-media";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
@@ -326,7 +327,9 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
       boxDrinks,
     };
 
-    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify([...readStoredCart(), line]));
+    // Merge only when product, extras, removals, combo drink and box choices match.
+    const nextCart = mergeIdenticalCartLines([...readStoredCart(), line]);
+    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(nextCart));
     window.dispatchEvent(new Event("nasty-cart-updated"));
     setSelectionError("");
     setAddedToCart(true);

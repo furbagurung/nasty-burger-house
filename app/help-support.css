@@ -163,12 +163,12 @@
 
 .help-support-faq-list summary::after {
   position: absolute;
-  top: var(--nbh-after-top, 50%);
-  right: var(--nbh-after-right, 0);
+  top: 50%;
+  right: 0;
   content: "+";
   font-size: 1.4rem;
   font-weight: 500;
-  transform: var(--nbh-after-transform, translateY(-50%));
+  transform: translateY(-50%);
 }
 
 .help-support-faq-list details[open] summary::after {

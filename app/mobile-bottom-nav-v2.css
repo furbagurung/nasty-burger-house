@@ -33,7 +33,7 @@
     color-scheme: light !important;
     transform: translateY(0) !important;
     will-change: transform;
-    --nbh-motion-transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1) !important;
   }
 
   .mobile-tab-bar--v2.is-scroll-hidden:not(.is-more-open) {
@@ -304,7 +304,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .mobile-tab-bar--v2 {
-    --nbh-motion-transition: none !important;
+    transition: none !important;
   }
 
   .mobile-more-backdrop,

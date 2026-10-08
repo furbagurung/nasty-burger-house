@@ -8,12 +8,12 @@
 
 .loyalty-modal::before {
   display: block;
-  width: var(--nbh-before-width, clamp(7.25rem, 18vw, 10.5rem));
+  width: clamp(7.25rem, 18vw, 10.5rem);
   aspect-ratio: 1;
-  margin: var(--nbh-before-margin, 0 auto 1.15rem);
-  background: var(--nbh-before-background, url("/images/drip-points/drip-coin.png") center / contain no-repeat);
+  margin: 0 auto 1.15rem;
+  background: url("/images/drip-points/drip-coin.png") center / contain no-repeat;
   content: "";
-  filter: var(--nbh-before-filter, drop-shadow(0 14px 18px rgba(117, 72, 0, 0.18)));
+  filter: drop-shadow(0 14px 18px rgba(117, 72, 0, 0.18));
 }
 
 .loyalty-modal > .eyebrow,
@@ -42,7 +42,7 @@
 
 @media (max-width: 680px) {
   .loyalty-modal::before {
-    width: var(--nbh-before-width, 7rem);
+    width: 7rem;
     margin-bottom: 0.85rem;
   }
 }

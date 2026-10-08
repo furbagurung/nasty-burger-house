@@ -19,7 +19,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: var(--nbh-before-background, linear-gradient(110deg, rgba(255, 255, 255, 0.02), transparent 24%, transparent 76%, rgba(255, 255, 255, 0.012)));
+  background: linear-gradient(110deg, rgba(255, 255, 255, 0.02), transparent 24%, transparent 76%, rgba(255, 255, 255, 0.012));
   content: "";
 }
 
@@ -80,7 +80,7 @@
   line-height: 1.45;
   text-align: left;
   text-decoration: none;
-  --nbh-motion-transition: color 160ms ease, transform 160ms ease;
+  transition: color 160ms ease, transform 160ms ease;
 }
 
 .site-footer a:hover,
@@ -160,6 +160,6 @@
 @media (prefers-reduced-motion: reduce) {
   .site-footer a,
   .site-footer button {
-    --nbh-motion-transition: none;
+    transition: none;
   }
 }

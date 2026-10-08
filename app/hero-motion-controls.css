@@ -39,7 +39,7 @@
   padding: 0;
   background: transparent;
   color: #fff;
-  --nbh-motion-transition: background-color 150ms ease, transform 150ms ease;
+  transition: background-color 150ms ease, transform 150ms ease;
 }
 
 .mobile-hero-motion-controls > button:hover {
@@ -70,7 +70,7 @@
   border-radius: 999px;
   padding: 0;
   background: rgba(255, 255, 255, 0.38);
-  --nbh-motion-transition: width 180ms ease, background-color 180ms ease;
+  transition: width 180ms ease, background-color 180ms ease;
 }
 
 .mobile-hero-motion-dots button.is-active {
@@ -118,6 +118,6 @@
 @media (prefers-reduced-motion: reduce) {
   .mobile-hero-motion-controls > button,
   .mobile-hero-motion-dots button {
-    --nbh-motion-transition: none !important;
+    transition: none !important;
   }
 }

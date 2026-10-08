@@ -47,7 +47,7 @@ export default function ButtonWithIcon({
   ariaLabel,
 }: ButtonWithIconProps) {
   const rootClassName = cn(
-    "relative group inline-flex h-12 items-center overflow-hidden rounded-full p-1 ps-6 pe-14 text-sm font-medium no-underline shadow-sm [--nbh-motion-transition:all_500ms_ease] hover:ps-14 hover:pe-6",
+    "relative group inline-flex h-12 items-center overflow-hidden rounded-full p-1 ps-6 pe-14 text-sm font-medium no-underline shadow-sm transition-all duration-500 hover:ps-14 hover:pe-6",
     fullWidth ? "w-full" : "w-fit",
     disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
     toneClasses[tone],
@@ -56,10 +56,10 @@ export default function ButtonWithIcon({
 
   const content = (
     <>
-      <span className="relative z-10 [--nbh-motion-transition:all_500ms_ease]">{children}</span>
+      <span className="relative z-10 transition-all duration-500">{children}</span>
       <span
         className={cn(
-          "absolute right-1 flex h-10 w-10 items-center justify-center rounded-full [--nbh-motion-transition:all_500ms_ease] group-hover:right-[calc(100%-44px)] group-hover:rotate-45",
+          "absolute right-1 flex h-10 w-10 items-center justify-center rounded-full transition-all duration-500 group-hover:right-[calc(100%-44px)] group-hover:rotate-45",
           chipClasses[tone],
         )}
         aria-hidden="true"

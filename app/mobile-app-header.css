@@ -78,7 +78,7 @@
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2) !important;
     transform: translateY(0);
     will-change: transform;
-    --nbh-motion-transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1) !important;
   }
 
   .catalogue-shell:not(.product-page-shell) > .catalogue-header.is-mobile-scroll-hidden {
@@ -177,6 +177,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .catalogue-shell:not(.product-page-shell) > .catalogue-header {
-    --nbh-motion-transition: none !important;
+    transition: none !important;
   }
 }

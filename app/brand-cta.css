@@ -49,7 +49,7 @@
   box-shadow: var(--cta-shadow) !important;
   text-shadow: none !important;
   cursor: pointer;
-  --nbh-motion-transition:
+  transition:
     transform 180ms ease,
     filter 180ms ease,
     box-shadow 180ms ease !important;
@@ -88,22 +88,22 @@
 .home-feature__copy > button::after,
 .checkout-summary > button::after {
   display: grid !important;
-  width: var(--nbh-after-width, var(--nasty-cta-arrow-size)) !important;
-  height: var(--nbh-after-height, var(--nasty-cta-arrow-size)) !important;
+  width: var(--nasty-cta-arrow-size) !important;
+  height: var(--nasty-cta-arrow-size) !important;
   place-items: center !important;
   flex: 0 0 var(--nasty-cta-arrow-size) !important;
   border: 1px solid var(--cta-chip-border) !important;
   border-radius: 50% !important;
-  background: var(--nbh-after-background, var(--cta-chip-bg)) !important;
-  color: var(--nbh-after-color, currentColor) !important;
+  background: var(--cta-chip-bg) !important;
+  color: currentColor !important;
   content: "→" !important;
   font-family: Arial, Helvetica, sans-serif !important;
   font-size: 0.82rem !important;
   font-weight: 400 !important;
   line-height: 1 !important;
-  box-shadow: var(--nbh-after-box-shadow, none) !important;
-  transform: var(--nbh-after-transform, none) !important;
-  --nbh-motion-transition: transform 180ms ease, background-color 180ms ease !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: transform 180ms ease, background-color 180ms ease !important;
 }
 
 .hero-carousel .hero-slide__copy .hero-card__cta:hover,
@@ -140,7 +140,7 @@
 .home-testimonials__cta:hover::after,
 .home-feature__copy > button:hover::after,
 .checkout-summary > button:hover::after {
-  transform: var(--nbh-after-transform, translateX(2px)) !important;
+  transform: translateX(2px) !important;
 }
 
 .primary-button,
@@ -232,11 +232,11 @@
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta::after {
-    width: var(--nbh-after-width, var(--nasty-cta-arrow-size)) !important;
-    height: var(--nbh-after-height, var(--nasty-cta-arrow-size)) !important;
+    width: var(--nasty-cta-arrow-size) !important;
+    height: var(--nasty-cta-arrow-size) !important;
     flex-basis: var(--nasty-cta-arrow-size) !important;
-    background: var(--nbh-after-background, var(--cta-chip-bg)) !important;
-    color: var(--nbh-after-color, currentColor) !important;
+    background: var(--cta-chip-bg) !important;
+    color: currentColor !important;
   }
 }
 
@@ -255,6 +255,6 @@
   .home-testimonials__cta,
   .home-feature__copy > button,
   .checkout-summary > button {
-    --nbh-motion-transition: none !important;
+    transition: none !important;
   }
 }

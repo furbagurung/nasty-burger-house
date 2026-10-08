@@ -307,13 +307,13 @@
 
   .catalogue-shell:not(.product-page-shell) .catalogue-categories a.is-active::before {
     position: absolute !important;
-    top: var(--nbh-before-top, 0.38rem) !important;
-    bottom: var(--nbh-before-bottom, 0.38rem) !important;
-    left: var(--nbh-before-left, 0) !important;
+    top: 0.38rem !important;
+    bottom: 0.38rem !important;
+    left: 0 !important;
     display: block !important;
-    width: var(--nbh-before-width, 3px) !important;
+    width: 3px !important;
     border-radius: 999px;
-    background: var(--nbh-before-background, var(--hot)) !important;
+    background: var(--hot) !important;
     content: "" !important;
   }
 
@@ -431,7 +431,7 @@
   .mobile-hero-motion-controls *,
   .mobile-tab__order-circle,
   .mobile-tab__order-bag {
-    --nbh-motion-transition: none !important;
+    transition: none !important;
   }
 }
 

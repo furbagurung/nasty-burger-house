@@ -90,7 +90,7 @@
     font-size: 0.84rem;
     font-weight: 730;
     text-decoration: none;
-    --nbh-motion-transition: none;
+    transition: none;
   }
 
   .catalogue-shell:not(.product-page-shell) .catalogue-categories a:hover {
@@ -105,12 +105,12 @@
 
   .catalogue-shell:not(.product-page-shell) .catalogue-categories a.is-active::before {
     position: absolute;
-    top: var(--nbh-before-top, 0.65rem);
-    bottom: var(--nbh-before-bottom, 0.65rem);
-    left: var(--nbh-before-left, 0);
-    width: var(--nbh-before-width, 3px);
+    top: 0.65rem;
+    bottom: 0.65rem;
+    left: 0;
+    width: 3px;
     border-radius: 999px;
-    background: var(--nbh-before-background, var(--hot));
+    background: var(--hot);
     content: "";
   }
 

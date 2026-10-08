@@ -38,7 +38,7 @@
   color: var(--cart-ink);
   box-shadow: 0 8px 24px rgba(31, 25, 18, 0.06);
   text-decoration: none;
-  --nbh-motion-transition: transform 160ms ease, box-shadow 160ms ease;
+  transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
 .cart-redesign-back:hover {
@@ -118,7 +118,7 @@
   height: 100%;
   padding: 0.5rem;
   object-fit: contain;
-  --nbh-motion-transition: transform 180ms ease;
+  transition: transform 180ms ease;
 }
 
 .cart-redesign-item__media:hover img {
@@ -172,7 +172,7 @@
   background: #fff0ec;
   color: #a43b25;
   cursor: pointer;
-  --nbh-motion-transition: background 150ms ease, transform 150ms ease;
+  transition: background 150ms ease, transform 150ms ease;
 }
 
 .cart-redesign-remove:hover {
@@ -358,7 +358,7 @@
   font-weight: 900;
   text-decoration: none;
   box-shadow: 0 10px 22px rgba(232, 59, 24, 0.2);
-  --nbh-motion-transition: transform 160ms ease, box-shadow 160ms ease;
+  transition: transform 160ms ease, box-shadow 160ms ease;
 }
 
 .cart-redesign-checkout:hover {

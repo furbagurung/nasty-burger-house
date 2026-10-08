@@ -346,7 +346,7 @@ body:has(.admin-customer-shell) > .home-top-header {
 
   .admin-customer-cell::before {
     content: attr(data-label);
-    color: var(--nbh-before-color, #969087);
+    color: #969087;
     font-size: 0.58rem;
     font-weight: 900;
     letter-spacing: 0.045em;

@@ -101,7 +101,7 @@
     color: #ffffff;
     text-decoration: none;
     -webkit-tap-highlight-color: transparent;
-    --nbh-motion-transition:
+    transition:
       background-color 150ms ease,
       opacity 180ms ease,
       transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -218,6 +218,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .mobile-home-location {
-    --nbh-motion-transition: none;
+    transition: none;
   }
 }

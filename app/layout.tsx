@@ -13,8 +13,6 @@ import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
 import MobileHomeLocation from "./components/mobile-home-location";
 import ToastProvider from "./components/toast-provider";
-import SiteMotion from "./components/site-motion";
-import "./motion-runtime.css";
 
 import "./globals.css";
 import "./catalogue-theme.css";
@@ -129,7 +127,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <FooterLegalLinks />
         <CookieSettings />
         <ToastProvider />
-        <SiteMotion />
 
       </body>
     </html>

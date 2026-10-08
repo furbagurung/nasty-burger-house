@@ -72,7 +72,7 @@
         text-align: center;
         text-decoration: none;
         transform: none !important;
-        --nbh-motion-transition: none !important;
+        transition: none !important;
       }
 
       .menu-preview-card--clean::before {

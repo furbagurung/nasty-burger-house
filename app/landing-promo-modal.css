@@ -28,7 +28,7 @@
   border-radius: 1.4rem;
   background: transparent;
   box-shadow: 0 26px 70px rgba(0, 0, 0, 0.2);
-  --nbh-motion-animation: landing-promo-enter 260ms ease-out both;
+  animation: landing-promo-enter 260ms ease-out both;
 }
 
 .landing-promo-modal__poster {
@@ -76,6 +76,18 @@
   outline-offset: 4px;
 }
 
+@keyframes landing-promo-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.975);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (max-width: 680px) {
   .landing-promo-modal {
     padding: 0.75rem;
@@ -97,6 +109,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .landing-promo-modal__dialog {
-    --nbh-motion-animation: none;
+    animation: none;
   }
 }

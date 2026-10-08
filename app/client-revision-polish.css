@@ -13,7 +13,7 @@
   background: #f3f0eb;
   color: currentColor;
   opacity: 0.78;
-  --nbh-motion-transition:
+  transition:
     background-color 140ms ease,
     opacity 140ms ease,
     transform 140ms ease;
@@ -45,8 +45,17 @@
 .menu-preview-card--clean.is-disabled .home-menu-card__sticker {
   opacity: 1 !important;
   filter: none !important;
-  --nbh-motion-animation: nasty-coming-soon-float 2.35s ease-in-out infinite alternate !important;
+  animation: nasty-coming-soon-float 2.35s ease-in-out infinite alternate !important;
   will-change: transform;
+}
+
+@keyframes nasty-coming-soon-float {
+  from {
+    transform: translate3d(0, 4px, 0);
+  }
+  to {
+    transform: translate3d(0, -7px, 0);
+  }
 }
 
 /* Keep the homepage mobile header solid black over the hero image. */
@@ -66,11 +75,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   .menu-preview-card--clean.is-disabled .home-menu-card__sticker {
-    --nbh-motion-animation: none !important;
+    animation: none !important;
     transform: none !important;
   }
 
   .home-top-header__dropdown-icon {
-    --nbh-motion-transition: none;
+    transition: none;
   }
 }

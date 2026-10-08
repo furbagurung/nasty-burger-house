@@ -10,7 +10,7 @@
 @media (max-width: 900px) {
   .site-shell > .site-header {
     z-index: 130 !important;
-    --nbh-motion-transition:
+    transition:
       background-color 280ms ease,
       border-color 280ms ease,
       box-shadow 280ms ease !important;
@@ -20,7 +20,7 @@
      FindStyleNavigation binds to it after mount instead of portalling another
      button into the SSR-owned header, which avoids hydration mismatches. */
   .site-shell > .site-header .mobile-menu-button span {
-    --nbh-motion-transition:
+    transition:
       transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
       opacity 180ms ease,
       background-color 220ms ease;
@@ -65,7 +65,7 @@
     color: #fff;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    --nbh-motion-transition:
+    transition:
       background-color 220ms ease,
       border-color 220ms ease,
       transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -77,7 +77,7 @@
     border: 1px solid rgba(232, 59, 24, 0);
     border-radius: inherit;
     content: "";
-    --nbh-motion-transition: border-color 240ms ease;
+    transition: border-color 240ms ease;
   }
 
   .nasty-find-burger:hover {
@@ -95,7 +95,7 @@
   }
 
   .nasty-find-burger[aria-expanded="true"]::before {
-    border-color: var(--nbh-before-border-color, rgba(232, 59, 24, 0.32));
+    border-color: rgba(232, 59, 24, 0.32);
   }
 
   .nasty-find-burger > span {
@@ -108,7 +108,7 @@
     border-radius: 999px;
     background: currentColor;
     transform: translateZ(0);
-    --nbh-motion-transition:
+    transition:
       top 180ms 180ms ease,
       transform 280ms 0ms cubic-bezier(0.16, 1, 0.3, 1),
       background-color 220ms ease;
@@ -116,7 +116,7 @@
 
   .nasty-find-burger[aria-expanded="true"] > span {
     background: #ffc928;
-    --nbh-motion-transition:
+    transition:
       top 180ms 0ms ease,
       transform 280ms 160ms cubic-bezier(0.16, 1, 0.3, 1),
       background-color 220ms ease;
@@ -147,13 +147,13 @@
     visibility: hidden;
     color: #fff;
     pointer-events: none;
-    --nbh-motion-transition: visibility 0s linear 720ms;
+    transition: visibility 0s linear 720ms;
   }
 
   .nasty-find-drawer.is-open {
     visibility: visible;
     pointer-events: auto;
-    --nbh-motion-transition-delay: 0s;
+    transition-delay: 0s;
   }
 
   .nasty-find-drawer__surface {
@@ -165,16 +165,16 @@
       #0b0a09;
     transform: scaleY(0);
     transform-origin: top;
-    --nbh-motion-transition: transform 680ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 680ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .nasty-find-drawer__surface::after {
     position: absolute;
     inset: auto 0 0;
-    height: var(--nbh-after-height, 3px);
-    background: var(--nbh-after-background, linear-gradient(90deg, #e83b18 0 48%, #ffc928 48% 72%, #171513 72% 100%));
+    height: 3px;
+    background: linear-gradient(90deg, #e83b18 0 48%, #ffc928 48% 72%, #171513 72% 100%);
     content: "";
-    opacity: var(--nbh-after-opacity, 0.9);
+    opacity: 0.9;
   }
 
   .nasty-find-drawer.is-open .nasty-find-drawer__surface {
@@ -207,17 +207,17 @@
   .nasty-find-drawer__actions {
     opacity: 0;
     transform: translateY(1.35rem);
-    --nbh-motion-transition:
+    transition:
       opacity 340ms ease,
       transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
-    --nbh-motion-transition-delay: 0ms;
+    transition-delay: 0ms;
   }
 
   .nasty-find-drawer.is-open .nasty-find-drawer__link,
   .nasty-find-drawer.is-open .nasty-find-drawer__actions {
     opacity: 1;
     transform: translateY(0);
-    --nbh-motion-transition-delay: calc(145ms + (var(--nasty-nav-index, 0) * 56ms));
+    transition-delay: calc(145ms + (var(--nasty-nav-index, 0) * 56ms));
   }
 
   .nasty-find-drawer__nav {
@@ -265,7 +265,7 @@
     place-items: center;
     color: rgba(255, 255, 255, 0.58);
     font-size: 0.78rem;
-    --nbh-motion-transition:
+    transition:
       color 220ms ease,
       border-color 220ms ease,
       transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -289,7 +289,7 @@
   .nasty-find-drawer.is-open .nasty-find-drawer__menu-trigger {
     opacity: 1;
     transform: translateY(0);
-    --nbh-motion-transition-delay: calc(145ms + (var(--nasty-nav-index, 1) * 56ms));
+    transition-delay: calc(145ms + (var(--nasty-nav-index, 1) * 56ms));
   }
 
   .nasty-find-drawer__plus {
@@ -306,7 +306,7 @@
     border-radius: 999px;
     background: #ffc928;
     transform: translate(-50%, -50%);
-    --nbh-motion-transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .nasty-find-drawer__plus i:last-child {
@@ -321,7 +321,7 @@
     display: grid;
     grid-template-rows: 0fr;
     opacity: 0;
-    --nbh-motion-transition:
+    transition:
       grid-template-rows 420ms cubic-bezier(0.16, 1, 0.3, 1),
       opacity 240ms ease;
   }
@@ -349,7 +349,7 @@
     font-size: 0.86rem;
     font-weight: 720;
     text-decoration: none;
-    --nbh-motion-transition:
+    transition:
       color 180ms ease,
       padding-left 280ms cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -419,7 +419,7 @@
   .nasty-find-drawer__actions,
   .nasty-find-drawer__submenu,
   .nasty-find-drawer__plus i {
-    --nbh-motion-transition-duration: 0.01ms !important;
-    --nbh-motion-transition-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
   }
 }

@@ -139,7 +139,7 @@
   text-shadow: none !important;
   cursor: pointer;
   transform: translateZ(0);
-  --nbh-motion-transition:
+  transition:
     transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 260ms ease,
     border-color 260ms ease,
@@ -149,41 +149,41 @@
 /* Soft moving highlight keeps the CTA feeling dimensional without becoming flashy. */
 .hero-carousel .hero-slide__copy .hero-card__cta::before {
   position: absolute;
-  top: var(--nbh-before-top, -65%);
-  bottom: var(--nbh-before-bottom, -65%);
-  left: var(--nbh-before-left, -38%);
+  top: -65%;
+  bottom: -65%;
+  left: -38%;
   z-index: -1;
-  width: var(--nbh-before-width, 30%);
-  background: var(--nbh-before-background, linear-gradient(
+  width: 30%;
+  background: linear-gradient(
     90deg,
     transparent,
     rgba(255, 255, 255, 0.2),
     transparent
-  ));
+  );
   content: "";
   pointer-events: none;
-  transform: var(--nbh-before-transform, rotate(14deg) translateX(0));
-  --nbh-motion-transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform: rotate(14deg) translateX(0);
+  transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-carousel .hero-slide__copy .hero-card__cta::after {
   display: grid;
-  width: var(--nbh-after-width, clamp(2.05rem, 2.4vw, 2.5rem));
-  height: var(--nbh-after-height, clamp(2.05rem, 2.4vw, 2.5rem));
+  width: clamp(2.05rem, 2.4vw, 2.5rem);
+  height: clamp(2.05rem, 2.4vw, 2.5rem);
   place-items: center;
   flex: 0 0 auto;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 50%;
-  background: var(--nbh-after-background, rgba(14, 10, 8, 0.18));
+  background: rgba(14, 10, 8, 0.18);
   box-shadow:
-    var(--nbh-after-box-shadow, inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 4px 12px rgba(0, 0, 0, 0.12));
-  color: var(--nbh-after-color, #fff);
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.12);
+  color: #fff;
   content: "→";
   font-size: 1.05em;
   font-weight: 700;
   line-height: 1;
-  --nbh-motion-transition:
+  transition:
     transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
     background-color 260ms ease;
 }
@@ -199,12 +199,12 @@
 }
 
 .hero-carousel .hero-slide__copy .hero-card__cta:hover::before {
-  transform: var(--nbh-before-transform, rotate(14deg) translateX(460%));
+  transform: rotate(14deg) translateX(460%);
 }
 
 .hero-carousel .hero-slide__copy .hero-card__cta:hover::after {
-  background: var(--nbh-after-background, rgba(14, 10, 8, 0.28));
-  transform: var(--nbh-after-transform, translateX(3px) rotate(-4deg));
+  background: rgba(14, 10, 8, 0.28);
+  transform: translateX(3px) rotate(-4deg);
 }
 
 .hero-carousel .hero-slide__copy .hero-card__cta:active {
@@ -225,13 +225,13 @@
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background: var(--nbh-after-background, linear-gradient(
+  background: linear-gradient(
     90deg,
     rgba(7, 6, 5, 0.54) 0%,
     rgba(7, 6, 5, 0.26) 29%,
     rgba(7, 6, 5, 0.06) 47%,
     transparent 61%
-  ));
+  );
   content: "";
 }
 
@@ -253,13 +253,13 @@
 
 @media (max-width: 680px) {
   .hero-carousel .hero-slide::after {
-    background: var(--nbh-after-background, linear-gradient(
+    background: linear-gradient(
       180deg,
       rgba(7, 6, 5, 0.04) 0%,
       rgba(7, 6, 5, 0.08) 44%,
       rgba(7, 6, 5, 0.72) 73%,
       rgba(7, 6, 5, 0.94) 100%
-    ));
+    );
   }
 
   .hero-carousel .hero-slide__copy {
@@ -306,8 +306,8 @@
   }
 
   .hero-carousel .hero-slide__copy .hero-card__cta::after {
-    width: var(--nbh-after-width, 2.45rem);
-    height: var(--nbh-after-height, 2.45rem);
+    width: 2.45rem;
+    height: 2.45rem;
   }
 }
 
@@ -315,7 +315,7 @@
   .hero-carousel .hero-slide__copy .hero-card__cta,
   .hero-carousel .hero-slide__copy .hero-card__cta::before,
   .hero-carousel .hero-slide__copy .hero-card__cta::after {
-    --nbh-motion-transition: none !important;
+    transition: none !important;
   }
 }
 

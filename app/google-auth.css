@@ -14,7 +14,7 @@
   font-size: 0.9rem;
   font-weight: 850;
   cursor: pointer;
-  --nbh-motion-transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
 }
 
 .account-google-button:hover {

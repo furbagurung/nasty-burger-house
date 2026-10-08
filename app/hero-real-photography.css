@@ -20,7 +20,7 @@
   object-position: center center !important;
   opacity: 0;
   transform: scale(1.012);
-  --nbh-motion-transition: opacity 180ms ease, transform 7s ease;
+  transition: opacity 180ms ease, transform 7s ease;
 }
 
 .hero-slide[data-hero-photography] .hero-slide__image {
@@ -115,7 +115,7 @@
   font-weight: 850;
   text-decoration: none;
   box-shadow: 0 12px 28px rgba(232, 59, 24, 0.23);
-  --nbh-motion-transition: transform 160ms ease, background-color 160ms ease;
+  transition: transform 160ms ease, background-color 160ms ease;
 }
 
 .hero-slide__copy .hero-card__cta:hover {
@@ -203,7 +203,7 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-slide__image,
   .hero-slide__copy .hero-card__cta {
-    --nbh-motion-transition: none !important;
+    transition: none !important;
   }
 
   .hero-slide__image,

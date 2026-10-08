@@ -87,7 +87,7 @@
   font-weight: 850;
   text-decoration: none;
   box-shadow: 0 12px 32px rgba(232, 59, 24, 0.2);
-  --nbh-motion-transition: transform 160ms ease, background-color 160ms ease;
+  transition: transform 160ms ease, background-color 160ms ease;
 }
 
 .find-us-section__copy > a:hover {
@@ -110,7 +110,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  box-shadow: var(--nbh-after-box-shadow, inset 0 0 0 1px rgba(255, 255, 255, 0.04));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .find-us-section__map iframe {
@@ -148,6 +148,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .find-us-section__copy > a {
-    --nbh-motion-transition: none;
+    transition: none;
   }
 }

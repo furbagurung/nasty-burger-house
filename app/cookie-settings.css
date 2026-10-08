@@ -165,12 +165,12 @@
 }
 .cookie-setting-row--toggle input::before {
   position: absolute;
-  top: var(--nbh-before-top, 3px);
-  left: var(--nbh-before-left, 3px);
-  width: var(--nbh-before-width, calc(1.6rem - 8px));
-  height: var(--nbh-before-height, calc(1.6rem - 8px));
+  top: 3px;
+  left: 3px;
+  width: calc(1.6rem - 8px);
+  height: calc(1.6rem - 8px);
   border-radius: 50%;
-  background: var(--nbh-before-background, #fff);
+  background: #fff;
   content: "";
 }
 .cookie-setting-row--toggle input:checked {
@@ -178,8 +178,8 @@
   background: #c53517;
 }
 .cookie-setting-row--toggle input:checked::before {
-  left: var(--nbh-before-left, auto);
-  right: var(--nbh-before-right, 3px);
+  left: auto;
+  right: 3px;
 }
 
 .cookie-settings-actions {

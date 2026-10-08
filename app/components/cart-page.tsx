@@ -3,6 +3,7 @@
 import { ChevronDown, ChevronLeft, Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { menuItems, modifierChoices } from "../data/menu";
 import {
@@ -12,6 +13,7 @@ import {
 } from "../lib/order";
 import MobilePageHeader from "./mobile-page-header";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
+import { Button } from "@/components/ui/button";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
@@ -108,6 +110,7 @@ function lineDetails(line: CartLine) {
 }
 
 export default function CartPage() {
+  const router = useRouter();
   const [cart, setCart] = useState<CartLine[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [summaryExpanded, setSummaryExpanded] = useState(false);
@@ -262,24 +265,32 @@ export default function CartPage() {
               className={`cart-redesign-summary${summaryExpanded ? " is-expanded" : ""}`}
               aria-label="Order summary"
             >
-              <button
-                className="cart-redesign-summary__toggle"
-                type="button"
-                aria-label={summaryExpanded ? "Collapse order summary" : "Expand order summary"}
-                aria-expanded={summaryExpanded}
-                aria-controls="cart-summary-breakdown"
-                onClick={() => setSummaryExpanded((open) => !open)}
-              >
-                <ChevronDown size={24} strokeWidth={2.1} aria-hidden="true" />
-              </button>
-
               <div className="cart-redesign-summary__heading">
-                <div>
+                <div className="cart-redesign-summary__desktop-heading">
                   <p>Order summary</p>
                   <h2>Ready for pickup</h2>
-                  <h2 className="cart-redesign-summary__mobile-title">Order summary</h2>
                 </div>
-                <span>{cartCount} item{cartCount === 1 ? "" : "s"}</span>
+                <span className="cart-redesign-summary__desktop-count">
+                  {cartCount} item{cartCount === 1 ? "" : "s"}
+                </span>
+
+                <button
+                  className="cart-redesign-summary__mobile-toggle"
+                  type="button"
+                  aria-expanded={summaryExpanded}
+                  aria-controls="cart-summary-breakdown"
+                  aria-label={summaryExpanded ? "Collapse order summary" : "Expand order summary"}
+                  onClick={() => setSummaryExpanded((open) => !open)}
+                >
+                  <span className="cart-redesign-summary__mobile-copy">
+                    <strong>Order Summary</strong>
+                    <small>{cartCount} item{cartCount === 1 ? "" : "s"} · Free pickup</small>
+                  </span>
+                  <span className="cart-redesign-summary__mobile-amount">
+                    <strong>{money.format(subtotal)}</strong>
+                    <ChevronDown size={19} strokeWidth={2.1} aria-hidden="true" />
+                  </span>
+                </button>
               </div>
 
               <div
@@ -308,10 +319,19 @@ export default function CartPage() {
               </div>
 
               <div className="cart-redesign-summary__actions">
-                <ButtonWithIcon href="/checkout" tone="red" fullWidth>
-                  Continue to checkout · {money.format(subtotal)}
-                </ButtonWithIcon>
-
+                <div className="cart-redesign-summary__desktop-checkout">
+                  <ButtonWithIcon href="/checkout" tone="red" fullWidth>
+                    Continue to checkout · {money.format(subtotal)}
+                  </ButtonWithIcon>
+                </div>
+                <Button
+                  type="button"
+                  variant="default"
+                  className="cart-redesign-summary__mobile-checkout"
+                  onClick={() => router.push("/checkout")}
+                >
+                  Checkout
+                </Button>
               </div>
             </aside>
           </div>

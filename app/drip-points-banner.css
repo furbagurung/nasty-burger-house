@@ -1,5 +1,5 @@
 .drip-ad-display {
-  width: min(calc(100% - 1.5rem), 1380px);
+  width: min(calc(100% - 2rem), 1180px);
   margin: clamp(2.5rem, 5vw, 4.5rem) auto;
 }
 
@@ -37,7 +37,7 @@
 
 @media (max-width: 680px) {
   .drip-ad-display {
-    width: calc(100% - 1.5rem);
+    width: calc(100% - 2rem);
     margin: 1.25rem auto 2.4rem;
   }
 

@@ -125,3 +125,11 @@
     transition: none !important;
   }
 }
+
+/* Product detail pages use breadcrumb + bottom navigation on mobile. */
+@media (max-width: 680px) {
+  .product-page-shell > .catalogue-header,
+  .product-page-shell > .catalogue-header.is-mobile-scroll-hidden {
+    display: none !important;
+  }
+}

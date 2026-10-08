@@ -1160,9 +1160,6 @@ export default function OrderExperience({
                     <strong>{item.name}</strong>
                     <small>{formatPrice(item.price)}</small>
                   </span>
-                  <span className="popular-pick-card__add" aria-hidden="true">
-                    +
-                  </span>
                 </span>
               </Link>
             ))}

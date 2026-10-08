@@ -112,6 +112,15 @@
   color: #fff;
 }
 
+@media (max-width: 767px) {
+  /* Cart and checkout are focused mobile flows. Keep the footer on desktop
+     and on all other routes; the root layout mounts it after each page. */
+  body:has(.cart-redesign-page) > .utility-footer,
+  body:has(.checkout-page) > .utility-footer {
+    display: none;
+  }
+}
+
 @media (max-width: 680px) {
   .utility-footer {
     align-items: flex-start;

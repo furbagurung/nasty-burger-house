@@ -1166,10 +1166,6 @@ export default function OrderExperience({
 
         <DripPointsBanner />
 
-        <div className="review-stories-home-host">
-          <ReviewStories />
-        </div>
-
         <section
           className="home-promo-grid"
           aria-label="Explore Beast Boxes and dessert"
@@ -1216,6 +1212,10 @@ export default function OrderExperience({
             </div>
           </article>
         </section>
+        <div className="review-stories-home-host">
+          <ReviewStories />
+        </div>
+
         <HomepageTestimonials />
       </main>
 

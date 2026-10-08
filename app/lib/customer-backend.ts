@@ -313,6 +313,9 @@ async function loadCustomerOrdersFresh(): Promise<CustomerOrder[]> {
       .select(
         "id,customer_id,customer_name,customer_email,customer_phone,status,pickup_label,subtotal_cents,admin_notification_status,submitted_at,order_lines(item_id,item_name,image_path,quantity,unit_price_cents,line_total_cents,configuration)",
       )
+      // Admin accounts can see other orders under RLS; the customer review
+      // selector must only list orders owned by the signed-in customer.
+      .eq("customer_id", user.id)
       .order("submitted_at", { ascending: false }),
     supabase
       .from("drip_ledger")
@@ -363,6 +366,7 @@ async function loadCustomerReviewsFresh(): Promise<CustomerReview[]> {
   const { data, error } = await supabase
     .from("reviews")
     .select("id,order_id,rating,message,status,created_at")
+    .eq("customer_id", user.id)
     .order("created_at", { ascending: false });
 
   if (error) throw error;

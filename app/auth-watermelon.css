@@ -15,12 +15,14 @@ body:has(.nbh-auth-page) {
 
 .standalone-main.nbh-auth-main {
   display: grid;
-  min-height: calc(100svh - 6rem);
+  min-height: 100svh;
   width: 100%;
   max-width: none;
   place-items: center;
   margin: 0;
-  padding: clamp(2rem, 5vw, 3.5rem) clamp(0.85rem, 3vw, 1.5rem) 4rem;
+  /* The desktop header is fixed and 5.85rem tall. Keep a clear gap above
+     the auth card even on shorter displays, without an enclosing container. */
+  padding: calc(5.85rem + clamp(2.25rem, 4vw, 3.5rem)) clamp(0.85rem, 3vw, 1.5rem) 4rem;
   background: transparent;
 }
 
@@ -217,8 +219,9 @@ body:has(.nbh-auth-page) {
 
 @media (max-width: 700px) {
   .standalone-main.nbh-auth-main {
-    min-height: calc(100svh - 5rem);
-    padding: 1.5rem 0.75rem calc(7.5rem + env(safe-area-inset-bottom));
+    min-height: 100svh;
+    /* Allow room for mobile navigation/safe areas before the sign-in card. */
+    padding: calc(5.1rem + 1.5rem + env(safe-area-inset-top)) 0.75rem calc(7.5rem + env(safe-area-inset-bottom));
   }
   .nbh-auth-shell { padding: 0; }
   .nbh-auth-container { width: 100%; max-width: 440px; }

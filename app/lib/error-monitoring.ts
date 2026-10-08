@@ -31,6 +31,13 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
+function notificationRecipients(value: string | undefined) {
+  return (value ?? "")
+    .split(",")
+    .map((email) => email.trim())
+    .filter(Boolean);
+}
+
 function truncate(value: string, maximum: number) {
   return value.length > maximum ? `${value.slice(0, maximum)}…` : value;
 }
@@ -108,14 +115,15 @@ export async function reportAdminError(
   }
 
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  const to =
-    process.env.ERROR_NOTIFICATION_EMAIL?.trim() ||
-    process.env.ORDER_NOTIFICATION_EMAIL?.trim();
+  const to = notificationRecipients(
+    process.env.ERROR_NOTIFICATION_EMAIL ||
+      process.env.ORDER_NOTIFICATION_EMAIL,
+  );
   const from =
     process.env.ERROR_NOTIFICATION_FROM?.trim() ||
     process.env.ORDER_NOTIFICATION_FROM?.trim();
 
-  if (!apiKey || !to || !from) {
+  if (!apiKey || to.length === 0 || !from) {
     return { ok: false, reason: "not-configured" };
   }
 
@@ -206,7 +214,7 @@ export async function reportAdminError(
       },
       body: JSON.stringify({
         from,
-        to: [to],
+        to,
         subject,
         html,
         text,

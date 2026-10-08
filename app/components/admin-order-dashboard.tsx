@@ -1,7 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { Bell, CircleCheck, Clock3, Flame, PackageCheck } from "lucide-react";
+import { AdminWorkspaceHeader } from "./admin-workspace-header";
+import { AdminMetricCard } from "./admin-metric-card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import type { AdminOrder } from "../lib/admin-orders";
 
 const money = new Intl.NumberFormat("en-US", {
@@ -68,6 +74,7 @@ export default function AdminOrderDashboard({
     webhookConfigured: boolean;
   };
 }) {
+  const reducedMotion = useReducedMotion();
   const [orders, setOrders] = useState(initialOrders);
   const [filter, setFilter] = useState<(typeof filters)[number]["value"]>("active");
   const [busyOrderId, setBusyOrderId] = useState("");
@@ -273,34 +280,24 @@ export default function AdminOrderDashboard({
           : "Off";
 
   return (
-    <div className="admin-shell">
-      <header className="admin-header">
-        <div>
-          <p>Nasty Burger House</p>
-          <h1>Order Control</h1>
-        </div>
-        <div className="admin-header__actions">
-          <span>{adminEmail ?? "Admin"}</span>
-          <Link href="/admin/customers">Customers</Link>
-          <button type="button" onClick={() => void enableNotifications()}>
-            {notificationsEnabled && soundEnabled ? "Order alerts on" : "Enable order alerts"}
-          </button>
-          <Link href="/">View site</Link>
-          <form action="/admin/logout" method="post">
-            <button type="submit">Log out</button>
-          </form>
-        </div>
-      </header>
+    <div className="admin-shell admin-modern">
+      <AdminWorkspaceHeader
+        title="Order Control"
+        active="orders"
+        adminEmail={adminEmail}
+        onEnableAlerts={() => void enableNotifications()}
+        alertsEnabled={notificationsEnabled && soundEnabled}
+      />
 
       <main className="admin-main">
-        <section className="admin-summary-grid">
-          <article><span>Active orders</span><strong>{activeCount}</strong></article>
-          <article><span>Waiting to start</span><strong>{orders.filter((order) => order.status === "received").length}</strong></article>
-          <article><span>Ready for pickup</span><strong>{orders.filter((order) => order.status === "ready").length}</strong></article>
-          <article><span>Completed today</span><strong>{completedTodayCount}</strong></article>
+        <section className="admin-summary-grid" aria-label="Order summary">
+          <AdminMetricCard label="Active orders" value={activeCount} icon={<Flame size={20} />} hint="Needs your attention" index={0} />
+          <AdminMetricCard label="Waiting to start" value={orders.filter((order) => order.status === "received").length} icon={<Clock3 size={20} />} hint="New orders received" index={1} />
+          <AdminMetricCard label="Ready for pickup" value={orders.filter((order) => order.status === "ready").length} icon={<PackageCheck size={20} />} hint="Ready to hand over" index={2} />
+          <AdminMetricCard label="Completed today" value={completedTodayCount} icon={<CircleCheck size={20} />} hint="Sydney local day" index={3} />
         </section>
 
-        <section className="admin-alert-health" aria-label="Order notification health">
+        <Card className="admin-alert-health" aria-label="Order notification health">
           <div className="admin-alert-health__intro">
             <p>Order alerts</p>
             <strong>Notification health</strong>
@@ -317,18 +314,20 @@ export default function AdminOrderDashboard({
               A recent external alert failed. The affected order is still safely stored in Order Control.
             </p>
           )}
-        </section>
+        </Card>
 
         <div className="admin-filter-bar" role="tablist" aria-label="Order filters">
           {filters.map((entry) => (
-            <button
+            <Button
+              variant={filter === entry.value ? "default" : "outline"}
               className={filter === entry.value ? "is-active" : ""}
               type="button"
               key={entry.value}
+              aria-pressed={filter === entry.value}
               onClick={() => setFilter(entry.value)}
             >
               {entry.label}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -341,16 +340,22 @@ export default function AdminOrderDashboard({
               <span>New pickup orders will appear automatically.</span>
             </div>
           ) : (
-            visibleOrders.map((order) => {
+            visibleOrders.map((order, index) => {
               const nextStatus = nextPrimaryStatus(order.status);
               const isNew = newOrderIds.has(order.id);
               return (
-                <article className={`admin-order-card admin-order-card--${order.status}${isNew ? " is-new-order" : ""}`} key={order.id}>
+                <motion.article
+                  className={`admin-order-card admin-order-card--${order.status}${isNew ? " is-new-order" : ""}`}
+                  key={order.id}
+                  initial={reducedMotion || index > 12 ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.24, delay: Math.min(index, 12) * 0.025 }}
+                >
                   <div className="admin-order-card__top">
                     <div>
                       <div className="admin-status-row">
-                        <span className={`admin-status admin-status--${order.status}`}>{statusLabels[order.status]}</span>
-                        {isNew && <span className="admin-new-order-badge">New order</span>}
+                        <Badge variant={order.status === "ready" ? "success" : order.status === "received" ? "destructive" : "secondary"} className={`admin-status admin-status--${order.status}`}>{statusLabels[order.status]}</Badge>
+                        {isNew && <Badge variant="destructive" className="admin-new-order-badge">New order</Badge>}
                       </div>
                       <h2>{order.id}</h2>
                       <p>{formatTime(order.submittedAt)} · {order.pickupLabel}</p>
@@ -378,7 +383,7 @@ export default function AdminOrderDashboard({
 
                   <div className="admin-order-card__actions">
                     {nextStatus && (
-                      <button
+                      <Button
                         className="admin-primary-action"
                         type="button"
                         disabled={busyOrderId === order.id}
@@ -391,20 +396,21 @@ export default function AdminOrderDashboard({
                             : nextStatus === "ready"
                               ? "Mark ready"
                               : "Complete pickup"}
-                      </button>
+                      </Button>
                     )}
                     {!["completed", "cancelled"].includes(order.status) && (
-                      <button
+                      <Button
+                        variant="outline"
                         className="admin-secondary-action"
                         type="button"
                         disabled={busyOrderId === order.id}
                         onClick={() => void updateStatus(order.id, "cancelled")}
                       >
                         Cancel order
-                      </button>
+                      </Button>
                     )}
                   </div>
-                </article>
+                </motion.article>
               );
             })
           )}

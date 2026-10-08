@@ -162,6 +162,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   }, []);
 
   const subtotal = useMemo(() => calculateCartSubtotal(cart), [cart]);
+  const itemCount = useMemo(() => cart.reduce((total, line) => total + line.quantity, 0), [cart]);
 
   function updateContactField(field: ContactField, value: string) {
     if (field === "name") setName(value);
@@ -292,7 +293,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
       <div className="standalone-page checkout-page">
         <MobilePageHeader
           title="Checkout"
-          eyebrow="Your pickup order"
           backHref="/cart"
           backLabel="Back to cart"
         />
@@ -315,7 +315,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
       <div className="standalone-page checkout-page">
         <MobilePageHeader
           title="Checkout"
-          eyebrow="Your pickup order"
           backHref="/cart"
           backLabel="Back to cart"
         />
@@ -336,7 +335,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
     <div className="standalone-page checkout-page">
       <MobilePageHeader
         title="Checkout"
-        eyebrow="Your pickup order"
         backHref="/cart"
         backLabel="Back to cart"
       />
@@ -346,7 +344,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             <ChevronLeft size={24} strokeWidth={2.3} aria-hidden="true" />
           </Link>
           <div className="cart-redesign-title-wrap">
-            <p>Your pickup order</p>
+            <p>Pickup checkout</p>
             <div className="cart-redesign-title-row">
               <h1>Checkout</h1>
             </div>
@@ -355,6 +353,18 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             </p>
           </div>
         </header>
+
+        <div className="checkout-at-a-glance" aria-label="Checkout overview">
+          <span className="checkout-at-a-glance__item">
+            <Clock3 size={17} aria-hidden="true" />
+            <span>{serviceStatus.acceptingOrders ? "Pickup ASAP" : serviceStatus.statusLabel}</span>
+          </span>
+          <span className="checkout-at-a-glance__separator" aria-hidden="true" />
+          <span className="checkout-at-a-glance__item">
+            <span>{serviceStatus.prepTimeLabel} estimated prep</span>
+          </span>
+          <strong>{money.format(subtotal)}</strong>
+        </div>
 
         <form className="checkout-page-layout" onSubmit={submit} noValidate>
           {errors.length > 0 && (
@@ -372,8 +382,8 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               <CardHeader className="checkout-panel__heading">
                 <Badge variant="secondary" className="checkout-step-badge">01</Badge>
                 <div>
-                  <h2>Pickup</h2>
-                  <p>ASAP pickup · {serviceStatus.prepTimeLabel} prep estimate</p>
+                  <h2>Pickup details</h2>
+                  <p>Collection from our food truck</p>
                 </div>
               </CardHeader>
               <CardContent className="checkout-panel__content">
@@ -403,8 +413,8 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               <CardHeader className="checkout-panel__heading">
                 <Badge variant="secondary" className="checkout-step-badge">02</Badge>
                 <div>
-                  <h2>Contact details</h2>
-                  <p>So we can identify your pickup order.</p>
+                  <h2>Your details</h2>
+                  <p>We&apos;ll use these to identify your order.</p>
                 </div>
               </CardHeader>
               <CardContent className="checkout-panel__content">
@@ -419,6 +429,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                       minLength={2}
                       maxLength={80}
                       autoComplete="name"
+                      placeholder="Name for pickup"
                       aria-invalid={Boolean(fieldErrors.name)}
                       aria-describedby={fieldErrors.name ? "checkout-name-error" : undefined}
                       disabled={submitting}
@@ -437,6 +448,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                       onChange={(event) => updateContactField("email", event.target.value)}
                       maxLength={160}
                       autoComplete="email"
+                      placeholder="you@example.com"
                       aria-invalid={Boolean(fieldErrors.email)}
                       aria-describedby={fieldErrors.email ? "checkout-email-error" : undefined}
                       disabled={submitting}
@@ -456,6 +468,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                       minLength={8}
                       maxLength={24}
                       autoComplete="tel"
+                      placeholder="04XX XXX XXX"
                       aria-invalid={Boolean(fieldErrors.phone)}
                       aria-describedby={fieldErrors.phone ? "checkout-phone-error" : undefined}
                       disabled={submitting}
@@ -463,18 +476,24 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                     />
                     {fieldErrors.phone && <span id="checkout-phone-error" className="checkout-field-error">{fieldErrors.phone}</span>}
                   </div>
-                  <div className="checkout-field account-form-grid__full">
-                    <Label htmlFor="checkout-notes">Order notes <span className="checkout-optional">Optional</span></Label>
-                    <textarea
-                      id="checkout-notes"
-                      value={notes}
-                      onChange={(event) => setNotes(event.target.value)}
-                      placeholder="Anything the kitchen should know?"
-                      rows={2}
-                      maxLength={300}
-                      disabled={submitting}
-                    />
-                  </div>
+                  <details className="checkout-notes-disclosure account-form-grid__full">
+                    <summary>
+                      <span>Add a note for the kitchen <span className="checkout-optional">Optional</span></span>
+                      <span className="checkout-notes-disclosure__chevron" aria-hidden="true" />
+                    </summary>
+                    <div className="checkout-field">
+                      <Label htmlFor="checkout-notes">Kitchen instructions</Label>
+                      <textarea
+                        id="checkout-notes"
+                        value={notes}
+                        onChange={(event) => setNotes(event.target.value)}
+                        placeholder="e.g. any special pickup instructions"
+                        rows={2}
+                        maxLength={300}
+                        disabled={submitting}
+                      />
+                    </div>
+                  </details>
                 </div>
               </CardContent>
             </Card>
@@ -483,8 +502,8 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               <CardHeader className="checkout-panel__heading">
                 <Badge variant="secondary" className="checkout-step-badge">03</Badge>
                 <div>
-                  <h2>Payment method</h2>
-                  <p>You&apos;ll finish payment on Square.</p>
+                  <h2>Secure payment</h2>
+                  <p>Complete payment after reviewing your order.</p>
                 </div>
               </CardHeader>
               <CardContent className="checkout-panel__content">
@@ -509,7 +528,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             <CardHeader className="checkout-page-review__heading">
               <div className="checkout-summary-heading">
                 <p>Order summary</p>
-                <h2>Ready for pickup</h2>
+                <h2>{itemCount} {itemCount === 1 ? "item" : "items"} for pickup</h2>
               </div>
               <Link href="/cart">Edit cart</Link>
             </CardHeader>
@@ -548,10 +567,10 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                   ? "Ordering unavailable"
                   : submitting
                     ? "Opening Square…"
-                    : "Continue to Square"}
+                    : `Continue to payment · ${money.format(subtotal)}`}
               </ButtonWithIcon>
               <small className="checkout-secure-note">
-                <ShieldCheck size={15} aria-hidden="true" /> Secure payment powered by Square.
+                <ShieldCheck size={15} aria-hidden="true" /> You&apos;ll pay securely on Square. No charge on this page.
               </small>
             </CardContent>
           </Card>

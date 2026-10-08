@@ -143,7 +143,7 @@ export default function AccountCreatePage() {
             <div className="nbh-auth5__form-content">
               <div className="nbh-auth5__intro">
                 <h1>Create your account.</h1>
-                <p>Join Nasty Burger House to save your details, track orders and collect Drip Points.</p>
+                <p>Save details. Track orders. Earn Drip Points.</p>
               </div>
 
               {confirmationSent ? (

@@ -1510,3 +1510,82 @@ body:has(.checkout-page) .mobile-tab-bar--v2 {
   .checkout-page .checkout-field [data-slot="input"],
   .checkout-page .checkout-field textarea { transition: none; }
 }
+
+/* Two centered progress markers — only Step 1 / Step 2 are visible. */
+.checkout-page .checkout-wizard-progress {
+  width: min(100%, 19rem);
+  margin: 0 auto 1.35rem;
+  padding-inline: 0;
+}
+
+.checkout-page .checkout-wizard-progress ol {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+
+.checkout-page .checkout-wizard-progress ol::before,
+.checkout-page .checkout-wizard-progress.is-review-step ol::after {
+  position: absolute;
+  z-index: 0;
+  top: 1.15rem;
+  left: calc(25% + 1.25rem);
+  right: calc(25% + 1.25rem);
+  height: 3px;
+  border-radius: 999px;
+  content: "";
+  pointer-events: none;
+}
+
+.checkout-page .checkout-wizard-progress ol::before {
+  background: #e4e6ec;
+}
+
+.checkout-page .checkout-wizard-progress.is-review-step ol::after {
+  background: #23b977;
+}
+
+.checkout-page .checkout-wizard-progress li:not(:last-child)::after {
+  content: none;
+}
+
+.checkout-page .checkout-wizard-progress button {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+}
+
+.checkout-page .checkout-wizard-progress__step {
+  color: #79746f;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.3;
+  text-transform: none;
+}
+
+.checkout-page .checkout-wizard-progress .is-current .checkout-wizard-progress__step {
+  color: #26211d;
+}
+
+.checkout-page .checkout-wizard-progress .is-complete .checkout-wizard-progress__step {
+  color: #168c57;
+}
+
+@media (max-width: 680px) {
+  .checkout-page .checkout-wizard-progress {
+    width: min(100%, 18rem);
+    margin-bottom: 1.2rem;
+  }
+
+  .checkout-page .checkout-wizard-progress ol::before,
+  .checkout-page .checkout-wizard-progress.is-review-step ol::after {
+    top: 1.04rem;
+    left: calc(25% + 1.125rem);
+    right: calc(25% + 1.125rem);
+  }
+}

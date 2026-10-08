@@ -324,12 +324,6 @@ export default function HomepageTestimonials() {
             Customer reviews are temporarily unavailable.
           </p>
         )}
-        {loadState === "ready" && reviews.some((review) => review.kind === "design-preview") && (
-          <p className="home-testimonials__preview-note">
-            Some cards are fictional design examples until more verified reviews arrive.
-          </p>
-        )}
-
         {loadState === "ready" && reviews.length > 0 && (
           <>
             <div

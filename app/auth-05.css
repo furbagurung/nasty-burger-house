@@ -437,3 +437,43 @@
     font-size: 0.8rem;
   }
 }
+
+/* Registration consent stays functional in the restored Auth5 signup UI. */
+.nbh-auth5--signup .nbh-auth5__terms {
+  display: flex;
+  align-items: flex-start;
+  gap: .65rem;
+}
+
+.nbh-auth5--signup .nbh-auth5__terms input {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin-top: .1rem;
+  accent-color: #ef4f2c;
+  cursor: pointer;
+}
+
+.nbh-auth5--signup .nbh-auth5__terms label {
+  min-width: 0;
+  color: #aaa49d;
+  font-size: .76rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.nbh-auth5--signup .nbh-auth5__terms a {
+  color: #ff7857;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.nbh-auth5--signup .nbh-auth5__terms a:hover {
+  color: #ff9a81;
+}
+
+.nbh-auth5--signup .nbh-auth5__terms input:focus-visible {
+  outline: 2px solid #ff7857;
+  outline-offset: 3px;
+}

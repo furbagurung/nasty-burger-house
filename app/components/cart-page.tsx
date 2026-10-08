@@ -200,7 +200,6 @@ export default function CartPage() {
     <div className="standalone-page standalone-cart-page cart-redesign-page">
       <MobilePageHeader
         title="Cart"
-        eyebrow="Your pickup order"
         backHref="/menu/burgers"
         backLabel="Back to menu"
       />
@@ -211,7 +210,6 @@ export default function CartPage() {
           </Link>
 
           <div className="cart-redesign-title-wrap">
-            <p>Your pickup order</p>
             <div className="cart-redesign-title-row">
               <h1>Cart</h1>
             </div>

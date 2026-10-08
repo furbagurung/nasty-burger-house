@@ -27,6 +27,9 @@ const PENDING_ORDER_KEY = "nasty-square-pending-order";
 
 type ContactField = "name" | "email" | "phone";
 type ContactErrors = Partial<Record<ContactField, string>>;
+type CheckoutStep = 1 | 2 | 3;
+
+const checkoutStepNames = ["Pickup", "Your details", "Review & pay"] as const;
 
 function validateContact(name: string, email: string, phone: string): ContactErrors {
   const errors: ContactErrors = {};
@@ -117,6 +120,8 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   const [errors, setErrors] = useState<string[]>([]);
   const [fieldErrors, setFieldErrors] = useState<ContactErrors>({});
   const [hydrated, setHydrated] = useState(false);
+  const [activeStep, setActiveStep] = useState<CheckoutStep>(1);
+  const stepAnnouncementRef = useRef<HTMLHeadingElement>(null);
   const errorSummaryRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -164,6 +169,38 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   const subtotal = useMemo(() => calculateCartSubtotal(cart), [cart]);
   const itemCount = useMemo(() => cart.reduce((total, line) => total + line.quantity, 0), [cart]);
 
+  function changeStep(nextStep: CheckoutStep) {
+    setErrors([]);
+    setFieldErrors({});
+    setActiveStep(nextStep);
+  }
+
+  function continueToDetails() {
+    if (!serviceStatus.acceptingOrders) return;
+    changeStep(2);
+  }
+
+  function continueToReview() {
+    const validation = validateContact(name, email, phone);
+    if (Object.keys(validation).length > 0) {
+      setFieldErrors(validation);
+      setErrors(["Please correct the highlighted contact details."]);
+      return;
+    }
+    changeStep(3);
+  }
+
+  useEffect(() => {
+    if (!hydrated) return;
+    stepAnnouncementRef.current?.focus({ preventScroll: true });
+    if (activeStep !== 1) {
+      stepAnnouncementRef.current?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        block: "start",
+      });
+    }
+  }, [activeStep, hydrated]);
+
   function updateContactField(field: ContactField, value: string) {
     if (field === "name") setName(value);
     if (field === "email") setEmail(value);
@@ -186,12 +223,13 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (submitting || cart.length === 0) return;
+    if (submitting || cart.length === 0 || activeStep !== 3) return;
     setErrors([]);
     setFieldErrors({});
 
     const validation = validateContact(name, email, phone);
     if (Object.keys(validation).length > 0) {
+      setActiveStep(2);
       setFieldErrors(validation);
       setErrors(["Please correct the highlighted contact details."]);
       return;
@@ -366,7 +404,33 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
           <strong>{money.format(subtotal)}</strong>
         </div>
 
-        <form className="checkout-page-layout" onSubmit={submit} noValidate>
+        <nav className="checkout-wizard-progress" aria-label="Checkout progress">
+          <ol>
+            {checkoutStepNames.map((label, index) => {
+              const position = (index + 1) as CheckoutStep;
+              return (
+                <li key={label} className={position === activeStep ? "is-current" : position < activeStep ? "is-complete" : "is-upcoming"}>
+                  <button
+                    type="button"
+                    aria-current={position === activeStep ? "step" : undefined}
+                    disabled={submitting || position >= activeStep}
+                    onClick={() => changeStep(position)}
+                  >
+                    <span className="checkout-wizard-progress__number" aria-hidden="true">
+                      {position < activeStep ? <CheckCircle2 size={18} /> : position}
+                    </span>
+                    <span className="checkout-wizard-progress__label">{label}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+        <h2 className="checkout-wizard__current-step" tabIndex={-1} ref={stepAnnouncementRef} aria-live="polite">
+          Step {activeStep} of 3 · {checkoutStepNames[activeStep - 1]}
+        </h2>
+
+        <form className={`checkout-page-layout${activeStep === 3 ? " is-review-step" : ""}`} onSubmit={submit} noValidate>
           {errors.length > 0 && (
             <div className="checkout-errors checkout-errors--top" role="alert" ref={errorSummaryRef} tabIndex={-1}>
               <AlertCircle size={19} aria-hidden="true" />
@@ -378,7 +442,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
           )}
 
           <div className="checkout-page-sections">
-            <Card className="checkout-panel ring-0">
+            <Card className="checkout-panel ring-0" hidden={activeStep !== 1}>
               <CardHeader className="checkout-panel__heading">
                 <Badge variant="secondary" className="checkout-step-badge">01</Badge>
                 <div>
@@ -409,7 +473,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               </CardContent>
             </Card>
 
-            <Card className="checkout-panel ring-0">
+            <Card className="checkout-panel ring-0" hidden={activeStep !== 2}>
               <CardHeader className="checkout-panel__heading">
                 <Badge variant="secondary" className="checkout-step-badge">02</Badge>
                 <div>
@@ -498,7 +562,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               </CardContent>
             </Card>
 
-            <Card className="checkout-panel ring-0">
+            <Card className="checkout-panel ring-0" hidden={activeStep !== 3}>
               <CardHeader className="checkout-panel__heading">
                 <Badge variant="secondary" className="checkout-step-badge">03</Badge>
                 <div>
@@ -522,9 +586,27 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                 </div>
               </CardContent>
             </Card>
+            {activeStep === 1 && (
+              <div className="checkout-wizard-actions">
+                <Link href="/cart" className="checkout-wizard-actions__back">Back to cart</Link>
+                <button type="button" className="checkout-wizard-actions__next" disabled={!serviceStatus.acceptingOrders} onClick={continueToDetails}>
+                  {serviceStatus.acceptingOrders ? "Continue to your details" : "Ordering unavailable"}
+                </button>
+              </div>
+            )}
+            {activeStep === 2 && (
+              <div className="checkout-wizard-actions">
+                <button type="button" className="checkout-wizard-actions__back" onClick={() => changeStep(1)}>
+                  <ChevronLeft size={17} aria-hidden="true" /> Back
+                </button>
+                <button type="button" className="checkout-wizard-actions__next" onClick={continueToReview}>
+                  Review order
+                </button>
+              </div>
+            )}
           </div>
 
-          <Card className="checkout-page-review ring-0">
+          <Card className="checkout-page-review ring-0" hidden={activeStep !== 3}>
             <CardHeader className="checkout-page-review__heading">
               <div className="checkout-summary-heading">
                 <p>Order summary</p>
@@ -533,6 +615,11 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               <Link href="/cart">Edit cart</Link>
             </CardHeader>
             <CardContent className="checkout-review-content">
+              <div className="checkout-wizard-review-details">
+                <div><MapPin size={16} aria-hidden="true" /><span>{serviceStatus.locationName} · Pickup ASAP</span></div>
+                <div><CheckCircle2 size={16} aria-hidden="true" /><span>{name.trim()} · {email.trim()}</span></div>
+                <button type="button" onClick={() => changeStep(2)}>Edit details</button>
+              </div>
               <Separator />
               <div className="checkout-page-review__lines">
                 {cart.map((line) => {
@@ -557,6 +644,9 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                   <span>{serviceStatus.notice}</span>
                 </div>
               )}
+              <button className="checkout-wizard-review-back" type="button" onClick={() => changeStep(2)} disabled={submitting}>
+                <ChevronLeft size={17} aria-hidden="true" /> Back to details
+              </button>
               <ButtonWithIcon
                 tone="red"
                 fullWidth

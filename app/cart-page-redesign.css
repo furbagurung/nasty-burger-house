@@ -87,8 +87,14 @@
 }
 
 .cart-redesign-items {
-  display: grid;
-  gap: 0.85rem;
+  /* One continuous list instead of individual floating product cards. */
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(23, 21, 19, 0.08);
+  border-radius: 1.3rem;
+  background: var(--cart-surface);
+  box-shadow: 0 8px 24px rgba(31, 25, 18, 0.035);
 }
 
 .cart-redesign-item {
@@ -96,11 +102,16 @@
   grid-template-columns: 8.4rem minmax(0, 1fr);
   gap: 1.05rem;
   min-height: 10.4rem;
-  border: 1px solid rgba(23, 21, 19, 0.07);
-  border-radius: 1.45rem;
-  padding: 0.95rem;
-  background: var(--cart-surface);
-  box-shadow: 0 12px 32px rgba(31, 25, 18, 0.055);
+  border: 0;
+  border-bottom: 1px solid var(--cart-line);
+  border-radius: 0;
+  padding: 1rem;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cart-redesign-item:last-child {
+  border-bottom: 0;
 }
 
 .cart-redesign-item__media {
@@ -452,16 +463,17 @@
   }
 
   .cart-redesign-items {
-    gap: 0.7rem;
+    border-radius: 1.1rem;
+    box-shadow: 0 6px 18px rgba(31, 25, 18, 0.035);
   }
 
   .cart-redesign-item {
     grid-template-columns: 6.25rem minmax(0, 1fr);
     gap: 0.8rem;
     min-height: 8.15rem;
-    border-radius: 1.25rem;
-    padding: 0.72rem;
-    box-shadow: 0 9px 24px rgba(31, 25, 18, 0.05);
+    border-radius: 0;
+    padding: 0.8rem 0.72rem;
+    box-shadow: none;
   }
 
   .cart-redesign-item__media {

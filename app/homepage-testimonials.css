@@ -278,6 +278,17 @@
   outline-offset: 4px;
 }
 
+.home-testimonials__empty {
+  margin: 2.5rem 0 0;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 1.15rem;
+  padding: clamp(1.3rem, 3vw, 2rem);
+  color: var(--testimonial-muted);
+  background: rgba(255, 255, 255, 0.025);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
 @media (max-width: 1024px) {
   .home-testimonial-card {
     flex-basis: calc((100% - 1.25rem) / 2);

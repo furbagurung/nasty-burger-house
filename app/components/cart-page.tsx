@@ -10,7 +10,6 @@ import {
   calculateLineUnitPrice,
   type CartLine,
 } from "../lib/order";
-import MobileBottomNav from "./mobile-bottom-nav";
 import MobilePageHeader from "./mobile-page-header";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
@@ -301,7 +300,6 @@ export default function CartPage() {
         )}
       </main>
 
-      <MobileBottomNav active="cart" cartCount={cartCount} />
     </div>
   );
 }

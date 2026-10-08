@@ -389,13 +389,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
           </div>
         </header>
 
-        <div className="checkout-at-a-glance" aria-label="Checkout overview">
-          <span className="checkout-at-a-glance__item">
-            {itemCount} {itemCount === 1 ? "item" : "items"} in your order
-          </span>
-          <strong>{money.format(subtotal)}</strong>
-        </div>
-
         <nav
           className={`checkout-wizard-progress${activeStep === 2 ? " is-review-step" : ""}`}
           aria-label="Checkout progress"

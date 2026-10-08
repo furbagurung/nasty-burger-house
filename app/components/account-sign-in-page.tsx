@@ -87,7 +87,6 @@ export default function AccountSignInPage() {
           onSubmit={submit}
           error={error}
           submitting={submitting}
-          footerNote="Your account, orders and Drip Points — all in one place."
         />
       </main>
       <MobileBottomNav active="more" />

@@ -1,0 +1,13 @@
+-- Square Loyalty is the authoritative source for one-time welcome points.
+-- Previously this trigger credited an additional 500 points in Supabase
+-- whenever a website auth user was created, even if they already had
+-- 500 welcome points in their Square POS loyalty account.
+--
+-- Preserve historical ledger rows for audits, but stop creating new
+-- unverified signup awards. New members receive the one-time 500 points
+-- through app/lib/square/loyalty.ts *only* when a NEW Square loyalty
+-- account is created; existing POS loyalty accounts are not credited again.
+--
+-- Apply this migration before manually deploying the matching application
+-- changes to eliminate the duplicate-credit window.
+drop trigger if exists on_customer_created_drip_bonus on public.customers;

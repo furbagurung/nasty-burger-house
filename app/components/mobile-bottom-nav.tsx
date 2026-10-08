@@ -12,7 +12,8 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import SocialIcon from "./social-icons";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
@@ -77,8 +78,11 @@ function CartBag({ count }: { count: number }) {
 }
 
 export default function MobileBottomNav({ active, cartCount }: MobileBottomNavProps) {
+  const pathname = usePathname();
   const [storedCartCount, setStoredCartCount] = useState(0);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [isScrollHidden, setIsScrollHidden] = useState(false);
+  const lastScrollY = useRef(0);
   const visibleCartCount = cartCount ?? storedCartCount;
   const cartActive = active === "cart" || active === "order";
   const dripActive = active === "drip" || active === "profile";
@@ -96,6 +100,53 @@ export default function MobileBottomNav({ active, cartCount }: MobileBottomNavPr
       window.removeEventListener("nasty-cart-updated", refreshCount);
     };
   }, [cartCount]);
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia("(max-width: 680px)");
+    const isMenuPage = pathname.startsWith("/menu/");
+    const scroller = isMenuPage
+      ? document.querySelector<HTMLElement>(
+          ".catalogue-shell:not(.product-page-shell) .catalogue-content",
+        )
+      : null;
+
+    const readScrollY = () =>
+      Math.max(0, scroller ? scroller.scrollTop : window.scrollY);
+
+    lastScrollY.current = readScrollY();
+    setIsScrollHidden(false);
+
+    const updateVisibility = () => {
+      if (!mobileQuery.matches || isMoreOpen) {
+        setIsScrollHidden(false);
+        lastScrollY.current = readScrollY();
+        return;
+      }
+
+      const currentY = readScrollY();
+
+      if (currentY <= 12) {
+        setIsScrollHidden(false);
+      } else if (currentY > lastScrollY.current + 4 && currentY > 48) {
+        setIsScrollHidden(true);
+      } else if (currentY < lastScrollY.current - 4) {
+        setIsScrollHidden(false);
+      }
+
+      lastScrollY.current = currentY;
+    };
+
+    const target: Window | HTMLElement = scroller ?? window;
+    target.addEventListener("scroll", updateVisibility, { passive: true });
+    window.addEventListener("resize", updateVisibility);
+    mobileQuery.addEventListener("change", updateVisibility);
+
+    return () => {
+      target.removeEventListener("scroll", updateVisibility);
+      window.removeEventListener("resize", updateVisibility);
+      mobileQuery.removeEventListener("change", updateVisibility);
+    };
+  }, [isMoreOpen, pathname]);
 
   useEffect(() => {
     if (!isMoreOpen) return;
@@ -118,7 +169,10 @@ export default function MobileBottomNav({ active, cartCount }: MobileBottomNavPr
 
   return (
     <>
-      <nav className={`mobile-tab-bar mobile-tab-bar--v2${isMoreOpen ? " is-more-open" : ""}`} aria-label="Mobile app navigation">
+      <nav
+        className={`mobile-tab-bar mobile-tab-bar--v2${isMoreOpen ? " is-more-open" : ""}${isScrollHidden ? " is-scroll-hidden" : ""}`}
+        aria-label="Mobile app navigation"
+      >
         <Link className={`mobile-tab ${active === "home" ? "is-active" : ""}`} href="/" aria-current={active === "home" ? "page" : undefined}>
           <AppIcon icon={Home01Icon} /><span>Home</span>
         </Link>

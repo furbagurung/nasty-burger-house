@@ -299,3 +299,512 @@
     font-size: 1rem;
   }
 }
+
+/* Compact product photography on mobile: remove oversized blank image area. */
+@media (max-width: 680px) {
+  .product-page-premium .product-detail--premium {
+    padding-top: 0.25rem;
+  }
+
+  .product-page-premium .product-breadcrumb {
+    margin-bottom: 0.25rem;
+  }
+
+  .product-page-premium .product-detail__visual {
+    height: 17rem;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .product-page-premium .product-detail__media--premium {
+    position: relative;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .product-page-premium .product-detail__media--premium > img {
+    padding: 0.5rem 1rem;
+    object-fit: contain;
+  }
+
+  .product-page-premium .product-detail__content--premium {
+    padding-top: 0.5rem;
+  }
+}
+
+/* Single-product mobile checkout dock: replaces the removed bottom tab bar. */
+@media (max-width: 680px) {
+  .product-page-premium .product-detail--premium {
+    padding-bottom: calc(7.5rem + env(safe-area-inset-bottom));
+  }
+
+  .product-page-premium .product-purchase-panel {
+    position: fixed !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    z-index: 110 !important;
+    display: grid;
+    width: 100%;
+    max-width: none;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 !important;
+    border: 0 !important;
+    border-top: 1px solid #e9e5e1 !important;
+    border-radius: 0 !important;
+    padding: 0.7rem max(1rem, env(safe-area-inset-right))
+      calc(0.7rem + env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left)) !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.08) !important;
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+
+  .product-page-premium .product-purchase-panel .product-quantity {
+    flex: 0 0 auto;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .product-page-premium .product-purchase-panel > :last-child {
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .product-page-premium .product-purchase-panel {
+    gap: 0.4rem;
+    padding-right: 0.65rem !important;
+    padding-left: 0.65rem !important;
+  }
+}
+
+/* Simple return navigation for headerless mobile product pages. */
+.product-mobile-back { display: none; }
+@media (max-width: 680px) {
+  .product-page-premium .product-mobile-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    min-height: 2.75rem;
+    margin: 0 1rem 0.15rem;
+    color: #292929;
+    font-size: 0.9rem;
+    font-weight: 750;
+    text-decoration: none;
+  }
+  .product-page-premium .product-mobile-back span:first-child {
+    font-size: 1.45rem;
+    line-height: 1;
+  }
+  .product-page-premium .product-mobile-back:focus-visible {
+    border-radius: 0.35rem;
+    outline: 2px solid #e83b18;
+    outline-offset: 2px;
+  }
+}
+
+/* Hide redundant breadcrumbs on mobile product pages; keep the Back link. */
+@media (max-width: 680px) {
+  .product-page-premium .product-breadcrumb {
+    display: none !important;
+  }
+}
+
+/* Reference-inspired mobile product details, scoped to single-product pages. */
+.product-mobile-topbar { display: none; }
+.product-mobile-description-label { display: none; }
+
+@media (max-width: 680px) {
+  .product-page-premium .product-detail--premium {
+    padding-top: 0 !important;
+    padding-bottom: calc(9rem + env(safe-area-inset-bottom));
+  }
+
+  .product-page-premium .product-mobile-topbar {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 3.65rem;
+    padding: 0.35rem 1rem;
+    background: #fff;
+  }
+
+  .product-page-premium .product-mobile-topbar > strong {
+    color: #242424;
+    font-size: 0.94rem;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .product-page-premium .product-mobile-topbar .product-mobile-back,
+  .product-page-premium .product-mobile-topbar .product-mobile-cart {
+    display: grid;
+    width: 2.6rem;
+    height: 2.6rem;
+    min-height: 0;
+    place-items: center;
+    margin: 0;
+    border: 1px solid #f0f0f0;
+    border-radius: 50%;
+    background: #fafafa;
+    color: #282828;
+    text-decoration: none;
+  }
+
+  .product-page-premium .product-mobile-topbar .product-mobile-back span:first-child {
+    font-size: 1.4rem;
+  }
+
+  .product-page-premium .product-detail__visual {
+    height: clamp(15rem, 70vw, 20rem);
+    min-height: 0 !important;
+    border: 0 !important;
+    border-bottom: 0 !important;
+    background: #fff;
+  }
+
+  .product-page-premium .product-detail__media--premium {
+    height: 100%;
+    min-height: 0 !important;
+  }
+
+  .product-page-premium .product-detail__media--premium > img {
+    padding: 0.4rem 0.85rem;
+    object-fit: contain;
+  }
+
+  .product-page-premium .product-detail__content--premium {
+    padding: 0.7rem 1rem 2rem;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .product-page-premium .product-detail__content--premium h1 {
+    font-size: clamp(1.7rem, 7.5vw, 2.3rem) !important;
+    line-height: 1.05;
+  }
+
+  .product-page-premium .product-detail__content--premium .product-detail__price {
+    margin-top: 0.35rem;
+    font-weight: 800;
+  }
+
+  .product-page-premium .product-mobile-description-card {
+    margin-top: 1.15rem;
+    border: 1px solid #ececec;
+    border-radius: 0.95rem;
+    padding: 0.95rem 1rem;
+    background: #fafafa;
+  }
+
+  .product-page-premium .product-mobile-description-label {
+    display: block;
+    color: #292929;
+    font-size: 0.88rem;
+    font-weight: 850;
+  }
+
+  .product-page-premium .product-mobile-description-card .product-detail__description {
+    margin: 0.5rem 0 0 !important;
+    color: #777;
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  .product-page-premium .product-purchase-panel {
+    grid-template-columns: auto minmax(0, 1fr);
+    padding-top: 0.65rem !important;
+    padding-bottom: calc(0.65rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  .product-page-premium .product-purchase-panel .product-quantity {
+    background: #f5f5f5;
+  }
+}
+
+/* Live quantity badge on the mobile product cart icon. */
+@media (max-width: 680px) {
+  .product-page-premium .product-mobile-cart {
+    position: relative;
+  }
+
+  .product-page-premium .product-mobile-cart-count {
+    position: absolute;
+    top: -0.3rem;
+    right: -0.35rem;
+    display: grid;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    place-items: center;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    padding: 0 0.18rem;
+    background: #e83b18;
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 850;
+    line-height: 1;
+  }
+}
+
+/* Prominent product price between description and dietary information. */
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__heading-row .product-detail__price {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 0.45rem !important;
+    width: fit-content;
+    margin: 0.9rem 0 0 !important;
+    padding: 0 !important;
+    color: #191919 !important;
+    font-size: clamp(1.55rem, 6.2vw, 1.9rem) !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.045em;
+    line-height: 1.2 !important;
+    opacity: 1 !important;
+  }
+
+  .product-page-premium .product-detail__heading-row {
+    overflow: visible;
+  }
+
+  .product-page-premium .product-detail__tags {
+    margin-top: 0.85rem !important;
+  }
+
+  .product-page-premium .product-mobile-description-card {
+    margin-top: 0.8rem;
+  }
+}
+
+/* Product description follows price and dietary tags only on mobile. */
+.product-page-premium .product-description--mobile {
+  display: none;
+}
+@media (max-width: 680px) {
+  .product-page-premium .product-description--desktop {
+    display: none;
+  }
+  .product-page-premium .product-description--mobile {
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 0.9rem;
+  }
+}
+
+/* Brand Halal certification and clear burger-meat messaging. */
+.product-page-premium .product-detail__tag--halal img {
+  width: 1.2rem;
+  height: 1.2rem;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+.product-page-premium .product-detail__halal-note {
+  order: 2;
+  flex-basis: 100%;
+  width: 100%;
+  margin: 0.4rem 0 0;
+  color: #326d44;
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: 0.015em;
+}
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__halal-note {
+    margin-top: 0.55rem;
+    font-size: 0.72rem;
+  }
+}
+
+/* Keep the description immediately before Beast Combo on mobile only. */
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__heading-row .product-description--desktop {
+    display: none !important;
+  }
+
+  .product-page-premium .product-detail__content--premium > .product-description--mobile {
+    display: block !important;
+    margin: 0.9rem 0 0.5rem !important;
+  }
+
+  .product-page-premium .product-detail__content--premium > .product-description--mobile + .product-custom-section {
+    margin-top: 0.5rem !important;
+  }
+}
+
+/* Correct flex ordering: description belongs AFTER title, price and dietary tags. */
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__content--premium > .product-detail__heading-row {
+    order: 1;
+  }
+  .product-page-premium .product-detail__content--premium > .product-detail__tags {
+    order: 2;
+  }
+  .product-page-premium .product-detail__content--premium > .product-description--mobile {
+    order: 3;
+  }
+  .product-page-premium .product-detail__content--premium > .product-custom-section {
+    order: 4;
+  }
+}
+
+/* Collapse unused vertical space below mobile customization options. */
+@media (max-width: 680px) {
+  .product-page-premium .product-detail__layout--premium {
+    min-height: 0 !important;
+    height: auto !important;
+    align-items: start;
+  }
+
+  .product-page-premium .product-detail__content--premium {
+    min-height: 0 !important;
+    height: auto !important;
+    padding-bottom: 1rem !important;
+  }
+
+  .product-page-premium .product-detail--premium {
+    min-height: 0 !important;
+    padding-bottom: calc(5.8rem + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* Description is plain text, without a separate card or backdrop. */
+.product-page-premium .product-mobile-description-card {
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.product-page-premium .product-mobile-description-card .product-detail__description {
+  margin-top: 0 !important;
+}
+
+/* Dietary badges share the product title row on mobile. */
+.product-mobile-title-tags { display: none; }
+@media (max-width: 680px) {
+  .product-page-premium .product-mobile-title-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+  .product-page-premium .product-mobile-title-line h1 {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .product-page-premium .product-mobile-title-tags {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
+  }
+  .product-page-premium .product-mobile-title-tags > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border: 1px solid #e8e3dc;
+    border-radius: 999px;
+    padding: 0.32rem 0.55rem;
+    background: #fff;
+    color: #39352f;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .product-page-premium .product-mobile-title-tags img {
+    width: 1.1rem;
+    height: 1.1rem;
+    object-fit: contain;
+  }
+  .product-page-premium .product-detail__content--premium > .product-detail__tags > span {
+    display: none;
+  }
+  .product-page-premium .product-detail__content--premium > .product-detail__tags {
+    margin-top: 0.45rem !important;
+  }
+}
+
+/* Consistent white background across mobile single-product pages. */
+@media (max-width: 680px) {
+  .product-page-shell.product-page-premium,
+  .product-page-premium .product-detail--premium,
+  .product-page-premium .product-detail__layout--premium,
+  .product-page-premium .product-detail__content--premium {
+    background: #ffffff !important;
+  }
+
+  .product-page-premium .product-detail__content--premium {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Desktop product details: prominent price, tidy dietary badges and a quiet Halal note. */
+@media (min-width: 901px) {
+  .product-page-premium .product-detail__heading-row .product-detail__price {
+    display: flex !important;
+    align-items: baseline;
+    gap: 0.55rem;
+    width: fit-content;
+    margin: 1rem 0 0 !important;
+    color: #1d1d1d !important;
+    font-size: clamp(1.6rem, 2.15vw, 2rem) !important;
+    font-weight: 850 !important;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+    opacity: 1;
+  }
+
+  .product-page-premium .product-detail__content--premium > .product-detail__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    width: fit-content;
+    margin: 0.85rem 0 0 !important;
+  }
+
+  .product-page-premium .product-detail__content--premium > .product-detail__tags > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid #e4e9e3;
+    border-radius: 999px;
+    padding: 0.4rem 0.75rem;
+    background: #f7faf7;
+    color: #2e4938;
+    font-size: 0.78rem;
+    font-weight: 750;
+  }
+
+  .product-page-premium .product-detail__halal-note {
+    order: 2;
+    align-self: flex-start;
+    width: auto;
+    max-width: 100%;
+    margin: 0.65rem 0 0 !important;
+    border-left: 2px solid #70a384;
+    padding: 0.38rem 0.7rem;
+    background: #f6faf7;
+    color: #49705a;
+    font-size: 0.7rem;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    line-height: 1.5;
+    text-transform: none;
+  }
+}

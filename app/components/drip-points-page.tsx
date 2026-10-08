@@ -13,6 +13,32 @@ import {
   dripProgressPercent,
 } from "../lib/loyalty";
 import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
+
+type SquareBalance = { balance: number; lifetimePoints: number | null };
+
+async function loadSquareBalance(): Promise<SquareBalance | null> {
+  try {
+    const response = await fetch("/api/account/loyalty", { cache: "no-store" });
+    if (!response.ok) return null;
+    const data = (await response.json()) as {
+      ok?: boolean;
+      source?: string;
+      balance?: number;
+      lifetimePoints?: number;
+    };
+    return data.ok && data.source === "square" && Number.isFinite(data.balance)
+      ? {
+          balance: Number(data.balance),
+          lifetimePoints: Number.isFinite(data.lifetimePoints)
+            ? Number(data.lifetimePoints)
+            : null,
+        }
+      : null;
+  } catch {
+    return null;
+  }
+}
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-AU", {
@@ -26,6 +52,7 @@ export default function DripPointsPage() {
   const [profile, setProfile] = useState<CustomerProfile | null>(null);
   const [ledger, setLedger] = useState<DripLedgerEntry[]>([]);
   const [balance, setBalance] = useState(0);
+  const [squareLifetimePoints, setSquareLifetimePoints] = useState<number | null>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
 
@@ -34,15 +61,19 @@ export default function DripPointsPage() {
 
     async function load() {
       try {
-        const [customer, activity] = await Promise.all([
+        const [customer, activity, square] = await Promise.all([
           loadCurrentCustomer(),
           loadCustomerDripActivity(),
+          loadSquareBalance(),
         ]);
 
         if (!active) return;
         setProfile(customer);
         setLedger(activity.entries);
-        setBalance(activity.balance);
+        // Square is the source of truth for current loyalty points.
+        // The Supabase ledger still records website order history.
+        setBalance(square?.balance ?? activity.balance);
+        setSquareLifetimePoints(square?.lifetimePoints ?? null);
       } catch (loadError) {
         if (!active) return;
         setError(
@@ -79,6 +110,7 @@ export default function DripPointsPage() {
 
   const earnedPoints = useMemo(
     () =>
+      squareLifetimePoints ??
       ledger.reduce(
         (total, entry) =>
           entry.points > 0 && entry.status !== "void"
@@ -86,7 +118,7 @@ export default function DripPointsPage() {
             : total,
         0,
       ),
-    [ledger],
+    [ledger, squareLifetimePoints],
   );
 
   const redeemedPoints = useMemo(
@@ -115,13 +147,13 @@ export default function DripPointsPage() {
                 <p className="standalone-eyebrow">Nasty Rewards</p>
                 <h1>Get Nasty. Earn Drip Points. Eat Free.</h1>
                 <p>
-                  Create a Nasty account, start with {DRIP_SIGNUP_BONUS} points
+                  New Square Loyalty members can get {DRIP_SIGNUP_BONUS} welcome points
                   and earn {DRIP_POINTS_PER_AUD} points for every A$1 of eligible
                   order value.
                 </p>
                 <div className="drip-page-hero__stat">
                   <strong>{DRIP_SIGNUP_BONUS}</strong>
-                  <span>Drip Points to start</span>
+                  <span>Welcome points for new members</span>
                 </div>
               </div>
 
@@ -144,18 +176,13 @@ export default function DripPointsPage() {
               <div className="drip-page-benefits__heading">
                 <p className="standalone-eyebrow">How Drip Points work</p>
                 <h2 id="drip-benefits-title">Earn safely. Unlock after pickup.</h2>
-                <p>
-                  {DRIP_SIGNUP_BONUS} signup points equals 25% of the{" "}
-                  {DRIP_REWARD_TARGET.toLocaleString()}-point target for a free
-                  Beast Burger Meal.
-                </p>
               </div>
 
               <div className="drip-page-benefit-grid">
                 <article>
                   <span>01</span>
                   <strong>Join +{DRIP_SIGNUP_BONUS}</strong>
-                  <p>Create a verified account and receive the one-time signup bonus.</p>
+                  <p>New Square Loyalty members receive one welcome bonus; existing members keep their balance.</p>
                 </article>
                 <article>
                   <span>02</span>
@@ -174,12 +201,8 @@ export default function DripPointsPage() {
               <div className="drip-page-signup__copy">
                 <p className="standalone-eyebrow">Join Drip Points</p>
                 <h2 id="drip-signup-title">
-                  Start with {DRIP_SIGNUP_BONUS} Drip Points.
+                  New loyalty members get {DRIP_SIGNUP_BONUS} welcome points.
                 </h2>
-                <p>
-                  Drip Points are tied to your authenticated Nasty account so
-                  rewards cannot be duplicated between devices.
-                </p>
               </div>
               <div className="drip-page-success">
                 <Image
@@ -189,13 +212,13 @@ export default function DripPointsPage() {
                   height={90}
                 />
                 <strong>{DRIP_SIGNUP_BONUS} welcome points</strong>
-                <span>Create your account to activate your rewards balance.</span>
-                <Link
-                  className="standalone-primary-button"
+                <span>Existing Square members keep their points when they link their website account.</span>
+                <ButtonWithIcon
                   href="/account/create?return=/drip-points"
+                  tone="red"
                 >
                   Create account
-                </Link>
+                </ButtonWithIcon>
                 <Link
                   className="standalone-secondary-link"
                   href="/account/sign-in?return=/drip-points"
@@ -272,10 +295,6 @@ export default function DripPointsPage() {
               <div className="drip-dashboard-earn__copy">
                 <p className="standalone-eyebrow">Nasty Rewards</p>
                 <h2>Earn more Drip Points</h2>
-                <p>
-                  Order your favourites, collect points and move closer to your
-                  next free Beast Burger Meal.
-                </p>
                 <Link href="/menu/burgers">
                   Explore menu <span aria-hidden="true">→</span>
                 </Link>
@@ -320,7 +339,7 @@ export default function DripPointsPage() {
                       order value.
                     </li>
                     <li>
-                      New verified members receive {DRIP_SIGNUP_BONUS} welcome points.
+                      New Square Loyalty members receive {DRIP_SIGNUP_BONUS} welcome points once.
                     </li>
                     <li>
                       Points become available after the pickup order is completed.
@@ -339,7 +358,10 @@ export default function DripPointsPage() {
               <div className="drip-dashboard-section-heading drip-dashboard-section-heading--row">
                 <div>
                   <p className="standalone-eyebrow">Activity</p>
-                  <h2>Points history</h2>
+                  <h2>Website points history</h2>
+                  {squareLifetimePoints !== null && (
+                    <p>Available balance and lifetime points come directly from Square Loyalty.</p>
+                  )}
                 </div>
                 <Link href="/account">Account</Link>
               </div>

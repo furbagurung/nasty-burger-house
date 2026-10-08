@@ -1,7 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { CircleCheck, ClipboardList, Crown, Users } from "lucide-react";
+import { AdminWorkspaceHeader } from "./admin-workspace-header";
+import { AdminMetricCard } from "./admin-metric-card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import type { AdminCustomer } from "../lib/admin-customers";
 
 const STORE_TIME_ZONE = "Australia/Sydney";
@@ -32,7 +39,9 @@ type Filter = "all" | "website" | "square-only" | "both";
 
 function sourceLabel(customer: AdminCustomer) {
   if (customer.source === "both") return "Website + Square";
-  if (customer.source === "square") return "Square only";
+  if (customer.source === "square") {
+    return customer.squareEnrolled ? "Square only" : "Square directory";
+  }
   return "Website only";
 }
 
@@ -52,9 +61,12 @@ export default function AdminCustomerDashboard({
   squareStatus: {
     connected: boolean;
     loyaltyCount: number;
+    directoryCount: number | null;
+    directoryError: string | null;
     error: string | null;
   };
 }) {
+  const reducedMotion = useReducedMotion();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
 
@@ -88,56 +100,30 @@ export default function AdminCustomerDashboard({
   const bothCount = customers.filter((customer) => customer.source === "both").length;
 
   return (
-    <div className="admin-shell admin-customer-shell">
-      <header className="admin-header">
-        <div>
-          <p>Nasty Burger House</p>
-          <h1>Customer Portal</h1>
-        </div>
-        <div className="admin-header__actions">
-          <span>{adminEmail ?? "Admin"}</span>
-          <Link href="/admin">Orders</Link>
-          <Link href="/admin/reviews">Reviews</Link>
-          <Link href="/">View site</Link>
-          <form action="/admin/logout" method="post">
-            <button type="submit">Log out</button>
-          </form>
-        </div>
-      </header>
+    <div className="admin-shell admin-modern admin-customer-shell">
+      <AdminWorkspaceHeader title="Customer Portal" active="customers" adminEmail={adminEmail} />
 
       <main className="admin-main admin-customer-main">
         <section className="admin-summary-grid" aria-label="Customer summary">
-          <article>
-            <span>Total customers</span>
-            <strong>{customers.length}</strong>
-          </article>
-          <article>
-            <span>Website accounts</span>
-            <strong>{websiteCount}</strong>
-          </article>
-          <article>
-            <span>Square enrolled</span>
-            <strong>{squareCount}</strong>
-          </article>
-          <article>
-            <span>Square only</span>
-            <strong>{squareOnlyCount}</strong>
-          </article>
+          <AdminMetricCard label="Total customers" value={customers.length} icon={<Users size={20} />} hint="Across website and Square" index={0} />
+          <AdminMetricCard label="Website accounts" value={websiteCount} icon={<ClipboardList size={20} />} hint="Registered website members" index={1} />
+          <AdminMetricCard label="Square enrolled" value={squareCount} icon={<Crown size={20} />} hint="Enrolled in Drip Points" index={2} />
+          <AdminMetricCard label="Square only" value={squareOnlyCount} icon={<CircleCheck size={20} />} hint="No website account yet" index={3} />
         </section>
 
-        <section className="admin-customer-toolbar">
+        <Card className="admin-customer-toolbar">
           <div>
             <p>Customer directory</p>
             <h2>Website accounts + Square loyalty</h2>
             <span>
-              Website customers are matched with Square loyalty customers by phone first,
-              then email. Square-only customers have enrolled in the POS loyalty program but
-              have not created a website account yet.
+              Website customers are matched with Square customers by phone first,
+              then email. Square directory customers may or may not be enrolled
+              in the Square loyalty program.
             </span>
           </div>
           <label className="admin-customer-search">
             <span>Search</span>
-            <input
+            <Input
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -145,9 +131,9 @@ export default function AdminCustomerDashboard({
               autoComplete="off"
             />
           </label>
-        </section>
+        </Card>
 
-        <section
+        <Card
           className={`admin-square-sync ${squareStatus.connected ? "is-connected" : "is-warning"}`}
           aria-label="Square customer sync status"
         >
@@ -161,7 +147,7 @@ export default function AdminCustomerDashboard({
               </strong>
               <span>
                 {squareStatus.connected
-                  ? `${bothCount} matched to website accounts · ${squareOnlyCount} Square-only`
+                  ? `${squareStatus.directoryCount === null ? "Directory unavailable" : `${squareStatus.directoryCount} Square directory customers`} · ${bothCount} matched to website accounts · ${squareOnlyCount} Square-only`
                   : "Website accounts are still shown. Check that the Square token has LOYALTY_READ and CUSTOMERS_READ permissions."}
               </span>
             </div>
@@ -169,27 +155,32 @@ export default function AdminCustomerDashboard({
           {!squareStatus.connected && squareStatus.error && (
             <small>{squareStatus.error}</small>
           )}
-        </section>
+          {squareStatus.directoryError && (
+            <small>{squareStatus.directoryError}</small>
+          )}
+        </Card>
 
-        <div className="admin-filter-bar" role="tablist" aria-label="Customer filters">
+        <div className="admin-filter-bar" role="group" aria-label="Customer filters">
           {([
             ["all", `All customers (${customers.length})`],
             ["website", `Website accounts (${websiteCount})`],
             ["square-only", `Square only (${squareOnlyCount})`],
             ["both", `Website + Square (${bothCount})`],
           ] as Array<[Filter, string]>).map(([value, label]) => (
-            <button
+            <Button
+              variant={filter === value ? "default" : "outline"}
               className={filter === value ? "is-active" : ""}
               type="button"
               key={value}
+              aria-pressed={filter === value}
               onClick={() => setFilter(value)}
             >
               {label}
-            </button>
+            </Button>
           ))}
         </div>
 
-        <section className="admin-customer-table-wrap" aria-label="Customer directory">
+        <Card className="admin-customer-table-wrap" aria-label="Customer directory">
           <div className="admin-customer-table-head" aria-hidden="true">
             <span>Customer</span>
             <span>Source</span>
@@ -206,7 +197,7 @@ export default function AdminCustomerDashboard({
             </div>
           ) : (
             <div className="admin-customer-list">
-              {visibleCustomers.map((customer) => {
+              {visibleCustomers.map((customer, index) => {
                 const points = customer.squareDripPoints ?? customer.websiteDripPoints;
                 const joinedAt =
                   customer.source === "square"
@@ -217,7 +208,13 @@ export default function AdminCustomerDashboard({
                   : customer.updatedAt;
 
                 return (
-                  <article className="admin-customer-row" key={customer.id}>
+                  <motion.article
+                    className="admin-customer-row"
+                    key={customer.id}
+                    initial={reducedMotion || index > 12 ? false : { opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.22, delay: Math.min(index, 12) * 0.018 }}
+                  >
                     <div className="admin-customer-identity">
                       <span className="admin-customer-avatar" aria-hidden="true">
                         {customer.name.trim().charAt(0).toUpperCase() || "C"}
@@ -238,9 +235,9 @@ export default function AdminCustomerDashboard({
                     </div>
 
                     <div className="admin-customer-cell" data-label="Source">
-                      <span className={`admin-customer-source ${sourceClass(customer)}`}>
+                      <Badge variant={customer.source === "both" ? "success" : "secondary"} className={`admin-customer-source ${sourceClass(customer)}`}>
                         {sourceLabel(customer)}
-                      </span>
+                      </Badge>
                       {customer.websiteAccount && (
                         <span>
                           {customer.emailConfirmedAt ? "Email verified" : "Email pending"}
@@ -274,7 +271,11 @@ export default function AdminCustomerDashboard({
                     </div>
 
                     <div className="admin-customer-cell" data-label="Drip Points">
-                      <strong>{points.toLocaleString("en-AU")}</strong>
+                      <strong>
+                        {customer.squareDripPoints !== null || customer.websiteAccount
+                          ? points.toLocaleString("en-AU")
+                          : "—"}
+                      </strong>
                       <span>
                         {customer.squareDripPoints !== null
                           ? `Square${
@@ -282,15 +283,19 @@ export default function AdminCustomerDashboard({
                                 ? ` · ${customer.squareLifetimePoints.toLocaleString("en-AU")} lifetime`
                                 : ""
                             }`
-                          : "Website ledger"}
+                          : customer.squareCustomerId
+                            ? customer.websiteAccount
+                              ? "Website ledger · Square loyalty not enrolled"
+                              : "Square loyalty not enrolled"
+                            : "Website ledger"}
                       </span>
                     </div>
-                  </article>
+                  </motion.article>
                 );
               })}
             </div>
           )}
-        </section>
+        </Card>
       </main>
     </div>
   );

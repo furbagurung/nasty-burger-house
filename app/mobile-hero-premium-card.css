@@ -1,27 +1,25 @@
-/* Mobile homepage hero: full-width edge-to-edge treatment on small screens. */
+/* Compact mobile homepage hero inspired by app-style ordering experiences. */
 @media (max-width: 680px) {
   .site-shell > .home-main {
-    padding-top: 0 !important;
     background: #ffffff;
   }
 
-  .site-shell > .home-main > .hero-carousel {
-    width: 100% !important;
-    min-height: clamp(30rem, 62svh, 34rem) !important;
-    height: clamp(30rem, 62svh, 34rem) !important;
-    max-height: 34rem !important;
-    margin: 0 !important;
+  .mobile-hero-controls-host {
     overflow: hidden !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    background: #0b0a09;
-    box-shadow: none !important;
+    border-radius: 1.25rem !important;
   }
 
-  .site-shell > .home-main > .hero-carousel .hero-slide,
-  .site-shell > .home-main > .hero-carousel .hero-slide__image,
-  .site-shell > .home-main > .hero-carousel .hero-slide__shade {
-    border-radius: 0 !important;
+  .site-shell > .home-main > .hero-carousel {
+    width: calc(100% - 1.5rem) !important;
+    min-height: 0 !important;
+    height: clamp(13rem, 53vw, 14.75rem) !important;
+    max-height: 14.75rem !important;
+    margin: 1.25rem auto 0 !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 1.25rem !important;
+    background: #0b0a09;
+    box-shadow: 0 10px 30px rgba(21, 19, 15, 0.12) !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-carousel__slides,
@@ -31,64 +29,192 @@
     overflow: hidden !important;
   }
 
+  .site-shell > .home-main > .hero-carousel .hero-slide,
+  .site-shell > .home-main > .hero-carousel .hero-slide__image,
+  .site-shell > .home-main > .hero-carousel .hero-slide__shade {
+    border-radius: 1.25rem !important;
+  }
+
   .site-shell > .home-main > .hero-carousel .hero-slide__image {
-    object-position: 66% center !important;
+    object-position: 64% center !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__shade {
+    background:
+      linear-gradient(
+        0deg,
+        rgba(5, 4, 4, 0.82) 0%,
+        rgba(5, 4, 4, 0.34) 48%,
+        rgba(5, 4, 4, 0.08) 76%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(5, 4, 4, 0.5) 0%,
+        rgba(5, 4, 4, 0.08) 72%
+      ) !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy {
-    right: 1rem !important;
-    bottom: 3.75rem !important;
-    left: 1rem !important;
+    position: absolute !important;
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: 0.95rem !important;
+    display: block !important;
+    width: min(62%, 12.75rem) !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    transform: translateY(-50%) !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .eyebrow {
-    margin-bottom: 0.42rem !important;
-    font-size: 0.58rem !important;
-    letter-spacing: 0.22em !important;
+    display: none !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h1,
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h2 {
-    max-width: 9.25ch !important;
-    font-size: clamp(2.35rem, 11vw, 3.35rem) !important;
-    line-height: 0.9 !important;
+    max-width: 7.6ch !important;
+    margin: 0 !important;
+    color: #fff !important;
+    font-size: clamp(1.62rem, 7.2vw, 2.05rem) !important;
+    line-height: 0.94 !important;
+    letter-spacing: 0 !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy > p:not(.eyebrow) {
-    max-width: 20rem !important;
-    margin-top: 0.62rem !important;
-    font-size: 0.82rem !important;
-    line-height: 1.35 !important;
+    display: -webkit-box !important;
+    max-width: 10.5rem !important;
+    margin: 0.32rem 0 0 !important;
+    overflow: hidden !important;
+    color: rgba(255, 255, 255, 0.82) !important;
+    font-size: 0.64rem !important;
+    line-height: 1.32 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-actions {
-    margin-top: 0.82rem !important;
+    margin-top: 0.55rem !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta {
-    min-width: min(13.5rem, 72vw) !important;
-    min-height: 2.85rem !important;
-    padding: 0.66rem 1rem !important;
-    font-size: 0.84rem !important;
-    box-shadow: 0 10px 24px rgba(255, 47, 22, 0.2) !important;
+    min-width: 0 !important;
+    min-height: 1.8rem !important;
+    justify-content: flex-start !important;
+    gap: 0.38rem !important;
+    border-color: rgba(255, 255, 255, 0.78) !important;
+    padding: 0.3rem 0.34rem 0.3rem 0.62rem !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.14) !important;
+    color: var(--ink) !important;
+    font-size: 0.58rem !important;
+    font-weight: 800 !important;
   }
 
-  .site-shell > .home-main > .hero-carousel .mobile-hero-motion-controls {
-    right: 0.65rem;
-    bottom: 0.65rem;
-    transform: scale(0.92);
-    transform-origin: right bottom;
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta::after {
+    width: 1.45rem !important;
+    height: 1.45rem !important;
+    border-color: rgba(21, 19, 15, 0.08) !important;
+    background: rgba(21, 19, 15, 0.06) !important;
+    box-shadow: none !important;
+    color: var(--ink) !important;
+    font-size: 0.72rem !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta::before {
+    display: none !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy .hero-card__cta:hover {
+    border-color: #fff !important;
+    background: #fff !important;
+    color: var(--ink) !important;
+  }
+
+  .mobile-hero-motion-controls {
+    left: 50% !important;
+    right: auto !important;
+    bottom: 1.2rem !important;
+    gap: 0 !important;
+    border-color: rgba(255, 255, 255, 0.16) !important;
+    padding: 0.34rem 0.55rem !important;
+    background: rgba(12, 10, 9, 0.5) !important;
+    box-shadow: none !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .mobile-hero-motion-controls > button {
+    display: none !important;
+  }
+
+  .mobile-hero-motion-dots {
+    gap: 0.34rem !important;
+    padding: 0 !important;
+  }
+
+  .mobile-hero-motion-dots button {
+    width: 0.32rem !important;
+    height: 0.32rem !important;
+    background: rgba(255, 255, 255, 0.44) !important;
+  }
+
+  .mobile-hero-motion-dots button.is-active {
+    width: 0.9rem !important;
+    background: #fff !important;
   }
 }
 
 @media (max-width: 390px) {
   .site-shell > .home-main > .hero-carousel {
-    min-height: 29rem !important;
-    height: 29rem !important;
+    height: 13rem !important;
   }
 
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h1,
   .site-shell > .home-main > .hero-carousel .hero-slide__copy h2 {
-    font-size: clamp(2.18rem, 11.5vw, 3rem) !important;
+    font-size: clamp(1.5rem, 7vw, 1.9rem) !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-slide__copy > p:not(.eyebrow) {
+    max-width: 10.5rem !important;
+  }
+}
+
+
+/* Compact shared CTA inside mobile hero carousel. */
+@media (max-width: 680px) {
+  .site-shell > .home-main > .hero-carousel .hero-carousel__cta {
+    height: 2.35rem !important;
+    min-height: 2.35rem !important;
+    padding: 0.22rem 2.55rem 0.22rem 0.95rem !important;
+    font-size: 0.76rem !important;
+    line-height: 1 !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-carousel__cta:hover {
+    padding-left: 2.55rem !important;
+    padding-right: 0.95rem !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-carousel__cta > span:last-child {
+    right: 0.22rem !important;
+    width: 1.9rem !important;
+    height: 1.9rem !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-carousel__cta:hover > span:last-child {
+    right: calc(100% - 2.12rem) !important;
+  }
+
+  .site-shell > .home-main > .hero-carousel .hero-carousel__cta svg {
+    width: 0.82rem;
+    height: 0.82rem;
   }
 }

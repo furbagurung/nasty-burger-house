@@ -17,6 +17,7 @@
   --amber: #e6a315;
   --closed: #c64b3c;
   --shadow: 0 22px 70px rgba(31, 22, 11, 0.14);
+  --font-geist-sans: var(--font-dm-sans);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -52,9 +53,9 @@
 @theme inline {
   --color-background: var(--paper);
   --color-foreground: var(--ink);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-dm-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-bowlby-one-sc);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -106,7 +107,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif;
 }
 
 button,
@@ -1068,7 +1069,7 @@ main {
 .product-modal > p:not(.eyebrow, .pending-price),
 .loyalty-modal > p:not(.eyebrow),
 .monthly-modal > p:not(.eyebrow) {
-  color: var(--muted);
+  color: var(--muted-foreground);
   line-height: 1.55;
 }
 
@@ -1130,7 +1131,7 @@ legend {
 
 legend span {
   margin-left: 0.5rem;
-  color: var(--muted);
+  color: var(--muted-foreground);
   font-size: 0.78rem;
   font-weight: 700;
 }
@@ -1159,8 +1160,8 @@ legend span {
 .option-row small,
 .field-note {
   margin-top: 0.3rem;
-  color: var(--muted);
-  font-weight: 450;
+  color: var(--muted-foreground);
+  font-weight: 500;
   line-height: 1.4;
 }
 
@@ -1194,7 +1195,7 @@ legend span {
 }
 
 .stepper-row small {
-  color: var(--muted);
+  color: var(--muted-foreground);
   font-size: 0.76rem;
   font-weight: 600;
 }
@@ -3555,4 +3556,34 @@ a.order-type-option:hover {
   html {
     @apply font-sans;
   }
+}
+
+/* Product customisation contrast fix */
+.product-modal {
+  color: var(--ink);
+}
+
+.product-modal h2,
+.product-modal legend,
+.product-modal .pending-price,
+.product-modal .option-row,
+.product-modal .stepper-row,
+.product-modal .quantity-control {
+  color: var(--ink);
+}
+
+.product-modal > p:not(.eyebrow, .pending-price),
+.product-modal .option-row small,
+.product-modal .stepper-row small,
+.product-modal .field-note,
+.product-modal legend span {
+  color: var(--muted-foreground) !important;
+}
+
+
+/* Disable native ghost dragging on images site-wide. */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
 }

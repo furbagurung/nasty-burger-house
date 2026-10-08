@@ -278,9 +278,19 @@ export async function hasSquareSignupBonus(accountId: string) {
   return false;
 }
 
-export async function ensureSquareSignupBonus(accountId: string) {
+export async function ensureSquareSignupBonus(
+  accountId: string,
+  { newlyCreated }: { newlyCreated: boolean },
+) {
   if (!accountId.trim()) {
     throw new Error("Square Loyalty account ID is required.");
+  }
+
+  // Existing POS loyalty accounts may already have welcome points (including
+  // manual Square Dashboard adjustments). Never grant an additional welcome
+  // bonus simply because an existing customer uses the website later.
+  if (!newlyCreated) {
+    return { applied: false };
   }
 
   if (await hasSquareSignupBonus(accountId)) {

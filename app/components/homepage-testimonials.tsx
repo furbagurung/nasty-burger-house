@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 import {
   useEffect,
   useRef,
@@ -233,16 +233,10 @@ export default function HomepageTestimonials() {
             </h2>
           </div>
 
-          <Link className="home-testimonials__cta" href="/reviews">
-            Leave a review <span aria-hidden="true">↗</span>
-          </Link>
+          <ButtonWithIcon href="/reviews" tone="dark">
+            Leave a review
+          </ButtonWithIcon>
         </div>
-
-        {homepageReviewsArePreview && (
-          <p className="home-testimonials__preview-note">
-            Review cards shown as design preview.
-          </p>
-        )}
 
         {homepageReviews.length > 0 && (
           <>

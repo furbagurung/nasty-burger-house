@@ -62,6 +62,11 @@ type SquareCustomer = {
   updated_at?: string;
 };
 
+type SquareDirectorySearchResponse = {
+  customers?: SquareCustomer[];
+  cursor?: string;
+};
+
 type SquareBulkRetrieveResponse = {
   responses?: Record<
     string,
@@ -102,6 +107,8 @@ export type AdminCustomerPortalData = {
   square: {
     connected: boolean;
     loyaltyCount: number;
+    directoryCount: number | null;
+    directoryError: string | null;
     error: string | null;
   };
 };
@@ -118,7 +125,7 @@ type WebsiteCustomer = Omit<
 >;
 
 type SquareEnrolledCustomer = {
-  loyaltyAccountId: string;
+  loyaltyAccountId: string | null;
   squareCustomerId: string;
   name: string;
   email: string;
@@ -127,8 +134,8 @@ type SquareEnrolledCustomer = {
   createdAt: string;
   updatedAt: string;
   enrolledAt: string | null;
-  balance: number;
-  lifetimePoints: number;
+  balance: number | null;
+  lifetimePoints: number | null;
 };
 
 function metadataString(user: User, key: string) {
@@ -212,6 +219,43 @@ async function loadSquareCustomerProfiles(customerIds: string[]) {
   return customers;
 }
 
+async function loadSquareDirectoryCustomers(): Promise<SquareEnrolledCustomer[]> {
+  const customers: SquareCustomer[] = [];
+  let cursor: string | undefined;
+  let pages = 0;
+
+  do {
+    const result = await squareRequest<SquareDirectorySearchResponse>(
+      "/v2/customers/search",
+      {
+        method: "POST",
+        body: JSON.stringify({ limit: 100, ...(cursor ? { cursor } : {}) }),
+      },
+    );
+
+    customers.push(...(result.customers ?? []));
+    cursor = result.cursor || undefined;
+    pages += 1;
+  } while (cursor && pages < 50);
+
+  return customers.flatMap((customer) => {
+    if (!customer.id) return [];
+    const createdAt = customer.created_at || new Date(0).toISOString();
+    return [{
+      loyaltyAccountId: null,
+      squareCustomerId: customer.id,
+      name: squareCustomerName(customer),
+      email: customer.email_address?.trim() ?? "",
+      phone: customer.phone_number?.trim() ?? "",
+      birthday: customer.birthday?.trim() || null,
+      createdAt,
+      updatedAt: customer.updated_at || createdAt,
+      enrolledAt: null,
+      balance: null,
+      lifetimePoints: null,
+    } satisfies SquareEnrolledCustomer];
+  });
+}
 async function loadSquareEnrolledCustomers(): Promise<SquareEnrolledCustomer[]> {
   const loyaltyAccounts = await loadSquareLoyaltyAccounts();
   const customerIds = loyaltyAccounts
@@ -372,6 +416,10 @@ function mergeCustomers(
       const website = merged.get(websiteKey);
       if (!website) continue;
 
+      // Never replace a verified loyalty balance with an unenrolled
+      // duplicate customer profile from Square's broader directory.
+      if (website.squareEnrolled && !square.loyaltyAccountId) continue;
+
       merged.set(websiteKey, {
         ...website,
         name:
@@ -380,7 +428,7 @@ function mergeCustomers(
         phone: website.phone || square.phone,
         birthday: website.birthday || square.birthday,
         source: "both",
-        squareEnrolled: true,
+        squareEnrolled: Boolean(square.loyaltyAccountId),
         squareDripPoints: square.balance,
         squareLifetimePoints: square.lifetimePoints,
         squareCustomerId: square.squareCustomerId,
@@ -392,15 +440,16 @@ function mergeCustomers(
       continue;
     }
 
-    merged.set(`square:${square.loyaltyAccountId}`, {
-      id: `square:${square.loyaltyAccountId}`,
+    const squareKey = `square:${square.loyaltyAccountId || square.squareCustomerId}`;
+    merged.set(squareKey, {
+      id: squareKey,
       name: square.name,
       email: square.email,
       phone: square.phone,
       birthday: square.birthday,
       source: "square",
       websiteAccount: false,
-      squareEnrolled: true,
+      squareEnrolled: Boolean(square.loyaltyAccountId),
       createdAt: square.enrolledAt || square.createdAt,
       updatedAt: square.updatedAt,
       emailConfirmedAt: null,
@@ -426,11 +475,35 @@ export async function loadAdminCustomers(
 
   try {
     const squareCustomers = await loadSquareEnrolledCustomers();
+
+    // Directory customers may have POS profiles but no Square Loyalty account.
+    // Read only: never create accounts or adjust loyalty points in this view.
+    let directoryCustomers: SquareEnrolledCustomer[] = [];
+    let directoryCount: number | null = null;
+    let directoryError: string | null = null;
+
+    try {
+      directoryCustomers = await loadSquareDirectoryCustomers();
+      directoryCount = directoryCustomers.length;
+    } catch (error) {
+      console.error("[NBH admin Square directory fetch failed]", error);
+      directoryError = "Square directory could not be loaded; loyalty accounts are still shown.";
+    }
+
+    const loyaltyIds = new Set(
+      squareCustomers.map((customer) => customer.squareCustomerId),
+    );
+    const directoryOnly = directoryCustomers.filter(
+      (customer) => !loyaltyIds.has(customer.squareCustomerId),
+    );
+
     return {
-      customers: mergeCustomers(websiteCustomers, squareCustomers),
+      customers: mergeCustomers(websiteCustomers, [...squareCustomers, ...directoryOnly]),
       square: {
         connected: true,
         loyaltyCount: squareCustomers.length,
+        directoryCount,
+        directoryError,
         error: null,
       },
     };
@@ -441,6 +514,8 @@ export async function loadAdminCustomers(
       square: {
         connected: false,
         loyaltyCount: 0,
+        directoryCount: null,
+        directoryError: null,
         error:
           error instanceof Error
             ? error.message

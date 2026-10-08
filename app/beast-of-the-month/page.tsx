@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import MobileBottomNav from "../components/mobile-bottom-nav";
 
@@ -12,33 +11,7 @@ export default function BeastOfTheMonthPage() {
   return (
     <div className="standalone-page beast-month-page">
       <main className="standalone-main beast-month-main">
-        <section className="beast-month-hero">
-          <div className="beast-month-hero__media">
-            <Image
-              src="/images/home-menu/beast-of-the-month.jpg"
-              alt="Nasty Burger House Beast of the Month coming soon"
-              fill
-              priority
-              sizes="100vw"
-            />
-            <div className="beast-month-hero__shade" aria-hidden="true" />
-          </div>
 
-          <div className="beast-month-hero__copy">
-            <p className="standalone-eyebrow">Coming soon</p>
-            <h1>Beast of the Month</h1>
-            <h2>A new Beast is loading.</h2>
-            <p>
-              The next limited-time Nasty Burger House drop is being cooked up.
-              Watch this space — it&apos;s coming soon.
-            </p>
-            <div className="beast-month-hero__actions">
-              <Link className="standalone-primary-button" href="/menu/burgers">
-                Explore the current menu
-              </Link>
-            </div>
-          </div>
-        </section>
 
         <section className="beast-month-details" aria-labelledby="beast-details-title">
           <div>

@@ -434,3 +434,15 @@
     transition: none !important;
   }
 }
+
+
+/* Product customisation must sit above fixed mobile navigation chrome. */
+@media (max-width: 900px) {
+  .product-modal-backdrop {
+    z-index: 160 !important;
+  }
+
+  .product-modal-backdrop .product-modal {
+    max-height: calc(100dvh - 1rem);
+  }
+}

@@ -107,12 +107,16 @@ export async function GET(request: Request) {
           });
 
           if (phone) {
-            const { account } = await findOrCreateSquareLoyaltyAccount({
+            const { account, created } = await findOrCreateSquareLoyaltyAccount({
               customerId: squareCustomer.id,
               phone,
               requestId: `nbh-signup-loyalty-${user.id}`,
             });
-            await ensureSquareSignupBonus(account.id);
+            // A returning Square POS member keeps the existing loyalty
+            // balance. This is also called on Google logins, not only signup.
+            await ensureSquareSignupBonus(account.id, {
+              newlyCreated: created,
+            });
           }
         } catch (squareError) {
           // Account authentication should still succeed if Square is temporarily

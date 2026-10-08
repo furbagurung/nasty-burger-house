@@ -8,6 +8,7 @@ import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import GoogleAuthButton from "./google-auth-button";
 import MobileBottomNav from "./mobile-bottom-nav";
 import PasswordInput from "./password-input";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 export default function AccountSignInPage() {
   const router = useRouter();
@@ -109,13 +110,9 @@ export default function AccountSignInPage() {
                 {error}
               </p>
             )}
-            <button
-              className="standalone-primary-button"
-              type="submit"
-              disabled={submitting}
-            >
+            <ButtonWithIcon tone="red" type="submit" disabled={submitting}>
               {submitting ? "Signing in…" : "Sign in"}
-            </button>
+            </ButtonWithIcon>
             {productionAuth && (
               <Link className="standalone-secondary-link" href="/account/forgot-password">
                 Forgot password?

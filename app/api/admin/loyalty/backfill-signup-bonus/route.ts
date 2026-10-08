@@ -1,6 +1,5 @@
 import { verifyAdmin } from "../../../../lib/admin-auth";
 import {
-  ensureSquareSignupBonus,
   hasSquareSignupBonus,
   listAllSquareLoyaltyAccounts,
 } from "../../../../lib/square/loyalty";
@@ -42,8 +41,9 @@ export async function GET() {
     return Response.json({
       ok: true,
       totalAccounts: accounts.length,
-      missingCount: missing.length,
-      missing,
+      reviewRequiredCount: missing.length,
+      note: "These accounts lack a recognised signup-bonus reason. They may already have received a manual complimentary award; do not credit automatically.",
+      reviewRequired: missing,
     });
   } catch (error) {
     console.error("[NBH Square loyalty backfill preview]", error);
@@ -54,41 +54,18 @@ export async function GET() {
   }
 }
 
+// Never automatically issue past welcome points to existing Square members:
+ // Square's manual complimentary credits can have different adjustment reasons,
+ // so an automated backfill could accidentally pay the same 500 points twice.
 export async function POST() {
   const auth = await verifyAdmin();
   if (!auth.ok) return authError(auth.reason);
 
-  try {
-    const accounts = await listAllSquareLoyaltyAccounts();
-    let applied = 0;
-    let skipped = 0;
-    const failed: Array<{ loyaltyAccountId: string; error: string }> = [];
-
-    for (const account of accounts) {
-      try {
-        const result = await ensureSquareSignupBonus(account.id);
-        if (result.applied) applied += 1;
-        else skipped += 1;
-      } catch (error) {
-        failed.push({
-          loyaltyAccountId: account.id,
-          error: error instanceof Error ? error.message : "Unknown error",
-        });
-      }
-    }
-
-    return Response.json({
-      ok: failed.length === 0,
-      totalAccounts: accounts.length,
-      applied,
-      skipped,
-      failed,
-    });
-  } catch (error) {
-    console.error("[NBH Square loyalty backfill]", error);
-    return Response.json(
-      { ok: false, error: "Could not backfill Square Loyalty signup bonuses." },
-      { status: 502 },
-    );
-  }
+  return Response.json(
+    {
+      ok: false,
+      error: "Automatic welcome-point backfill is disabled. Review each Square loyalty account manually before adjusting points.",
+    },
+    { status: 405 },
+  );
 }

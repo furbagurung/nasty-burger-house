@@ -13,6 +13,7 @@ import {
 import type { CustomerProfile } from "../lib/customer-store";
 import { DRIP_REWARD_TARGET, dripProgressPercent } from "../lib/loyalty";
 import AccountDashboardSkeleton from "./account-dashboard-skeleton";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 type SquareLoyaltyStatus = {
   ok?: boolean;
@@ -155,7 +156,7 @@ export default function AccountProfilePage() {
         <h1>Your account lives here.</h1>
         <p>Create an account to save checkout details, build order history and earn Drip Points.</p>
         <div className="account-empty-actions">
-          <Link className="standalone-primary-button" href="/account/create">Create account</Link>
+          <ButtonWithIcon href="/account/create" tone="red">Create account</ButtonWithIcon>
           <Link className="standalone-secondary-link" href="/account/sign-in">Sign in</Link>
         </div>
       </section>
@@ -171,9 +172,9 @@ export default function AccountProfilePage() {
           <p className="standalone-eyebrow">Dashboard</p>
           <h1>Welcome back, {firstName}</h1>
         </div>
-        <Link className="account-saas-order-button" href="/menu/burgers">
-          Order now <span aria-hidden="true">→</span>
-        </Link>
+        <ButtonWithIcon href="/menu/burgers" tone="dark">
+          Order now
+        </ButtonWithIcon>
       </header>
 
       <section className="account-overview-grid account-saas-stats" aria-label="Account overview">
@@ -230,9 +231,9 @@ export default function AccountProfilePage() {
           {error && <p className="account-form-error" role="alert">{error}</p>}
 
           <div className="account-saas-form-actions">
-            <button className="standalone-primary-button" type="submit" disabled={saving}>
+            <ButtonWithIcon tone="red" type="submit" disabled={saving}>
               {saving ? "Saving…" : "Save changes"}
-            </button>
+            </ButtonWithIcon>
           </div>
         </form>
       </section>

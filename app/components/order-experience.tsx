@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { drawerMotion, useMobileCart } from "../lib/drawer-motion";
 import { FooterUtilityLinks } from "./footer-legal-links";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
@@ -17,11 +19,13 @@ import {
   calculateLineUnitPrice,
   type CartLine,
 } from "../lib/order";
-import type { ServiceStatus } from "../lib/service";
+import { getServiceStatus, type ServiceStatus } from "../lib/service";
 import MobileBottomNav from "./mobile-bottom-nav";
 import HomepageTestimonials from "./homepage-testimonials";
 import ReviewStories from "./review-stories";
 import DripPointsBanner from "./drip-points-banner";
+import LandingPromoModal from "./landing-promo-modal";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 type OrderExperienceProps = {
   items: MenuItem[];
@@ -34,10 +38,34 @@ type CheckoutResult = {
   message: string;
 };
 
+type PopularPicksResponse = {
+  source?: "square" | "fallback";
+  windowDays?: number;
+  picks?: Array<{
+    id?: string;
+    quantity?: number;
+    orderCount?: number;
+  }>;
+};
+
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 const LEGACY_CART_STORAGE_KEY = "nasty-burger-phase-one-cart";
 const LOYALTY_STORAGE_KEY = "nasty-burger-drip-signup";
 const MONTHLY_SEEN_KEY = "nasty-burger-monthly-seen";
+
+const modifierThumbnails: Record<string, string> = {
+  "beef-patty": "/images/extras/buff-patty.webp",
+  "chicken-patty": "/images/extras/chicken-patty.webp",
+  bacon: "/images/extras/bacon.webp",
+  cheese: "/images/extras/american-cheese.webp",
+  "house-sauce": "/images/extras/sauce.webp",
+  "signature-sauce": "/images/extras/sauce.webp",
+  "garlic-aioli": "/images/extras/Garlic aioli.webp",
+  "jalapeno-mint-mayo": "/images/extras/Jalapeño mint mayo.webp",
+  "tartare-sauce": "/images/extras/tartare-sauce.webp",
+  "tomato-sauce": "/images/extras/tomato sauce.webp",
+};
+
 
 type HeroSlide = {
   id: string;
@@ -54,51 +82,69 @@ type HeroSlide = {
 const heroSlides: HeroSlide[] = [
   {
     id: "drip-points",
-    eyebrow: "Nasty rewards",
+    eyebrow: "Nasty Rewards",
     title: "Get Drip Points",
-    description:
-      "Join Drip Points, get 500 points to start and unlock rewards made for hungry regulars.",
+    description: "500 points on us. Earn more every order.",
     image: "/images/signature-beast.webp",
     imageAlt:
       "Nasty Burger House signature burger beside a Drip Points promotion",
-    ctaLabel: "Join Drip Points",
+    ctaLabel: "Join Now",
     action: "loyalty",
   },
   {
     id: "monthly",
-    eyebrow: "Limited-time drop",
+    eyebrow: "Coming Soon",
     title: "Beast of the Month",
-    description:
-      "Meet the BBQ Beast: flame-grilled beef, crispy bacon, American cheese and house-made Bourbon BBQ sauce.",
+    description: "New Beast coming soon.",
     image: "/images/bbq-beast-hero.webp",
     imageAlt: "BBQ burger with beef patties, bacon, cheese and smoky sauce",
-    ctaLabel: "Order the BBQ Beast",
+    ctaLabel: "Coming Soon",
     action: "monthly",
   },
   {
     id: "beast-burgers",
-    eyebrow: "Flame-grilled favourites",
+    eyebrow: "Flame-grilled",
     title: "Beast Burgers",
-    description:
-      "From the OG Nasty to the Peri Beast, explore the full lineup and build your pickup order.",
+    description: "Big flavour. Built your way.",
     image: "/images/signature-beast.webp",
     imageAlt:
       "Nasty Burger House signature burger with cheese, pickles and sauce",
-    ctaLabel: "Explore burgers",
+    ctaLabel: "Explore",
     href: "/menu/burgers",
   },
   {
     id: "save-more",
-    eyebrow: "Beast Boxes · From A$34.99",
-    title: "Get More. Save Money.",
-    description:
-      "Go Solo, Duo or Family and get burgers, Nasty Fries, bites, drinks and dessert together in one Beast Box.",
+    eyebrow: "Build Your Feed",
+    title: "Beast Combo",
+    description: "Add Nasty Fries and a drink.",
     image: "/images/beast-box-hero.webp",
     imageAlt: "Beast Box with burger, fries, wings, eggplant bites and dessert",
-    ctaLabel: "Explore Beast Boxes",
-    href: "/menu/beast-boxes",
+    ctaLabel: "Build Combo",
+    href: "/menu/burgers",
   },
 ];
+
+function renderHeroTitle(title: string) {
+  return title.split(/(drip points|beast)/gi).map((part, index) => {
+    if (/^beast$/i.test(part)) {
+      return (
+        <span className="hero-title__accent" key={`${part}-${index}`}>
+          {part}
+        </span>
+      );
+    }
+
+    if (/^drip points$/i.test(part)) {
+      return (
+        <span className="hero-title__drip-accent" key={`${part}-${index}`}>
+          {part}
+        </span>
+      );
+    }
+
+    return part;
+  });
+}
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -172,6 +218,9 @@ export default function OrderExperience({
   items,
   initialServiceStatus,
 }: OrderExperienceProps) {
+  const reducedMotion = useReducedMotion();
+  const mobileCart = useMobileCart();
+  const transitions = drawerMotion(reducedMotion !== false, mobileCart);
   const [activeHeroSlide, setActiveHeroSlide] = useState(0);
   const [isHeroPaused, setIsHeroPaused] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -205,11 +254,34 @@ export default function OrderExperience({
   const [pendingItem, setPendingItem] = useState<MenuItem | null>(null);
   const [selectionError, setSelectionError] = useState("");
   const [announcement, setAnnouncement] = useState("");
-  const [serviceStatus] = useState(initialServiceStatus);
+  const [serviceStatus, setServiceStatus] = useState(initialServiceStatus);
+  const [popularPickIds, setPopularPickIds] = useState<string[]>([
+    "og-nasty",
+    "peri-beast",
+    "nasty-fries",
+    "bbq-beast",
+  ]);
+
+  useEffect(() => {
+    const syncServiceStatus = () => setServiceStatus(getServiceStatus());
+
+    syncServiceStatus();
+    const interval = window.setInterval(syncServiceStatus, 30_000);
+
+    return () => window.clearInterval(interval);
+  }, []);
 
   const burgerItems = useMemo(
     () => items.filter((item) => item.category === "burgers"),
     [items],
+  );
+
+  const popularItems = useMemo(
+    () =>
+      popularPickIds
+        .map((id) => items.find((item) => item.id === id))
+        .filter((item): item is MenuItem => Boolean(item)),
+    [items, popularPickIds],
   );
 
   const selectedModifiers = useMemo(
@@ -219,6 +291,13 @@ export default function OrderExperience({
       ),
     [modifierQuantities],
   );
+
+  const comboDrinkImage =
+    items.find(
+      (item) =>
+        item.category === "drinks" &&
+        item.name === (selectedDrink || "Coke"),
+    )?.image ?? "/images/final-menu-photo/coke-v2.jpeg";
 
   const selectedUnitPrice = useMemo(() => {
     if (!selectedItem) return 0;
@@ -263,6 +342,34 @@ export default function OrderExperience({
     if (!cartHydrated) return;
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
   }, [cart, cartHydrated]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadPopularPicks() {
+      try {
+        const response = await fetch("/api/popular-picks", {
+          cache: "no-store",
+        });
+        const result = (await response.json()) as PopularPicksResponse;
+        if (!response.ok || cancelled) return;
+
+        const ids = (result.picks ?? [])
+          .map((pick) => pick.id)
+          .filter((id): id is string => typeof id === "string")
+          .slice(0, 4);
+
+        if (ids.length > 0) setPopularPickIds(ids);
+      } catch {
+        // Keep the local fallback picks when live order data is unavailable.
+      }
+    }
+
+    void loadPopularPicks();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -388,7 +495,7 @@ export default function OrderExperience({
     setIsOrderTypeOpen(false);
     setIsLoyaltyOpen(false);
     setIsCheckoutOpen(false);
-    setSelectedItem(item);
+    window.location.assign(`/product/${item.id}`);
   }
 
   function continueAfterMonthly(item: MenuItem | null) {
@@ -720,6 +827,7 @@ export default function OrderExperience({
 
   return (
     <div className="site-shell">
+      <LandingPromoModal />
       <p className="sr-only" aria-live="polite">
         {announcement}
       </p>
@@ -825,15 +933,15 @@ export default function OrderExperience({
                 Join Drip Points <span aria-hidden="true">→</span>
               </button>
             </nav>
-            <button
-              className="primary-button full-width"
-              type="button"
+            <ButtonWithIcon
+              tone="red"
+              fullWidth
               onClick={cartCount > 0 ? openCart : openOrderType}
             >
               {cartCount > 0
                 ? `View order · ${formatPrice(cartSubtotal)}`
                 : "Order now"}
-            </button>
+            </ButtonWithIcon>
           </aside>
         </div>
       )}
@@ -866,33 +974,39 @@ export default function OrderExperience({
                 <div className="hero-slide__copy">
                   <p className="eyebrow">{slide.eyebrow}</p>
                   {index === 0 ? (
-                    <h1>{slide.title}</h1>
+                    <h1>{renderHeroTitle(slide.title)}</h1>
                   ) : (
-                    <h2>{slide.title}</h2>
+                    <h2>{renderHeroTitle(slide.title)}</h2>
                   )}
                   <p>{slide.description}</p>
-                  <div className="hero-actions">
-                    {slide.href ? (
-                      <Link className="hero-card__cta" href={slide.href}>
-                        {slide.ctaLabel}
-                      </Link>
-                    ) : (
-                      <button
-                        className="hero-card__cta"
-                        type="button"
-                        onClick={
-                          slide.action === "loyalty"
-                            ? openLoyalty
-                            : () =>
-                                monthlyItem
-                                  ? beginProduct(monthlyItem)
-                                  : openOrderType()
-                        }
-                      >
-                        {slide.ctaLabel}
-                      </button>
-                    )}
-                  </div>
+                  {slide.id !== "monthly" && (
+                    <div className="hero-actions">
+                      {slide.href ? (
+                        <ButtonWithIcon
+                          href={slide.href}
+                          tone="light"
+                          className="hero-carousel__cta"
+                        >
+                          {slide.ctaLabel}
+                        </ButtonWithIcon>
+                      ) : (
+                        <ButtonWithIcon
+                          tone="light"
+                          className="hero-carousel__cta"
+                          onClick={
+                            slide.action === "loyalty"
+                              ? openLoyalty
+                              : () =>
+                                  monthlyItem
+                                    ? beginProduct(monthlyItem)
+                                    : openOrderType()
+                          }
+                        >
+                          {slide.ctaLabel}
+                        </ButtonWithIcon>
+                      )}
+                    </div>
+                  )}
                   <div className="hero-carousel__controls">
                     <button
                       type="button"
@@ -965,10 +1079,12 @@ export default function OrderExperience({
           aria-labelledby="menu-preview-title"
         >
           <div className="menu-preview__heading">
-            <p className="eyebrow">Find your favourite</p>
-            <h2 id="menu-preview-title">Explore our menu</h2>
-            <Link className="outline-button" href="/menu/burgers">
-              View menu
+            <div>
+              <p className="eyebrow">Find your favourite</p>
+              <h2 id="menu-preview-title">Explore our menu</h2>
+            </div>
+            <Link className="menu-preview__view-all" href="/menu/burgers">
+              View all <span aria-hidden="true">→</span>
             </Link>
           </div>
           <div className="menu-preview__grid">
@@ -1010,59 +1126,98 @@ export default function OrderExperience({
           </div>
         </section>
 
+        <section
+          className="popular-picks"
+          aria-labelledby="popular-picks-title"
+        >
+          <div className="popular-picks__heading">
+            <div>
+              <p className="eyebrow">What people order</p>
+              <h2 id="popular-picks-title">Popular Picks</h2>
+            </div>
+            <Link href="/menu/burgers">View all <span aria-hidden="true">→</span></Link>
+          </div>
+
+          <div className="popular-picks__rail">
+            {popularItems.map((item) => (
+              <Link
+                className="popular-pick-card"
+                href={`/product/${item.id}`}
+                key={item.id}
+              >
+                <span className="popular-pick-card__media">
+                  {item.image ? (
+                    <Image
+                      src={item.image}
+                      alt=""
+                      fill
+                      sizes="(max-width: 680px) 36vw, 240px"
+                    />
+                  ) : null}
+                </span>
+                <span className="popular-pick-card__body">
+                  <span>
+                    <strong>{item.name}</strong>
+                    <small>{formatPrice(item.price)}</small>
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         <DripPointsBanner />
 
-        <div className="review-stories-home-host">
-          <ReviewStories />
-        </div>
-
         <section
-          className="home-features"
-          aria-label="Popular Nasty Burger House picks"
+          className="home-promo-grid"
+          aria-label="Explore Beast Boxes and dessert"
         >
-          <article className="home-feature home-feature--bbq">
-            <div className="home-feature__image">
-              <Image
-                src="/images/bbq-beast-hero.webp"
-                alt="BBQ Beast burger with bacon, cheese and smoky sauce"
-                fill
-                sizes="(max-width: 760px) 100vw, 50vw"
-              />
-            </div>
-            <div className="home-feature__copy">
-              <p className="eyebrow">Beast of the Month</p>
-              <h2>Meet the BBQ Beast.</h2>
-              <p>
-                Smoky Bourbon BBQ, crispy bacon and American cheese stacked for
-                serious appetite.
-              </p>
-              <button type="button" onClick={openOrderType}>
-                Order now
-              </button>
-            </div>
-          </article>
-          <article className="home-feature home-feature--boxes">
-            <div className="home-feature__image">
+          <article className="home-promo-card home-promo-card--boxes">
+            <div className="home-promo-card__image">
               <Image
                 src="/images/beast-box-hero.webp"
                 alt="Beast Box with burger, fries, wings and sides"
                 fill
-                sizes="(max-width: 760px) 100vw, 50vw"
+                sizes="(max-width: 760px) 55vw, (max-width: 1212px) 28vw, 320px"
               />
             </div>
-            <div className="home-feature__copy">
-              <p className="eyebrow">Built for sharing</p>
+            <div className="home-promo-card__copy">
               <h2>Bring the whole crew.</h2>
               <p>
-                Solo, Duo and Family boxes loaded with burgers, wings, fries and
-                more.
+                Solo, Duo and Family boxes loaded with burgers, wings, fries
+                and more.
               </p>
-              <button type="button" onClick={openOrderType}>
-                Order now
-              </button>
+              <ButtonWithIcon tone="light" href="/menu/beast-boxes">
+                Explore boxes
+              </ButtonWithIcon>
+            </div>
+          </article>
+
+          <article className="home-promo-card home-promo-card--dessert">
+            <div className="home-promo-card__image">
+              <Image
+                src="/images/final-menu-photo/mango-pudding-v2.jpeg"
+                alt="Mango pudding topped with lychee granita and lychee pearls"
+                fill
+                sizes="(max-width: 760px) 50vw, (max-width: 1212px) 26vw, 300px"
+              />
+            </div>
+            <div className="home-promo-card__copy">
+              <h2>Finish on a sweet note.</h2>
+              <p>
+                Silky mango pudding, lychee granita and lychee pearls.
+                Your tropical sweet finish.
+              </p>
+              <ButtonWithIcon tone="red" href="/menu/sweet">
+                Order dessert
+              </ButtonWithIcon>
             </div>
           </article>
         </section>
+        <div className="review-stories-home-host">
+          <ReviewStories />
+        </div>
+
         <HomepageTestimonials />
       </main>
 
@@ -1080,9 +1235,9 @@ export default function OrderExperience({
         <div className="footer-links">
           <nav aria-label="Ordering links">
             <h2>Order</h2>
-            <button type="button" onClick={openOrderType}>
+            <ButtonWithIcon tone="red" onClick={openOrderType}>
               Order now
-            </button>
+            </ButtonWithIcon>
             <span>Pickup available</span>
             <span>Uber Eats delivery — coming soon</span>
           </nav>
@@ -1177,7 +1332,7 @@ export default function OrderExperience({
       )}
 
       {selectedItem && (
-        <div className="modal-backdrop" role="presentation">
+        <div className="modal-backdrop product-modal-backdrop" role="presentation">
           <section
             className="product-modal"
             role="dialog"
@@ -1307,7 +1462,7 @@ export default function OrderExperience({
             {selectedItem.canUpgrade && (
               <fieldset>
                 <legend>Upgrade</legend>
-                <label className="option-row">
+                <label className="option-row option-row--combo">
                   <input
                     type="checkbox"
                     checked={isCombo}
@@ -1317,9 +1472,34 @@ export default function OrderExperience({
                       setSelectionError("");
                     }}
                   />
-                  <span>
-                    Make it a combo · +{formatPrice(comboUpgradePrice)}
-                    <small>Nasty Fries plus your choice of drink.</small>
+                  <span className="product-extra-info">
+                    <span
+                      className="product-upgrade-thumb-group"
+                      aria-hidden="true"
+                    >
+                      <span className="product-extra-thumb">
+                        <Image
+                          src="/images/final-menu-photo/nasty-fries-v2.jpg"
+                          alt=""
+                          width={52}
+                          height={52}
+                        />
+                      </span>
+                      <span className="product-extra-thumb">
+                        <Image
+                          src={comboDrinkImage}
+                          alt=""
+                          width={52}
+                          height={52}
+                        />
+                      </span>
+                    </span>
+                    <span className="product-extra-copy">
+                      <strong>
+                        Make it a combo · +{formatPrice(comboUpgradePrice)}
+                      </strong>
+                      <small>Nasty Fries plus your choice of drink.</small>
+                    </span>
                   </span>
                 </label>
               </fieldset>
@@ -1357,10 +1537,27 @@ export default function OrderExperience({
                 <legend>One-tap extras</legend>
                 <div className="stepper-list">
                   {allowedModifiers.map((modifier) => (
-                    <div className="stepper-row" key={modifier.id}>
-                      <span>
-                        {modifier.name}
-                        <small>+{formatPrice(modifier.price)} each</small>
+                    <div
+                      className="stepper-row product-stepper-row--extra"
+                      key={modifier.id}
+                    >
+                      <span className="product-extra-info">
+                        <span className="product-extra-thumb" aria-hidden="true">
+                          <Image
+                            src={
+                              modifierThumbnails[modifier.id] ??
+                              selectedItem.image ??
+                              "/logo.webp"
+                            }
+                            alt=""
+                            width={52}
+                            height={52}
+                          />
+                        </span>
+                        <span className="product-extra-copy">
+                          <strong>{modifier.name}</strong>
+                          <small>+{formatPrice(modifier.price)} each</small>
+                        </span>
                       </span>
                       <div
                         className="quantity-control"
@@ -1444,13 +1641,9 @@ export default function OrderExperience({
                 {selectionError}
               </p>
             )}
-            <button
-              className="primary-button full-width"
-              type="button"
-              onClick={addSelectedItem}
-            >
+            <ButtonWithIcon tone="red" fullWidth onClick={addSelectedItem}>
               {editingLineId ? "Save changes" : "Add to order"}
-            </button>
+            </ButtonWithIcon>
           </section>
         </div>
       )}
@@ -1476,163 +1669,165 @@ export default function OrderExperience({
             <h3>BBQ Beast · {formatPrice(monthlyItem.price)}</h3>
             <p>{monthlyItem.description}</p>
             <div className="modal-actions">
-              <button
-                className="secondary-button"
-                type="button"
+              <ButtonWithIcon
+                tone="light"
                 onClick={() => continueAfterMonthly(pendingItem)}
               >
                 Keep my choice
-              </button>
-              <button
-                className="primary-button"
-                type="button"
+              </ButtonWithIcon>
+              <ButtonWithIcon
+                tone="red"
                 onClick={() => continueAfterMonthly(monthlyItem)}
               >
                 Try BBQ Beast
-              </button>
+              </ButtonWithIcon>
             </div>
           </section>
         </div>
       )}
 
-      {isCartOpen && (
-        <div className="drawer-backdrop" role="presentation">
-          <aside
-            className="cart-drawer"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="cart-title"
-          >
-            <div className="drawer-heading">
-              <div>
-                <p className="eyebrow">Pickup order</p>
-                <h2 id="cart-title">Your order</h2>
+      <AnimatePresence>
+        {isCartOpen && (
+          <motion.div {...transitions.backdrop} key="cart" className="drawer-backdrop" role="presentation">
+            <motion.aside {...transitions.panel}
+              className="cart-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="cart-title"
+            >
+              <div className="drawer-heading">
+                <div>
+                  <p className="eyebrow">Pickup order</p>
+                  <h2 id="cart-title">Your order</h2>
+                </div>
+                <button
+                  className="close-button"
+                  type="button"
+                  onClick={() => setIsCartOpen(false)}
+                  aria-label="Close order drawer"
+                >
+                  ×
+                </button>
               </div>
-              <button
-                className="close-button"
-                type="button"
-                onClick={() => setIsCartOpen(false)}
-                aria-label="Close order drawer"
-              >
-                ×
-              </button>
-            </div>
 
-            {cart.length === 0 ? (
-              <div className="empty-cart">
-                <h3>Your order is empty.</h3>
-                <p>Choose an item from the menu to begin.</p>
-                <Link href="/menu/burgers" onClick={() => setIsCartOpen(false)}>
-                  Browse menu
-                </Link>
-              </div>
-            ) : (
-              <div className="cart-lines">
-                {cart.map((line) => {
-                  const item = items.find((entry) => entry.id === line.itemId);
-                  if (!item) return null;
-                  const details = lineDetails(line);
-                  const lineTotal =
-                    calculateLineUnitPrice(line, item) * line.quantity;
+              {cart.length === 0 ? (
+                <div className="empty-cart">
+                  <h3>Your order is empty.</h3>
+                  <p>Choose an item from the menu to begin.</p>
+                  <Link href="/menu/burgers" onClick={() => setIsCartOpen(false)}>
+                    Browse menu
+                  </Link>
+                </div>
+              ) : (
+                <div className="cart-lines">
+                  {cart.map((line) => {
+                    const item = items.find((entry) => entry.id === line.itemId);
+                    if (!item) return null;
+                    const details = lineDetails(line);
+                    const lineTotal =
+                      calculateLineUnitPrice(line, item) * line.quantity;
 
-                  return (
-                    <article className="cart-line" key={line.lineId}>
-                      <div className="cart-line__main">
-                        <h3>{item.name}</h3>
-                        {details.map((detail) => (
-                          <p key={detail}>{detail}</p>
-                        ))}
-                        <strong>{formatPrice(lineTotal)}</strong>
-                        <div className="cart-line__actions">
+                    return (
+                      <article className="cart-line" key={line.lineId}>
+                        <div className="cart-line__main">
+                          <h3>{item.name}</h3>
+                          {details.map((detail) => (
+                            <p key={detail}>{detail}</p>
+                          ))}
+                          <strong>{formatPrice(lineTotal)}</strong>
+                          <div className="cart-line__actions">
+                            <button
+                              type="button"
+                              onClick={() => editCartLine(line)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeLine(line.lineId)}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                        <div
+                          className="quantity-control"
+                          aria-label={`Quantity for ${item.name}`}
+                        >
                           <button
                             type="button"
-                            onClick={() => editCartLine(line)}
+                            onClick={() => updateQuantity(line.lineId, -1)}
                           >
-                            Edit
+                            −
                           </button>
+                          <span>{line.quantity}</span>
                           <button
                             type="button"
-                            onClick={() => removeLine(line.lineId)}
+                            onClick={() => updateQuantity(line.lineId, 1)}
                           >
-                            Remove
+                            +
                           </button>
                         </div>
-                      </div>
-                      <div
-                        className="quantity-control"
-                        aria-label={`Quantity for ${item.name}`}
+                      </article>
+                    );
+                  })}
+
+                  {!cart.some((line) => line.itemId.includes("beast-box")) &&
+                    soloBox && (
+                      <button
+                        className="cart-upsell"
+                        type="button"
+                        onClick={() => {
+                          setIsCartOpen(false);
+                          beginProduct(soloBox);
+                        }}
                       >
-                        <button
-                          type="button"
-                          onClick={() => updateQuantity(line.lineId, -1)}
-                        >
-                          −
-                        </button>
-                        <span>{line.quantity}</span>
-                        <button
-                          type="button"
-                          onClick={() => updateQuantity(line.lineId, 1)}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </article>
-                  );
-                })}
+                        <span>Ordering for a crew?</span>
+                        Build a Solo Beast Box · {formatPrice(soloBox.price)}
+                      </button>
+                    )}
 
-                {!cart.some((line) => line.itemId.includes("beast-box")) &&
-                  soloBox && (
-                    <button
-                      className="cart-upsell"
-                      type="button"
-                      onClick={() => {
-                        setIsCartOpen(false);
-                        beginProduct(soloBox);
-                      }}
+                  <div className="pickup-summary">
+                    <strong>Pickup details</strong>
+                    <p>{serviceStatus.locationName}</p>
+                    <p>Estimated preparation: {serviceStatus.prepTimeLabel}</p>
+                  </div>
+
+                  <div className="checkout-summary">
+                    <div className="checkout-total">
+                      <span>Subtotal</span>
+                      <strong>{formatPrice(cartSubtotal)}</strong>
+                    </div>
+                    <p>
+                      {serviceStatus.acceptingOrders
+                        ? pricingNotice
+                        : serviceStatus.notice}
+                    </p>
+                    <ButtonWithIcon
+                      tone="red"
+                      fullWidth
+                      onClick={openCheckout}
+                      disabled={!serviceStatus.acceptingOrders}
                     >
-                      <span>Ordering for a crew?</span>
-                      Build a Solo Beast Box · {formatPrice(soloBox.price)}
-                    </button>
-                  )}
-
-                <div className="pickup-summary">
-                  <strong>Pickup details</strong>
-                  <p>{serviceStatus.locationName}</p>
-                  <p>Estimated preparation: {serviceStatus.prepTimeLabel}</p>
-                </div>
-
-                <div className="checkout-summary">
-                  <div className="checkout-total">
-                    <span>Subtotal</span>
-                    <strong>{formatPrice(cartSubtotal)}</strong>
-                  </div>
-                  <p>
-                    {serviceStatus.acceptingOrders
-                      ? pricingNotice
-                      : serviceStatus.notice}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={openCheckout}
-                    disabled={!serviceStatus.acceptingOrders}
-                  >
-                    {serviceStatus.acceptingOrders
-                      ? "Continue to checkout"
-                      : "Ordering unavailable"}
-                  </button>
-                  <div
-                    className="wallet-labels"
-                    aria-label="Planned express payments"
-                  >
-                    <span>Apple Pay</span>
-                    <span>Google Pay</span>
+                      {serviceStatus.acceptingOrders
+                        ? "Continue to checkout"
+                        : "Ordering unavailable"}
+                    </ButtonWithIcon>
+                    <div
+                      className="wallet-labels"
+                      aria-label="Planned express payments"
+                    >
+                      <span>Apple Pay</span>
+                      <span>Google Pay</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </aside>
-        </div>
-      )}
+              )}
+            </motion.aside>
+          </motion.div>
+        )}
+
+      </AnimatePresence>
 
       {isCheckoutOpen && (
         <div className="modal-backdrop checkout-backdrop" role="presentation">
@@ -1670,13 +1865,14 @@ export default function OrderExperience({
                     present it when collecting your food.
                   </p>
                 </div>
-                <Link
-                  className="primary-button full-width"
+                <ButtonWithIcon
                   href="/menu/burgers"
+                  tone="red"
+                  fullWidth
                   onClick={() => setIsCheckoutOpen(false)}
                 >
                   Return to menu
-                </Link>
+                </ButtonWithIcon>
               </div>
             ) : (
               <form className="checkout-form" onSubmit={submitOrder}>
@@ -1868,8 +2064,9 @@ export default function OrderExperience({
                       </div>
                     )}
 
-                    <button
-                      className="primary-button full-width"
+                    <ButtonWithIcon
+                      tone="red"
+                      fullWidth
                       type="submit"
                       disabled={
                         checkoutState === "submitting" ||
@@ -1881,7 +2078,7 @@ export default function OrderExperience({
                         : checkoutState === "submitting"
                           ? "Sending order…"
                           : "Place pickup order"}
-                    </button>
+                    </ButtonWithIcon>
                     <small>
                       No online payment is required. You&apos;ll pay at pickup.
                     </small>
@@ -1923,13 +2120,13 @@ export default function OrderExperience({
                   Purchase earning and redemption will connect with the
                   client&apos;s loyalty platform.
                 </p>
-                <button
-                  className="primary-button full-width"
-                  type="button"
+                <ButtonWithIcon
+                  tone="red"
+                  fullWidth
                   onClick={() => setIsLoyaltyOpen(false)}
                 >
                   Start ordering
-                </button>
+                </ButtonWithIcon>
               </div>
             ) : (
               <form onSubmit={submitLoyalty}>
@@ -1946,9 +2143,9 @@ export default function OrderExperience({
                   Phone number
                   <input type="tel" name="phone" autoComplete="tel" required />
                 </label>
-                <button className="primary-button full-width" type="submit">
+                <ButtonWithIcon tone="red" fullWidth type="submit">
                   Get 500 Drip Points
-                </button>
+                </ButtonWithIcon>
               </form>
             )}
           </section>

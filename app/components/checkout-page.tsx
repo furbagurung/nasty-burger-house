@@ -9,8 +9,9 @@ import {
   calculateLineUnitPrice,
   type CartLine,
 } from "../lib/order";
-import type { ServiceStatus } from "../lib/service";
+import { getServiceStatus, type ServiceStatus } from "../lib/service";
 import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 const CHECKOUT_CONTACT_KEY = "nasty-burger-checkout-contact";
@@ -65,7 +66,8 @@ type CheckoutPageProps = {
   serviceStatus: ServiceStatus;
 };
 
-export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
+export default function CheckoutPage({ serviceStatus: initialServiceStatus }: CheckoutPageProps) {
+  const [serviceStatus, setServiceStatus] = useState(initialServiceStatus);
   const [cart, setCart] = useState<CartLine[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -74,6 +76,15 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const syncServiceStatus = () => setServiceStatus(getServiceStatus());
+
+    syncServiceStatus();
+    const interval = window.setInterval(syncServiceStatus, 30_000);
+
+    return () => window.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     try {
@@ -349,8 +360,9 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
                 </ul>
               </div>
             )}
-            <button
-              className="standalone-primary-button"
+            <ButtonWithIcon
+              tone="red"
+              fullWidth
               type="submit"
               disabled={submitting || !serviceStatus.acceptingOrders}
             >
@@ -359,7 +371,7 @@ export default function CheckoutPage({ serviceStatus }: CheckoutPageProps) {
                 : submitting
                   ? "Opening Square…"
                   : "Continue to secure payment"}
-            </button>
+            </ButtonWithIcon>
             <small>
               Orders, customer details and payment are handled through Square. Nasty Burger House
               never receives your card details.

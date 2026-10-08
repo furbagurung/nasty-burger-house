@@ -1,6 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { AdminWorkspaceHeader } from "./admin-workspace-header";
+import { AdminMetricCard } from "./admin-metric-card";
+import { ClipboardCheck, Clock3, Star, MessageSquareText } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { AdminReview, AdminReviewStatus } from "../lib/admin-reviews";
 
@@ -97,46 +99,15 @@ export default function AdminReviewDashboard({
   }
 
   return (
-    <div className="admin-shell admin-review-shell">
-      <header className="admin-header">
-        <div>
-          <p>Nasty Burger House</p>
-          <h1>Review Moderation</h1>
-        </div>
-        <div className="admin-header__actions">
-          <span>{adminEmail ?? "Admin"}</span>
-          <Link href="/admin">Orders</Link>
-          <Link href="/admin/customers">Customers</Link>
-          <Link href="/reviews">Public reviews</Link>
-          <Link href="/">View site</Link>
-          <form action="/admin/logout" method="post">
-            <button type="submit">Log out</button>
-          </form>
-        </div>
-      </header>
+    <div className="admin-shell admin-modern admin-review-shell">
+      <AdminWorkspaceHeader title="Review Moderation" active="reviews" adminEmail={adminEmail} />
 
       <main className="admin-main admin-review-main">
         <section className="admin-summary-grid" aria-label="Review summary">
-          <article>
-            <span>Pending approval</span>
-            <strong>{pendingCount}</strong>
-          </article>
-          <article>
-            <span>Published</span>
-            <strong>{publishedReviews.length}</strong>
-          </article>
-          <article>
-            <span>Published rating</span>
-            <strong>
-              {publishedReviews.length === 0
-                ? "—"
-                : averagePublished.toFixed(1) + "/5"}
-            </strong>
-          </article>
-          <article>
-            <span>Total reviews</span>
-            <strong>{reviews.length}</strong>
-          </article>
+          <AdminMetricCard label="Pending approval" value={pendingCount} icon={<Clock3 size={20} />} index={0} hint="Awaiting moderation" />
+          <AdminMetricCard label="Published" value={publishedReviews.length} icon={<ClipboardCheck size={20} />} index={1} hint="Visible to customers" />
+          <AdminMetricCard label="Published rating" value={publishedReviews.length === 0 ? "—" : averagePublished.toFixed(1) + "/5"} icon={<Star size={20} />} index={2} hint="Average published review" />
+          <AdminMetricCard label="Total reviews" value={reviews.length} icon={<MessageSquareText size={20} />} index={3} hint="All review statuses" />
         </section>
 
         <section className="admin-review-guidance">
@@ -152,7 +123,7 @@ export default function AdminReviewDashboard({
 
         <div
           className="admin-filter-bar"
-          role="tablist"
+          role="group"
           aria-label="Review filters"
         >
           {filters.map((entry) => (

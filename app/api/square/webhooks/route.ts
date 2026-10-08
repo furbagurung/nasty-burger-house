@@ -1,8 +1,5 @@
 import { squareRequest } from "../../../lib/square/api";
-import {
-  accumulateSquareLoyaltyPoints,
-  ensureSquareSignupBonus,
-} from "../../../lib/square/loyalty";
+import { accumulateSquareLoyaltyPoints } from "../../../lib/square/loyalty";
 import { validateSquareWebhookSignature } from "../../../lib/square/webhooks";
 
 type SquareWebhookEvent = {
@@ -111,27 +108,11 @@ export async function POST(request: Request) {
     );
   }
 
-  if (event.type === "loyalty.account.created") {
-    const loyaltyAccountId =
-      event.data?.object?.loyalty_account?.id ?? event.data?.id ?? "";
-
-    if (loyaltyAccountId) {
-      try {
-        const bonus = await ensureSquareSignupBonus(loyaltyAccountId);
-        console.info("[NBH Square loyalty signup bonus]", {
-          eventId: event.event_id ?? null,
-          loyaltyAccountId,
-          applied: bonus.applied,
-        });
-      } catch (error) {
-        console.error("[NBH Square loyalty signup bonus]", error);
-        return Response.json(
-          { ok: false, error: "Could not apply Square Loyalty signup bonus." },
-          { status: 500 },
-        );
-      }
-    }
-  }
+  // Do not award signup points from loyalty.account.created webhooks:
+  // Square also emits this event when members enroll in person at the POS.
+  // Website checkout/auth flows grant the one-time bonus only when they
+  // themselves create a genuinely new loyalty account. Existing members
+  // must retain their current balance without receiving an extra 500.
 
   try {
     await accrueCompletedOrder(event);

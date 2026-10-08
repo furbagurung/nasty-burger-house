@@ -105,7 +105,9 @@ export async function GET() {
         requestId: `nbh-loyalty-${user.id}`,
       });
 
-    const bonus = await ensureSquareSignupBonus(initialLoyaltyAccount.id);
+    const bonus = await ensureSquareSignupBonus(initialLoyaltyAccount.id, {
+      newlyCreated: created,
+    });
     const loyaltyAccount =
       (await findSquareLoyaltyAccountByCustomerId(squareCustomer.id)) ??
       initialLoyaltyAccount;

@@ -12,6 +12,7 @@ import { isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import GoogleAuthButton from "./google-auth-button";
 import MobileBottomNav from "./mobile-bottom-nav";
 import PasswordInput from "./password-input";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 export default function AccountCreatePage() {
   const router = useRouter();
@@ -135,7 +136,7 @@ export default function AccountCreatePage() {
             </p>
             <div className="account-auth-benefits">
               <span>
-                <strong>500</strong> signup Drip Points
+                <strong>500</strong> points for new loyalty members
               </span>
               <span>Order history</span>
               <span>Faster checkout</span>
@@ -150,9 +151,9 @@ export default function AccountCreatePage() {
                 If the details can be registered, a confirmation link will be sent to{" "}
                 <strong>{email}</strong>.
               </p>
-              <Link className="standalone-primary-button" href="/account/sign-in">
+              <ButtonWithIcon href="/account/sign-in" tone="red">
                 Go to sign in
-              </Link>
+              </ButtonWithIcon>
             </div>
           ) : (
             <form className="account-auth-form" onSubmit={submit}>
@@ -226,15 +227,11 @@ export default function AccountCreatePage() {
                   {error}
                 </p>
               )}
-              <button
-                className="standalone-primary-button"
-                type="submit"
-                disabled={submitting}
-              >
+              <ButtonWithIcon tone="red" type="submit" disabled={submitting}>
                 {submitting
                   ? "Creating account…"
-                  : "Create account + get 500 points"}
-              </button>
+                  : "Create account"}
+              </ButtonWithIcon>
               <p className="account-auth-switch">
                 Already have an account?{" "}
                 <Link href="/account/sign-in">Sign in</Link>

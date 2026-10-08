@@ -1,14 +1,14 @@
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bowlby_One_SC, DM_Sans, Geist_Mono } from "next/font/google";
 
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import ClosureAnnouncement from "./components/closure-announcement";
 import CookieSettings from "./components/cookie-settings";
+import ErrorMonitorClient from "./components/error-monitor-client";
 import FindStyleNavigation from "./components/find-style-navigation";
 import FooterLegalLinks from "./components/footer-legal-links";
 import HomeTopHeader from "./components/home-top-header";
+import ImageDragGuard from "./components/image-drag-guard";
 import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
 import MobileHomeLocation from "./components/mobile-home-location";
@@ -64,6 +64,7 @@ import "./admin-customers.css";
 import "./admin-notification-ui.css";
 import "./mobile-header-always-dark.css";
 import "./homepage-spacing-tight.css";
+import "./homepage-popular-picks.css";
 import "./find-style-navigation.css";
 import "./menu-mobile-header-polish.css";
 import "./menu-mobile-layout.css";
@@ -78,10 +79,22 @@ import "./account-saas-persistent.css";
 import "./account-skeleton.css";
 import "./account-skeleton-sidebar.css";
 import "./drip-points-dashboard.css";
+import "./brand-typography.css";
+import "./brand-cta.css";
+import "./landing-promo-modal.css";
+import "./home-menu-categories.css";
+import "./home-beast-boxes.css";
+import "./admin-modern.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
+});
+
+const bowlbyOneSC = Bowlby_One_SC({
+  variable: "--font-bowlby-one-sc",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 const geistMono = Geist_Mono({
@@ -99,13 +112,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${bowlbyOneSC.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body>
         <HomeTopHeader />
         <ClosureAnnouncement />
         <MobileHomeLocation />
         <FindStyleNavigation />
+        <ImageDragGuard />
+        <ErrorMonitorClient />
 
         {children}
 
@@ -116,8 +131,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <CookieSettings />
         <ToastProvider />
 
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );

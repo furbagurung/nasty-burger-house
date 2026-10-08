@@ -1,4 +1,6 @@
+import { after } from "next/server";
 import { sendAdminOrderEmail } from "../../lib/admin-notifications";
+import { reportAdminError } from "../../lib/error-monitoring";
 import { consumeRateLimit, requestIp } from "../../lib/rate-limit";
 import { validateOrderPayload } from "../../lib/order";
 import {
@@ -61,24 +63,28 @@ export async function POST(request: Request) {
     });
 
     if (!rateLimit.ok) {
-      return Response.json(
-        {
-          ok: false,
-          errors: [
-            rateLimit.status === 429
-              ? "Too many checkout attempts. Please try again shortly."
-              : "Checkout is temporarily unavailable. Please try again.",
-          ],
-        },
-        {
-          status: rateLimit.status,
-          headers: rateLimit.retryAfter
-            ? {
-                "Retry-After": String(rateLimit.retryAfter),
-                "Cache-Control": "no-store",
-              }
-            : { "Cache-Control": "no-store" },
-        },
+      if (rateLimit.status === 429) {
+        return Response.json(
+          {
+            ok: false,
+            errors: ["Too many checkout attempts. Please try again shortly."],
+          },
+          {
+            status: 429,
+            headers: rateLimit.retryAfter
+              ? {
+                  "Retry-After": String(rateLimit.retryAfter),
+                  "Cache-Control": "no-store",
+                }
+              : { "Cache-Control": "no-store" },
+          },
+        );
+      }
+
+      // Checkout is revenue-critical. If the rate-limit backend is temporarily
+      // unavailable, fail open here rather than blocking Square payment.
+      console.warn(
+        "[NBH checkout] Rate limiter unavailable; continuing checkout.",
       );
     }
   }
@@ -96,6 +102,19 @@ export async function POST(request: Request) {
 
   const squareState = squareConfigurationState();
   if (!squareState.configured) {
+    after(() =>
+      reportAdminError(new Error("Square checkout is not configured."), {
+        source: "checkout",
+        path: "/api/orders",
+        method: "POST",
+        routePath: "/api/orders",
+        routeType: "route",
+        metadata: {
+          squareConfigured: false,
+        },
+      }),
+    );
+
     return Response.json(
       {
         ok: false,
@@ -155,13 +174,18 @@ export async function POST(request: Request) {
       requestId: validation.order.requestId,
     });
 
-    const { account: loyaltyAccount } = await findOrCreateSquareLoyaltyAccount({
-      customerId: customer.id,
-      phone: customer.phone,
-      requestId: `nbh-checkout-loyalty-${validation.order.requestId}`,
-    });
+    const { account: loyaltyAccount, created: loyaltyCreated } =
+      await findOrCreateSquareLoyaltyAccount({
+        customerId: customer.id,
+        phone: customer.phone,
+        requestId: `nbh-checkout-loyalty-${validation.order.requestId}`,
+      });
 
-    await ensureSquareSignupBonus(loyaltyAccount.id);
+    // Existing Square loyalty members already have their welcome balance.
+    // Never award another 500 points when they place a website order.
+    await ensureSquareSignupBonus(loyaltyAccount.id, {
+      newlyCreated: loyaltyCreated,
+    });
 
     const checkout = await createSquareCheckout(
       orderPayload,
@@ -210,6 +234,22 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error("[NBH Square checkout failed]", error);
+
+    after(() =>
+      reportAdminError(error, {
+        source: "checkout",
+        path: "/api/orders",
+        method: "POST",
+        routePath: "/api/orders",
+        routeType: "route",
+        metadata: {
+          orderId,
+          requestId: validation.order.requestId,
+          squareStatus:
+            error instanceof SquareApiError ? error.status : undefined,
+        },
+      }),
+    );
 
     const status =
       error instanceof SquareApiError && error.status >= 400 && error.status < 500

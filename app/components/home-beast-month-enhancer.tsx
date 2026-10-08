@@ -2,8 +2,7 @@
 
 import { useEffect } from "react";
 
-const COMING_SOON_DESCRIPTION =
-  "A new limited-time Beast is being cooked up. Watch this space — the next Beast of the Month is coming soon.";
+const COMING_SOON_DESCRIPTION = "New Beast coming soon.";
 const MONTHLY_HERO_IMAGE = "/images/hero-slider/hero-1.jpg";
 
 function setText(node: HTMLElement | null, value: string) {

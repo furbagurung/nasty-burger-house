@@ -800,3 +800,11 @@
     padding: 0.95rem;
   }
 }
+
+
+/* Hide the global utility footer only on the mobile Drip Points page. */
+@media (max-width: 680px) {
+  body:has(.drip-page--dashboard-v2) > .utility-footer {
+    display: none !important;
+  }
+}

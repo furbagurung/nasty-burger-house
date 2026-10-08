@@ -12,6 +12,7 @@ import type { CustomerOrder, CustomerReview } from "../lib/customer-store";
 import AccountDashboardSkeleton from "./account-dashboard-skeleton";
 import MobileBottomNav from "./mobile-bottom-nav";
 import ReviewStories from "./review-stories";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 type PublicReview = {
   id: string;
@@ -316,12 +317,12 @@ export default function ReviewsPage() {
               <p>
                 This keeps ratings connected to real Nasty Burger House customers.
               </p>
-              <Link
-                className="standalone-primary-button"
+              <ButtonWithIcon
+                tone="red"
                 href={signedIn ? "/account/orders" : "/account/sign-in?return=/reviews"}
               >
                 {signedIn ? "View order history" : "Sign in"}
-              </Link>
+              </ButtonWithIcon>
             </section>
           ) : (
             <div className="reviews-layout">
@@ -393,13 +394,13 @@ export default function ReviewsPage() {
 
                 <div className="review-form__footer">
                   <span>{message.length}/1000</span>
-                  <button
-                    className="standalone-primary-button"
+                  <ButtonWithIcon
+                    tone="red"
                     type="submit"
                     disabled={submitting}
                   >
                     {submitting ? "Submitting…" : "Submit review"}
-                  </button>
+                  </ButtonWithIcon>
                 </div>
 
                 {saved && (

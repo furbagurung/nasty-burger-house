@@ -22,6 +22,11 @@
       visibility 180ms ease !important;
   }
 
+  .product-page-shell > .catalogue-header.is-mobile-scroll-hidden {
+    transform: translateY(calc(-100% - 2px)) !important;
+    pointer-events: none !important;
+  }
+
   /* Keep the customization, drink and Beast Box drawers visually full-screen.
      Their backdrop is rendered as a direct child of the product shell, so the
      header can hide only while one of those drawers is actually open. */
@@ -118,5 +123,24 @@
 @media (prefers-reduced-motion: reduce) {
   .product-page-shell > .catalogue-header {
     transition: none !important;
+  }
+}
+
+/* Product detail pages use breadcrumb + bottom navigation on mobile. */
+@media (max-width: 680px) {
+  .product-page-shell > .catalogue-header,
+  .product-page-shell > .catalogue-header.is-mobile-scroll-hidden {
+    display: none !important;
+  }
+}
+
+/* The location and hamburger are mounted at document level, outside the
+   catalogue header. Hide them too on mobile single-product pages. */
+@media (max-width: 680px) {
+  body:has(.product-page-shell) > .mobile-home-location,
+  body:has(.product-page-shell) > .nasty-find-burger,
+  body:has(.product-page-shell) .product-page-shell > .mobile-home-location,
+  body:has(.product-page-shell) .product-page-shell > .nasty-find-burger {
+    display: none !important;
   }
 }

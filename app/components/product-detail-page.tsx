@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { drawerMotion } from "../lib/drawer-motion";
 import { FooterUtilityLinks } from "./footer-legal-links";
 import Link from "next/link";
 import {
@@ -10,7 +12,7 @@ import {
   ShoppingBag,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   adultDrinkChoices,
   comboUpgradePrice,
@@ -24,7 +26,7 @@ import { findMenuPageCategory } from "../data/menu-pages";
 import type { CartLine } from "../lib/order";
 import CatalogueMobileMenu from "./catalogue-mobile-menu";
 import MenuItemMedia from "./menu-item-media";
-import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 type ProductDetailPageProps = {
   item: MenuItem;
@@ -127,6 +129,9 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
   const category = findMenuPageCategory(item.category);
   const [quantity, setQuantity] = useState(1);
   const [isCombo, setIsCombo] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const transitions = drawerMotion(reducedMotion !== false);
+  const press = reducedMotion !== false ? undefined : { scale: 0.97 };
   const [drink, setDrink] = useState("");
   const [isDrinkDrawerOpen, setIsDrinkDrawerOpen] = useState(false);
   const [isExtrasDrawerOpen, setIsExtrasDrawerOpen] = useState(false);
@@ -137,6 +142,26 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
   const [boxDrinks, setBoxDrinks] = useState<string[]>([]);
   const [selectionError, setSelectionError] = useState("");
   const [addedToCart, setAddedToCart] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const updateCount = () => {
+      setCartCount(
+        readStoredCart().reduce(
+          (sum, line) => sum + (Number.isFinite(line.quantity) ? Math.max(0, line.quantity) : 0),
+          0,
+        ),
+      );
+    };
+
+    updateCount();
+    window.addEventListener("nasty-cart-updated", updateCount);
+    window.addEventListener("storage", updateCount);
+    return () => {
+      window.removeEventListener("nasty-cart-updated", updateCount);
+      window.removeEventListener("storage", updateCount);
+    };
+  }, []);
 
   const availableModifiers = modifierChoices.filter((modifier) =>
     item.modifierIds?.includes(modifier.id),
@@ -175,13 +200,11 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
     };
   }, [isDrinkDrawerOpen, isExtrasDrawerOpen, isBoxDrawerOpen]);
 
-  const unitPrice = useMemo(() => {
-    const extras = addOnModifiers.reduce(
-      (total, modifier) => total + modifier.price * (modifierQuantities[modifier.id] ?? 0),
-      0,
-    );
-    return item.price + extras + (isCombo ? comboUpgradePrice : 0);
-  }, [addOnModifiers, isCombo, item.price, modifierQuantities]);
+  const extrasPrice = addOnModifiers.reduce(
+    (total, modifier) => total + modifier.price * (modifierQuantities[modifier.id] ?? 0),
+    0,
+  );
+  const unitPrice = item.price + extrasPrice + (isCombo ? comboUpgradePrice : 0);
 
   const totalPrice = unitPrice * quantity;
   const selectedExtrasCount = addOnModifiers.reduce(
@@ -335,6 +358,16 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
       </header>
 
       <main className="product-detail product-detail--premium">
+        <div className="product-mobile-topbar">
+          <Link className="product-mobile-back" href={`/menu/${item.category}`} aria-label="Back to menu">
+            <span aria-hidden="true">←</span>
+          </Link>
+          <strong>Details</strong>
+          <Link className="product-mobile-cart" href="/?cart=1" aria-label={`View cart, ${cartCount} items`}>
+            <ShoppingBag size={19} strokeWidth={1.8} aria-hidden="true" />
+            {cartCount > 0 && <span className="product-mobile-cart-count" aria-hidden="true">{cartCount > 99 ? "99+" : cartCount}</span>}
+          </Link>
+        </div>
         <nav className="product-breadcrumb" aria-label="Breadcrumb">
           <Link href="/">Home</Link>
           <span aria-hidden="true">/</span>
@@ -348,7 +381,12 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
         <div className="product-detail__layout product-detail__layout--premium">
           <section className="product-detail__visual" aria-label={`${item.name} image`}>
             <div className="product-detail__media product-detail__media--premium">
-              <MenuItemMedia item={item} sizes="(max-width: 900px) 100vw, 54vw" priority />
+              <MenuItemMedia
+                item={item}
+                sizes="(max-width: 900px) 100vw, 54vw"
+                priority
+                fit="contain"
+              />
             </div>
             <div className="product-detail__visual-note">
               <span>{category?.label ?? "Nasty Burger House"}</span>
@@ -360,7 +398,28 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             <div className="product-detail__heading-row">
               <div>
                 <p className="eyebrow">{category?.label ?? "Nasty Burger House menu"}</p>
-                <h1 id="product-title">{item.name}</h1>
+                <div className="product-mobile-title-line">
+                  <h1 id="product-title">{item.name}</h1>
+                  {item.dietaryTags && item.dietaryTags.length > 0 && (
+                    <div className="product-mobile-title-tags" aria-label="Dietary information">
+                      {item.dietaryTags.map((tag) => (
+                        <span key={tag}>
+                          {tag === "Halal" ? (
+                            <Image src="/images/Halal_logo.svg" alt="" width={19} height={19} aria-hidden="true" />
+                          ) : tag === "Vegetarian" ? (
+                            <Image src="/images/veg-icon.png" alt="" width={19} height={19} aria-hidden="true" />
+                          ) : (
+                            <Check size={14} aria-hidden="true" />
+                          )}
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="product-mobile-description-card product-description--desktop">
+                      <p className="product-detail__description">{item.description}</p>
+                </div>
                 <p className="product-detail__price">
                   {money.format(item.price)}
                   {item.priceConfirmed === false && <small>Provisional</small>}
@@ -368,15 +427,31 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               </div>
             </div>
 
-            <p className="product-detail__description">{item.description}</p>
-
             {item.dietaryTags && item.dietaryTags.length > 0 && (
               <div className="product-detail__tags" aria-label="Dietary information">
                 {item.dietaryTags.map((tag) => (
-                  <span key={tag}><Check size={14} aria-hidden="true" />{tag}</span>
+                  <span key={tag} className={tag === "Halal" ? "product-detail__tag--halal" : undefined}>
+                    {tag === "Halal" ? (
+                      <Image src="/images/Halal_logo.svg" alt="" width={19} height={19} aria-hidden="true" />
+                    ) : tag === "Vegetarian" ? (
+                      <Image src="/images/veg-icon.png" alt="" width={19} height={19} className="product-detail__veg-icon" aria-hidden="true" />
+                    ) : (
+                      <Check size={14} aria-hidden="true" />
+                    )}
+                    {tag}
+                  </span>
                 ))}
               </div>
             )}
+
+            {(item.dietaryTags?.includes("Halal") || item.category === "beast-boxes") &&
+              !item.dietaryTags?.includes("Vegetarian") && (
+                <p className="product-detail__halal-note">ALL BURGERS MADE WITH 100% HALAL MEAT</p>
+              )}
+
+            <div className="product-mobile-description-card product-description--mobile">
+              <p className="product-detail__description">{item.description}</p>
+            </div>
 
             {item.canUpgrade && (
               <section className="product-custom-section">
@@ -384,7 +459,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                   <div><span>01</span><h2>Upgrade to the Beast Combo</h2></div>
                   <strong>+{money.format(comboUpgradePrice)}</strong>
                 </div>
-                <button
+                <motion.button tabIndex={0} whileTap={press}
                   className={`product-choice-card${isCombo ? " is-selected" : ""}`}
                   type="button"
                   onClick={toggleCombo}
@@ -394,18 +469,30 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                     <Image
                       src="/images/bag.webp"
                       alt=""
-                      width={48}
-                      height={48}
+                      width={192}
+                      height={192}
+                      quality={100}
                       onError={(event) => {
                         event.currentTarget.style.display = "none";
                       }}
                     />
                   </span>
-                  <span><strong>Add Nasty Fries + drink</strong><small>Upgrade to Beast Combo.</small></span>
-                </button>
+                  <span><strong>Add Nasty Fries + drink</strong></span>
+                </motion.button>
 
                 {isCombo && (
-                  <button
+                  <div className="product-combo-includes">
+                    <div className="product-combo-includes__fries">
+                      <span className="product-combo-drink-trigger__thumb" aria-hidden="true">
+                        <Image src="/images/final-menu-photo/nasty-fries-v2.jpg" alt="" width={80} height={80} />
+                      </span>
+                      <span className="product-combo-drink-trigger__copy">
+                        <small>Beast Combo side</small>
+                        <strong>Nasty Fries</strong>
+                      </span>
+                    </div>
+                    <span className="product-combo-includes__plus" aria-hidden="true">+</span>
+                  <motion.button tabIndex={0} whileTap={press}
                     className={`product-combo-drink-trigger${drink ? " has-selection" : ""}`}
                     type="button"
                     onClick={() => {
@@ -430,7 +517,8 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                     <span className="product-combo-drink-trigger__action">
                       {drink ? "Change" : "Choose"} →
                     </span>
-                  </button>
+                  </motion.button>
+                  </div>
                 )}
               </section>
             )}
@@ -440,32 +528,36 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                 <div className="product-custom-section__heading">
                   <div><span>01</span><h2>Build your Beast Box</h2></div>
                 </div>
-                <button className="product-extras-trigger" type="button" onClick={openBoxDrawer}>
+                <motion.button tabIndex={0} whileTap={press} className="product-extras-trigger" type="button" onClick={openBoxDrawer}>
                   Customize
-                </button>
+                </motion.button>
               </section>
             )}
 
             {!item.boxConfig && hasDrawerOptions && (
               <section className="product-custom-section product-custom-section--extras">
-                <button className="product-extras-trigger" type="button" onClick={openExtrasDrawer}>
+                <motion.button tabIndex={0} whileTap={press} className="product-extras-trigger" type="button" onClick={openExtrasDrawer}>
                   Customize your food
-                </button>
+                </motion.button>
               </section>
             )}
 
             <div className="product-purchase-panel">
               <div className="product-quantity" aria-label="Quantity selector">
-                <button type="button" onClick={() => setQuantity((current) => Math.max(1, current - 1))} disabled={quantity === 1} aria-label="Decrease quantity"><Minus size={17} /></button>
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setQuantity((current) => Math.max(1, current - 1))} disabled={quantity === 1} aria-label="Decrease quantity"><Minus size={17} /></motion.button>
                 <strong>{quantity}</strong>
-                <button type="button" onClick={() => setQuantity((current) => Math.min(20, current + 1))} disabled={quantity === 20} aria-label="Increase quantity"><Plus size={17} /></button>
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setQuantity((current) => Math.min(20, current + 1))} disabled={quantity === 20} aria-label="Increase quantity"><Plus size={17} /></motion.button>
               </div>
 
-              <button className={`product-add-button${addedToCart ? " is-added" : ""}`} type="button" onClick={addToCart}>
-                {addedToCart ? <Check size={19} /> : <ShoppingBag size={19} />}
-                <span>{addedToCart ? "Added to cart" : "Add to cart"}</span>
-                <strong>{money.format(totalPrice)}</strong>
-              </button>
+              <ButtonWithIcon
+                tone={addedToCart ? "dark" : "red"}
+                fullWidth
+                onClick={addToCart}
+              >
+                {addedToCart
+                  ? "Added to cart"
+                  : `Add to cart · ${money.format(totalPrice)}`}
+              </ButtonWithIcon>
             </div>
 
             {selectionError && <p className="product-selection-error" role="alert">{selectionError}</p>}
@@ -473,271 +565,280 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
             {addedToCart && (
               <div className="product-added-actions">
                 <span><Check size={16} /> Your item is in the cart.</span>
-                <Link href="/?cart=1">View cart</Link>
+                <ButtonWithIcon href="/?cart=1" tone="light">View cart</ButtonWithIcon>
               </div>
             )}
 
-            <p className="product-detail__notice">Pickup ordering. Final availability and preparation details are confirmed with your order.</p>
+
           </section>
         </div>
       </main>
 
-      {isDrinkDrawerOpen && (
-        <div className="product-drink-drawer-backdrop" role="presentation" onMouseDown={() => setIsDrinkDrawerOpen(false)}>
-          <aside className="product-drink-drawer" role="dialog" aria-modal="true" aria-labelledby="product-drink-drawer-title" onMouseDown={(event) => event.stopPropagation()}>
-            <div className="product-drink-drawer__header">
-              <div>
-                <p>Beast Combo</p>
-                <h2 id="product-drink-drawer-title">Choose your drink</h2>
+      <AnimatePresence>
+        {isDrinkDrawerOpen && (
+          <motion.div {...transitions.backdrop} key="isDrinkDrawerOpen" className="product-drink-drawer-backdrop" role="presentation" onMouseDown={() => setIsDrinkDrawerOpen(false)}>
+            <motion.aside {...transitions.panel} className="product-drink-drawer" role="dialog" aria-modal="true" aria-labelledby="product-drink-drawer-title" onMouseDown={(event) => event.stopPropagation()}>
+              <div className="product-drink-drawer__header">
+                <div>
+                  <p>Beast Combo</p>
+                  <h2 id="product-drink-drawer-title">Choose your drink</h2>
+                </div>
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setIsDrinkDrawerOpen(false)} aria-label="Close drink selection">
+                  <X size={22} />
+                </motion.button>
               </div>
-              <button type="button" onClick={() => setIsDrinkDrawerOpen(false)} aria-label="Close drink selection">
-                <X size={22} />
-              </button>
-            </div>
 
-            <div className="product-drink-drawer__options">
-              {drinks.map((choice) => {
-                const selected = drink === choice;
-                const choiceImage = drinkThumbnail(choice);
-                return (
-                  <button className={`product-drink-drawer__option${selected ? " is-selected" : ""}`} type="button" key={choice} onClick={() => chooseDrink(choice)} aria-pressed={selected}>
-                    <span className="product-drink-drawer__thumb" aria-hidden="true">
-                      {choiceImage ? (
-                        <Image src={choiceImage} alt="" width={68} height={68} />
-                      ) : (
-                        <span className="product-drink-placeholder">{drinkInitials(choice)}</span>
-                      )}
-                    </span>
-                    <span className="product-drink-drawer__copy">
-                      <strong>{choice}</strong>
-                      <small>Included with Beast Combo</small>
-                    </span>
-                    {selected && <Check size={19} aria-hidden="true" />}
-                  </button>
-                );
-              })}
-            </div>
-          </aside>
-        </div>
-      )}
-
-      {isExtrasDrawerOpen && (
-        <div className="product-drink-drawer-backdrop" role="presentation" onMouseDown={() => setIsExtrasDrawerOpen(false)}>
-          <aside className="product-drink-drawer product-extras-drawer" role="dialog" aria-modal="true" aria-labelledby="product-extras-drawer-title" onMouseDown={(event) => event.stopPropagation()}>
-            <div className="product-drink-drawer__header">
-              <div>
-                <p>Customize</p>
-                <h2 id="product-extras-drawer-title">Make it yours</h2>
+              <div className="product-drink-drawer__options">
+                {drinks.map((choice) => {
+                  const selected = drink === choice;
+                  const choiceImage = drinkThumbnail(choice);
+                  return (
+                    <motion.button tabIndex={0} whileTap={press} className={`product-drink-drawer__option${selected ? " is-selected" : ""}`} type="button" key={choice} onClick={() => chooseDrink(choice)} aria-pressed={selected}>
+                      <span className="product-drink-drawer__thumb" aria-hidden="true">
+                        {choiceImage ? (
+                          <Image src={choiceImage} alt="" width={68} height={68} />
+                        ) : (
+                          <span className="product-drink-placeholder">{drinkInitials(choice)}</span>
+                        )}
+                      </span>
+                      <span className="product-drink-drawer__copy">
+                        <strong>{choice}</strong>
+                        <small>Included with Beast Combo</small>
+                      </span>
+                      {selected && <Check size={19} aria-hidden="true" />}
+                    </motion.button>
+                  );
+                })}
               </div>
-              <button type="button" onClick={() => setIsExtrasDrawerOpen(false)} aria-label="Close customization drawer">
-                <X size={22} />
-              </button>
-            </div>
+            </motion.aside>
+          </motion.div>
+        )}
 
-            <div className="product-drink-drawer__options product-extras-drawer__options">
-              {removableIngredients.length > 0 && (
-                <section className="product-drawer-group" aria-labelledby="product-included-group-title">
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isExtrasDrawerOpen && (
+          <motion.div {...transitions.backdrop} key="isExtrasDrawerOpen" className="product-drink-drawer-backdrop" role="presentation" onMouseDown={() => setIsExtrasDrawerOpen(false)}>
+            <motion.aside {...transitions.panel} className="product-drink-drawer product-extras-drawer" role="dialog" aria-modal="true" aria-labelledby="product-extras-drawer-title" onMouseDown={(event) => event.stopPropagation()}>
+              <div className="product-drink-drawer__header">
+                <div>
+                  <p>Customize</p>
+                  <h2 id="product-extras-drawer-title">Make it yours</h2>
+                </div>
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setIsExtrasDrawerOpen(false)} aria-label="Close customization drawer">
+                  <X size={22} />
+                </motion.button>
+              </div>
+
+              <div className="product-drink-drawer__options product-extras-drawer__options">
+                {removableIngredients.length > 0 && (
+                  <section className="product-drawer-group" aria-labelledby="product-included-group-title">
+                    <div className="product-drawer-group__heading">
+                      <h3 id="product-included-group-title">What&apos;s included</h3>
+                      <p>Use − or + to remove an ingredient or add it back.</p>
+                    </div>
+                    <div className="product-drawer-group__list">
+                      {removableIngredients.map((ingredient) => {
+                        const removed = removedIngredients.includes(ingredient);
+                        const ingredientQuantity = removed ? 0 : 1;
+                        return (
+                          <div className={`product-ingredient-drawer__option${removed ? " is-removed" : ""}`} key={ingredient}>
+                            <span className="product-drink-drawer__thumb" aria-hidden="true">
+                              <Image src={ingredientThumbnail(ingredient, item)} alt="" width={68} height={68} />
+                            </span>
+                            <span className="product-drink-drawer__copy">
+                              <strong>{ingredient}</strong>
+                            </span>
+                            <div className="product-stepper product-extra-drawer__stepper">
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => toggleIngredient(ingredient)} disabled={removed} aria-label={`Remove ${ingredient}`}>
+                                <Minus size={15} />
+                              </motion.button>
+                              <strong>{ingredientQuantity}</strong>
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => toggleIngredient(ingredient)} disabled={!removed} aria-label={`Add back ${ingredient}`}>
+                                <Plus size={15} />
+                              </motion.button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+                )}
+
+                {foodAddOnModifiers.length > 0 && (
+                  <section className="product-drawer-group product-drawer-group--addons" aria-labelledby="product-addon-group-title">
+                    <div className="product-drawer-group__heading">
+                      <h3 id="product-addon-group-title">Add it on</h3>
+                      <p>Add something extra to build your perfect feed.</p>
+                    </div>
+                    <div className="product-drawer-group__list">
+                      {foodAddOnModifiers.map((modifier) => {
+                        const selectedQuantity = modifierQuantities[modifier.id] ?? 0;
+                        return (
+                          <div className={`product-extra-drawer__option${selectedQuantity > 0 ? " is-selected" : ""}`} key={modifier.id}>
+                            <span className="product-drink-drawer__thumb" aria-hidden="true">
+                              <Image src={modifierThumbnail(modifier.id, item)} alt="" width={68} height={68} />
+                            </span>
+                            <span className="product-drink-drawer__copy">
+                              <strong>{modifier.name}</strong>
+                              <small>+{money.format(modifier.price)} each</small>
+                            </span>
+                            <div className="product-stepper product-extra-drawer__stepper">
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={selectedQuantity === 0} aria-label={`Remove ${modifier.name}`}>
+                                <Minus size={15} />
+                              </motion.button>
+                              <strong>{selectedQuantity}</strong>
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, 1)} aria-label={`Add ${modifier.name}`}>
+                                <Plus size={15} />
+                              </motion.button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+                )}
+
+                {sauceAddOnModifiers.length > 0 && (
+                  <section className="product-drawer-group product-drawer-group--sauces" aria-labelledby="product-sauce-group-title">
+                    <div className="product-drawer-group__heading">
+                      <h3 id="product-sauce-group-title">Extra sauce</h3>
+                      <p>Pick your sauce and add as many extra portions as you like.</p>
+                    </div>
+                    <div className="product-drawer-group__list">
+                      {sauceAddOnModifiers.map((modifier) => {
+                        const selectedQuantity = modifierQuantities[modifier.id] ?? 0;
+                        return (
+                          <div className={`product-extra-drawer__option${selectedQuantity > 0 ? " is-selected" : ""}`} key={modifier.id}>
+                            <span className="product-drink-drawer__thumb" aria-hidden="true">
+                              <Image src={modifierThumbnail(modifier.id, item)} alt="" width={68} height={68} />
+                            </span>
+                            <span className="product-drink-drawer__copy">
+                              <strong>{modifier.name}</strong>
+                              <small>+{money.format(modifier.price)} each</small>
+                            </span>
+                            <div className="product-stepper product-extra-drawer__stepper">
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={selectedQuantity === 0} aria-label={`Remove ${modifier.name}`}>
+                                <Minus size={15} />
+                              </motion.button>
+                              <strong>{selectedQuantity}</strong>
+                              <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeModifier(modifier.id, 1)} aria-label={`Add ${modifier.name}`}>
+                                <Plus size={15} />
+                              </motion.button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+                )}
+              </div>
+
+              <div className="product-extras-drawer__footer">
+                <span>
+                  <small>
+                    {selectedExtrasCount} extra{selectedExtrasCount === 1 ? "" : "s"}
+                    {removedIngredientsCount > 0 ? ` · ${removedIngredientsCount} removed` : ""}
+                  </small>
+                  <strong>+{money.format(selectedExtrasPrice)}</strong>
+                </span>
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setIsExtrasDrawerOpen(false)}>Done</motion.button>
+              </div>
+            </motion.aside>
+          </motion.div>
+        )}
+
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isBoxDrawerOpen && item.boxConfig && (
+          <motion.div {...transitions.backdrop} key="isBoxDrawerOpen" className="product-drink-drawer-backdrop" role="presentation" onMouseDown={() => setIsBoxDrawerOpen(false)}>
+            <motion.aside {...transitions.panel} className="product-drink-drawer product-extras-drawer product-box-drawer" role="dialog" aria-modal="true" aria-labelledby="product-box-drawer-title" onMouseDown={(event) => event.stopPropagation()}>
+              <div className="product-drink-drawer__header">
+                <div>
+                  <p>Beast Box</p>
+                  <h2 id="product-box-drawer-title">Customize your Beast Box</h2>
+                </div>
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setIsBoxDrawerOpen(false)} aria-label="Close Beast Box customization">
+                  <X size={22} />
+                </motion.button>
+              </div>
+
+              <div className="product-drink-drawer__options product-extras-drawer__options">
+                <section className="product-drawer-group" aria-labelledby="product-box-burgers-title">
                   <div className="product-drawer-group__heading">
-                    <h3 id="product-included-group-title">What&apos;s included</h3>
-                    <p>Use − or + to remove an ingredient or add it back.</p>
+                    <h3 id="product-box-burgers-title">Choose your Beast Burgers</h3>
+                    <p>{boxBurgers.length} of {item.boxConfig!.burgerCount} selected.</p>
                   </div>
                   <div className="product-drawer-group__list">
-                    {removableIngredients.map((ingredient) => {
-                      const removed = removedIngredients.includes(ingredient);
-                      const ingredientQuantity = removed ? 0 : 1;
+                    {burgerChoices.map((burger) => {
+                      const selected = countSelection(boxBurgers, burger.id);
                       return (
-                        <div className={`product-ingredient-drawer__option${removed ? " is-removed" : ""}`} key={ingredient}>
+                        <div className={`product-extra-drawer__option${selected > 0 ? " is-selected" : ""}`} key={burger.id}>
                           <span className="product-drink-drawer__thumb" aria-hidden="true">
-                            <Image src={ingredientThumbnail(ingredient, item)} alt="" width={68} height={68} />
+                            <Image src={burger.image ?? "/images/menu/og-nasty.jpg"} alt="" width={68} height={68} />
                           </span>
                           <span className="product-drink-drawer__copy">
-                            <strong>{ingredient}</strong>
+                            <strong>{burger.name}</strong>
+                            <small>Included in your Beast Box</small>
                           </span>
                           <div className="product-stepper product-extra-drawer__stepper">
-                            <button type="button" onClick={() => toggleIngredient(ingredient)} disabled={removed} aria-label={`Remove ${ingredient}`}>
-                              <Minus size={15} />
-                            </button>
-                            <strong>{ingredientQuantity}</strong>
-                            <button type="button" onClick={() => toggleIngredient(ingredient)} disabled={!removed} aria-label={`Add back ${ingredient}`}>
-                              <Plus size={15} />
-                            </button>
+                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("burger", burger.id, -1)} disabled={selected === 0} aria-label={`Remove ${burger.name}`}><Minus size={15} /></motion.button>
+                            <strong>{selected}</strong>
+                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("burger", burger.id, 1)} disabled={boxBurgers.length >= item.boxConfig!.burgerCount} aria-label={`Add ${burger.name}`}><Plus size={15} /></motion.button>
                           </div>
                         </div>
                       );
                     })}
                   </div>
                 </section>
-              )}
 
-              {foodAddOnModifiers.length > 0 && (
-                <section className="product-drawer-group product-drawer-group--addons" aria-labelledby="product-addon-group-title">
+                <section className="product-drawer-group" aria-labelledby="product-box-drinks-title">
                   <div className="product-drawer-group__heading">
-                    <h3 id="product-addon-group-title">Add it on</h3>
-                    <p>Add something extra to build your perfect feed.</p>
+                    <h3 id="product-box-drinks-title">Choose your drinks</h3>
+                    <p>{boxDrinks.length} of {item.boxConfig!.drinkCount} selected.</p>
                   </div>
                   <div className="product-drawer-group__list">
-                    {foodAddOnModifiers.map((modifier) => {
-                      const selectedQuantity = modifierQuantities[modifier.id] ?? 0;
+                    {adultDrinkChoices.map((choice) => {
+                      const selected = countSelection(boxDrinks, choice);
+                      const choiceImage = drinkThumbnail(choice);
                       return (
-                        <div className={`product-extra-drawer__option${selectedQuantity > 0 ? " is-selected" : ""}`} key={modifier.id}>
+                        <div className={`product-extra-drawer__option${selected > 0 ? " is-selected" : ""}`} key={choice}>
                           <span className="product-drink-drawer__thumb" aria-hidden="true">
-                            <Image src={modifierThumbnail(modifier.id, item)} alt="" width={68} height={68} />
+                            {choiceImage ? (
+                              <Image src={choiceImage} alt="" width={68} height={68} />
+                            ) : (
+                              <span className="product-drink-placeholder">{drinkInitials(choice)}</span>
+                            )}
                           </span>
                           <span className="product-drink-drawer__copy">
-                            <strong>{modifier.name}</strong>
-                            <small>+{money.format(modifier.price)} each</small>
+                            <strong>{choice}</strong>
+                            <small>Included in your Beast Box</small>
                           </span>
                           <div className="product-stepper product-extra-drawer__stepper">
-                            <button type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={selectedQuantity === 0} aria-label={`Remove ${modifier.name}`}>
-                              <Minus size={15} />
-                            </button>
-                            <strong>{selectedQuantity}</strong>
-                            <button type="button" onClick={() => changeModifier(modifier.id, 1)} aria-label={`Add ${modifier.name}`}>
-                              <Plus size={15} />
-                            </button>
+                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("drink", choice, -1)} disabled={selected === 0} aria-label={`Remove ${choice}`}><Minus size={15} /></motion.button>
+                            <strong>{selected}</strong>
+                            <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => changeBoxSelection("drink", choice, 1)} disabled={boxDrinks.length >= item.boxConfig!.drinkCount} aria-label={`Add ${choice}`}><Plus size={15} /></motion.button>
                           </div>
                         </div>
                       );
                     })}
                   </div>
                 </section>
-              )}
-
-              {sauceAddOnModifiers.length > 0 && (
-                <section className="product-drawer-group product-drawer-group--sauces" aria-labelledby="product-sauce-group-title">
-                  <div className="product-drawer-group__heading">
-                    <h3 id="product-sauce-group-title">Extra sauce</h3>
-                    <p>Pick your sauce and add as many extra portions as you like.</p>
-                  </div>
-                  <div className="product-drawer-group__list">
-                    {sauceAddOnModifiers.map((modifier) => {
-                      const selectedQuantity = modifierQuantities[modifier.id] ?? 0;
-                      return (
-                        <div className={`product-extra-drawer__option${selectedQuantity > 0 ? " is-selected" : ""}`} key={modifier.id}>
-                          <span className="product-drink-drawer__thumb" aria-hidden="true">
-                            <Image src={modifierThumbnail(modifier.id, item)} alt="" width={68} height={68} />
-                          </span>
-                          <span className="product-drink-drawer__copy">
-                            <strong>{modifier.name}</strong>
-                            <small>+{money.format(modifier.price)} each</small>
-                          </span>
-                          <div className="product-stepper product-extra-drawer__stepper">
-                            <button type="button" onClick={() => changeModifier(modifier.id, -1)} disabled={selectedQuantity === 0} aria-label={`Remove ${modifier.name}`}>
-                              <Minus size={15} />
-                            </button>
-                            <strong>{selectedQuantity}</strong>
-                            <button type="button" onClick={() => changeModifier(modifier.id, 1)} aria-label={`Add ${modifier.name}`}>
-                              <Plus size={15} />
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </section>
-              )}
-            </div>
-
-            <div className="product-extras-drawer__footer">
-              <span>
-                <small>
-                  {selectedExtrasCount} extra{selectedExtrasCount === 1 ? "" : "s"}
-                  {removedIngredientsCount > 0 ? ` · ${removedIngredientsCount} removed` : ""}
-                </small>
-                <strong>+{money.format(selectedExtrasPrice)}</strong>
-              </span>
-              <button type="button" onClick={() => setIsExtrasDrawerOpen(false)}>Done</button>
-            </div>
-          </aside>
-        </div>
-      )}
-
-      {isBoxDrawerOpen && item.boxConfig && (
-        <div className="product-drink-drawer-backdrop" role="presentation" onMouseDown={() => setIsBoxDrawerOpen(false)}>
-          <aside className="product-drink-drawer product-extras-drawer product-box-drawer" role="dialog" aria-modal="true" aria-labelledby="product-box-drawer-title" onMouseDown={(event) => event.stopPropagation()}>
-            <div className="product-drink-drawer__header">
-              <div>
-                <p>Beast Box</p>
-                <h2 id="product-box-drawer-title">Customize your Beast Box</h2>
               </div>
-              <button type="button" onClick={() => setIsBoxDrawerOpen(false)} aria-label="Close Beast Box customization">
-                <X size={22} />
-              </button>
-            </div>
 
-            <div className="product-drink-drawer__options product-extras-drawer__options">
-              <section className="product-drawer-group" aria-labelledby="product-box-burgers-title">
-                <div className="product-drawer-group__heading">
-                  <h3 id="product-box-burgers-title">Choose your Beast Burgers</h3>
-                  <p>{boxBurgers.length} of {item.boxConfig!.burgerCount} selected.</p>
-                </div>
-                <div className="product-drawer-group__list">
-                  {burgerChoices.map((burger) => {
-                    const selected = countSelection(boxBurgers, burger.id);
-                    return (
-                      <div className={`product-extra-drawer__option${selected > 0 ? " is-selected" : ""}`} key={burger.id}>
-                        <span className="product-drink-drawer__thumb" aria-hidden="true">
-                          <Image src={burger.image ?? "/images/menu/og-nasty.jpg"} alt="" width={68} height={68} />
-                        </span>
-                        <span className="product-drink-drawer__copy">
-                          <strong>{burger.name}</strong>
-                          <small>Included in your Beast Box</small>
-                        </span>
-                        <div className="product-stepper product-extra-drawer__stepper">
-                          <button type="button" onClick={() => changeBoxSelection("burger", burger.id, -1)} disabled={selected === 0} aria-label={`Remove ${burger.name}`}><Minus size={15} /></button>
-                          <strong>{selected}</strong>
-                          <button type="button" onClick={() => changeBoxSelection("burger", burger.id, 1)} disabled={boxBurgers.length >= item.boxConfig!.burgerCount} aria-label={`Add ${burger.name}`}><Plus size={15} /></button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
+              <div className="product-extras-drawer__footer">
+                <span>
+                  <small>{boxBurgers.length}/{item.boxConfig!.burgerCount} burgers · {boxDrinks.length}/{item.boxConfig!.drinkCount} drinks</small>
+                  <strong>{money.format(item.price)}</strong>
+                </span>
+                <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setIsBoxDrawerOpen(false)}>Done</motion.button>
+              </div>
+            </motion.aside>
+          </motion.div>
+        )}
 
-              <section className="product-drawer-group" aria-labelledby="product-box-drinks-title">
-                <div className="product-drawer-group__heading">
-                  <h3 id="product-box-drinks-title">Choose your drinks</h3>
-                  <p>{boxDrinks.length} of {item.boxConfig!.drinkCount} selected.</p>
-                </div>
-                <div className="product-drawer-group__list">
-                  {adultDrinkChoices.map((choice) => {
-                    const selected = countSelection(boxDrinks, choice);
-                    const choiceImage = drinkThumbnail(choice);
-                    return (
-                      <div className={`product-extra-drawer__option${selected > 0 ? " is-selected" : ""}`} key={choice}>
-                        <span className="product-drink-drawer__thumb" aria-hidden="true">
-                          {choiceImage ? (
-                            <Image src={choiceImage} alt="" width={68} height={68} />
-                          ) : (
-                            <span className="product-drink-placeholder">{drinkInitials(choice)}</span>
-                          )}
-                        </span>
-                        <span className="product-drink-drawer__copy">
-                          <strong>{choice}</strong>
-                          <small>Included in your Beast Box</small>
-                        </span>
-                        <div className="product-stepper product-extra-drawer__stepper">
-                          <button type="button" onClick={() => changeBoxSelection("drink", choice, -1)} disabled={selected === 0} aria-label={`Remove ${choice}`}><Minus size={15} /></button>
-                          <strong>{selected}</strong>
-                          <button type="button" onClick={() => changeBoxSelection("drink", choice, 1)} disabled={boxDrinks.length >= item.boxConfig!.drinkCount} aria-label={`Add ${choice}`}><Plus size={15} /></button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            </div>
-
-            <div className="product-extras-drawer__footer">
-              <span>
-                <small>{boxBurgers.length}/{item.boxConfig!.burgerCount} burgers · {boxDrinks.length}/{item.boxConfig!.drinkCount} drinks</small>
-                <strong>{money.format(item.price)}</strong>
-              </span>
-              <button type="button" onClick={() => setIsBoxDrawerOpen(false)}>Done</button>
-            </div>
-          </aside>
-        </div>
-      )}
+      </AnimatePresence>
 
       <footer className="catalogue-footer product-detail__footer">
         <div>
@@ -754,7 +855,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
         <span className="footer-credit">Made with love by Furba Gurung</span>
       </footer>
 
-      <MobileBottomNav active="menu" />
+      {/* Single-product pages keep the purchase bar, without the mobile tab navigation. */}
     </div>
   );
 }

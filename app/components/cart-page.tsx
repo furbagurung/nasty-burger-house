@@ -11,6 +11,7 @@ import {
   type CartLine,
 } from "../lib/order";
 import MobileBottomNav from "./mobile-bottom-nav";
+import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
@@ -280,14 +281,13 @@ export default function CartPage() {
                 Pickup only. You&apos;ll pay when you collect your order.
               </p>
 
-              <Link className="cart-redesign-checkout" href="/checkout">
-                Continue to checkout
-                <span>{money.format(subtotal)}</span>
-              </Link>
+              <ButtonWithIcon href="/checkout" tone="red" fullWidth>
+                Continue to checkout · {money.format(subtotal)}
+              </ButtonWithIcon>
 
-              <Link className="cart-redesign-add-more" href="/menu/burgers">
-                + Add more items
-              </Link>
+              <ButtonWithIcon href="/menu/burgers" tone="light">
+                Add more items
+              </ButtonWithIcon>
             </aside>
           </div>
         )}

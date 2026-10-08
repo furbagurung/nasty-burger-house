@@ -1,0 +1,500 @@
+
+/* Nasty Burger House adaptation of Watermelon Auth10.
+   Scoped to Create Account only; Login's Auth5 remains untouched. */
+.standalone-page.nbh-signup-page {
+  background: #050505;
+  color: #f5f5f5;
+}
+
+.standalone-page.nbh-signup-page .standalone-main.nbh-auth-main {
+  width: 100%;
+  max-width: none;
+  min-height: 100svh;
+  margin: 0;
+  padding: 5.85rem 0 0;
+  background: #050505;
+}
+
+.nbh-signup-page .nbh-auth10 {
+  display: grid;
+  width: 100%;
+  min-height: calc(100svh - 5.85rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  color: #e8e8e8;
+  background: #050505;
+  color-scheme: dark;
+}
+
+.nbh-signup-page .nbh-auth10__visual {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-width: 0;
+  min-height: 46rem;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: clamp(2rem, 4vw, 4rem);
+  background: #1c110f;
+}
+
+.nbh-signup-page .nbh-auth10__visual-image {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center;
+}
+
+.nbh-signup-page .nbh-auth10__visual-overlay {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5, 5, 5, .34) 0%, rgba(5, 5, 5, .1) 35%, rgba(5, 5, 5, .88) 100%);
+}
+
+.nbh-signup-page .nbh-auth10__visual-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  color: #fff;
+  font-size: clamp(.95rem, 1.6vw, 1.2rem);
+  font-weight: 850;
+  letter-spacing: -.025em;
+}
+
+.nbh-signup-page .nbh-auth10__visual-brand img {
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
+}
+
+.nbh-signup-page .nbh-auth10__visual-copy {
+  display: grid;
+  gap: .95rem;
+  max-width: 34rem;
+  margin: 0 auto 1rem;
+  text-align: center;
+}
+
+.nbh-signup-page .nbh-auth10__visual-copy > p:first-child {
+  margin: 0;
+  color: #ffb6a2;
+  font-size: .72rem;
+  font-weight: 850;
+  letter-spacing: .14em;
+}
+
+.nbh-signup-page .nbh-auth10__visual-copy h2 {
+  display: grid;
+  gap: .2rem;
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-bowlby-one-sc), Impact, sans-serif;
+  font-size: clamp(2rem, 3.3vw, 3.6rem);
+  font-weight: 400;
+  letter-spacing: -.035em;
+  line-height: 1.13;
+}
+
+.nbh-signup-page .nbh-auth10__visual-copy > p:last-child {
+  margin: 0 auto;
+  max-width: 25rem;
+  color: rgba(255, 255, 255, .84);
+  font-size: .91rem;
+  line-height: 1.55;
+}
+
+.nbh-signup-page .nbh-auth10__form-side {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 4rem);
+  background: #050505;
+}
+
+.nbh-signup-page .nbh-auth10__form-content {
+  width: min(100%, 29rem);
+  min-width: 0;
+  margin-inline: auto;
+}
+
+.nbh-signup-page .nbh-auth10__heading {
+  margin-bottom: 1.75rem;
+}
+
+.nbh-signup-page .nbh-auth10__heading > p {
+  margin: 0 0 .6rem;
+  color: #fb6544;
+  font-size: .7rem;
+  font-weight: 850;
+  letter-spacing: .13em;
+}
+
+.nbh-signup-page .nbh-auth10__heading h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.8rem, 2.5vw, 2.35rem);
+  font-weight: 850;
+  letter-spacing: -.055em;
+  line-height: 1.12;
+}
+
+.nbh-signup-page .nbh-auth10__heading > span {
+  display: block;
+  margin-top: .65rem;
+  color: #a9a7a5;
+  font-size: .84rem;
+  line-height: 1.5;
+}
+
+.nbh-signup-page .nbh-auth10__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.nbh-signup-page .nbh-auth10__field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: .48rem;
+}
+
+.nbh-signup-page .nbh-auth10__field label {
+  color: #e6e5e4;
+  font-size: .81rem;
+  font-weight: 650;
+}
+
+.nbh-signup-page .nbh-auth10__field [data-slot="input"] {
+  width: 100%;
+  min-height: 3rem;
+  height: 3rem;
+  border: 1px solid #343434;
+  border-radius: .82rem;
+  padding: .7rem 1rem;
+  background: transparent;
+  color: #fff;
+  font-size: .9rem;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.nbh-signup-page .nbh-auth10__field [data-slot="input"]::placeholder {
+  color: #777;
+}
+
+.nbh-signup-page .nbh-auth10__field [data-slot="input"]:focus-visible {
+  border-color: #fb6544;
+  background: #101010;
+  outline: 0;
+  box-shadow: 0 0 0 2px rgba(251, 101, 68, .22);
+}
+
+.nbh-signup-page .nbh-auth10__password-wrap {
+  position: relative;
+}
+
+.nbh-signup-page .nbh-auth10__password-wrap [data-slot="input"] {
+  padding-right: 3.2rem;
+}
+
+.nbh-signup-page .nbh-auth10__password-wrap > button {
+  position: absolute;
+  top: 50%;
+  right: .4rem;
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  border: 0;
+  border-radius: .65rem;
+  background: transparent;
+  color: #aaa;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.nbh-signup-page .nbh-auth10__password-wrap > button:hover {
+  background: #242424;
+  color: #fff;
+}
+
+.nbh-signup-page .nbh-auth10__password-wrap > button:focus-visible {
+  outline: 2px solid #fb6544;
+  outline-offset: 1px;
+}
+
+.nbh-signup-page .nbh-auth10__password-wrap > button svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.nbh-signup-page .nbh-auth10__terms {
+  display: flex;
+  align-items: flex-start;
+  gap: .65rem;
+  margin-top: .2rem;
+}
+
+.nbh-signup-page .nbh-auth10__terms > input {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin-top: .1rem;
+  accent-color: #f04c2b;
+  cursor: pointer;
+}
+
+.nbh-signup-page .nbh-auth10__terms > label {
+  color: #aaa;
+  font-size: .78rem;
+  line-height: 1.5;
+}
+
+.nbh-signup-page .nbh-auth10__terms a,
+.nbh-signup-page .nbh-auth10__social-note a {
+  color: #f6f3f0;
+  text-decoration: underline;
+  text-underline-offset: .17rem;
+}
+
+.nbh-signup-page .nbh-auth10__terms a:hover,
+.nbh-signup-page .nbh-auth10__social-note a:hover {
+  color: #ff7857;
+}
+
+.nbh-signup-page .nbh-auth10__error {
+  margin: 0;
+  border: 1px solid #9a3d2a;
+  border-radius: .75rem;
+  padding: .75rem .9rem;
+  background: #321a15;
+  color: #ffbba9;
+  font-size: .81rem;
+  line-height: 1.45;
+}
+
+.nbh-signup-page .nbh-auth10__submit {
+  width: 100%;
+  min-height: 3.05rem;
+  margin-top: .4rem;
+  border: 0;
+  border-radius: .83rem;
+  background: #ec4425;
+  color: white;
+  font-size: .9rem;
+  font-weight: 750;
+  box-shadow: 0 7px 22px rgba(236, 68, 37, .15);
+}
+
+.nbh-signup-page .nbh-auth10__submit:hover:not(:disabled) {
+  background: #da3619;
+}
+
+.nbh-signup-page .nbh-auth10__submit:focus-visible,
+.nbh-signup-page .nbh-auth10__confirmation-link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.nbh-signup-page .nbh-auth10__divider {
+  display: flex;
+  align-items: center;
+  gap: .95rem;
+  margin: 1.45rem 0;
+  color: #777;
+  font-size: .83rem;
+  text-align: center;
+}
+
+.nbh-signup-page .nbh-auth10__divider::before,
+.nbh-signup-page .nbh-auth10__divider::after {
+  flex: 1;
+  height: 1px;
+  background: #333;
+  content: "";
+}
+
+.nbh-signup-page .nbh-auth10__social .account-google-button {
+  width: 100%;
+  min-height: 3rem;
+  border: 1px solid #444;
+  border-radius: .83rem;
+  background: transparent;
+  color: #f8f8f8;
+  font-size: .83rem;
+  font-weight: 670;
+}
+
+.nbh-signup-page .nbh-auth10__social .account-google-button:hover:not(:disabled) {
+  border-color: #777;
+  background: #171717;
+}
+
+.nbh-signup-page .nbh-auth10__social-note {
+  margin: .75rem 0 0;
+  color: #8c8c8c;
+  font-size: .7rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.nbh-signup-page .nbh-auth10__signin {
+  margin: 1.75rem 0 0;
+  color: #a5a5a5;
+  font-size: .82rem;
+  text-align: center;
+}
+
+.nbh-signup-page .nbh-auth10__signin a {
+  color: #ff7353;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.nbh-signup-page .nbh-auth10__signin a:hover,
+.nbh-signup-page .nbh-auth10__home a:hover {
+  text-decoration: underline;
+}
+
+.nbh-signup-page .nbh-auth10__home {
+  margin: 1.1rem 0 0;
+  text-align: center;
+}
+
+.nbh-signup-page .nbh-auth10__home a {
+  color: #999;
+  font-size: .77rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.nbh-signup-page .nbh-auth10__confirmation {
+  display: grid;
+  gap: 1.2rem;
+  margin-top: 2rem;
+  color: #dedede;
+}
+
+.nbh-signup-page .nbh-auth10__confirmation h2 {
+  margin: 0;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.nbh-signup-page .nbh-auth10__confirmation p {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #a9a9a9;
+  font-size: .91rem;
+  line-height: 1.6;
+}
+
+.nbh-signup-page .nbh-auth10__confirmation strong {
+  color: white;
+}
+
+.nbh-signup-page .nbh-auth10__confirmation-link {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 2.9rem;
+  align-items: center;
+  border-radius: .85rem;
+  padding: .6rem 1.3rem;
+  background: #ec4425;
+  color: white;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .standalone-page.nbh-signup-page .standalone-main.nbh-auth-main {
+    min-height: 100svh;
+    padding: 0;
+  }
+
+  .nbh-signup-page .nbh-auth10 {
+    display: flex;
+    min-height: 100svh;
+    flex-direction: column;
+  }
+
+  .nbh-signup-page .nbh-auth10__visual {
+    flex: 0 0 auto;
+    min-height: 10.5rem;
+    height: 10.5rem;
+    padding: .9rem 1.15rem;
+  }
+
+  .nbh-signup-page .nbh-auth10__visual-brand {
+    justify-content: flex-start;
+    gap: .5rem;
+    font-size: .86rem;
+  }
+
+  .nbh-signup-page .nbh-auth10__visual-brand img {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .nbh-signup-page .nbh-auth10__visual-copy {
+    width: 100%;
+    max-width: none;
+    gap: .25rem;
+    margin: 0;
+    text-align: left;
+  }
+
+  .nbh-signup-page .nbh-auth10__visual-copy > p:first-child,
+  .nbh-signup-page .nbh-auth10__visual-copy > p:last-child {
+    display: none;
+  }
+
+  .nbh-signup-page .nbh-auth10__visual-copy h2 {
+    gap: .05rem;
+    font-size: clamp(1.18rem, 4.6vw, 1.7rem);
+  }
+
+  .nbh-signup-page .nbh-auth10__form-side {
+    align-items: flex-start;
+    padding: 1.5rem 1.15rem max(2rem, env(safe-area-inset-bottom));
+  }
+
+  .nbh-signup-page .nbh-auth10__form-content {
+    max-width: 32rem;
+  }
+
+  .nbh-signup-page .nbh-auth10__heading {
+    margin-bottom: 1.25rem;
+  }
+
+  .nbh-signup-page .nbh-auth10__heading h1 {
+    font-size: clamp(1.75rem, 6vw, 2.15rem);
+  }
+
+  .nbh-signup-page .nbh-auth10__form {
+    gap: .9rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .nbh-signup-page .nbh-auth10__form-side {
+    padding-inline: .85rem;
+  }
+
+  .nbh-signup-page .nbh-auth10__visual {
+    min-height: 9rem;
+    height: 9rem;
+    padding-inline: .85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nbh-signup-page .nbh-auth10 *,
+  .nbh-signup-page .nbh-auth10 *::before,
+  .nbh-signup-page .nbh-auth10 *::after {
+    transition: none !important;
+  }
+}

@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import type { AdminTrafficAnalyticsData } from "@/app/lib/admin-traffic-analytics";
 import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
+import { CountryFlagIcon, ReferrerFavicon } from "./traffic-rank-icon";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -78,13 +79,16 @@ function compactNumber(value: number) {
 function RankedList({
   items,
   valueLabel,
+  iconType,
 }: {
   items: Array<{
     label: string;
     visitors: number;
     pageviews: number;
+    countryCode?: string;
   }>;
   valueLabel?: "visitors" | "pageviews";
+  iconType?: "referrer" | "country";
 }) {
   const metric = valueLabel ?? "pageviews";
   const maxValue = Math.max(1, ...items.map((item) => item[metric]));
@@ -102,7 +106,13 @@ function RankedList({
           </span>
           <div className="admin-traffic-ranked-copy">
             <div>
-              <strong title={item.label}>{item.label}</strong>
+              <div className="admin-traffic-ranked-heading">
+                {iconType === "referrer" && <ReferrerFavicon source={item.label} />}
+                {iconType === "country" && (
+                  <CountryFlagIcon countryCode={item.countryCode ?? ""} />
+                )}
+                <strong title={item.label}>{item.label}</strong>
+              </div>
               <span>
                 {item.visitors.toLocaleString("en-AU")} visitors ·{" "}
                 {item.pageviews.toLocaleString("en-AU")} views
@@ -392,6 +402,7 @@ export default function TrafficAnalyticsSection({
               </CardHeader>
               <CardContent>
                 <RankedList
+                  iconType="referrer"
                   valueLabel="visitors"
                   items={data.referrers.map((entry) => ({
                     label: entry.label,
@@ -411,9 +422,11 @@ export default function TrafficAnalyticsSection({
               </CardHeader>
               <CardContent>
                 <RankedList
+                  iconType="country"
                   valueLabel="visitors"
                   items={data.countries.map((entry) => ({
                     label: countryLabel(entry.code),
+                    countryCode: entry.code,
                     visitors: entry.visitors,
                     pageviews: entry.pageviews,
                   }))}

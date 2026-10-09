@@ -1701,3 +1701,52 @@
     display: none;
   }
 }
+
+
+/* Ranked traffic sources and country flags — same visual treatment in both themes. */
+.admin-traffic-dashboard .admin-traffic-ranked-heading {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-traffic-dashboard .admin-traffic-ranked-heading > strong {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.admin-traffic-dashboard .admin-traffic-list-icon {
+  display: inline-flex;
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: 0 0 1.65rem;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0.43rem;
+  background: var(--card);
+  color: var(--muted-foreground);
+}
+
+.admin-traffic-dashboard .admin-traffic-list-icon img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.admin-traffic-dashboard .admin-traffic-list-icon--flag {
+  width: 1.8rem;
+  height: 1.55rem;
+  flex-basis: 1.8rem;
+  border-radius: 0.36rem;
+}
+
+.dark .admin-modern .admin-traffic-list-icon {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-secondary);
+}

@@ -15,6 +15,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import SocialIcon from "./social-icons";
+import ThemeToggle from "./theme-toggle";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
@@ -231,6 +232,7 @@ export default function MobileBottomNav({ active, cartCount }: MobileBottomNavPr
               <Link href="/terms-and-conditions" onClick={() => setIsMoreOpen(false)}>
                 <AppIcon icon={File01Icon} /><span><strong>Terms &amp; Conditions</strong><small>Ordering and website terms</small></span>
               </Link>
+              <ThemeToggle showLabel className="nb-theme-toggle--mobile" />
               <button type="button" onClick={openCookieSettings}>
                 <AppIcon icon={Settings01Icon} /><span><strong>Cookie settings</strong><small>Review your privacy preferences</small></span>
               </button>

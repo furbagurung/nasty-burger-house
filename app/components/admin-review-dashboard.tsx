@@ -4,6 +4,9 @@ import { AdminWorkspaceHeader } from "./admin-workspace-header";
 import { AdminMetricCard } from "./admin-metric-card";
 import { ClipboardCheck, Clock3, Star, MessageSquareText } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import type { AdminReview, AdminReviewStatus } from "../lib/admin-reviews";
 
 const STORE_TIME_ZONE = "Australia/Sydney";
@@ -110,7 +113,7 @@ export default function AdminReviewDashboard({
           <AdminMetricCard label="Total reviews" value={reviews.length} icon={<MessageSquareText size={20} />} index={3} hint="All review statuses" />
         </section>
 
-        <section className="admin-review-guidance">
+        <Card className="admin-review-guidance">
           <div>
             <p>Moderation</p>
             <strong>Only publish genuine customer feedback.</strong>
@@ -119,7 +122,7 @@ export default function AdminReviewDashboard({
             Reviews are already tied to completed customer orders. Check the
             wording for spam, abuse or private information before publishing.
           </span>
-        </section>
+        </Card>
 
         <div
           className="admin-filter-bar"
@@ -127,17 +130,19 @@ export default function AdminReviewDashboard({
           aria-label="Review filters"
         >
           {filters.map((entry) => (
-            <button
+            <Button
+              variant={filter === entry.value ? "default" : "outline"}
               className={filter === entry.value ? "is-active" : ""}
               type="button"
               key={entry.value}
+              aria-pressed={filter === entry.value}
               onClick={() => setFilter(entry.value)}
             >
               {entry.label}
               {entry.value === "pending" && pendingCount > 0
                 ? " (" + pendingCount + ")"
                 : ""}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -155,7 +160,7 @@ export default function AdminReviewDashboard({
             </div>
           ) : (
             visibleReviews.map((review) => (
-              <article
+              <Card
                 className={
                   "admin-review-card admin-review-card--" + review.status
                 }
@@ -164,17 +169,18 @@ export default function AdminReviewDashboard({
                 <div className="admin-review-card__header">
                   <div>
                     <div className="admin-review-card__badges">
-                      <span
+                      <Badge
+                        variant="secondary"
                         className={
                           "admin-review-status admin-review-status--" +
                           review.status
                         }
                       >
                         {review.status}
-                      </span>
-                      <span className="admin-review-verified">
+                      </Badge>
+                      <Badge variant="outline" className="admin-review-verified">
                         Verified order
-                      </span>
+                      </Badge>
                     </div>
                     <h2>{review.customerName}</h2>
                     <p>
@@ -200,50 +206,54 @@ export default function AdminReviewDashboard({
 
                 <div className="admin-review-card__actions">
                   {review.status !== "published" && (
-                    <button
+                    <Button
+                      variant="default"
                       className="admin-primary-action"
                       type="button"
                       disabled={busyReviewId === review.id}
                       onClick={() => void updateStatus(review.id, "published")}
                     >
                       {busyReviewId === review.id ? "Updating…" : "Publish"}
-                    </button>
+                    </Button>
                   )}
 
                   {review.status !== "hidden" && (
-                    <button
+                    <Button
+                      variant="outline"
                       className="admin-secondary-action"
                       type="button"
                       disabled={busyReviewId === review.id}
                       onClick={() => void updateStatus(review.id, "hidden")}
                     >
                       Hide
-                    </button>
+                    </Button>
                   )}
 
                   {review.status !== "flagged" && (
-                    <button
+                    <Button
+                      variant="outline"
                       className="admin-secondary-action"
                       type="button"
                       disabled={busyReviewId === review.id}
                       onClick={() => void updateStatus(review.id, "flagged")}
                     >
                       Flag
-                    </button>
+                    </Button>
                   )}
 
                   {review.status !== "pending" && (
-                    <button
+                    <Button
+                      variant="outline"
                       className="admin-review-pending-action"
                       type="button"
                       disabled={busyReviewId === review.id}
                       onClick={() => void updateStatus(review.id, "pending")}
                     >
                       Move to pending
-                    </button>
+                    </Button>
                   )}
                 </div>
-              </article>
+              </Card>
             ))
           )}
         </section>

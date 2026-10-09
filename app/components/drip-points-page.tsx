@@ -275,6 +275,46 @@ export default function DripPointsPage() {
               </div>
             </section>
 
+            <section className="drip-dashboard-history">
+              <div className="drip-dashboard-section-heading drip-dashboard-section-heading--row">
+                <div>
+                  <p className="standalone-eyebrow">Activity</p>
+                  <h2>Website points history</h2>
+                  {squareLifetimePoints !== null && (
+                    <p>Available balance and lifetime points come directly from Square Loyalty.</p>
+                  )}
+                </div>
+                <Link href="/account">Account</Link>
+              </div>
+
+              {ledger.length === 0 ? (
+                <p className="drip-dashboard-history__empty">
+                  No Drip Points activity yet.
+                </p>
+              ) : (
+                <div className="drip-dashboard-history__list">
+                  {ledger.map((entry) => (
+                    <article key={entry.id}>
+                      <div>
+                        <strong>{entry.description}</strong>
+                        <span>
+                          {formatDate(entry.createdAt)}
+                          {entry.orderId ? ` · ${entry.orderId}` : ""}
+                          {entry.status && entry.status !== "available"
+                            ? ` · ${entry.status}`
+                            : ""}
+                        </span>
+                      </div>
+                      <b className={entry.points >= 0 ? "is-positive" : "is-negative"}>
+                        {entry.points >= 0 ? "+" : ""}
+                        {entry.points.toLocaleString()}
+                      </b>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
+
             <section className="drip-dashboard-stats" aria-label="Drip Points totals">
               <article>
                 <strong>{earnedPoints.toLocaleString()}</strong>
@@ -350,45 +390,7 @@ export default function DripPointsPage() {
               </div>
             </section>
 
-            <section className="drip-dashboard-history">
-              <div className="drip-dashboard-section-heading drip-dashboard-section-heading--row">
-                <div>
-                  <p className="standalone-eyebrow">Activity</p>
-                  <h2>Website points history</h2>
-                  {squareLifetimePoints !== null && (
-                    <p>Available balance and lifetime points come directly from Square Loyalty.</p>
-                  )}
-                </div>
-                <Link href="/account">Account</Link>
-              </div>
 
-              {ledger.length === 0 ? (
-                <p className="drip-dashboard-history__empty">
-                  No Drip Points activity yet.
-                </p>
-              ) : (
-                <div className="drip-dashboard-history__list">
-                  {ledger.map((entry) => (
-                    <article key={entry.id}>
-                      <div>
-                        <strong>{entry.description}</strong>
-                        <span>
-                          {formatDate(entry.createdAt)}
-                          {entry.orderId ? ` · ${entry.orderId}` : ""}
-                          {entry.status && entry.status !== "available"
-                            ? ` · ${entry.status}`
-                            : ""}
-                        </span>
-                      </div>
-                      <b className={entry.points >= 0 ? "is-positive" : "is-negative"}>
-                        {entry.points >= 0 ? "+" : ""}
-                        {entry.points.toLocaleString()}
-                      </b>
-                    </article>
-                  ))}
-                </div>
-              )}
-            </section>
           </>
         )}
       </main>

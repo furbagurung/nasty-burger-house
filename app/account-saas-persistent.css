@@ -543,3 +543,60 @@
     justify-content: center;
   }
 }
+
+
+/* Compact Account menu: Drip Points above matching Edit Profile, Orders,
+   Reviews and Change Password sections. Keep links on their existing routes. */
+.account-saas-route-content .account-saas-stats {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.account-saas-route-content .account-saas-stats .account-overview-card--drip {
+  grid-column: 1 / -1;
+}
+
+.account-saas-route-content .account-manage-card {
+  margin-top: 0.85rem;
+}
+
+.account-saas-route-content .account-manage-card__link {
+  display: inline-flex;
+  gap: 0.2rem;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.account-saas-route-content .account-manage-card__link:hover,
+.account-saas-route-content .account-manage-card__link:focus-visible {
+  border-color: #d7c8bf;
+  background: #faf7f4;
+}
+
+.account-saas-route-content .account-manage-card__form {
+  display: grid;
+  gap: 1.1rem;
+  min-width: 0;
+  margin-top: 1.05rem;
+  border-top: 1px solid #ede9e6;
+  padding-top: 1.05rem;
+}
+
+.account-saas-route-content .account-manage-card__form .account-form-grid {
+  min-width: 0;
+}
+
+.account-saas-route-content .account-manage-card__form .account-form-grid input {
+  min-width: 0;
+}
+
+@media (max-width: 680px) {
+  .account-saas-route-content .account-manage-card {
+    margin-top: 0.8rem;
+  }
+
+  .account-saas-route-content .account-manage-card__form .account-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

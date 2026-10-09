@@ -52,7 +52,7 @@ function OrdersSkeleton() {
   return (
     <>
       <HeadingSkeleton />
-      <div className="account-skeleton-order-list" aria-hidden="true">
+      <div className="account-skeleton-order-list account-skeleton-order-list--desktop" aria-hidden="true">
         {[0, 1, 2].map((item) => (
           <article className="account-skeleton-card account-skeleton-order-card" key={item}>
             <div className="account-skeleton-order-top">
@@ -70,6 +70,24 @@ function OrdersSkeleton() {
             <div className="account-skeleton-order-footer">
               <Shimmer className="account-skeleton-copy" />
               <Shimmer className="account-skeleton-points" />
+            </div>
+          </article>
+        ))}
+      </div>
+      <div className="account-skeleton-order-list account-skeleton-order-list--mobile" aria-hidden="true">
+        {[0, 1, 2].map((item) => (
+          <article className="account-skeleton-order-mobile-card" key={item}>
+            <div className="account-skeleton-order-mobile-merchant">
+              <Shimmer className="account-skeleton-order-mobile-name" />
+              <Shimmer className="account-skeleton-order-mobile-pickup" />
+            </div>
+            <div className="account-skeleton-order-mobile-details">
+              {[0, 1, 2, 3, 4].map((row) => (
+                <div className="account-skeleton-order-mobile-row" key={row}>
+                  <Shimmer className="account-skeleton-order-mobile-label" />
+                  <Shimmer className="account-skeleton-order-mobile-value" />
+                </div>
+              ))}
             </div>
           </article>
         ))}

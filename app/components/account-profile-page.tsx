@@ -227,7 +227,7 @@ export default function AccountProfilePage() {
             {mobileNumber ? (
               <span>{mobileNumber}</span>
             ) : (
-              <a href="#profile">Add mobile number</a>
+              <a href="#profile" onClick={() => setProfileOpen(true)}>Add mobile number</a>
             )}
           </p>
         </div>
@@ -243,10 +243,6 @@ export default function AccountProfilePage() {
         </Link>
       </section>
 
-      <section
-        className="account-dashboard-layout account-saas-dashboard-layout"
-        style={{ gridTemplateColumns: "minmax(0, 1fr)" }}
-      >
       <section id="profile" className="account-card account-security-card account-manage-card" aria-labelledby="account-profile-title">
         <div className="account-security__header">
           <span className="account-security__icon" aria-hidden="true">

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, CheckCircle2, ChevronLeft, CreditCard, ShieldCheck } from "lucide-react";
+import { AlertCircle, CheckCircle2, ChevronLeft, ShieldCheck } from "lucide-react";
 import { menuItems } from "../data/menu";
 import {
   calculateCartSubtotal,
@@ -19,6 +19,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { SiSquare } from "react-icons/si";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
@@ -524,18 +525,24 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                 </div>
               </CardHeader>
               <CardContent className="checkout-panel__content">
-                <div className="checkout-payment-card" role="group" aria-label="Selected payment method">
-                  <span className="checkout-payment-card__icon" aria-hidden="true">
-                    <CreditCard size={20} />
-                  </span>
-                  <div className="checkout-payment-card__details">
-                    <strong>Pay online securely with Square</strong>
-                    <span>Credit/debit card and eligible digital wallets</span>
+                <div className="checkout-payment-card" role="group" aria-label="Selected payment method: Square">
+                  <div className="checkout-payment-card__top">
+                    <span className="checkout-payment-card__icon" aria-hidden="true">
+                      <SiSquare size={27} />
+                    </span>
+                    <div className="checkout-payment-card__details">
+                      <strong>Pay securely with Square</strong>
+                      <span>Credit/debit cards and eligible digital wallets</span>
+                    </div>
+                    <Badge variant="secondary" className="checkout-payment-card__selected">
+                      <CheckCircle2 size={14} aria-hidden="true" />
+                      Selected
+                    </Badge>
                   </div>
-                  <Badge variant="secondary" className="checkout-payment-card__selected">
-                    <CheckCircle2 size={14} aria-hidden="true" />
-                    Selected
-                  </Badge>
+                  <p className="checkout-payment-card__note">
+                    <ShieldCheck size={15} aria-hidden="true" />
+                    <span>You'll complete payment securely on Square.</span>
+                  </p>
                 </div>
               </CardContent>
             </Card>

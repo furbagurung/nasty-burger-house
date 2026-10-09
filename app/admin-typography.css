@@ -133,24 +133,28 @@
 }
 
 /* New admin modules can opt into semantic type classes without raw sizes. */
-.admin-type-page {
+.admin-shell.admin-modern .admin-type-page,
+.admin-access-page .admin-type-page {
   font-size: var(--admin-type-page);
   font-weight: var(--admin-font-weight-semibold);
   line-height: var(--admin-leading-tight);
   letter-spacing: -0.025em;
 }
-.admin-type-section {
+.admin-shell.admin-modern .admin-type-section,
+.admin-access-page .admin-type-section {
   font-size: var(--admin-type-section);
   font-weight: var(--admin-font-weight-semibold);
   line-height: var(--admin-leading-tight);
   letter-spacing: -0.015em;
 }
-.admin-type-body {
+.admin-shell.admin-modern .admin-type-body,
+.admin-access-page .admin-type-body {
   font-size: var(--admin-type-body);
   font-weight: var(--admin-font-weight-regular);
   line-height: var(--admin-leading-body);
 }
-.admin-type-caption {
+.admin-shell.admin-modern .admin-type-caption,
+.admin-access-page .admin-type-caption {
   font-size: var(--admin-type-caption);
   font-weight: var(--admin-font-weight-medium);
   line-height: var(--admin-leading-data);

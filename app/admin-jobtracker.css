@@ -663,17 +663,7 @@
   padding: 0.75rem 1.1rem;
   border-color: #edf0f2;
 }
-.admin-modern .admin-customer-avatar {
-  width: 2.4rem;
-  height: 2.4rem;
-  background: #f2f3f5;
-  font-size: 0.86rem;
-}
 .admin-modern .admin-customer-identity strong { font-size: 0.79rem; }
-.admin-modern .admin-customer-identity a,
-.admin-modern .admin-customer-identity span:not(.admin-customer-avatar) {
-  font-size: 0.71rem;
-}
 .admin-modern .admin-customer-cell > strong { font-size: 0.77rem; }
 .admin-modern .admin-customer-row:hover { background: #fbfcfd; }
 

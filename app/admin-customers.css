@@ -166,11 +166,12 @@ body:has(.admin-customer-shell) > .home-top-header {
 .admin-customer-row {
   display: grid;
   grid-template-columns:
-    minmax(17rem, 2.2fr)
+    minmax(9rem, 1fr)
+    minmax(13rem, 1.4fr)
     minmax(9rem, 0.9fr)
-    minmax(8rem, 0.8fr)
     minmax(11rem, 1.05fr)
-    minmax(7rem, 0.6fr);
+    minmax(7rem, 0.65fr)
+    minmax(9rem, 0.8fr);
   align-items: center;
   gap: 0.8rem;
 }
@@ -210,33 +211,12 @@ body:has(.admin-customer-shell) > .home-top-header {
   align-items: center;
 }
 
-.admin-customer-identity > div {
-  display: grid;
-  min-width: 0;
-  gap: 0.14rem;
-}
-
 .admin-customer-identity strong {
   overflow: hidden;
   font-size: 0.88rem;
   font-weight: 900;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.admin-customer-identity a,
-.admin-customer-identity span {
-  overflow: hidden;
-  color: #6f6962;
-  font-size: 0.69rem;
-  font-weight: 650;
-  text-decoration: none;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.admin-customer-identity a:hover {
-  color: #e83b18;
 }
 
 .admin-customer-cell {
@@ -257,6 +237,27 @@ body:has(.admin-customer-shell) > .home-top-header {
 .admin-customer-cell > span:not(.admin-account-status):not(.admin-customer-source) {
   color: #8a847c;
   font-size: 0.64rem;
+}
+
+.admin-customer-contact a,
+.admin-customer-contact > span {
+  overflow: hidden;
+  color: #5f6671;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-customer-contact a:hover {
+  color: #ac3342;
+}
+
+.admin-customer-contact a:focus-visible {
+  border-radius: 0.2rem;
+  outline: 2px solid #ac3342;
+  outline-offset: 2px;
 }
 
 .admin-customer-source,

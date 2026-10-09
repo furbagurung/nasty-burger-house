@@ -13,16 +13,6 @@ import { Label } from "@/components/ui/label";
 
 const STORE_TIME_ZONE = "Australia/Sydney";
 
-function formatDate(value: string | null) {
-  if (!value) return "—";
-  return new Intl.DateTimeFormat("en-AU", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: STORE_TIME_ZONE,
-  }).format(new Date(value));
-}
-
 function formatDateTime(value: string | null) {
   if (!value) return "Never";
   return new Intl.DateTimeFormat("en-AU", {
@@ -204,11 +194,12 @@ export default function AdminCustomerDashboard({
 
       <Card className="admin-customer-table-wrap" aria-label="Customer directory">
         <div className="admin-customer-table-head" aria-hidden="true">
-          <span>Customer</span>
-          <span>Source</span>
-          <span>Joined</span>
+          <span>Name</span>
+          <span>Email</span>
+          <span>Phone</span>
           <span>Last activity</span>
-          <span>Orders</span>
+          <span>Drip Points</span>
+          <span>Source</span>
         </div>
 
         {visibleCustomers.length === 0 ? (
@@ -219,13 +210,12 @@ export default function AdminCustomerDashboard({
         ) : (
           <div className="admin-customer-list">
             {visibleCustomers.map((customer, index) => {
-              const joinedAt =
-                customer.source === "square"
-                  ? customer.squareEnrolledAt || customer.createdAt
-                  : customer.createdAt;
               const lastActivity = customer.websiteAccount
                 ? customer.lastSignInAt
                 : customer.updatedAt;
+              const dripPoints =
+                customer.squareDripPoints ??
+                (customer.websiteAccount ? customer.websiteDripPoints : null);
 
               return (
                 <motion.article
@@ -240,40 +230,24 @@ export default function AdminCustomerDashboard({
                     delay: Math.min(index, 12) * 0.018,
                   }}
                 >
-                  <div className="admin-customer-identity">
-                    <div>
-                      <strong>{customer.name}</strong>
-                      {customer.email ? (
-                        <a href={`mailto:${customer.email}`}>{customer.email}</a>
-                      ) : (
-                        <span>No email</span>
-                      )}
-                      {customer.phone ? (
-                        <a href={`tel:${customer.phone}`}>{customer.phone}</a>
-                      ) : (
-                        <span>No phone</span>
-                      )}
-                    </div>
+                  <div className="admin-customer-identity" data-label="Name">
+                    <strong>{customer.name}</strong>
                   </div>
 
-                  <div className="admin-customer-cell" data-label="Source">
-                    <Badge
-                      variant="secondary"
-                      className={`admin-customer-source ${sourceClass(customer)}`}
-                    >
-                      {sourceLabel(customer)}
-                    </Badge>
-                    {customer.websiteAccount && (
-                      <span>
-                        {customer.emailConfirmedAt
-                          ? "Email verified"
-                          : "Email pending"}
-                      </span>
+                  <div className="admin-customer-cell admin-customer-contact" data-label="Email">
+                    {customer.email ? (
+                      <a href={`mailto:${customer.email}`}>{customer.email}</a>
+                    ) : (
+                      <span>—</span>
                     )}
                   </div>
 
-                  <div className="admin-customer-cell" data-label="Joined">
-                    <strong>{formatDate(joinedAt)}</strong>
+                  <div className="admin-customer-cell admin-customer-contact" data-label="Phone">
+                    {customer.phone ? (
+                      <a href={`tel:${customer.phone}`}>{customer.phone}</a>
+                    ) : (
+                      <span>—</span>
+                    )}
                   </div>
 
                   <div className="admin-customer-cell" data-label="Last activity">
@@ -285,22 +259,21 @@ export default function AdminCustomerDashboard({
                     </span>
                   </div>
 
-                  <div className="admin-customer-cell" data-label="Orders">
-                    {customer.websiteAccount ? (
-                      <>
-                        <strong>{customer.orderCount}</strong>
-                        {customer.lastOrderAt ? (
-                          <span>Last {formatDate(customer.lastOrderAt)}</span>
-                        ) : (
-                          <span>No website orders</span>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <strong>—</strong>
-                        <span>Managed in Square</span>
-                      </>
-                    )}
+                  <div className="admin-customer-cell" data-label="Drip Points">
+                    <strong>
+                      {dripPoints === null
+                        ? "—"
+                        : dripPoints.toLocaleString("en-AU")}
+                    </strong>
+                  </div>
+
+                  <div className="admin-customer-cell" data-label="Source">
+                    <Badge
+                      variant="secondary"
+                      className={`admin-customer-source ${sourceClass(customer)}`}
+                    >
+                      {sourceLabel(customer)}
+                    </Badge>
                   </div>
                 </motion.article>
               );

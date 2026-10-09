@@ -253,7 +253,8 @@
 }
 .dark .admin-modern .admin-review-card__header p,
 .dark .admin-modern .admin-review-guidance span,
-.dark .admin-modern .admin-customer-identity a {
+.dark .admin-modern .admin-customer-contact a,
+.dark .admin-modern .admin-customer-contact > span {
   color: var(--nb-dark-text-secondary);
 }
 
@@ -497,10 +498,6 @@
 }
 .dark .admin-modern .admin-customer-row {
   background: var(--nb-dark-surface);
-}
-.dark .admin-modern .admin-customer-avatar {
-  background: var(--nb-dark-raised);
-  color: var(--nb-dark-text-primary);
 }
 .dark .admin-modern .admin-modern-metric {
   background: var(--nb-dark-surface) !important;

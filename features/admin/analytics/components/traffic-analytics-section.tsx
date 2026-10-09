@@ -98,12 +98,9 @@ function RankedList({
   }
 
   return (
-    <ol className="admin-traffic-ranked-list">
+    <ul className="admin-traffic-ranked-list">
       {items.map((item, index) => (
         <li key={item.label + "-" + index}>
-          <span className="admin-traffic-item-rank">
-            {String(index + 1).padStart(2, "0")}
-          </span>
           <div className="admin-traffic-ranked-copy">
             <div>
               <div className="admin-traffic-ranked-heading">
@@ -128,7 +125,7 @@ function RankedList({
           </div>
         </li>
       ))}
-    </ol>
+    </ul>
   );
 }
 

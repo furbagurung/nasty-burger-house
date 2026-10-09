@@ -562,9 +562,7 @@
 }
 
 .admin-traffic-ranked-list li {
-  display: grid;
-  grid-template-columns: 1.9rem minmax(0, 1fr);
-  gap: 0.7rem;
+  display: block;
   padding: 0.62rem 0;
   border-bottom: 1px solid var(--border);
 }
@@ -674,10 +672,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .admin-traffic-ranked-list li {
-    grid-template-columns: 1.55rem minmax(0, 1fr);
-    gap: 0.55rem;
-  }
 }
 
 @media (max-width: 360px) {
@@ -1509,8 +1503,6 @@
 }
 
 .admin-traffic-dashboard .admin-traffic-ranked-list li {
-  grid-template-columns: 1.8rem minmax(0, 1fr);
-  gap: 0.7rem;
   padding: 0.72rem 0;
   border-bottom: 1px solid var(--border);
 }
@@ -1522,25 +1514,6 @@
 .admin-traffic-dashboard .admin-traffic-ranked-list li:last-child {
   padding-bottom: 0;
   border-bottom: 0;
-}
-
-.admin-traffic-item-rank {
-  display: grid;
-  width: 1.75rem;
-  height: 1.75rem;
-  flex: 0 0 1.75rem;
-  place-items: center;
-  border-radius: 0.5rem;
-  background: var(--muted);
-  color: var(--muted-foreground);
-  font-size: 0.63rem;
-  font-weight: 750;
-  font-variant-numeric: tabular-nums;
-}
-
-.admin-traffic-ranked-list li:first-child .admin-traffic-item-rank {
-  background: color-mix(in srgb, var(--admin-traffic-accent) 11%, var(--card));
-  color: var(--admin-traffic-accent);
 }
 
 .admin-traffic-dashboard .admin-traffic-ranked-copy {

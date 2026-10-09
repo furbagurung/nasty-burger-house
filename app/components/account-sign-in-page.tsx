@@ -18,11 +18,11 @@ export default function AccountSignInPage() {
     setError("");
 
     const destination =
-      new URLSearchParams(window.location.search).get("return") ?? "/account";
+      new URLSearchParams(window.location.search).get("return") ?? "/";
     const safeDestination =
       destination.startsWith("/") && !destination.startsWith("//")
         ? destination
-        : "/account";
+        : "/";
 
     if (!productionAuth) {
       const profile = signInCustomerByEmail(identifier);

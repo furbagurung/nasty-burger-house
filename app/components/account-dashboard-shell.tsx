@@ -10,6 +10,7 @@ import {
   signOutCurrentCustomer,
 } from "../lib/customer-backend";
 import type { CustomerProfile } from "../lib/customer-store";
+import MobileBottomNav from "./mobile-bottom-nav";
 
 function initialsFor(name: string) {
   return (
@@ -187,6 +188,7 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
           {children}
         </section>
       </main>
+      <MobileBottomNav active="more" />
     </div>
   );
 }

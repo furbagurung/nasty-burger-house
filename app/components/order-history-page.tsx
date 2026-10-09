@@ -8,7 +8,6 @@ import {
 } from "../lib/customer-backend";
 import type { CustomerOrder } from "../lib/customer-store";
 import AccountDashboardSkeleton from "./account-dashboard-skeleton";
-import MobileBottomNav from "./mobile-bottom-nav";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 const money = new Intl.NumberFormat("en-US", {
@@ -120,7 +119,6 @@ export default function OrderHistoryPage() {
           </section>
         )}
       </main>
-      <MobileBottomNav active="more" />
     </div>
   );
 }

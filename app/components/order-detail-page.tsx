@@ -10,7 +10,6 @@ import {
   loadCustomerReviews,
 } from "../lib/customer-backend";
 import type { CustomerOrder, CustomerReview } from "../lib/customer-store";
-import MobileBottomNav from "./mobile-bottom-nav";
 import AccountDashboardSkeleton from "./account-dashboard-skeleton";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
@@ -91,8 +90,7 @@ export default function OrderDetailPage() {
             <ButtonWithIcon href="/account/orders" tone="red">Order history</ButtonWithIcon>
           </section>
         </main>
-        <MobileBottomNav active="more" />
-      </div>
+        </div>
     );
   }
 
@@ -186,7 +184,6 @@ export default function OrderDetailPage() {
           <ButtonWithIcon href="/menu/burgers" tone="red">Order again</ButtonWithIcon>
         </div>
       </main>
-      <MobileBottomNav active="more" />
     </div>
   );
 }

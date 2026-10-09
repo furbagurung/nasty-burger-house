@@ -1,9 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CircleCheck, ClipboardList, Link2, Search, Users } from "lucide-react";
+import { Search } from "lucide-react";
 import type { AdminCustomer } from "@/app/lib/admin-customers";
-import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -55,37 +54,6 @@ export default function AdminCustomerDashboard({
 
   return (
     <main className="admin-main admin-customer-main">
-      <section className="admin-summary-grid" aria-label="Customer summary">
-        <AdminMetricCard
-          label="Total customers"
-          value={customers.length}
-          icon={<Users size={20} />}
-          hint="Website and Square records"
-          index={0}
-        />
-        <AdminMetricCard
-          label="Website accounts"
-          value={websiteCount}
-          icon={<ClipboardList size={20} />}
-          hint="Signed up on the website"
-          index={1}
-        />
-        <AdminMetricCard
-          label="Square customers"
-          value={squareCount}
-          icon={<CircleCheck size={20} />}
-          hint="Available in Square"
-          index={2}
-        />
-        <AdminMetricCard
-          label="Linked accounts"
-          value={bothCount}
-          icon={<Link2 size={20} />}
-          hint="Matched across both"
-          index={3}
-        />
-      </section>
-
       <section
         className="admin-customer-toolbar"
         aria-label="Customer directory controls"

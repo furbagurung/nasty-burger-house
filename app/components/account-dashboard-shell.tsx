@@ -188,7 +188,7 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
           {children}
         </section>
       </main>
-      <MobileBottomNav active="more" />
+      {pathname === "/account" && <MobileBottomNav active="more" />}
     </div>
   );
 }

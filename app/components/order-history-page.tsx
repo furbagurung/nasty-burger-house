@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   loadCurrentCustomer,
@@ -91,28 +92,69 @@ export default function OrderHistoryPage() {
         ) : (
           <section className="order-history-list" aria-label="Past orders">
             {orders.map((order) => (
-              <Link className="order-history-card" href={`/account/orders/${encodeURIComponent(order.orderId)}`} key={order.orderId}>
-                <div className="order-history-card__top">
-                  <div>
-                    <span className={`order-status order-status--${order.status}`}>{order.status}</span>
-                    <h2>{order.orderId}</h2>
-                    <p>{formatDate(order.submittedAt)}</p>
+              <Link className="order-history-card" href={`/account/orders/${encodeURIComponent(order.orderId)}`} key={order.orderId} aria-label={`View order ${order.orderId}`}>
+                <div className="order-history-card__desktop">
+                  <div className="order-history-card__top">
+                    <div>
+                      <span className={`order-status order-status--${order.status}`}>{order.status}</span>
+                      <h2>{order.orderId}</h2>
+                      <p>{formatDate(order.submittedAt)}</p>
+                    </div>
+                    <strong>{money.format(order.subtotal)}</strong>
                   </div>
-                  <strong>{money.format(order.subtotal)}</strong>
+                  <div className="order-history-card__items">
+                    {order.lines.slice(0, 3).map((line, index) => (
+                      <span key={`${order.orderId}-${line.itemId}-${index}`}>{line.quantity}× {line.name}</span>
+                    ))}
+                    {order.lines.length > 3 && <span>+{order.lines.length - 3} more</span>}
+                  </div>
+                  <div className="order-history-card__bottom">
+                    <span>{order.pickupLabel}</span>
+                    <strong>
+                      {order.earnedDripPoints > 0
+                        ? `${order.dripPointsStatus === "pending" ? "Pending " : "+"}${order.earnedDripPoints} Drip Points`
+                        : "View order"}
+                    </strong>
+                  </div>
+
                 </div>
-                <div className="order-history-card__items">
-                  {order.lines.slice(0, 3).map((line, index) => (
-                    <span key={`${order.orderId}-${line.itemId}-${index}`}>{line.quantity}× {line.name}</span>
-                  ))}
-                  {order.lines.length > 3 && <span>+{order.lines.length - 3} more</span>}
-                </div>
-                <div className="order-history-card__bottom">
-                  <span>{order.pickupLabel}</span>
-                  <strong>
-                    {order.earnedDripPoints > 0
-                      ? `${order.dripPointsStatus === "pending" ? "Pending " : "+"}${order.earnedDripPoints} Drip Points`
-                      : "View order"}
-                  </strong>
+                <div className="order-history-card__mobile">
+                  <div className="order-history-mobile__merchant">
+                    <div className="order-history-mobile__merchant-copy">
+                      <strong>Nasty Burger House</strong>
+                      <span>{order.pickupLabel}</span>
+                    </div>
+                    <ChevronRight size={21} strokeWidth={1.8} aria-hidden="true" />
+                  </div>
+                  <dl className="order-history-mobile__details">
+                    <div>
+                      <dt>Order status</dt>
+                      <dd className={`order-history-mobile__status order-history-mobile__status--${order.status}`}>
+                        {order.status === "completed" ? "Complete" : order.status === "ready" ? "Ready for pickup" : order.status === "preparing" ? "Preparing" : order.status === "received" ? "Received" : "Cancelled"}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Order no.</dt>
+                      <dd>{order.orderId}</dd>
+                    </div>
+                    <div>
+                      <dt>Order date</dt>
+                      <dd>{formatDate(order.submittedAt)}</dd>
+                    </div>
+                    <div>
+                      <dt>Items</dt>
+                      <dd>{order.lines.reduce((total, line) => total + line.quantity, 0)}</dd>
+                    </div>
+                    <div>
+                      <dt>Order total</dt>
+                      <dd className="order-history-mobile__amount">{money.format(order.subtotal)}</dd>
+                    </div>
+                  </dl>
+                  {order.earnedDripPoints > 0 && (
+                    <div className="order-history-mobile__points">
+                      {order.dripPointsStatus === "pending" ? "Pending " : "+"}{order.earnedDripPoints} Drip Points
+                    </div>
+                  )}
                 </div>
               </Link>
             ))}

@@ -38,7 +38,7 @@ function readCookie(request: Request, name: string) {
 }
 
 function safeNextPath(value: string | null | undefined) {
-  return value?.startsWith("/") && !value.startsWith("//") ? value : "/account";
+  return value?.startsWith("/") && !value.startsWith("//") ? value : "/";
 }
 
 function redirectAndClearReturnCookie(url: URL) {

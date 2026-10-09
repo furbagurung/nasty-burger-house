@@ -611,22 +611,6 @@
   border-color: #e6e9ed;
   border-radius: 0.85rem;
 }
-.admin-modern .admin-customer-table-head {
-  padding: 0.8rem 1.1rem;
-  background: #fbfcfd;
-  color: #737c88;
-  font-size: 0.64rem;
-  letter-spacing: 0.035em;
-}
-.admin-modern .admin-customer-row {
-  min-height: 4.9rem;
-  padding: 0.75rem 1.1rem;
-  border-color: #edf0f2;
-}
-.admin-modern .admin-customer-identity strong { font-size: 0.79rem; }
-.admin-modern .admin-customer-cell > strong { font-size: 0.77rem; }
-.admin-modern .admin-customer-row:hover { background: #fbfcfd; }
-
 @media (max-width: 900px) {
   .admin-modern .admin-main { padding-top: 1.1rem; }
   .admin-modern .admin-customer-toolbar {
@@ -642,6 +626,9 @@
 }
 @media (max-width: 600px) {
   .admin-modern .admin-main { padding-top: 1rem; }
+  .admin-modern .admin-filter-bar button {
+    min-height: 2.75rem;
+  }
   .admin-modern .admin-modern-metric {
     min-height: 7.2rem;
   }
@@ -657,13 +644,9 @@
     height: 1.8rem;
   }
   .admin-modern .admin-customer-toolbar { padding: 0.2rem 0; }
-  .admin-modern .admin-customer-table-wrap { border: 0; }
-  .admin-modern .admin-customer-list { gap: 0.6rem; }
-  .admin-modern .admin-customer-row {
-    min-height: 0;
-    border: 1px solid #e7e9ed;
-    border-radius: 0.8rem;
-    padding: 0.9rem;
+  .admin-modern .admin-customer-table-wrap {
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
   }
 }
 

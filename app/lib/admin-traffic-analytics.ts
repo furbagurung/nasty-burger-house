@@ -64,6 +64,7 @@ export type AdminTrafficAnalyticsData =
         device: string;
         visitors: number;
         pageviews: number;
+        sharePercent: number;
       }>;
       generatedAt: string;
     }
@@ -190,15 +191,63 @@ async function buildAdminTrafficAnalytics(): Promise<AdminTrafficAnalyticsData> 
   const visitors = numberValue(count.visitors);
   const pageviews = numberValue(count.pageviews);
 
-  const deviceRows = (devices ?? []).map((row) => ({
-    device: row.deviceType?.trim() || "other",
-    visitors: numberValue(row.visitors),
-    pageviews: numberValue(row.pageviews),
-  }));
+  // Unique visitors can overlap across devices; page views cannot.
+  // Consolidate all non-mobile/desktop device types into "other".
+  const deviceTotals = new Map<
+    string,
+    { device: string; visitors: number; pageviews: number }
+  >();
 
-  const mobileVisitors =
-    deviceRows.find((row) => row.device.toLowerCase() === "mobile")?.visitors ??
-    0;
+  for (const row of devices ?? []) {
+    const rawDevice = row.deviceType?.trim().toLowerCase();
+    const device =
+      rawDevice === "mobile" || rawDevice === "desktop"
+        ? rawDevice
+        : "other";
+    const previous = deviceTotals.get(device) ?? {
+      device,
+      visitors: 0,
+      pageviews: 0,
+    };
+    previous.visitors += numberValue(row.visitors);
+    previous.pageviews += numberValue(row.pageviews);
+    deviceTotals.set(device, previous);
+  }
+
+  const deviceRows = ["mobile", "desktop", "other"]
+    .map((device) => deviceTotals.get(device))
+    .filter((row): row is NonNullable<typeof row> => Boolean(row));
+  const devicePageviews = deviceRows.reduce(
+    (total, row) => total + row.pageviews,
+    0,
+  );
+
+  // Largest-remainder rounding: display tenths that add to exactly 100.0%.
+  const preciseTenths = deviceRows.map((row) =>
+    devicePageviews > 0 ? (row.pageviews / devicePageviews) * 1000 : 0,
+  );
+  const roundedTenths = preciseTenths.map(Math.floor);
+  const remainingTenths =
+    devicePageviews > 0
+      ? 1000 - roundedTenths.reduce((sum, value) => sum + value, 0)
+      : 0;
+  const remainders = preciseTenths
+    .map((value, index) => ({
+      index,
+      remainder: value - roundedTenths[index],
+    }))
+    .sort((a, b) => b.remainder - a.remainder || a.index - b.index);
+
+  for (let index = 0; index < remainingTenths; index += 1) {
+    roundedTenths[remainders[index].index] += 1;
+  }
+
+  const deviceBreakdown = deviceRows.map((row, index) => ({
+    ...row,
+    sharePercent: roundedTenths[index] / 10,
+  }));
+  const mobileShare =
+    deviceBreakdown.find((row) => row.device === "mobile")?.sharePercent ?? 0;
 
   return {
     available: true,
@@ -207,7 +256,7 @@ async function buildAdminTrafficAnalytics(): Promise<AdminTrafficAnalyticsData> 
       visitors,
       pageviews,
       viewsPerVisitor: visitors > 0 ? pageviews / visitors : 0,
-      mobileShare: visitors > 0 ? (mobileVisitors / visitors) * 100 : 0,
+      mobileShare,
     },
     dailyTraffic: (daily ?? []).map((row) => {
       const timestamp = row.timestamp ?? "";
@@ -249,7 +298,7 @@ async function buildAdminTrafficAnalytics(): Promise<AdminTrafficAnalyticsData> 
         visitors: numberValue(row.visitors),
         pageviews: numberValue(row.pageviews),
       })),
-    devices: deviceRows,
+    devices: deviceBreakdown,
     generatedAt: now.toISOString(),
   };
 }

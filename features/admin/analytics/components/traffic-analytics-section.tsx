@@ -187,7 +187,7 @@ export default function TrafficAnalyticsSection({
               label="Mobile share"
               value={data.metrics.mobileShare.toFixed(1) + "%"}
               icon={<Smartphone size={20} />}
-              hint="Share of identified visitors"
+              hint="Share of website page views"
               index={3}
             />
           </section>
@@ -245,7 +245,7 @@ export default function TrafficAnalyticsSection({
               <CardHeader>
                 <CardTitle>Devices</CardTitle>
                 <CardDescription>
-                  Visitor share by device type.
+                  Page-view share by device type.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -273,7 +273,7 @@ export default function TrafficAnalyticsSection({
                             fill: "var(--color-" + key + ")",
                           };
                         })}
-                        dataKey="visitors"
+                        dataKey="pageviews"
                         nameKey="key"
                         innerRadius={58}
                         outerRadius={82}
@@ -283,8 +283,12 @@ export default function TrafficAnalyticsSection({
                     </PieChart>
                   </ChartContainer>
                   <div className="admin-analytics-donut-center" aria-hidden="true">
-                    <span>Visitors</span>
-                    <strong>{compactNumber(data.metrics.visitors)}</strong>
+                    <span>Page views</span>
+                    <strong>
+                      {compactNumber(
+                        data.devices.reduce((total, row) => total + row.pageviews, 0),
+                      )}
+                    </strong>
                     <small>30 days</small>
                   </div>
                 </div>
@@ -296,10 +300,7 @@ export default function TrafficAnalyticsSection({
                     )
                       ? entry.device.toLowerCase()
                       : "other";
-                    const share =
-                      data.metrics.visitors > 0
-                        ? (entry.visitors / data.metrics.visitors) * 100
-                        : 0;
+
 
                     return (
                       <div key={entry.device}>
@@ -310,7 +311,7 @@ export default function TrafficAnalyticsSection({
                           aria-hidden="true"
                         />
                         <span>{deviceLabel(entry.device)}</span>
-                        <strong>{share.toFixed(1)}%</strong>
+                        <strong>{entry.sharePercent.toFixed(1)}%</strong>
                       </div>
                     );
                   })}

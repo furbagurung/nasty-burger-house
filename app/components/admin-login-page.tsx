@@ -5,6 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -54,7 +58,7 @@ export default function AdminLoginPage() {
 
   return (
     <main className="admin-access-page admin-login-page">
-      <section className="admin-login-card">
+      <Card className="admin-login-card">
         <div className="admin-login-brand">
           <Image
             src="/logo.webp"
@@ -71,9 +75,10 @@ export default function AdminLoginPage() {
         </div>
 
         <form className="admin-login-form" onSubmit={submit}>
-          <label>
+          <Label className="admin-login-email-field" htmlFor="admin-login-email">
             Admin email
-            <input
+            <Input
+              id="admin-login-email"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
@@ -82,11 +87,11 @@ export default function AdminLoginPage() {
               required
               autoFocus
             />
-          </label>
+          </Label>
           <div className="admin-login-password-field">
-            <label htmlFor="admin-login-password">Password</label>
+            <Label htmlFor="admin-login-password">Password</Label>
             <div className="admin-login-password-wrap">
-              <input
+              <Input
                 id="admin-login-password"
                 type={showPassword ? "text" : "password"}
                 value={password}
@@ -95,7 +100,9 @@ export default function AdminLoginPage() {
                 maxLength={256}
                 required
               />
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 className="admin-login-password-toggle"
                 type="button"
                 aria-label={showPassword ? "Hide password" : "Show password"}
@@ -109,7 +116,7 @@ export default function AdminLoginPage() {
                 ) : (
                   <Eye size={19} strokeWidth={1.8} aria-hidden="true" />
                 )}
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -119,9 +126,9 @@ export default function AdminLoginPage() {
             </p>
           )}
 
-          <button type="submit" disabled={submitting}>
+          <Button type="submit" disabled={submitting}>
             {submitting ? "Checking access…" : "Sign in to Order Control"}
-          </button>
+          </Button>
 
           <div className="admin-login-links">
             <Link href="/account/forgot-password">Forgot password?</Link>
@@ -133,7 +140,7 @@ export default function AdminLoginPage() {
           Customer accounts cannot access Order Control unless they have been added
           to the admin list.
         </p>
-      </section>
+      </Card>
     </main>
   );
 }

@@ -92,6 +92,7 @@ import "./checkout-polish.css";
 import "./mobile-page-header.css";
 import "./quantity-stepper.css";
 import "./admin-workspace-footer.css";
+import "./admin-navigation.css";
 import "./theme-dark.css";
 
 const dmSans = DM_Sans({

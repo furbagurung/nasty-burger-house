@@ -940,16 +940,22 @@
 }
 
 
-/* Admin navigation only: a single dark macOS sidebar without bento panels.
-   Keep the main dashboard and topbar in their current light theme.
-   The mobile Sheet is portalled, so target its class independently. */
+/* Theme-aware admin sidebar: Light by default; theme-dark.css replaces
+   these scoped tokens whenever <html> has the .dark class.
+   The mobile shadcn Sheet is portalled, so style it separately. */
 .admin-modern .admin-macos-sidebar.admin-jobtracker-sidebar,
 .admin-jobtracker-mobile-drawer[data-slot="sheet-content"] {
-  --admin-sidebar-bg: #17191f;
-  --admin-sidebar-line: #2d313a;
-  --admin-sidebar-muted: #a8b0be;
-  --admin-sidebar-text: #e7eaf0;
-  --admin-sidebar-active: #ff755b;
+  --admin-sidebar-bg: #f8f9fb;
+  --admin-sidebar-line: #e2e6ed;
+  --admin-sidebar-muted: #586374;
+  --admin-sidebar-text: #1d2736;
+  --admin-sidebar-nav: #3a4658;
+  --admin-sidebar-active: #aa422c;
+  --admin-sidebar-selected: #e5eaf1;
+  --admin-sidebar-hover: #e9edf2;
+  --admin-sidebar-toggle: #243043;
+  --admin-sidebar-toggle-hover: #e8edf3;
+  --admin-sidebar-logout: #9b4336;
   border-color: var(--admin-sidebar-line);
   background: var(--admin-sidebar-bg);
   color: var(--admin-sidebar-text);
@@ -964,7 +970,7 @@
 
 .admin-modern .admin-macos-sidebar .admin-macos-sidebar__brand .admin-jobtracker-brand-link,
 .admin-jobtracker-mobile-drawer .admin-jobtracker-brand-link {
-  color: #f5f6f8;
+  color: var(--admin-sidebar-text);
 }
 
 .admin-modern .admin-macos-sidebar .admin-jobtracker-brand-copy small,
@@ -977,30 +983,43 @@
 }
 
 .admin-modern .admin-macos-sidebar .admin-macos-sidebar__toggle {
-  color: #d5dbe5;
+  background: transparent;
+  color: var(--admin-sidebar-toggle);
 }
 
-.admin-modern .admin-macos-sidebar .admin-macos-sidebar__toggle:hover,
-.admin-modern .admin-macos-sidebar .admin-macos-sidebar__toggle:focus-visible {
-  background: #2a2e38;
-  color: #fff;
+.admin-modern .admin-macos-sidebar .admin-macos-sidebar__toggle:is(:hover, :focus-visible) {
+  background: var(--admin-sidebar-toggle-hover);
+  color: var(--admin-sidebar-text);
+}
+
+.admin-modern .admin-macos-sidebar .admin-macos-sidebar__toggle svg,
+.admin-modern .admin-macos-sidebar .admin-macos-sidebar__link-icon svg,
+.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link svg {
+  color: inherit;
+  stroke: currentColor;
 }
 
 .admin-modern .admin-macos-sidebar .admin-macos-sidebar__link {
-  color: #bfc6d2;
+  color: var(--admin-sidebar-nav);
 }
 
 .admin-modern .admin-macos-sidebar .admin-macos-sidebar__link.is-current {
   color: var(--admin-sidebar-active);
 }
 
+.admin-modern .admin-macos-sidebar .admin-macos-sidebar__link:focus-visible,
+.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link:focus-visible {
+  outline: 2px solid var(--admin-sidebar-active);
+  outline-offset: 2px;
+}
+
 .admin-modern .admin-macos-sidebar .admin-macos-sidebar__selection {
-  background: #292d36;
+  background: var(--admin-sidebar-selected);
   box-shadow: none;
 }
 
 .admin-modern .admin-macos-sidebar .admin-macos-sidebar__hover {
-  background: #242831;
+  background: var(--admin-sidebar-hover);
 }
 
 .admin-modern .admin-macos-sidebar .admin-macos-sidebar__footer {
@@ -1017,39 +1036,37 @@
   border-top-color: var(--admin-sidebar-line);
 }
 
-/* Existing legacy admin nav declarations use !important, so scope their
-   dark overrides to the mobile Sheet instead of changing public buttons. */
+/* Legacy navigation rules use !important. Scope matching overrides to
+   the admin sidebar only, never to public-site controls. */
 .admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link,
 .admin-jobtracker-mobile-drawer .admin-jobtracker-nav-logout,
 .admin-modern .admin-macos-sidebar .admin-jobtracker-sidebar-bottom .admin-jobtracker-nav-link,
 .admin-modern .admin-macos-sidebar .admin-jobtracker-sidebar-bottom .admin-jobtracker-nav-logout {
   border-color: transparent !important;
   background: transparent !important;
-  color: #c5cbd5 !important;
+  color: var(--admin-sidebar-nav) !important;
 }
 
-.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link:hover,
-.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link:focus-visible,
-.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-logout:hover,
-.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-logout:focus-visible,
-.admin-modern .admin-macos-sidebar .admin-jobtracker-sidebar-bottom .admin-jobtracker-nav-link:hover,
-.admin-modern .admin-macos-sidebar .admin-jobtracker-sidebar-bottom .admin-jobtracker-nav-logout:hover {
-  background: #252a34 !important;
-  color: #fff !important;
+.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link:is(:hover, :focus-visible),
+.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-logout:is(:hover, :focus-visible),
+.admin-modern .admin-macos-sidebar .admin-jobtracker-sidebar-bottom .admin-jobtracker-nav-link:is(:hover, :focus-visible),
+.admin-modern .admin-macos-sidebar .admin-jobtracker-sidebar-bottom .admin-jobtracker-nav-logout:is(:hover, :focus-visible) {
+  background: var(--admin-sidebar-hover) !important;
+  color: var(--admin-sidebar-text) !important;
 }
 
 .admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link.is-current {
   border-color: transparent !important;
-  background: #292d36 !important;
-  color: #ff755b !important;
+  background: var(--admin-sidebar-selected) !important;
+  color: var(--admin-sidebar-active) !important;
   box-shadow: none;
 }
 
 .admin-jobtracker-mobile-drawer .admin-jobtracker-nav-indicator {
-  background: #ff755b;
+  background: var(--admin-sidebar-active);
 }
 
 .admin-jobtracker-mobile-drawer .admin-jobtracker-nav-logout,
 .admin-modern .admin-macos-sidebar .admin-jobtracker-nav-logout {
-  color: #ff9b8a !important;
+  color: var(--admin-sidebar-logout) !important;
 }

@@ -10,7 +10,7 @@ import {
   signOutCurrentCustomer,
 } from "../lib/customer-backend";
 import type { CustomerProfile } from "../lib/customer-store";
-import MobileBottomNav from "./mobile-bottom-nav";
+import MobilePageHeader from "./mobile-page-header";
 
 function initialsFor(name: string) {
   return (
@@ -84,6 +84,7 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
   if (!ready) {
     return (
       <div className="account-page account-saas-page account-saas-layout-page">
+        {pathname === "/account" && <MobilePageHeader title="Profile" backHref="/" backLabel="Back to home" />}
         <main className="account-saas-shell account-saas-shell--persistent">
           <aside className="account-saas-sidebar account-skeleton-sidebar" aria-hidden="true">
             <div className="account-saas-brand">
@@ -124,13 +125,19 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
   }
 
   if (!profile) {
-    return <>{children}</>;
+    return (
+      <>
+        {pathname === "/account" && <MobilePageHeader title="Profile" backHref="/" backLabel="Back to home" />}
+        {children}
+      </>
+    );
   }
 
   const initials = initialsFor(profile.name);
 
   return (
     <div className="account-page account-saas-page account-saas-layout-page">
+      {pathname === "/account" && <MobilePageHeader title="Profile" backHref="/" backLabel="Back to home" />}
       <main className="account-saas-shell account-saas-shell--persistent">
         <aside className="account-saas-sidebar" aria-label="Account navigation">
           <div className="account-saas-brand">
@@ -188,7 +195,6 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
           {children}
         </section>
       </main>
-      {pathname === "/account" && <MobileBottomNav active="more" />}
     </div>
   );
 }

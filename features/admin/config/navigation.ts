@@ -13,7 +13,16 @@ export type AdminSection =
   | "team-access"
   | "orders";
 
-export const navigationGroups = [
+// Keep deferred routes defined for existing bookmarks and future reactivation.
+// They are omitted from both desktop and mobile navigation while on hold.
+const deferredSectionIds: ReadonlySet<string> = new Set([
+  "drip-points",
+  "promotions",
+  "reports",
+  "team-access",
+]);
+
+const configuredNavigationGroups = [
   {
     label: "Overview",
     items: [
@@ -41,15 +50,26 @@ export const navigationGroups = [
   },
 ] as const;
 
+export const navigationGroups = configuredNavigationGroups
+  .map((group) => ({
+    ...group,
+    items: group.items.filter((item) => !deferredSectionIds.has(item.id)),
+  }))
+  .filter((group) => group.items.length > 0);
+
+const configuredSections = configuredNavigationGroups.flatMap((group) =>
+  group.items.map((item) => ({ ...item, group: group.label })),
+);
+
 export const sections = navigationGroups.flatMap((group) =>
   group.items.map((item) => ({ ...item, group: group.label })),
 );
 
-
 export function resolveAdminNavigation(pathname: string) {
-  const matched = sections.find((item) => item.href === pathname);
+  // Direct links to deferred pages retain their correct page title.
+  const matched = configuredSections.find((item) => item.href === pathname);
   const activeSection: AdminSection = matched?.id ?? "dashboard";
   const pageTitle = matched?.label ?? "Dashboard";
-  const groupLabel = navigationGroups.find((group) => group.items.some((item) => item.id === activeSection))?.label ?? "Overview";
+  const groupLabel = matched?.group ?? "Overview";
   return { activeSection, pageTitle, groupLabel };
 }

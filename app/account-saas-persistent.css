@@ -698,3 +698,58 @@
     padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
   }
 }
+
+
+/* Profile actions are one continuous settings list instead of bento cards.
+   Each row keeps its existing form, link, and password behaviour. */
+.account-saas-route-content .account-settings-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  overflow: hidden;
+  margin-top: 0.15rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.15rem;
+  background: #fff;
+}
+
+.account-saas-route-content .account-settings-list > .account-security-card {
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 1rem 1.15rem;
+  background: transparent;
+  box-shadow: none;
+}
+
+.account-saas-route-content .account-settings-list > .account-security-card + .account-security-card {
+  border-top: 1px solid #eceef0;
+}
+
+.account-saas-route-content .account-settings-list > #profile.account-manage-card {
+  margin: 0;
+}
+
+@media (max-width: 680px) {
+  .account-saas-route-content .account-profile-identity__details h1 {
+    font-size: clamp(1.05rem, 4.3vw, 1.18rem);
+    font-weight: 750 !important;
+    line-height: 1.25;
+  }
+
+  .account-saas-route-content .account-settings-list {
+    margin-top: 0.1rem;
+    border-radius: 1rem;
+  }
+
+  .account-saas-route-content .account-settings-list > .account-security-card {
+    margin: 0;
+    padding: 0.92rem 0.85rem;
+    border-radius: 0;
+  }
+
+  .account-saas-route-content .account-settings-list .account-security__header {
+    gap: 0.65rem;
+  }
+}

@@ -23,7 +23,7 @@ import { MacOSSidebar } from "@/components/macos-sidebar";
  * AppSidebar + TopNavbar. Uses our existing shadcn primitives, real admin
  * routes and server-side session/logout instead of template demo data.
  */
-type AdminSection = "orders" | "customers" | "reviews";
+type AdminSection = "dashboard" | "orders" | "customers" | "reviews";
 
 const sections = [
   { id: "customers" as const, label: "Customers", href: "/admin/customers", icon: Users },

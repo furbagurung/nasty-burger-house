@@ -53,6 +53,10 @@ See `app/theme-dark.css` for tokens, accessibility rules and starter page
 overrides. **Light is the default**; the preference is saved in the browser.
 Test all affected customer and admin flows before deploying.
 
+## Admin typography
+
+The admin workspace uses **Inter** for navigation, forms, headings, tables and the admin login. The customer website retains its existing DM Sans and Bowlby One SC branding. See [Font System](docs/FONTS.md) for font ownership and loading, and [Admin Typography Standard](docs/TYPOGRAPHY.md) for the reusable SaaS type scale. Admin CSS lives in `app/admin-typography.css`.
+
 ## Local development
 
 ```bash

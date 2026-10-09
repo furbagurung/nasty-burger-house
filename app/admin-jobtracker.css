@@ -358,40 +358,26 @@
   }
   .admin-jobtracker-topbar-tools .admin-jobtracker-alert-button span { display: none; }
   .admin-jobtracker-page-identity h1 { font-size: 1.1rem; }
-  .admin-jobtracker-drawer-root {
+  /* shadcn Sheet manages focus, Escape and backdrop interactions. */
+  body:has(.admin-jobtracker-mobile-drawer) [data-slot="sheet-overlay"] {
+    z-index: 170;
+    background: rgba(12, 18, 30, 0.5);
+  }
+  .admin-jobtracker-mobile-drawer[data-slot="sheet-content"] {
     position: fixed;
-    inset: 0;
-    z-index: 160;
-    display: block;
-  }
-  .admin-jobtracker-drawer-backdrop {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    border: 0;
-    background: rgba(12,18,30,0.5);
-  }
-  .admin-jobtracker-mobile-drawer {
-    position: absolute;
     inset: 0 auto 0 0;
+    z-index: 180;
     display: flex;
     width: min(82vw, 18rem);
+    max-width: 18rem;
+    height: 100dvh;
     max-height: 100dvh;
     flex-direction: column;
+    gap: 0;
     overflow-y: auto;
-    border-right: 1px solid var(--admin-jobtracker-line);
+    border-right: 1px solid var(--admin-jobtracker-line, #e5e8ed);
     background: #f8f9fb;
-    box-shadow: 15px 0 35px rgba(0,0,0,0.13);
-  }
-  .admin-jobtracker-drawer-close {
-    position: absolute;
-    top: 0.85rem;
-    right: 0.75rem;
-    z-index: 1;
-    width: 2.1rem;
-    height: 2.1rem;
-    padding: 0;
-    color: #3c4655;
+    box-shadow: 15px 0 35px rgba(0, 0, 0, 0.13);
   }
   .admin-jobtracker-mobile-drawer .admin-jobtracker-sidebar-brand {
     padding-top: 1.2rem;

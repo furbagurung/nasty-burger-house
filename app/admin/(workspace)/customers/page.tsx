@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import AdminCustomerDashboard from "../../components/admin-customer-dashboard";
-import { verifyAdmin } from "../../lib/admin-auth";
-import { loadAdminCustomers } from "../../lib/admin-customers";
+import AdminCustomerDashboard from "../../../components/admin-customer-dashboard";
+import { verifyAdmin } from "../../../lib/admin-auth";
+import { loadAdminCustomers } from "../../../lib/admin-customers";
 
 export const dynamic = "force-dynamic";
 
@@ -35,7 +35,6 @@ export default async function AdminCustomersPage() {
     <AdminCustomerDashboard
       customers={portal.customers}
       squareStatus={portal.square}
-      adminEmail={auth.user.email}
     />
   );
 }

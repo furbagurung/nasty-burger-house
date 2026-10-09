@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
@@ -162,14 +163,21 @@ export function AdminWorkspaceHeader({
   onEnableAlerts,
   alertsEnabled,
 }: {
-  title: string;
-  active: AdminSection;
+  title?: string;
+  active?: AdminSection;
   adminEmail?: string;
   onEnableAlerts?: () => void;
   alertsEnabled?: boolean;
 }) {
   const reduceMotion = useReducedMotion();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+  const matched = sections.find((section) => section.href === pathname);
+  const activeSection: AdminSection = active ?? matched?.id ?? "dashboard";
+  const pageTitle = title ?? matched?.label ?? "Dashboard";
+  const groupLabel = navigationGroups.find((group) =>
+    group.items.some((item) => item.id === activeSection),
+  )?.label ?? "Overview";
   return (
     <>
       <MacOSSidebar
@@ -180,7 +188,7 @@ export function AdminWorkspaceHeader({
           group,
           icon: <Icon size={19} aria-hidden="true" />,
         }))}
-        activeHref={sections.find((section) => section.id === active)?.href}
+        activeHref={sections.find((section) => section.id === activeSection)?.href}
         header={
           <div className="admin-jobtracker-sidebar-brand">
             <Link href="/admin" className="admin-jobtracker-brand-link" title="Nasty Burger House admin home">
@@ -227,7 +235,7 @@ export function AdminWorkspaceHeader({
         >
           <SheetTitle className="sr-only">Admin navigation</SheetTitle>
           <SidebarContent
-            active={active}
+            active={activeSection}
             adminEmail={adminEmail}
             onNavigate={() => setMobileOpen(false)}
           />
@@ -254,8 +262,8 @@ export function AdminWorkspaceHeader({
               <Menu size={21} aria-hidden="true" />
             </Button>
             <div className="admin-jobtracker-page-identity">
-              <p>{navigationGroups.find((group) => group.items.some((item) => item.id === active))?.label ?? "Overview"} <span aria-hidden="true">/</span> {title}</p>
-              <h1>{title}</h1>
+              <p>{groupLabel} <span aria-hidden="true">/</span> {pageTitle}</p>
+              <h1>{pageTitle}</h1>
             </div>
           </div>
 

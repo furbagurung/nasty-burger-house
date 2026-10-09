@@ -78,3 +78,12 @@ Existing customer `body` and `--font-heading` defaults remain unchanged. Font lo
 Before releasing changes, test `/admin/login`, `/admin`, `/admin/analytics`, `/admin/customers`, `/admin/reviews`, a Business and a Management route, the collapsed sidebar, the mobile Sheet, skeleton loading, form validation, and the admin footer in **both** Light and Dark.
 
 **Required:** `npm run build` and browser verification before production. Never deploy without explicit approval.
+
+
+## Legacy global font override
+
+The customer brand stylesheet `app/brand-typography.css` uses `!important`
+for its global headings and form controls. Therefore admin typography overrides
+must use **scoped `!important` declarations** on admin headings and fields.
+Keep the public site's Bowlby One SC styling unchanged. The admin Analytics
+heading and every other page `h1`–`h6` must compute to Inter.

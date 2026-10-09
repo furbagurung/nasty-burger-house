@@ -3,8 +3,6 @@
 import { useMemo, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { CircleCheck, ClipboardList, Crown, Search, Users } from "lucide-react";
-import { AdminWorkspaceHeader } from "./admin-workspace-header";
-import AdminWorkspaceFooter from "./admin-workspace-footer";
 import { AdminMetricCard } from "./admin-metric-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -56,11 +54,9 @@ function sourceClass(customer: AdminCustomer) {
 
 export default function AdminCustomerDashboard({
   customers,
-  adminEmail,
   squareStatus,
 }: {
   customers: AdminCustomer[];
-  adminEmail?: string;
   squareStatus: {
     connected: boolean;
     loyaltyCount: number;
@@ -103,10 +99,7 @@ export default function AdminCustomerDashboard({
   const bothCount = customers.filter((customer) => customer.source === "both").length;
 
   return (
-    <div className="admin-shell admin-modern admin-customer-shell">
-      <AdminWorkspaceHeader title="Customers" active="customers" adminEmail={adminEmail} />
-
-      <main className="admin-main admin-customer-main">
+    <main className="admin-main admin-customer-main">
         <section className="admin-summary-grid" aria-label="Customer summary">
           <AdminMetricCard label="Total customers" value={customers.length} icon={<Users size={20} />} hint="Across website and Square" index={0} />
           <AdminMetricCard label="Website accounts" value={websiteCount} icon={<ClipboardList size={20} />} hint="Registered website members" index={1} />
@@ -298,8 +291,6 @@ export default function AdminCustomerDashboard({
             </div>
           )}
         </Card>
-      </main>
-      <AdminWorkspaceFooter />
-    </div>
+    </main>
   );
 }

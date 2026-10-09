@@ -1,7 +1,5 @@
 "use client";
 
-import { AdminWorkspaceHeader } from "./admin-workspace-header";
-import AdminWorkspaceFooter from "./admin-workspace-footer";
 import { AdminMetricCard } from "./admin-metric-card";
 import { ClipboardCheck, Clock3, Star, MessageSquareText } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -37,10 +35,8 @@ function starText(rating: number) {
 
 export default function AdminReviewDashboard({
   initialReviews,
-  adminEmail,
 }: {
   initialReviews: AdminReview[];
-  adminEmail?: string;
 }) {
   const [reviews, setReviews] = useState(initialReviews);
   const [filter, setFilter] = useState<"all" | AdminReviewStatus>("pending");
@@ -103,10 +99,7 @@ export default function AdminReviewDashboard({
   }
 
   return (
-    <div className="admin-shell admin-modern admin-review-shell">
-      <AdminWorkspaceHeader title="Review Moderation" active="reviews" adminEmail={adminEmail} />
-
-      <main className="admin-main admin-review-main">
+    <main className="admin-main admin-review-main">
         <section className="admin-summary-grid" aria-label="Review summary">
           <AdminMetricCard label="Pending approval" value={pendingCount} icon={<Clock3 size={20} />} index={0} hint="Awaiting moderation" />
           <AdminMetricCard label="Published" value={publishedReviews.length} icon={<ClipboardCheck size={20} />} index={1} hint="Visible to customers" />
@@ -258,8 +251,6 @@ export default function AdminReviewDashboard({
             ))
           )}
         </section>
-      </main>
-      <AdminWorkspaceFooter />
-    </div>
+    </main>
   );
 }

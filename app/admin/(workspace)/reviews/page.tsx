@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import AdminReviewDashboard from "../../components/admin-review-dashboard";
-import { verifyAdmin } from "../../lib/admin-auth";
-import { loadAdminReviews } from "../../lib/admin-reviews";
+import AdminReviewDashboard from "../../../components/admin-review-dashboard";
+import { verifyAdmin } from "../../../lib/admin-auth";
+import { loadAdminReviews } from "../../../lib/admin-reviews";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +34,6 @@ export default async function AdminReviewsPage() {
   return (
     <AdminReviewDashboard
       initialReviews={reviews}
-      adminEmail={auth.user.email}
     />
   );
 }

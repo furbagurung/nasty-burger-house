@@ -68,3 +68,21 @@ All admin routes must keep the same sidebar, header, main-content inset, and ded
 Run `npm run lint` and `npm run build`; manually test direct URL navigation to all ten tabs, unauthenticated redirects, unknown routes returning 404, skeleton loading, mobile and desktop, collapsed/expanded sidebar, Light/Dark, existing Customers & Reviews actions, admin sign-out and customer ordering.
 
 **Policy:** Read `docs/DARK_THEME.md` before design edits. Commit approved changes to GitHub `main`. **Never deploy without explicit approval.**
+
+
+## Persistent workspace layout (navigation performance)
+
+Admin routes use Next.js route group `app/admin/(workspace)/`, which does not
+change their public URL paths. The group's server-authenticated `layout.tsx`
+owns the desktop sidebar, mobile Sheet, top header and dedicated admin footer.
+This layout is preserved during soft navigation between admin tabs.
+
+- Dashboard, Customers, Reviews and all seven planned modules render **only
+  their page-specific `<main>` content**, never duplicate the chrome.
+- `(workspace)/loading.tsx` uses shadcn Skeleton for **content only** while a
+  new route resolves. The sidebar, collapse state and header remain visible.
+- `/admin/login` is outside the group, so it stays an isolated login screen.
+- The layout verifies admin membership initially; data pages retain per-route
+  verification, and planned modules verify access when their route is loaded.
+- `app/admin-typography.css` overrides legacy global `!important` Bowlby
+  font rules **only in admin screens**, using Inter for headings and controls.

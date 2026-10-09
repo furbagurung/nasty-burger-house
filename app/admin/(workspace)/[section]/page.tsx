@@ -1,14 +1,10 @@
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import AdminWorkspaceFooter from "../../components/admin-workspace-footer";
-import { AdminWorkspaceHeader, type AdminSection } from "../../components/admin-workspace-header";
-import { verifyAdmin } from "../../lib/admin-auth";
+import { verifyAdmin } from "../../../lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
-/** Planned modules share a single protected, lightweight route template.
- * Existing /admin, /admin/customers and /admin/reviews take precedence.
- * Do not display simulated analytics, transactions or editable controls. */
+/** Real modules can replace these content-only routes without remounting
+ * the persistent admin sidebar, header or footer. */
 const plannedModules: Record<string, { title: string; description: string; phase: string }> = {
   analytics: {
     title: "Analytics",
@@ -47,6 +43,7 @@ const plannedModules: Record<string, { title: string; description: string; phase
   },
 };
 
+
 export default async function PlannedAdminSection({
   params,
 }: {
@@ -58,39 +55,19 @@ export default async function PlannedAdminSection({
 
   const auth = await verifyAdmin();
   if (!auth.ok) {
-    if (auth.reason === "unauthenticated" || auth.reason === "forbidden") {
-      redirect(`/admin/login?return=${encodeURIComponent(`/admin/${section}`)}`);
-    }
-    return (
-      <main className="admin-access-page">
-        <section>
-          <p>Nasty Burger House</p>
-          <h1>Admin backend setup required.</h1>
-          <p>Configure Supabase admin access before opening this workspace.</p>
-          <Link href="/">Return to website</Link>
-        </section>
-      </main>
-    );
+    redirect(`/admin/login?return=${encodeURIComponent(`/admin/${section}`)}`);
   }
 
   return (
-    <div className="admin-shell admin-modern">
-      <AdminWorkspaceHeader
-        title={module.title}
-        active={section as AdminSection}
-        adminEmail={auth.user.email}
-      />
-      <main className="admin-main admin-planned-page" aria-label={`${module.title} management`}>
-        <section className="admin-planned-page__body" aria-labelledby="admin-planned-heading">
-          <p className="admin-planned-page__eyebrow">{module.phase} / Planned module</p>
-          <h2 id="admin-planned-heading">{module.title}</h2>
-          <p>{module.description}</p>
-          <p className="admin-planned-page__note">
-            This page is reserved for future development. No data or actions are currently available.
-          </p>
-        </section>
-      </main>
-      <AdminWorkspaceFooter />
-    </div>
+    <main className="admin-main admin-planned-page" aria-label={`${module.title} management`}>
+      <section className="admin-planned-page__body" aria-labelledby="admin-planned-heading">
+        <p className="admin-planned-page__eyebrow">{module.phase} / Planned module</p>
+        <h2 id="admin-planned-heading">{module.title}</h2>
+        <p>{module.description}</p>
+        <p className="admin-planned-page__note">
+          This page is reserved for future development. No data or actions are currently available.
+        </p>
+      </section>
+    </main>
   );
 }

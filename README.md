@@ -45,6 +45,14 @@ response. It receives `vcouncil.furba@gmail.com` as the temporary notification
 recipient. Without `ORDER_WEBHOOK_URL`, checkout stops safely instead of
 showing a false order confirmation.
 
+## Appearance system
+
+Customer and admin pages share an opt-in Light/Dark appearance using shadcn/ui,
+`next-themes`, and the [Dark Theme Standard](docs/DARK_THEME.md).
+See `app/theme-dark.css` for tokens, accessibility rules and starter page
+overrides. **Light is the default**; the preference is saved in the browser.
+Test all affected customer and admin flows before deploying.
+
 ## Local development
 
 ```bash

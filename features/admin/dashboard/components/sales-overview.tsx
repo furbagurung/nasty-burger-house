@@ -1,92 +1,45 @@
 "use client";
 
-import {
-  BadgeDollarSign,
-  ReceiptText,
-  ShoppingBag,
-  Users,
-} from "lucide-react";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  Pie,
-  PieChart,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { BadgeDollarSign, CalendarDays, ReceiptText, ShoppingBag, Users } from "lucide-react";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import type { AdminAnalyticsData } from "@/app/lib/admin-analytics";
 import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
+import { Badge } from "@/components/ui/badge";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+  Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
+  ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
 } from "@/components/ui/chart";
-
-function moneyFormatter(currency: string) {
-  return new Intl.NumberFormat("en-AU", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  });
-}
-
-function compactMoney(value: number, currency: string) {
-  return new Intl.NumberFormat("en-AU", {
-    style: "currency",
-    currency,
-    notation: "compact",
-    maximumFractionDigits: 1,
-  }).format(value);
-}
-
-function changeHint(change: number | null) {
-  if (change === null) return "No prior baseline";
-  const rounded = Math.abs(change) < 0.05 ? 0 : change;
-  const sign = rounded > 0 ? "+" : "";
-  return `${sign}${rounded.toFixed(1)}% vs previous 30 days`;
-}
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from "@/components/ui/table";
 
 const revenueChartConfig = {
   revenue: {
     label: "Revenue",
-    color: "var(--admin-analytics-accent)",
+    color: "var(--admin-sales-accent)",
   },
 } satisfies ChartConfig;
 
-const sourceChartConfig = {
-  website: {
-    label: "Website",
-    color: "var(--admin-analytics-accent)",
-  },
-  square: {
-    label: "Square / POS",
-    color: "var(--admin-analytics-neutral)",
-  },
-} satisfies ChartConfig;
+function formatCurrency(value: number, currency: string, compact = false) {
+  return new Intl.NumberFormat("en-AU", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: compact ? 1 : 0,
+    ...(compact ? { notation: "compact" as const } : {}),
+  }).format(value);
+}
 
-export default function SalesOverview({
-  data,
-}: {
-  data: AdminAnalyticsData;
-}) {
+export default function SalesOverview({ data }: { data: AdminAnalyticsData }) {
   if (!data.available) {
     return (
-      <main className="admin-main admin-analytics-main">
+      <main className="admin-main admin-analytics-main admin-sales-main">
         <section className="admin-analytics-intro" aria-labelledby="business-overview-heading">
           <div>
             <h2 id="business-overview-heading">Business overview</h2>
             <p>Square sales performance for the current store location.</p>
           </div>
-          <span className="admin-analytics-range">Last 30 days · Square</span>
         </section>
         <Card className="admin-analytics-unavailable">
           <CardHeader>
@@ -98,199 +51,170 @@ export default function SalesOverview({
     );
   }
 
-  const money = moneyFormatter(data.currency);
-  const totalSourceRevenue = data.sourceBreakdown.reduce(
-    (total, entry) => total + entry.revenue,
+  const currency = data.currency;
+  const totalChannelRevenue = data.sourceBreakdown.reduce(
+    (sum, channel) => sum + channel.revenue,
     0,
   );
-  const sourceChartData = data.sourceBreakdown.map((entry) => ({
+  const channels = data.sourceBreakdown.map((entry) => ({
     ...entry,
     key: entry.source === "Website" ? "website" : "square",
-    fill:
-      entry.source === "Website"
-        ? "var(--color-website)"
-        : "var(--color-square)",
-    share:
-      totalSourceRevenue > 0
-        ? (entry.revenue / totalSourceRevenue) * 100
-        : 0,
+    share: totalChannelRevenue > 0 ? (entry.revenue / totalChannelRevenue) * 100 : 0,
   }));
-  const maxItemQuantity = Math.max(
-    1,
-    ...data.topItems.map((item) => item.quantity),
-  );
+  const websiteShare = channels.find((entry) => entry.key === "website")?.share ?? 0;
+  const squareShare = channels.find((entry) => entry.key === "square")?.share ?? 0;
+  const maxQuantity = Math.max(1, ...data.topItems.map((item) => item.quantity));
 
   return (
-    <main className="admin-main admin-analytics-main">
+    <main className="admin-main admin-analytics-main admin-sales-main">
       <section className="admin-analytics-intro" aria-labelledby="business-overview-heading">
         <div>
           <h2 id="business-overview-heading">Business overview</h2>
-          <p>
-            Completed Square orders across the current store location.
-          </p>
+          <p>Business performance from completed Square orders.</p>
         </div>
-        <span className="admin-analytics-range">{data.periodLabel} · Square</span>
+        <Badge variant="outline" className="admin-sales-period">
+          <CalendarDays aria-hidden="true" />
+          {data.periodLabel} · Square
+        </Badge>
       </section>
 
-      <section className="admin-summary-grid" aria-label="Analytics summary">
+      <section className="admin-summary-grid admin-sales-metrics" aria-label="Sales summary">
         <AdminMetricCard
           label="Revenue"
-          value={money.format(data.metrics.revenue)}
+          value={formatCurrency(data.metrics.revenue, currency)}
           icon={<BadgeDollarSign size={20} />}
-          hint={changeHint(data.metrics.revenueChange)}
+          trend={data.metrics.revenueChange}
+          tone="brand"
           index={0}
         />
         <AdminMetricCard
           label="Orders"
           value={data.metrics.orders}
           icon={<ShoppingBag size={20} />}
-          hint={changeHint(data.metrics.ordersChange)}
+          trend={data.metrics.ordersChange}
           index={1}
         />
         <AdminMetricCard
           label="Average order"
-          value={money.format(data.metrics.averageOrderValue)}
+          value={formatCurrency(data.metrics.averageOrderValue, currency)}
           icon={<ReceiptText size={20} />}
-          hint={changeHint(data.metrics.averageOrderValueChange)}
+          trend={data.metrics.averageOrderValueChange}
           index={2}
         />
         <AdminMetricCard
           label="Customers"
           value={data.metrics.customers}
           icon={<Users size={20} />}
-          hint={`Unique buyers · ${changeHint(data.metrics.customersChange)}`}
+          trend={data.metrics.customersChange}
+          hint="Identified buyers only"
           index={3}
         />
       </section>
 
-      <section className="admin-analytics-grid" aria-label="Sales charts">
-        <Card className="admin-analytics-card admin-analytics-card--trend">
+      <section className="admin-sales-charts" aria-label="Sales performance">
+        <Card className="admin-analytics-card admin-sales-revenue-card">
           <CardHeader>
-            <CardTitle>Revenue trend</CardTitle>
-            <CardDescription>
-              Daily completed sales for the last 30 days.
-            </CardDescription>
+            <div className="admin-sales-card-heading">
+              <div>
+                <CardTitle>Revenue performance</CardTitle>
+                <CardDescription>Daily completed-order revenue.</CardDescription>
+              </div>
+              <span className="admin-sales-card-period">30 days</span>
+            </div>
           </CardHeader>
           <CardContent>
             <ChartContainer
               config={revenueChartConfig}
-              className="admin-analytics-chart h-[18rem] w-full aspect-auto"
+              className="admin-sales-revenue-chart h-[18rem] w-full aspect-auto"
             >
               <AreaChart
                 accessibilityLayer
                 data={data.dailySales}
-                margin={{ left: 0, right: 8, top: 8, bottom: 0 }}
+                margin={{ left: 0, right: 12, top: 14, bottom: 0 }}
               >
-                <CartesianGrid vertical={false} />
+                <defs>
+                  <linearGradient id="admin-sales-revenue-fill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--color-revenue)" stopOpacity={0.2} />
+                    <stop offset="100%" stopColor="var(--color-revenue)" stopOpacity={0.015} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} stroke="var(--border)" strokeOpacity={0.65} />
                 <XAxis
                   dataKey="label"
                   tickLine={false}
                   axisLine={false}
-                  tickMargin={8}
-                  minTickGap={28}
+                  tickMargin={10}
+                  minTickGap={26}
                 />
                 <YAxis
                   tickLine={false}
                   axisLine={false}
                   width={58}
-                  tickFormatter={(value) =>
-                    compactMoney(Number(value), data.currency)
-                  }
+                  tickFormatter={(value) => formatCurrency(Number(value), currency, true)}
                 />
                 <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="line" />}
+                  cursor={{ stroke: "var(--border)", strokeDasharray: "4 4" }}
+                  content={
+                    <ChartTooltipContent
+                      indicator="line"
+                      formatter={(value) => (
+                        <span className="font-semibold tabular-nums text-foreground">
+                          {formatCurrency(Number(value), currency)}
+                        </span>
+                      )}
+                    />
+                  }
                 />
                 <Area
                   dataKey="revenue"
                   type="monotone"
-                  fill="var(--color-revenue)"
-                  fillOpacity={0.14}
+                  fill="url(#admin-sales-revenue-fill)"
                   stroke="var(--color-revenue)"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
+                  activeDot={{ r: 4, fill: "var(--color-revenue)", stroke: "var(--card)", strokeWidth: 2 }}
                 />
               </AreaChart>
             </ChartContainer>
           </CardContent>
         </Card>
 
-        <Card className="admin-analytics-card admin-analytics-card--source">
+        <Card className="admin-analytics-card admin-sales-channels-card">
           <CardHeader>
-            <CardTitle>Sales source</CardTitle>
-            <CardDescription>
-              Revenue share from website checkout and Square / POS.
-            </CardDescription>
+            <CardTitle>Sales channels</CardTitle>
+            <CardDescription>Revenue split across website checkout and Square / POS.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="admin-analytics-donut-wrap">
-              <ChartContainer
-                config={sourceChartConfig}
-                className="admin-analytics-chart admin-analytics-chart--source h-[13.5rem] w-full aspect-auto"
-              >
-                <PieChart accessibilityLayer>
-                  <ChartTooltip
-                    cursor={false}
-                    content={
-                      <ChartTooltipContent
-                        hideLabel
-                        nameKey="key"
-                        formatter={(value, _name, item) => {
-                          const amount =
-                            typeof value === "number"
-                              ? value
-                              : Number(value);
-                          const payload = item.payload as {
-                            source?: string;
-                            share?: number;
-                          };
-
-                          return (
-                            <div className="flex w-full items-center justify-between gap-4">
-                              <span className="text-muted-foreground">
-                                {payload.source ?? "Revenue"}
-                              </span>
-                              <span className="font-medium tabular-nums text-foreground">
-                                {money.format(Number.isFinite(amount) ? amount : 0)}
-                              </span>
-                            </div>
-                          );
-                        }}
-                      />
-                    }
-                  />
-                  <Pie
-                    data={sourceChartData}
-                    dataKey="revenue"
-                    nameKey="key"
-                    innerRadius={62}
-                    outerRadius={86}
-                    paddingAngle={3}
-                    strokeWidth={0}
-                  />
-                </PieChart>
-              </ChartContainer>
-              <div className="admin-analytics-donut-center" aria-hidden="true">
-                <span>Revenue</span>
-                <strong>{compactMoney(data.metrics.revenue, data.currency)}</strong>
-                <small>30 days</small>
-              </div>
+            <div className="admin-sales-channel-total">
+              <span>Total channel revenue</span>
+              <strong>{formatCurrency(totalChannelRevenue, currency)}</strong>
             </div>
 
-            <div className="admin-analytics-source-summary">
-              {sourceChartData.map((entry) => (
-                <div key={entry.source}>
-                  <div className="admin-analytics-source-label">
+            <div
+              className="admin-sales-channel-track"
+              role="img"
+              aria-label={`Website ${websiteShare.toFixed(1)} percent, Square / POS ${squareShare.toFixed(1)} percent of revenue`}
+            >
+              <span
+                className="admin-sales-channel-fill"
+                style={{ width: `${websiteShare}%` }}
+              />
+            </div>
+
+            <div className="admin-sales-channel-list">
+              {channels.map((entry) => (
+                <div key={entry.key} className="admin-sales-channel-row">
+                  <div className="admin-sales-channel-identity">
                     <span
-                      className={`admin-analytics-source-dot is-${entry.key}`}
+                      className={`admin-sales-channel-dot is-${entry.key}`}
                       aria-hidden="true"
                     />
                     <span>{entry.source}</span>
+                    <small>{entry.orders.toLocaleString("en-AU")} orders</small>
                   </div>
-                  <strong>{money.format(entry.revenue)}</strong>
-                  <small>
-                    {entry.share.toFixed(1)}% · {entry.orders} order
-                    {entry.orders === 1 ? "" : "s"}
-                  </small>
+                  <div className="admin-sales-channel-amount">
+                    <strong>{formatCurrency(entry.revenue, currency)}</strong>
+                    <span>{entry.share.toFixed(1)}%</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -298,12 +222,15 @@ export default function SalesOverview({
         </Card>
       </section>
 
-      <Card className="admin-analytics-card admin-analytics-top-items">
+      <Card className="admin-analytics-card admin-sales-products-card">
         <CardHeader>
-          <CardTitle>Top-selling items</CardTitle>
-          <CardDescription>
-            Ranked by quantity sold in completed orders.
-          </CardDescription>
+          <div className="admin-sales-card-heading">
+            <div>
+              <CardTitle>Top-selling items</CardTitle>
+              <CardDescription>Best performers ranked by units sold.</CardDescription>
+            </div>
+            <span className="admin-sales-card-period">{data.periodLabel}</span>
+          </div>
         </CardHeader>
         <CardContent>
           {data.topItems.length === 0 ? (
@@ -311,41 +238,45 @@ export default function SalesOverview({
               No completed item sales in this period.
             </div>
           ) : (
-            <ol>
-              {data.topItems.map((item, index) => (
-                <li key={item.name}>
-                  <span className="admin-analytics-item-rank">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <div className="admin-analytics-item-copy">
-                    <div>
-                      <strong>{item.name}</strong>
-                      <span>
-                        {item.quantity.toLocaleString("en-AU")} sold ·{" "}
-                        {money.format(item.revenue)}
-                      </span>
-                    </div>
-                    <div
-                      className="admin-analytics-item-bar"
-                      aria-hidden="true"
-                    >
-                      <span
-                        style={{
-                          width: `${Math.max(
-                            4,
-                            (item.quantity / maxItemQuantity) * 100,
-                          )}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <Table className="admin-sales-products-table" aria-label="Top-selling items">
+              <TableHeader>
+                <TableRow>
+                  <TableHead scope="col">Item</TableHead>
+                  <TableHead scope="col" className="admin-sales-numeric">Units</TableHead>
+                  <TableHead scope="col" className="admin-sales-numeric">Revenue</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.topItems.map((item, index) => (
+                  <TableRow key={item.name}>
+                    <TableCell>
+                      <div className="admin-sales-product-identity">
+                        <span className="admin-sales-product-rank">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <div className="admin-sales-product-details">
+                          <strong title={item.name}>{item.name}</strong>
+                          <div className="admin-sales-product-track" aria-hidden="true">
+                            <span
+                              style={{ width: `${(item.quantity / maxQuantity) * 100}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="admin-sales-numeric admin-sales-units">
+                      {item.quantity.toLocaleString("en-AU")}
+                    </TableCell>
+                    <TableCell className="admin-sales-numeric admin-sales-item-revenue">
+                      {formatCurrency(item.revenue, currency)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           )}
         </CardContent>
       </Card>
-
     </main>
   );
 }

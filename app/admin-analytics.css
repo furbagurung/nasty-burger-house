@@ -685,3 +685,570 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/*
+ * Home Dashboard — SaaS sales overview.
+ * Scoped here so Vercel Website Analytics retains its own chart layout.
+ * Colours are semantic and follow docs/DARK_THEME.md.
+ */
+.admin-modern .admin-main.admin-sales-main {
+  --admin-sales-accent: var(--admin-sidebar-active, #ac3342);
+  --admin-sales-positive: #21694b;
+  --admin-sales-negative: var(--admin-sales-accent);
+  --admin-sales-secondary: color-mix(in srgb, var(--muted-foreground) 73%, var(--foreground));
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  background: color-mix(in srgb, var(--admin-sidebar-selected, #f8e2e5) 9%, var(--background));
+}
+
+.admin-sales-main .admin-analytics-intro {
+  align-items: center;
+  padding-block: 0.05rem 0.25rem;
+}
+
+.admin-sales-main .admin-analytics-intro h2 {
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  font-weight: 780;
+}
+
+.admin-sales-period {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2rem;
+  border-color: var(--border);
+  border-radius: 0.65rem;
+  background: var(--card);
+  color: var(--foreground);
+  padding: 0.45rem 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.admin-sales-period svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  color: var(--admin-sales-accent);
+}
+
+.admin-modern .admin-sales-main .admin-sales-metrics {
+  gap: 0.8rem;
+}
+
+.admin-modern .admin-sales-main .admin-modern-metric {
+  min-height: 8.65rem;
+  border: 1px solid var(--border) !important;
+  border-radius: 0.85rem !important;
+  background: var(--card) !important;
+  box-shadow: none !important;
+}
+
+.admin-modern .admin-sales-main .admin-modern-metric-header {
+  padding: 1rem 1rem 0;
+}
+
+.admin-modern .admin-sales-main .admin-modern-metric-label {
+  color: var(--muted-foreground);
+  font-size: 0.72rem;
+  font-weight: 680;
+}
+
+.admin-modern .admin-sales-main .admin-modern-metric-icon {
+  width: 2.1rem;
+  height: 2.1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.62rem;
+  background: color-mix(in srgb, var(--muted) 55%, var(--card));
+  color: var(--foreground);
+}
+
+.admin-modern .admin-sales-main .admin-modern-metric[data-tone="brand"] .admin-modern-metric-icon {
+  border-color: color-mix(in srgb, var(--admin-sales-accent) 14%, var(--border));
+  background: color-mix(in srgb, var(--admin-sales-accent) 9%, var(--card));
+  color: var(--admin-sales-accent);
+}
+
+.admin-modern .admin-sales-main .admin-modern-metric-content {
+  gap: 0.4rem;
+  padding: 0.15rem 1rem 1rem;
+}
+
+.admin-modern .admin-sales-main .admin-modern-metric-value {
+  font-size: clamp(1.75rem, 2.35vw, 2.15rem);
+  font-weight: 770;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+}
+
+.admin-sales-main .admin-modern-metric-trend-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.admin-sales-main .admin-modern-metric-trend {
+  display: inline-flex;
+  width: auto;
+  height: 1.45rem;
+  align-items: center;
+  gap: 0.2rem;
+  border: 1px solid transparent;
+  border-radius: 0.42rem;
+  padding: 0.15rem 0.42rem;
+  font-size: 0.65rem;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-sales-main .admin-modern-metric-trend svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.admin-sales-main .admin-modern-metric-trend.is-up {
+  border-color: color-mix(in srgb, var(--admin-sales-positive) 17%, transparent);
+  background: color-mix(in srgb, var(--admin-sales-positive) 10%, var(--card));
+  color: var(--admin-sales-positive);
+}
+
+.admin-sales-main .admin-modern-metric-trend.is-down {
+  border-color: color-mix(in srgb, var(--admin-sales-negative) 17%, transparent);
+  background: color-mix(in srgb, var(--admin-sales-negative) 10%, var(--card));
+  color: var(--admin-sales-negative);
+}
+
+.admin-sales-main .admin-modern-metric-trend:is(.is-unknown, .is-flat) {
+  border-color: var(--border);
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.admin-sales-main .admin-modern-metric-comparison,
+.admin-sales-main .admin-modern-metric-hint {
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+  font-weight: 520;
+  line-height: 1.45;
+}
+
+.admin-sales-main .admin-modern-metric-hint {
+  margin: 0;
+}
+
+.admin-sales-charts {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1.75fr) minmax(17.5rem, 0.83fr);
+  gap: 0.85rem;
+}
+
+.admin-sales-main .admin-analytics-card {
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: var(--card);
+  box-shadow: none;
+}
+
+.admin-sales-main .admin-analytics-card [data-slot="card-header"] {
+  padding-bottom: 0.25rem;
+}
+
+.admin-sales-main .admin-analytics-card [data-slot="card-title"] {
+  font-size: 0.89rem;
+  font-weight: 740;
+}
+
+.admin-sales-main .admin-analytics-card [data-slot="card-description"] {
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.admin-sales-card-heading {
+  display: flex;
+  min-width: 0;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.admin-sales-card-heading > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.3rem;
+}
+
+.admin-sales-card-period {
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--muted) 65%, var(--card));
+  color: var(--muted-foreground);
+  padding: 0.3rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 650;
+}
+
+.admin-sales-revenue-chart {
+  height: 16rem !important;
+  min-width: 0;
+  color: var(--muted-foreground);
+}
+
+.admin-sales-channels-card {
+  align-content: start;
+}
+
+.admin-sales-channels-card [data-slot="card-content"] {
+  display: grid;
+  gap: 0.95rem;
+  padding-top: 0.5rem;
+}
+
+.admin-sales-channel-total {
+  display: grid;
+  gap: 0.22rem;
+}
+
+.admin-sales-channel-total > span {
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.admin-sales-channel-total > strong {
+  color: var(--foreground);
+  font-size: clamp(1.45rem, 2.2vw, 1.85rem);
+  font-weight: 770;
+  letter-spacing: -0.048em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+
+.admin-sales-channel-track {
+  width: 100%;
+  height: 0.7rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--admin-sales-secondary);
+}
+
+.admin-sales-channel-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--admin-sales-accent);
+}
+
+.admin-sales-channel-list {
+  display: grid;
+  gap: 0;
+}
+
+.admin-sales-channel-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  border-top: 1px solid var(--border);
+  padding: 0.65rem 0;
+}
+
+.admin-sales-channel-row:last-child {
+  padding-bottom: 0;
+}
+
+.admin-sales-channel-identity,
+.admin-sales-channel-amount {
+  display: grid;
+  min-width: 0;
+  gap: 0.17rem;
+}
+
+.admin-sales-channel-identity {
+  grid-template-columns: 0.6rem minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.45rem;
+}
+
+.admin-sales-channel-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+}
+
+.admin-sales-channel-dot.is-website {
+  background: var(--admin-sales-accent);
+}
+
+.admin-sales-channel-dot.is-square {
+  background: var(--admin-sales-secondary);
+}
+
+.admin-sales-channel-identity > span:nth-child(2) {
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 0.73rem;
+  font-weight: 720;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-sales-channel-identity > small {
+  grid-column: 2;
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+}
+
+.admin-sales-channel-amount {
+  flex: 0 0 auto;
+  justify-items: end;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-sales-channel-amount strong {
+  color: var(--foreground);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.admin-sales-channel-amount span {
+  color: var(--muted-foreground);
+  font-size: 0.66rem;
+  font-weight: 650;
+}
+
+.admin-sales-products-card [data-slot="card-content"] {
+  min-width: 0;
+  padding-top: 0.15rem;
+}
+
+.admin-sales-products-table [data-slot="table-head"] {
+  height: 2.25rem;
+  padding-inline: 0.7rem;
+  background: color-mix(in srgb, var(--muted) 45%, var(--card));
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.admin-sales-products-table [data-slot="table-cell"] {
+  padding: 0.7rem;
+  color: var(--foreground);
+  font-size: 0.76rem;
+}
+
+.admin-sales-products-table [data-slot="table-row"] {
+  border-color: var(--border);
+}
+
+.admin-sales-products-table [data-slot="table-body"] [data-slot="table-row"]:hover {
+  background: color-mix(in srgb, var(--muted) 50%, transparent);
+}
+
+.admin-sales-products-table .admin-sales-numeric {
+  width: 7.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-sales-products-table .admin-sales-item-revenue {
+  font-weight: 750;
+}
+
+.admin-sales-product-identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.admin-sales-product-rank {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: 0 0 1.75rem;
+  place-items: center;
+  border-radius: 0.5rem;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 0.63rem;
+  font-weight: 740;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-sales-products-table [data-slot="table-body"] [data-slot="table-row"]:first-child .admin-sales-product-rank {
+  background: color-mix(in srgb, var(--admin-sales-accent) 12%, var(--card));
+  color: var(--admin-sales-accent);
+}
+
+.admin-sales-product-details {
+  display: grid;
+  width: min(100%, 32rem);
+  min-width: 0;
+  gap: 0.45rem;
+}
+
+.admin-sales-product-details > strong {
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 0.76rem;
+  font-weight: 720;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-sales-product-track {
+  width: 100%;
+  height: 0.25rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--muted);
+}
+
+.admin-sales-product-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--admin-sales-accent);
+}
+
+.dark .admin-modern .admin-sales-main {
+  --admin-sales-accent: var(--nb-dark-accent);
+  --admin-sales-positive: var(--nb-dark-success);
+  --admin-sales-negative: var(--nb-dark-danger);
+  --admin-sales-secondary: color-mix(in srgb, var(--nb-dark-text-secondary) 70%, var(--nb-dark-text-primary));
+  background: var(--nb-dark-canvas);
+}
+
+.dark .admin-modern .admin-sales-main .admin-modern-metric,
+.dark .admin-modern .admin-sales-main .admin-analytics-card {
+  border-color: var(--nb-dark-border) !important;
+  background: var(--nb-dark-surface) !important;
+}
+
+.dark .admin-modern .admin-sales-main .admin-modern-metric-icon {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-primary);
+}
+
+@media (max-width: 1150px) {
+  .admin-sales-charts {
+    grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.75fr);
+  }
+
+  .admin-sales-main .admin-modern-metric-comparison {
+    display: none;
+  }
+}
+
+@media (max-width: 950px) {
+  .admin-sales-charts {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sales-revenue-chart {
+    height: 15rem !important;
+  }
+
+  .admin-sales-channels-card [data-slot="card-content"] {
+    grid-template-columns: minmax(0, 0.6fr) minmax(0, 1.4fr);
+    align-items: center;
+  }
+
+  .admin-sales-channels-card .admin-sales-channel-list {
+    grid-row: 1 / 3;
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-modern .admin-main.admin-sales-main {
+    gap: 0.75rem;
+  }
+
+  .admin-sales-main .admin-analytics-intro {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .admin-sales-channels-card [data-slot="card-content"] {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sales-channels-card .admin-sales-channel-list {
+    grid-row: auto;
+    grid-column: auto;
+  }
+
+  .admin-sales-revenue-chart {
+    height: 13.5rem !important;
+  }
+
+  .admin-modern .admin-sales-main .admin-modern-metric {
+    min-height: 8rem;
+  }
+
+  .admin-modern .admin-sales-main .admin-modern-metric-header {
+    padding: 0.85rem 0.8rem 0;
+  }
+
+  .admin-modern .admin-sales-main .admin-modern-metric-content {
+    padding: 0.1rem 0.8rem 0.85rem;
+  }
+
+  .admin-modern .admin-sales-main .admin-modern-metric-value {
+    font-size: clamp(1.45rem, 5vw, 1.9rem);
+  }
+
+  .admin-sales-main .admin-modern-metric-comparison {
+    display: none;
+  }
+
+  .admin-sales-products-table [data-slot="table-cell"],
+  .admin-sales-products-table [data-slot="table-head"] {
+    padding-inline: 0.45rem;
+  }
+
+  .admin-sales-products-table .admin-sales-numeric {
+    width: auto;
+    min-width: 4.5rem;
+  }
+
+  .admin-sales-product-identity {
+    gap: 0.5rem;
+  }
+
+  .admin-sales-product-track {
+    min-width: 3rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-modern .admin-sales-main .admin-sales-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sales-card-period {
+    display: none;
+  }
+
+  .admin-sales-products-table [data-slot="table-cell"],
+  .admin-sales-products-table [data-slot="table-head"] {
+    padding-inline: 0.3rem;
+  }
+
+  .admin-sales-product-rank {
+    width: 1.45rem;
+    height: 1.45rem;
+    flex-basis: 1.45rem;
+  }
+}

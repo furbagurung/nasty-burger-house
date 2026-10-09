@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import AdminOrderDashboard from "../components/admin-order-dashboard";
+import { AdminWorkspaceHeader } from "../components/admin-workspace-header";
 import { verifyAdmin } from "../lib/admin-auth";
-import { getAdminNotificationConfig } from "../lib/admin-notifications";
-import { loadAdminOrders } from "../lib/admin-orders";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +20,7 @@ export default async function AdminPage() {
           <h1>Admin backend setup required.</h1>
           <p>
             Add the Supabase environment variables and apply the customer
-            platform migration before opening Order Control.
+            platform migration before using the admin workspace.
           </p>
           <Link href="/">Return to website</Link>
         </section>
@@ -30,14 +28,10 @@ export default async function AdminPage() {
     );
   }
 
-  const orders = await loadAdminOrders(auth.admin);
-  const notificationConfig = getAdminNotificationConfig();
-
   return (
-    <AdminOrderDashboard
-      initialOrders={orders}
-      adminEmail={auth.user.email}
-      notificationConfig={notificationConfig}
-    />
+    <div className="admin-shell admin-modern">
+      <AdminWorkspaceHeader title="Dashboard" active="dashboard" adminEmail={auth.user.email} />
+      <main className="admin-main" aria-label="Admin dashboard" />
+    </div>
   );
 }

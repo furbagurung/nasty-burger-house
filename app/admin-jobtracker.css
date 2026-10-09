@@ -713,12 +713,22 @@
   overflow-y: auto;
 }
 
+/* One shared brand/toggle row instead of stacking the toggle over the logo. */
+.admin-macos-sidebar__top {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 4.25rem;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.65rem 0.65rem 0.55rem;
+}
+
 .admin-macos-sidebar__toolbar {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
-  justify-content: flex-end;
-  min-height: 2.5rem;
-  padding: 0.75rem 0.85rem 0.15rem;
+  justify-content: center;
 }
 
 .admin-macos-sidebar__toggle {
@@ -738,12 +748,43 @@
 }
 
 .admin-macos-sidebar__brand {
+  flex: 1 1 auto;
   min-width: 0;
   background: transparent;
 }
 
 .admin-macos-sidebar__brand .admin-jobtracker-sidebar-brand {
-  padding: 0.65rem 1rem 1.4rem;
+  padding: 0;
+}
+
+.admin-macos-sidebar__brand .admin-jobtracker-brand-link {
+  min-width: 0;
+  gap: 0.4rem;
+}
+
+.admin-macos-sidebar__brand .admin-jobtracker-brand-mark {
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 0.55rem;
+}
+
+.admin-macos-sidebar__brand .admin-jobtracker-brand-copy {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.admin-macos-sidebar__brand .admin-jobtracker-brand-copy strong {
+  overflow: hidden;
+  font-size: 0.7rem;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+}
+
+.admin-macos-sidebar__brand .admin-jobtracker-brand-copy small {
+  overflow: hidden;
+  font-size: 0.65rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .admin-macos-sidebar__navigation {
@@ -844,12 +885,13 @@
   box-shadow: none;
 }
 
-.admin-macos-sidebar[data-collapsed="true"] .admin-macos-sidebar__toolbar {
+.admin-macos-sidebar[data-collapsed="true"] .admin-macos-sidebar__top {
   justify-content: center;
+  padding-inline: 0.4rem;
 }
 
-.admin-macos-sidebar[data-collapsed="true"] .admin-macos-sidebar__brand .admin-jobtracker-sidebar-brand {
-  padding: 0.6rem 0.2rem;
+.admin-macos-sidebar[data-collapsed="true"] .admin-macos-sidebar__toolbar {
+  justify-content: center;
 }
 
 .admin-macos-sidebar[data-collapsed="true"] .admin-jobtracker-brand-copy,

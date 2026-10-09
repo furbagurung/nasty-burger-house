@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronLeft, Trash2 } from "lucide-react";
+import { ChevronDown, Trash2 } from "lucide-react";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import Image from "next/image";
 import Link from "next/link";
@@ -206,10 +206,6 @@ export default function CartPage() {
       />
       <main className="cart-redesign-main">
         <header className="cart-redesign-header cart-redesign-header--desktop">
-          <Link className="cart-redesign-back" href="/menu/burgers" aria-label="Back to menu">
-            <ChevronLeft size={24} strokeWidth={2.3} aria-hidden="true" />
-          </Link>
-
           <div className="cart-redesign-title-wrap">
             <div className="cart-redesign-title-row">
               <h1>Cart</h1>

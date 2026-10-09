@@ -155,3 +155,8 @@ Then test:
 - test cancelled order points are void
 - test reviews are rejected until the order is completed
 - test admin access is forbidden to ordinary customer accounts
+
+
+## Admin Menu Management drafts (Phase 2A)
+
+After the existing migrations, apply `supabase/migrations/202610090001_admin_menu_drafts.sql` to enable private menu draft storage, optimistic version checks and an automatic audit history. Do not run against production without approval. The menu admin page remains read-only until this migration exists. These drafts do **not** change customer prices or Square checkout. Details: [MENU_MANAGEMENT.md](./MENU_MANAGEMENT.md).

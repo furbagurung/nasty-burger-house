@@ -52,3 +52,10 @@ app/api/                      Existing endpoints unchanged
 Run `npm run lint`, `npm run build`; test all admin routes, auth redirects, login/logout, Customers and Reviews actions, Light/Dark, keyboard access, collapse/mobile, skeletons and customer checkout. Source checks do not replace running a full build.
 
 **Never deploy without explicit approval.**
+
+
+## Menu Management: draft-only module
+
+The new `features/admin/menu/` module owns product draft validation, admin-only server persistence and the shadcn UI. The protected route is `app/admin/(workspace)/menu/page.tsx`; the authorized write endpoint is `app/api/admin/menu/[itemId]/route.ts`. Database storage and versioned audit history require `supabase/migrations/202610090001_admin_menu_drafts.sql`.
+
+**Intentional safety boundary:** Drafts do not change `app/data/menu.ts`, public pages, order validation, or Square checkout. Refer to [MENU_MANAGEMENT.md](./MENU_MANAGEMENT.md) before designing a publish workflow.

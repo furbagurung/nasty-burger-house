@@ -87,3 +87,8 @@ for its global headings and form controls. Therefore admin typography overrides
 must use **scoped `!important` declarations** on admin headings and fields.
 Keep the public site's Bowlby One SC styling unchanged. The admin Analytics
 heading and every other page `h1`–`h6` must compute to Inter.
+
+
+### Portalled Menu editor
+
+The Menu Management editor is a shadcn Sheet rendered outside the admin layout tree. Its `admin-menu-editor-sheet` class explicitly inherits Inter and theme-aware popover colors; do not allow customer-global Bowlby/DM Sans overrides to leak into this admin form.

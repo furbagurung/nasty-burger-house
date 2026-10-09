@@ -11,11 +11,6 @@ const plannedModules: Record<string, { title: string; description: string; phase
     description: "Traffic, orders and customer insights will appear here when verified reporting sources are connected.",
     phase: "Overview",
   },
-  menu: {
-    title: "Menu",
-    description: "Menu items, categories, pricing and item availability management are planned for this section.",
-    phase: "Business",
-  },
   "drip-points": {
     title: "Drip Points",
     description: "Loyalty balances, earning rules and adjustments will be available after secure permissions and data validation are ready.",

@@ -178,3 +178,20 @@
 .admin-jobtracker-mobile-drawer :is(button, input, textarea, select) {
   font-family: var(--font-inter), Arial, Helvetica, sans-serif !important;
 }
+
+
+/* The Menu editor uses a shadcn Sheet portal outside .admin-shell.
+   Scope Inter overrides to that portal without changing customer Sheets. */
+.admin-menu-editor-sheet {
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif !important;
+  background: var(--popover);
+  color: var(--popover-foreground);
+}
+.admin-menu-editor-sheet :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif !important;
+  font-weight: var(--admin-font-weight-semibold, 600) !important;
+  letter-spacing: -0.02em !important;
+}
+.admin-menu-editor-sheet :is(button, input, textarea, select, label) {
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif !important;
+}

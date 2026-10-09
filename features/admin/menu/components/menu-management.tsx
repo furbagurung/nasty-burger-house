@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { AlertCircle, CheckCircle2, Search, XCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2, Grid2X2, List, Search, XCircle } from "lucide-react";
 import { menuItems } from "@/app/data/menu";
 import { menuPageCategories } from "@/app/data/menu-pages";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,7 @@ export function AdminMenuManagement({
   reason?: AvailabilityError;
 }) {
   const [soldOutIds, setSoldOutIds] = useState(initialSoldOutIds);
+  const [view, setView] = useState<"grid" | "list">("grid");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -136,10 +137,60 @@ export function AdminMenuManagement({
         </div>
       </div>
 
-      <p className="text-xs text-muted-foreground" aria-live="polite">
-        Showing {visibleItems.length} of {menuItems.length} products
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-muted-foreground" aria-live="polite">
+          Showing {visibleItems.length} of {menuItems.length} products
+        </p>
+        <div role="group" aria-label="Menu view" className="inline-flex items-center gap-1 rounded-lg border border-border bg-muted/40 p-1">
+          <Button type="button" size="sm" variant={view === "grid" ? "secondary" : "ghost"}
+            aria-label="Grid view" aria-pressed={view === "grid"}
+            onClick={() => setView("grid")}>
+            <Grid2X2 size={16} aria-hidden="true" /> Grid
+          </Button>
+          <Button type="button" size="sm" variant={view === "list" ? "secondary" : "ghost"}
+            aria-label="List view" aria-pressed={view === "list"}
+            onClick={() => setView("list")}>
+            <List size={16} aria-hidden="true" /> List
+          </Button>
+        </div>
+      </div>
 
+      {view === "grid" && (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {visibleItems.map((item) => {
+            const soldOut = soldOutSet.has(item.id);
+            return (
+              <article key={item.id} className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card p-2.5 sm:p-3">
+                <div className="relative aspect-square overflow-hidden rounded-md bg-muted/30">
+                  <Image src={item.image ?? "/logo.webp"} alt="" fill
+                    sizes="(max-width: 639px) 45vw, (max-width: 1023px) 30vw, 240px"
+                    className="object-contain p-2" />
+                  {soldOut && (
+                    <Badge variant="destructive" className="absolute left-2 top-2">Sold out</Badge>
+                  )}
+                </div>
+                <div className="flex flex-1 flex-col gap-1 px-0.5 pt-3">
+                  <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-foreground">{item.name}</h3>
+                  <p className="text-xs text-muted-foreground">{categoryLabels.get(item.category) ?? item.category}</p>
+                  <p className="mt-auto pt-1 text-sm font-semibold tabular-nums text-foreground">{money.format(item.price)}</p>
+                </div>
+                <Button className="mt-3 w-full" type="button" size="sm"
+                  variant={soldOut ? "outline" : "secondary"}
+                  disabled={!ready || Boolean(pendingId)}
+                  aria-pressed={soldOut}
+                  aria-label={`${soldOut ? "Mark available" : "Mark sold out"}: ${item.name}`}
+                  onClick={() => void updateSoldOut(item.id, !soldOut)}>
+                  {soldOut ? <CheckCircle2 size={15} aria-hidden="true" /> : <XCircle size={15} aria-hidden="true" />}
+                  {pendingId === item.id ? "Saving…" : soldOut ? "Mark available" : "Mark sold out"}
+                </Button>
+              </article>
+            );
+          })}
+        </div>
+      )}
+
+      {view === "list" && (
+        <>
       <div className="hidden overflow-hidden rounded-lg border border-border md:block">
         <Table>
           <TableHeader>
@@ -210,6 +261,8 @@ export function AdminMenuManagement({
           );
         })}
       </div>
+        </>
+      )}
 
       {visibleItems.length === 0 &&
         <p role="status" className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">

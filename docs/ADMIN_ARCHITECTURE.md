@@ -61,3 +61,14 @@ The Menu module now supports only Sold Out / Available. The `features/admin/menu
 The public Home/Menu/Product pages use the same status on fresh requests and `POST /api/orders` validates it again before Square checkout. The existing protected shell, navigation, skeletons, Inter typography, Light/Dark themes and unrelated admin features remain intact.
 
 Details: [MENU_MANAGEMENT.md](./MENU_MANAGEMENT.md).
+
+
+## Phase 3A — read-only Drip Points
+
+`app/admin/(workspace)/drip-points/page.tsx` is a protected, dynamic route under the persistent admin shell. `features/admin/drip-points/server.ts` joins the existing `loadAdminSquareLoyaltyMembers()` customer loader with `getSquareLoyaltyProgram()`. The lightweight server DTO in `features/admin/drip-points/types.ts` drives `components/drip-overview.tsx`, a responsive, searchable and locally paginated read-only view.
+
+No new loyalty ledger, reward assumptions, migrations, balance mutations, point backfills or Square adjustment API endpoints have been added. Square failures are surfaced explicitly instead of displaying fabricated figures. See [DRIP_POINTS_ADMIN.md](./DRIP_POINTS_ADMIN.md).
+
+## Menu grid/list presentation
+
+The existing `features/admin/menu/components/menu-management.tsx` now starts in a responsive image-card **grid** based on the supplied reference. A shadcn button-group switch offers the original **list** presentation. Both call the same authorized Sold Out / Available endpoint; this does not modify any menu or checkout business logic.

@@ -124,7 +124,7 @@ type WebsiteCustomer = Omit<
   | "squareEnrolledAt"
 >;
 
-type SquareEnrolledCustomer = {
+export type SquareEnrolledCustomer = {
   loyaltyAccountId: string | null;
   squareCustomerId: string;
   name: string;
@@ -256,7 +256,7 @@ async function loadSquareDirectoryCustomers(): Promise<SquareEnrolledCustomer[]>
     } satisfies SquareEnrolledCustomer];
   });
 }
-async function loadSquareEnrolledCustomers(): Promise<SquareEnrolledCustomer[]> {
+async function loadSquareEnrolledCustomers(preserveMissingBalances = false): Promise<SquareEnrolledCustomer[]> {
   const loyaltyAccounts = await loadSquareLoyaltyAccounts();
   const customerIds = loyaltyAccounts
     .map((account) => account.customer_id?.trim() ?? "")
@@ -277,12 +277,12 @@ async function loadSquareEnrolledCustomers(): Promise<SquareEnrolledCustomer[]> 
     const balance =
       typeof account.balance === "number" && Number.isFinite(account.balance)
         ? account.balance
-        : 0;
+        : preserveMissingBalances ? null : 0;
     const lifetimePoints =
       typeof account.lifetime_points === "number" &&
       Number.isFinite(account.lifetime_points)
         ? account.lifetime_points
-        : 0;
+        : preserveMissingBalances ? null : 0;
 
     return [
       {
@@ -523,4 +523,10 @@ export async function loadAdminCustomers(
       },
     };
   }
+}
+
+/** Reuse the same Square account/profile joining as Customers, without also
+ * fetching the entire website directory or customer order history. */
+export async function loadAdminSquareLoyaltyMembers(): Promise<SquareEnrolledCustomer[]> {
+  return loadSquareEnrolledCustomers(true);
 }

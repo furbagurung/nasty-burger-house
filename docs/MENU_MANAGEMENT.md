@@ -5,7 +5,7 @@ There is no draft editor, price editing, photo editing, product creation or publ
 
 ## How it works
 
-- The authenticated admin visits `/admin/menu`, searches/filters the existing catalogue, and clicks **Mark sold out** or **Mark available** on an item.
+- The authenticated admin visits `/admin/menu`, searches/filters the existing catalogue, and clicks **Mark sold out** or **Mark available** on an item. A responsive photo **grid** is the default; the Grid / List switch also provides the original table and compact mobile list.
 - The status is saved immediately to a dedicated Supabase `menu_availability` table via an admin-only server endpoint. An audit trigger records who changed it and when.
 - The customer-facing Home/Menu/Product pages read the same status on a fresh page visit and display Sold out. Product purchase buttons are removed for sold-out items.
 - Combo drinks and Beast Box burger/drink options use availability too.

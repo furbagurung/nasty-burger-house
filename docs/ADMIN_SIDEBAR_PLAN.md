@@ -1,6 +1,6 @@
 # Nasty Burger House — Admin Sidebar & Route Plan
 
-**Status:** Navigation groups and authenticated route shells implemented. Feature backends for new modules are **not yet implemented**.
+**Status:** Navigation implemented. Menu and Drip Points now have dedicated modules; the remaining planned sections are read-only placeholders.
 
 ## Approved navigation structure
 
@@ -11,7 +11,7 @@
 | | Customers | `/admin/customers` | Existing real customer management |
 | | Reviews | `/admin/reviews` | Existing real review moderation |
 | **Business** | Menu | `/admin/menu` | Live Sold Out / Available switches; no product editing |
-| | Drip Points | `/admin/drip-points` | Protected planned-module page |
+| | Drip Points | `/admin/drip-points` | Phase 3A: read-only Square members, balances and reward tiers |
 | | Promotions | `/admin/promotions` | Protected planned-module page |
 | **Management** | Reports | `/admin/reports` | Protected planned-module page |
 | | Settings | `/admin/settings` | Protected planned-module page |
@@ -23,7 +23,7 @@
 
 - `features/admin/config/navigation.ts`: one source of truth for **Overview / Business / Management**. `components/admin/layout/` owns the desktop sidebar, mobile shadcn Sheet and top bar; `app/components/admin-workspace-header.tsx` is the persistent controller.
 - `components/macos-sidebar.tsx`: existing reusable sidebar, now supporting optional group labels, icon-only collapsed mode, keyboard-focus styles and route highlighting.
-- `app/admin/(workspace)/[section]/page.tsx`: one small, server-rendered protected route for the **seven planned modules** above. Unknown section slugs return 404. Auth is checked server-side with `verifyAdmin()` before a module screen renders.
+- `app/admin/(workspace)/[section]/page.tsx`: one small, server-rendered protected route for the **five remaining planned modules** above. Unknown section slugs return 404. Auth is checked server-side with `verifyAdmin()` before a module screen renders.
 - `app/admin/(workspace)/page.tsx`, `app/admin/(workspace)/customers/page.tsx`, `app/admin/(workspace)/reviews/page.tsx`: existing explicit routes take precedence; business logic and moderation remain unchanged.
 - `app/components/admin-workspace-footer.tsx`: shared admin-only footer on all authenticated admin pages; no public customer footer.
 - `app/admin/(workspace)/loading.tsx`: shared shadcn `Skeleton` route fallback for server-side auth/data loading, with matching nav/topbar/content geometry. No mock business data or fake figures.
@@ -52,7 +52,7 @@ All admin routes must keep the same sidebar, header, main-content inset, and ded
 
 ### Phase 2 — real operational modules (requires feature approval)
 - Menu: Sold Out / Available status only (implemented; requires menu availability database migration). Checkout blocks unavailable items
-- Drip Points: supported balance/ledger management only after loyalty source-of-truth and secure write rules are agreed
+- Drip Points: Phase 3A read-only Square balance/member/reward overview implemented. History, adjustment and redemption operations need separate approval.
 - Promotions: scheduled offers with validation and rollback
 
 ### Phase 3 — real reporting and management (requires feature approval)
@@ -61,7 +61,7 @@ All admin routes must keep the same sidebar, header, main-content inset, and ded
 - Settings: access-checked business, integration and operating-hour controls
 - Team & Access: invitation-only accounts, role checks and audit trails
 
-**Important:** The new route shells are live code, but their data features are not. Review/approve each backend workflow before exposing writes, managing users or changing production configuration.
+**Important:** Remaining placeholders have no data features. Review/approve each new backend workflow before exposing writes, managing users or changing production configuration.
 
 ## Release checklist
 
@@ -77,7 +77,7 @@ change their public URL paths. The group's server-authenticated `layout.tsx`
 owns the desktop sidebar, mobile Sheet, top header and dedicated admin footer.
 This layout is preserved during soft navigation between admin tabs.
 
-- Dashboard, Customers, Reviews and all seven planned modules render **only
+- Dashboard, Customers, Reviews, Menu, Drip Points and all five remaining planned modules render **only
   their page-specific `<main>` content**, never duplicate the chrome.
 - `(workspace)/loading.tsx` uses shadcn Skeleton for **content only** while a
   new route resolves. The sidebar, collapse state and header remain visible.

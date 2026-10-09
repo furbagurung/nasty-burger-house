@@ -11,11 +11,6 @@ const plannedModules: Record<string, { title: string; description: string; phase
     description: "Traffic, orders and customer insights will appear here when verified reporting sources are connected.",
     phase: "Overview",
   },
-  "drip-points": {
-    title: "Drip Points",
-    description: "Loyalty balances, earning rules and adjustments will be available after secure permissions and data validation are ready.",
-    phase: "Business",
-  },
   promotions: {
     title: "Promotions",
     description: "Promotional offers, campaign scheduling and featured banners are planned for this section.",

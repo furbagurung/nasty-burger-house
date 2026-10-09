@@ -161,7 +161,14 @@ export default function AccountChangePassword() {
             aria-expanded={open}
             aria-controls="account-security-form"
             disabled={saving}
-            onClick={() => open ? closeForm() : (setSuccess(false), setOpen(true))}
+            onClick={() => {
+              if (open) {
+                closeForm();
+              } else {
+                setSuccess(false);
+                setOpen(true);
+              }
+            }}
           >
             {open ? "Cancel" : "Change"}
           </Button>

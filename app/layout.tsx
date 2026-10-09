@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bowlby_One_SC, DM_Sans, Geist_Mono } from "next/font/google";
 
+import AppearanceProvider from "./components/appearance-provider";
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
 import ClosureAnnouncement from "./components/closure-announcement";
 import CookieSettings from "./components/cookie-settings";
@@ -90,6 +91,7 @@ import "./admin-jobtracker.css";
 import "./checkout-polish.css";
 import "./mobile-page-header.css";
 import "./quantity-stepper.css";
+import "./theme-dark.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -118,8 +120,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${dmSans.variable} ${bowlbyOneSC.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body>
+        <AppearanceProvider>
         <HomeTopHeader />
         <ClosureAnnouncement />
         <MobileHomeLocation />
@@ -135,7 +139,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <FooterLegalLinks />
         <CookieSettings />
         <ToastProvider />
-
+        </AppearanceProvider>
       </body>
     </html>
   );

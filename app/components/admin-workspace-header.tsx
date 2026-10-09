@@ -6,7 +6,6 @@ import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowUpRight,
   BellRing,
-  ClipboardList,
   ExternalLink,
   LogOut,
   Menu,
@@ -25,7 +24,6 @@ import { Badge } from "@/components/ui/badge";
 type AdminSection = "orders" | "customers" | "reviews";
 
 const sections = [
-  { id: "orders" as const, label: "Orders", href: "/admin", icon: ClipboardList },
   { id: "customers" as const, label: "Customers", href: "/admin/customers", icon: Users },
   { id: "reviews" as const, label: "Reviews", href: "/admin/reviews", icon: MessageSquareText },
 ];

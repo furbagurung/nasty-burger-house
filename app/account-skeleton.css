@@ -424,3 +424,195 @@
     animation: none;
   }
 }
+
+
+/* Receipt-shaped loading skeleton for /account/orders/[orderId].
+   Shares the existing shimmer and reduced-motion rules. */
+.account-skeleton-detail-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.account-skeleton-detail-heading-copy {
+  display: grid;
+  min-width: 0;
+  width: min(100%, 25rem);
+  gap: 0.8rem;
+}
+
+.account-skeleton-detail-order-id {
+  width: 75%;
+  height: 2.4rem;
+  border-radius: 0.55rem;
+}
+
+.account-skeleton-detail-date {
+  width: min(65%, 14rem);
+  height: 0.7rem;
+}
+
+.account-skeleton-detail-status {
+  width: 6rem;
+  height: 1.65rem;
+  flex: 0 0 6rem;
+  background: #e7f1dd;
+}
+
+.account-skeleton-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
+  align-items: start;
+  gap: 0.85rem;
+}
+
+.account-skeleton-detail-items {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+}
+
+.account-skeleton-detail-items-heading,
+.account-skeleton-detail-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.2rem 0 1rem;
+}
+
+.account-skeleton-detail-section-title {
+  width: 7.5rem;
+  height: 1.2rem;
+  border-radius: 0.4rem;
+}
+
+.account-skeleton-detail-price {
+  width: 5.5rem;
+  height: 1.3rem;
+  border-radius: 0.4rem;
+}
+
+.account-skeleton-detail-item {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr) 4rem;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+  border-top: 1px solid #eee9e3;
+  padding: 1rem 0;
+}
+
+.account-skeleton-detail-image {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 0.8rem;
+}
+
+.account-skeleton-detail-item-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.7rem;
+}
+
+.account-skeleton-detail-item-name {
+  width: min(85%, 13rem);
+  height: 1rem;
+  border-radius: 0.4rem;
+}
+
+.account-skeleton-detail-item-note {
+  width: min(70%, 11rem);
+  height: 0.65rem;
+}
+
+.account-skeleton-detail-item-total {
+  width: 100%;
+  height: 1rem;
+  border-radius: 0.4rem;
+}
+
+.account-skeleton-detail-total {
+  margin-top: 0.3rem;
+  border-top: 1px solid #ddd7cf;
+  padding: 1.15rem 0 0;
+}
+
+.account-skeleton-detail-total-label {
+  width: 6rem;
+  height: 0.8rem;
+  border-radius: 0.4rem;
+}
+
+.account-skeleton-detail-sidebar,
+.account-skeleton-detail-info {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.account-skeleton-detail-customer {
+  width: min(85%, 12rem);
+  height: 0.95rem;
+  border-radius: 0.4rem;
+}
+
+.account-skeleton-detail-points {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.account-skeleton-detail-points-coin {
+  width: 3.8rem;
+  height: 3.8rem;
+  flex: 0 0 3.8rem;
+  border-radius: 999px;
+  background: #f3e1a5;
+}
+
+.account-skeleton-detail-points-number {
+  width: 4rem;
+  height: 1.4rem;
+  border-radius: 0.4rem;
+}
+
+@media (max-width: 960px) {
+  .account-skeleton-detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .account-skeleton-detail-heading {
+    margin-bottom: 1.25rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .account-skeleton-detail-heading {
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .account-skeleton-detail-order-id {
+    height: 1.7rem;
+  }
+
+  .account-skeleton-detail-items,
+  .account-skeleton-detail-info,
+  .account-skeleton-detail-points {
+    padding: 1rem;
+  }
+
+  .account-skeleton-detail-item {
+    grid-template-columns: 3.25rem minmax(0, 1fr) 2.65rem;
+    gap: 0.6rem;
+    padding: 0.85rem 0;
+  }
+
+  .account-skeleton-detail-image {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+}

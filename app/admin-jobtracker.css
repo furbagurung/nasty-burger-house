@@ -583,46 +583,6 @@
   box-shadow: 0 0 0 3px rgba(233, 76, 43, 0.10);
 }
 
-/* Square remains a genuine status report, just no giant colored callout. */
-.admin-modern .admin-square-sync {
-  min-height: 3rem;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.6rem 1rem;
-  padding: 0.75rem 0.9rem;
-  border: 1px solid #e3e8e5;
-  border-radius: 0.75rem;
-  background: #f9fbf9;
-}
-.admin-modern .admin-square-sync.is-connected {
-  border-color: #e0ebe3;
-  background: #f9fcfa;
-}
-.admin-modern .admin-square-sync.is-warning {
-  border-color: #f1e5ce;
-  background: #fffbf4;
-}
-.admin-modern .admin-square-sync > div > div {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0.25rem 0.75rem;
-}
-.admin-modern .admin-square-sync__dot {
-  width: 0.52rem;
-  height: 0.52rem;
-  flex: 0 0 auto;
-}
-.admin-modern .admin-square-sync strong {
-  font-size: 0.76rem;
-  font-weight: 780;
-}
-.admin-modern .admin-square-sync span,
-.admin-modern .admin-square-sync small {
-  font-size: 0.72rem;
-  line-height: 1.45;
-}
-
 /* Light-weight filter pills and comfortable but compact table rows. */
 .admin-modern .admin-filter-bar {
   gap: 0.4rem;

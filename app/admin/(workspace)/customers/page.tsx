@@ -31,10 +31,5 @@ export default async function AdminCustomersPage() {
 
   const portal = await loadAdminCustomers(auth.admin);
 
-  return (
-    <AdminCustomerDashboard
-      customers={portal.customers}
-      squareStatus={portal.square}
-    />
-  );
+  return <AdminCustomerDashboard customers={portal.customers} />;
 }

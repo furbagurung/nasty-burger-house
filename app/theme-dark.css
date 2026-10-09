@@ -472,7 +472,7 @@
 
 /* Match admin controls to the neutral background while preserving status
    semantics. Every badge keeps text visible over its own surface. */
-.dark .admin-modern :is(.admin-square-sync, .admin-filter-bar button, .admin-empty-state) {
+.dark .admin-modern :is(.admin-filter-bar button, .admin-empty-state) {
   border-color: var(--nb-dark-border);
   background: var(--nb-dark-surface);
   color: var(--nb-dark-text-primary);
@@ -483,14 +483,10 @@
   border-color: var(--nb-dark-accent);
   color: var(--nb-dark-accent);
 }
-.dark .admin-modern .admin-square-sync:is(.is-connected, .is-warning) {
-  background: var(--nb-dark-raised);
-  border-color: var(--nb-dark-border);
-}
-.dark .admin-modern :is(.admin-square-sync strong, .admin-empty-state strong) {
+.dark .admin-modern .admin-empty-state strong {
   color: var(--nb-dark-text-primary);
 }
-.dark .admin-modern :is(.admin-square-sync span, .admin-square-sync small, .admin-empty-state span) {
+.dark .admin-modern .admin-empty-state span {
   color: var(--nb-dark-text-secondary);
 }
 .dark .admin-modern .admin-customer-list {

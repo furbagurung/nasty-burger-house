@@ -5,7 +5,6 @@ import { CircleCheck, ClipboardList, Link2, Search, Users } from "lucide-react";
 import type { AdminCustomer } from "@/app/lib/admin-customers";
 import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import CustomerDataTable from "./customer-data-table";
@@ -14,16 +13,8 @@ type Filter = "all" | "website" | "square" | "both";
 
 export default function AdminCustomerDashboard({
   customers,
-  squareStatus,
 }: {
   customers: AdminCustomer[];
-  squareStatus: {
-    connected: boolean;
-    loyaltyCount: number;
-    directoryCount: number | null;
-    directoryError: string | null;
-    error: string | null;
-  };
 }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
@@ -116,33 +107,6 @@ export default function AdminCustomerDashboard({
           />
         </Label>
       </section>
-
-      <Card
-        className={`admin-square-sync ${
-          squareStatus.connected ? "is-connected" : "is-warning"
-        }`}
-        aria-label="Square customer sync status"
-      >
-        <div>
-          <span className="admin-square-sync__dot" aria-hidden="true" />
-          <div>
-            <strong>
-              {squareStatus.connected ? "Square connected" : "Square unavailable"}
-            </strong>
-            <span>
-              {squareStatus.connected
-                ? `${squareCount} customer${squareCount === 1 ? "" : "s"} available from Square${bothCount ? ` · ${bothCount} linked to website` : ""}`
-                : "Website accounts remain available. Check Square API permissions."}
-            </span>
-          </div>
-        </div>
-        {!squareStatus.connected && squareStatus.error && (
-          <small>{squareStatus.error}</small>
-        )}
-        {squareStatus.directoryError && (
-          <small>{squareStatus.directoryError}</small>
-        )}
-      </Card>
 
       <div className="admin-filter-bar" role="group" aria-label="Customer filters">
         {([

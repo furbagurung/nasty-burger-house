@@ -327,7 +327,7 @@
   .mobile-more-sheet__links > .nb-theme-toggle--mobile {
     width: 100%;
     min-height: 4.25rem;
-    border-bottom: 1px solid var(--nb-dark-border);
+    border-bottom: 1px solid #efebe6;
     border-radius: 0;
     padding: 0.72rem 0.1rem;
     text-align: left;
@@ -355,6 +355,9 @@
   .dark .mobile-more-sheet__links > :is(a, button) {
     border-bottom-color: var(--nb-dark-border);
     color: var(--nb-dark-text-primary);
+  }
+  .dark .mobile-more-sheet__links > .nb-theme-toggle--mobile {
+    border-bottom-color: var(--nb-dark-border);
   }
   .dark .mobile-more-sheet__links :is(small, p) {
     color: var(--nb-dark-text-secondary);

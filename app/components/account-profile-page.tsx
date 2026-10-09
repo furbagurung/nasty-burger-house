@@ -243,6 +243,7 @@ export default function AccountProfilePage() {
         </Link>
       </section>
 
+      <div className="account-settings-list" role="group" aria-label="Account settings">
       <section id="profile" className="account-card account-security-card account-manage-card" aria-labelledby="account-profile-title">
         <div className="account-security__header">
           <span className="account-security__icon" aria-hidden="true">
@@ -336,6 +337,7 @@ export default function AccountProfilePage() {
       </section>
 
       <AccountChangePassword />
+      </div>
 
       {backendMode === "supabase" && !profile.phone && phoneModalOpen && (
         <div className="account-loyalty-modal-backdrop" role="presentation">

@@ -168,36 +168,58 @@ body:has(.admin-customer-shell) > .home-top-header {
 }
 
 .admin-customer-table {
-  min-width: 56rem;
+  min-width: 60rem;
+}
+
+.admin-customer-table [data-slot="table-header"] {
+  background: color-mix(in srgb, var(--muted) 58%, var(--card));
+}
+
+.admin-customer-table [data-slot="table-header"] [data-slot="table-row"] {
+  border-bottom-color: color-mix(in srgb, var(--border) 78%, var(--foreground));
 }
 
 .admin-customer-table [data-slot="table-head"] {
-  height: 2.75rem;
-  padding-inline: 1rem;
-  color: var(--muted-foreground);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  height: 3.1rem;
+  padding-inline: 1.25rem;
+  color: var(--foreground);
+  font-size: 0.73rem;
+  font-weight: 750;
+  letter-spacing: 0.008em;
+}
+
+.admin-customer-table [data-slot="table-head"]:first-child,
+.admin-customer-table [data-slot="table-cell"]:first-child {
+  padding-left: 1.45rem;
+}
+
+.admin-customer-table [data-slot="table-head"]:last-child,
+.admin-customer-table [data-slot="table-cell"]:last-child {
+  padding-right: 1.45rem;
+}
+
+.admin-customer-table [data-slot="table-head"][data-sorted="true"] {
+  background: color-mix(in srgb, var(--muted) 82%, var(--card));
 }
 
 .admin-customer-sort-header {
-  height: 2rem;
-  margin-left: -0.6rem;
+  height: 2.15rem;
+  margin-left: -0.55rem;
   padding-inline: 0.55rem;
-  color: inherit;
+  color: var(--foreground);
   font-size: inherit;
   font-weight: inherit;
   letter-spacing: inherit;
 }
 
 .admin-customer-sort-header:hover {
-  background: var(--muted);
+  background: color-mix(in srgb, var(--muted) 82%, transparent);
   color: var(--foreground);
 }
 
 .admin-customer-sort-header svg {
-  width: 0.8rem;
-  height: 0.8rem;
+  width: 0.82rem;
+  height: 0.82rem;
   color: var(--muted-foreground);
 }
 
@@ -210,8 +232,8 @@ body:has(.admin-customer-shell) > .home-top-header {
 }
 
 .admin-customer-table [data-slot="table-cell"] {
-  max-width: 16rem;
-  padding: 0.85rem 1rem;
+  max-width: 17rem;
+  padding: 1rem 1.25rem;
   color: var(--foreground);
 }
 
@@ -219,14 +241,38 @@ body:has(.admin-customer-shell) > .home-top-header {
   border-color: var(--border);
 }
 
-.admin-customer-name,
-.admin-customer-points,
+.admin-customer-table [data-slot="table-body"] [data-slot="table-row"]:hover {
+  background: color-mix(in srgb, var(--muted) 34%, transparent);
+}
+
+.admin-customer-name {
+  display: block;
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 0.82rem;
+  font-weight: 780;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-customer-points {
+  display: block;
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 0.82rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .admin-customer-table-stack > strong {
   display: block;
   overflow: hidden;
   color: var(--foreground);
-  font-size: 0.79rem;
-  font-weight: 700;
+  font-size: 0.76rem;
+  font-weight: 680;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -237,26 +283,28 @@ body:has(.admin-customer-shell) > .home-top-header {
   display: block;
   overflow: hidden;
   color: var(--muted-foreground);
-  font-size: 0.73rem;
-  font-weight: 550;
+  font-size: 0.75rem;
+  font-weight: 520;
   text-decoration: none;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .admin-customer-contact-link:hover {
-  color: #ac3342;
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 0.16rem;
 }
 
 .admin-customer-contact-link:focus-visible {
   border-radius: 0.2rem;
-  outline: 2px solid #ac3342;
+  outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
 
 .admin-customer-table-stack {
   display: grid;
-  gap: 0.16rem;
+  gap: 0.18rem;
 }
 
 .admin-customer-source,
@@ -319,7 +367,7 @@ body:has(.admin-customer-shell) > .home-top-header {
 
 @media (max-width: 980px) {
   .admin-customer-table {
-    min-width: 52rem;
+    min-width: 56rem;
   }
 }
 

@@ -45,13 +45,29 @@ export default function CustomerDataTable({
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} colSpan={header.colSpan}>
-                  {header.isPlaceholder ? null : (
-                    <table.FlexRender header={header} />
-                  )}
-                </TableHead>
-              ))}
+              {headerGroup.headers.map((header) => {
+                const sorted = header.column.getIsSorted();
+
+                return (
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    scope="col"
+                    aria-sort={
+                      sorted === "asc"
+                        ? "ascending"
+                        : sorted === "desc"
+                          ? "descending"
+                          : "none"
+                    }
+                    data-sorted={sorted ? "true" : "false"}
+                  >
+                    {header.isPlaceholder ? null : (
+                      <table.FlexRender header={header} />
+                    )}
+                  </TableHead>
+                );
+              })}
             </TableRow>
           ))}
         </TableHeader>

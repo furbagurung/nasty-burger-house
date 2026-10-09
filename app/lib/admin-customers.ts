@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { User } from "@supabase/supabase-js";
+import { unstable_cache } from "next/cache";
 import { squareRequest } from "./square/api";
 import { getAdminClientOrNull } from "./supabase/admin";
 
@@ -302,6 +303,49 @@ async function loadSquareEnrolledCustomers(preserveMissingBalances = false): Pro
   });
 }
 
+
+type SquareCustomerSnapshot = {
+  customers: SquareEnrolledCustomer[];
+  status: AdminCustomerPortalData["square"];
+};
+
+async function loadSquareCustomerSnapshot(): Promise<SquareCustomerSnapshot> {
+  const squareCustomers = await loadSquareEnrolledCustomers();
+
+  // Directory customers may have POS profiles but no Square Loyalty account.
+  // Read only: never create accounts or adjust loyalty points in this view.
+  let directoryCustomers: SquareEnrolledCustomer[] = [];
+  let directoryCount: number | null = null;
+  let directoryError: string | null = null;
+
+  try {
+    directoryCustomers = await loadSquareDirectoryCustomers();
+    directoryCount = directoryCustomers.length;
+  } catch (error) {
+    console.error("[NBH admin Square directory fetch failed]", error);
+    directoryError =
+      "Square directory could not be loaded; loyalty accounts are still shown.";
+  }
+
+  const loyaltyIds = new Set(
+    squareCustomers.map((customer) => customer.squareCustomerId),
+  );
+  const directoryOnly = directoryCustomers.filter(
+    (customer) => !loyaltyIds.has(customer.squareCustomerId),
+  );
+
+  return {
+    customers: [...squareCustomers, ...directoryOnly],
+    status: {
+      connected: true,
+      loyaltyCount: squareCustomers.length,
+      directoryCount,
+      directoryError,
+      error: null,
+    },
+  };
+}
+
 async function loadWebsiteCustomers(admin: AdminClient): Promise<WebsiteCustomer[]> {
   const [usersResult, customersResult, ordersResult, ledgerResult, adminsResult] =
     await Promise.all([
@@ -376,6 +420,30 @@ async function loadWebsiteCustomers(admin: AdminClient): Promise<WebsiteCustomer
       } satisfies WebsiteCustomer;
     });
 }
+
+const loadCachedWebsiteCustomers = unstable_cache(
+  async () => {
+    const admin = getAdminClientOrNull();
+    if (!admin) {
+      throw new Error("Supabase admin credentials are not configured.");
+    }
+    return loadWebsiteCustomers(admin);
+  },
+  ["nbh-admin-customers-website-v1"],
+  {
+    revalidate: 60,
+    tags: ["nbh-admin-customers-website"],
+  },
+);
+
+const loadCachedSquareCustomerSnapshot = unstable_cache(
+  loadSquareCustomerSnapshot,
+  ["nbh-admin-customers-square-v1"],
+  {
+    revalidate: 300,
+    tags: ["nbh-admin-customers-square"],
+  },
+);
 
 function mergeCustomers(
   websiteCustomers: WebsiteCustomer[],
@@ -469,60 +537,44 @@ function mergeCustomers(
 }
 
 export async function loadAdminCustomers(
-  admin: AdminClient,
+  _admin: AdminClient,
 ): Promise<AdminCustomerPortalData> {
-  const websiteCustomers = await loadWebsiteCustomers(admin);
+  // Authentication stays fully dynamic. Only the shared customer datasets are
+  // cached, so returning to Customers can reuse a recent server result.
+  const websitePromise = loadCachedWebsiteCustomers();
+  const squarePromise = loadCachedSquareCustomerSnapshot()
+    .then((snapshot) => ({ ok: true as const, snapshot }))
+    .catch((error: unknown) => ({ ok: false as const, error }));
 
-  try {
-    const squareCustomers = await loadSquareEnrolledCustomers();
+  const [websiteCustomers, squareResult] = await Promise.all([
+    websitePromise,
+    squarePromise,
+  ]);
 
-    // Directory customers may have POS profiles but no Square Loyalty account.
-    // Read only: never create accounts or adjust loyalty points in this view.
-    let directoryCustomers: SquareEnrolledCustomer[] = [];
-    let directoryCount: number | null = null;
-    let directoryError: string | null = null;
-
-    try {
-      directoryCustomers = await loadSquareDirectoryCustomers();
-      directoryCount = directoryCustomers.length;
-    } catch (error) {
-      console.error("[NBH admin Square directory fetch failed]", error);
-      directoryError = "Square directory could not be loaded; loyalty accounts are still shown.";
-    }
-
-    const loyaltyIds = new Set(
-      squareCustomers.map((customer) => customer.squareCustomerId),
-    );
-    const directoryOnly = directoryCustomers.filter(
-      (customer) => !loyaltyIds.has(customer.squareCustomerId),
-    );
-
+  if (squareResult.ok) {
     return {
-      customers: mergeCustomers(websiteCustomers, [...squareCustomers, ...directoryOnly]),
-      square: {
-        connected: true,
-        loyaltyCount: squareCustomers.length,
-        directoryCount,
-        directoryError,
-        error: null,
-      },
-    };
-  } catch (error) {
-    console.error("[NBH admin Square customer sync failed]", error);
-    return {
-      customers: mergeCustomers(websiteCustomers, []),
-      square: {
-        connected: false,
-        loyaltyCount: 0,
-        directoryCount: null,
-        directoryError: null,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Square loyalty customers could not be loaded.",
-      },
+      customers: mergeCustomers(
+        websiteCustomers,
+        squareResult.snapshot.customers,
+      ),
+      square: squareResult.snapshot.status,
     };
   }
+
+  console.error("[NBH admin Square customer sync failed]", squareResult.error);
+  return {
+    customers: mergeCustomers(websiteCustomers, []),
+    square: {
+      connected: false,
+      loyaltyCount: 0,
+      directoryCount: null,
+      directoryError: null,
+      error:
+        squareResult.error instanceof Error
+          ? squareResult.error.message
+          : "Square loyalty customers could not be loaded.",
+    },
+  };
 }
 
 /** Reuse the same Square account/profile joining as Customers, without also

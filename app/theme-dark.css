@@ -257,26 +257,36 @@
   color: var(--nb-dark-text-secondary);
 }
 
-/* The sidebar is intentionally dark even in light mode; in full dark mode
-   use the same neutral elevation scale and quieter orange accent. */
+/* Both desktop macOS sidebar and mobile Sheet follow the same saved
+   appearance setting as the admin workspace. All colours come from shared
+   dark tokens; the light defaults live in admin-jobtracker.css. */
 .dark .admin-modern .admin-macos-sidebar.admin-jobtracker-sidebar,
 .dark .admin-jobtracker-mobile-drawer[data-slot="sheet-content"] {
   --admin-sidebar-bg: var(--nb-dark-canvas);
   --admin-sidebar-line: var(--nb-dark-border);
   --admin-sidebar-muted: var(--nb-dark-text-secondary);
   --admin-sidebar-text: var(--nb-dark-text-primary);
+  --admin-sidebar-nav: var(--nb-dark-text-primary);
   --admin-sidebar-active: var(--nb-dark-accent);
-  background: var(--nb-dark-canvas);
+  --admin-sidebar-selected: var(--nb-dark-hover);
+  --admin-sidebar-hover: var(--nb-dark-raised);
+  --admin-sidebar-toggle: var(--nb-dark-text-primary);
+  --admin-sidebar-toggle-hover: var(--nb-dark-hover);
+  --admin-sidebar-logout: var(--nb-dark-danger);
+  border-color: var(--admin-sidebar-line);
+  background: var(--admin-sidebar-bg);
+  color: var(--admin-sidebar-text);
 }
-.dark .admin-modern .admin-macos-sidebar .admin-macos-sidebar__link.is-current {
-  color: var(--nb-dark-accent);
+
+.dark .admin-modern .admin-macos-sidebar .admin-macos-sidebar__toggle:is(:hover, :focus-visible) {
+  background: var(--admin-sidebar-toggle-hover);
+  color: var(--admin-sidebar-text);
 }
-.dark .admin-modern .admin-macos-sidebar .admin-macos-sidebar__selection,
-.dark .admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link.is-current {
-  background: var(--nb-dark-hover) !important;
-}
-.dark .admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link.is-current {
-  color: var(--nb-dark-accent) !important;
+
+.dark .admin-modern .admin-macos-sidebar .admin-jobtracker-profile-avatar,
+.dark .admin-jobtracker-mobile-drawer .admin-jobtracker-profile-avatar {
+  background: var(--nb-dark-raised) !important;
+  color: var(--nb-dark-text-primary) !important;
 }
 
 /* Global appearance toggle is shared by both customer and admin UI. */

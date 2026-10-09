@@ -282,7 +282,7 @@ export default function OrderExperience({
     () =>
       popularPickIds
         .map((id) => items.find((item) => item.id === id))
-        .filter((item): item is MenuItem => Boolean(item) && !item?.soldOut),
+        .filter((item): item is MenuItem => Boolean(item)),
     [items, popularPickIds],
   );
 
@@ -1089,6 +1089,7 @@ export default function OrderExperience({
                 className="popular-pick-card"
                 href={`/product/${item.id}`}
                 key={item.id}
+                aria-label={`${item.name} — ${item.soldOut ? "Sold out" : formatPrice(item.price)}`}
               >
                 <span className="popular-pick-card__media">
                   {item.image ? (
@@ -1099,6 +1100,11 @@ export default function OrderExperience({
                       sizes="(max-width: 680px) 36vw, 240px"
                     />
                   ) : null}
+                  {item.soldOut && (
+                    <span className="absolute left-2 top-2 z-10 rounded-full border border-destructive/20 bg-destructive px-2.5 py-1 text-xs font-semibold leading-none text-destructive-foreground">
+                      Sold out
+                    </span>
+                  )}
                 </span>
                 <span className="popular-pick-card__body">
                   <span>

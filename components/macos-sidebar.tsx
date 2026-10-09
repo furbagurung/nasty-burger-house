@@ -11,6 +11,7 @@ export type MacOSSidebarNavigationItem = {
   label: string;
   href: string;
   icon: ReactNode;
+  group?: string;
 };
 
 export interface MacOSSidebarProps {
@@ -72,12 +73,18 @@ export function MacOSSidebar({
           </div>
         </div>
         <nav className="admin-macos-sidebar__navigation" aria-label="Admin sections">
-          {isOpen && <p className="admin-jobtracker-nav-label">Workspace</p>}
           {navigationItems.map((item, index) => {
             const active = activeHref === item.href;
+            const startsGroup = index === 0 || navigationItems[index - 1]?.group !== item.group;
             return (
-              <Link
+              <div
                 key={item.href}
+                className={`admin-macos-sidebar__nav-entry${startsGroup ? " is-group-start" : ""}`}
+              >
+                {isOpen && startsGroup && item.group && (
+                  <p className="admin-jobtracker-nav-label">{item.group}</p>
+                )}
+                <Link
                 href={item.href}
                 title={!isOpen ? item.label : undefined}
                 aria-label={!isOpen ? item.label : undefined}
@@ -114,6 +121,7 @@ export function MacOSSidebar({
                 <span className="admin-macos-sidebar__link-icon" aria-hidden="true">{item.icon}</span>
                 {isOpen && <span className="admin-macos-sidebar__link-text">{item.label}</span>}
               </Link>
+              </div>
             );
           })}
         </nav>

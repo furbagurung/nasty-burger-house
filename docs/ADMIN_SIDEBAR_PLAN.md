@@ -21,12 +21,12 @@
 
 ## Technical architecture
 
-- `app/components/admin-workspace-header.tsx`: one source of truth for all **Overview / Business / Management** navigation groups. Grouped, accessible links in the desktop macOS sidebar and mobile shadcn Sheet.
+- `features/admin/config/navigation.ts`: one source of truth for **Overview / Business / Management**. `components/admin/layout/` owns the desktop sidebar, mobile shadcn Sheet and top bar; `app/components/admin-workspace-header.tsx` is the persistent controller.
 - `components/macos-sidebar.tsx`: existing reusable sidebar, now supporting optional group labels, icon-only collapsed mode, keyboard-focus styles and route highlighting.
-- `app/admin/[section]/page.tsx`: one small, server-rendered protected route for the **seven planned modules** above. Unknown section slugs return 404. Auth is checked server-side with `verifyAdmin()` before a module screen renders.
-- `app/admin/page.tsx`, `app/admin/customers/page.tsx`, `app/admin/reviews/page.tsx`: existing explicit routes take precedence; business logic and moderation remain unchanged.
+- `app/admin/(workspace)/[section]/page.tsx`: one small, server-rendered protected route for the **seven planned modules** above. Unknown section slugs return 404. Auth is checked server-side with `verifyAdmin()` before a module screen renders.
+- `app/admin/(workspace)/page.tsx`, `app/admin/(workspace)/customers/page.tsx`, `app/admin/(workspace)/reviews/page.tsx`: existing explicit routes take precedence; business logic and moderation remain unchanged.
 - `app/components/admin-workspace-footer.tsx`: shared admin-only footer on all authenticated admin pages; no public customer footer.
-- `app/admin/loading.tsx`: shared shadcn `Skeleton` route fallback for server-side auth/data loading, with matching nav/topbar/content geometry. No mock business data or fake figures.
+- `app/admin/(workspace)/loading.tsx`: shared shadcn `Skeleton` route fallback for server-side auth/data loading, with matching nav/topbar/content geometry. No mock business data or fake figures.
 - `app/admin-navigation.css`: flat grouped sidebar spacing, common planned-page presentation and responsive skeleton. The theme is still controlled by `docs/DARK_THEME.md`.
 
 ### One layout, not ten redesigned pages
@@ -86,3 +86,8 @@ This layout is preserved during soft navigation between admin tabs.
   verification, and planned modules verify access when their route is loaded.
 - `app/admin-typography.css` overrides legacy global `!important` Bowlby
   font rules **only in admin screens**, using Inter for headings and controls.
+
+
+## Phase 1 modular refactor
+
+The architecture and maintenance boundaries are described in [ADMIN_ARCHITECTURE.md](./ADMIN_ARCHITECTURE.md). Existing Customers and Reviews client components now live under `features/admin/` and reuse `components/admin/shared/admin-metric-card.tsx`. Backward-compatible re-exports remain at their original import paths. Server auth, APIs, CSS, skeleton loaders, markup, and routes remain unchanged.

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import AdminCustomerDashboard from "../../../components/admin-customer-dashboard";
+import AdminCustomerDashboard from "@/features/admin/customers/components/customer-dashboard";
 import { verifyAdmin } from "../../../lib/admin-auth";
 import { loadAdminCustomers } from "../../../lib/admin-customers";
 

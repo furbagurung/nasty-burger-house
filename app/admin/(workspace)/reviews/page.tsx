@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import AdminReviewDashboard from "../../../components/admin-review-dashboard";
+import AdminReviewDashboard from "@/features/admin/reviews/components/review-dashboard";
 import { verifyAdmin } from "../../../lib/admin-auth";
 import { loadAdminReviews } from "../../../lib/admin-reviews";
 

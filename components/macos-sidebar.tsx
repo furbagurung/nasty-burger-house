@@ -1,9 +1,17 @@
 "use client";
 
 import { PlusSignIcon, SidebarLeftIcon } from "@hugeicons/core-free-icons";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { useState, type ReactNode } from "react";
+
+export type MacOSSidebarNavigationItem = {
+  label: string;
+  href: string;
+  icon: ReactNode;
+};
 
 export interface MacOSSidebarProps {
   items: string[];
@@ -11,6 +19,11 @@ export interface MacOSSidebarProps {
   initialSelectedIndex?: number;
   children?: ReactNode;
   className?: string;
+  /** Real navigation instead of the original Canvas-demo layout. */
+  navigationItems?: MacOSSidebarNavigationItem[];
+  activeHref?: string;
+  header?: ReactNode;
+  footer?: ReactNode;
 }
 
 export function MacOSSidebar({
@@ -19,11 +32,93 @@ export function MacOSSidebar({
   initialSelectedIndex = 0,
   children,
   className = "",
+  navigationItems,
+  activeHref,
+  header,
+  footer,
 }: MacOSSidebarProps) {
+  const reducedMotion = useReducedMotion();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedIndex, setSelectedIndex] =
     useState<number>(initialSelectedIndex);
   const [isOpen, setIsOpen] = useState<boolean>(defaultOpen);
+
+  // Production navigation mode: accessible links and active routes, rather
+  // than the demo's local-only selected index. Mobile uses the shadcn Sheet.
+  if (navigationItems) {
+    return (
+      <motion.aside
+        aria-label="Admin workspace sidebar"
+        data-collapsed={!isOpen}
+        className={`admin-macos-sidebar ${className}`}
+        initial={false}
+        animate={{ width: isOpen ? "15.5rem" : "5.25rem" }}
+        transition={reducedMotion ? { duration: 0 } : { type: "spring", bounce: 0.12, duration: 0.38 }}
+      >
+        <div className="admin-macos-sidebar__toolbar">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="admin-macos-sidebar__toggle"
+            aria-label={isOpen ? "Collapse admin sidebar" : "Expand admin sidebar"}
+            aria-expanded={isOpen}
+            onClick={() => setIsOpen((open) => !open)}
+          >
+            <HugeiconsIcon icon={SidebarLeftIcon} className="size-5" />
+          </Button>
+        </div>
+        <div className="admin-macos-sidebar__brand">{header}</div>
+        <nav className="admin-macos-sidebar__navigation" aria-label="Admin sections">
+          {isOpen && <p className="admin-jobtracker-nav-label">Workspace</p>}
+          {navigationItems.map((item) => {
+            const active = activeHref === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                title={!isOpen ? item.label : undefined}
+                aria-label={!isOpen ? item.label : undefined}
+                aria-current={active ? "page" : undefined}
+                className={`admin-macos-sidebar__link${active ? " is-current" : ""}`}
+                onMouseEnter={() => setHoveredIndex(navigationItems.indexOf(item))}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <AnimatePresence>
+                  {active && (
+                    <motion.span
+                      className="admin-macos-sidebar__selection"
+                      initial={false}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: reducedMotion ? 0 : 0.18 }}
+                      aria-hidden="true"
+                    />
+                  )}
+                </AnimatePresence>
+                <AnimatePresence>
+                  {hoveredIndex === navigationItems.indexOf(item) && !active && (
+                    <motion.span
+                      layoutId="admin-macos-sidebar-hover"
+                      className="admin-macos-sidebar__hover"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: reducedMotion ? 0 : 0.16 }}
+                      aria-hidden="true"
+                    />
+                  )}
+                </AnimatePresence>
+                <span className="admin-macos-sidebar__link-icon" aria-hidden="true">{item.icon}</span>
+                {isOpen && <span className="admin-macos-sidebar__link-text">{item.label}</span>}
+              </Link>
+            );
+          })}
+        </nav>
+        <div className="admin-macos-sidebar__footer">{footer}</div>
+      </motion.aside>
+    );
+  }
 
   return (
     <div

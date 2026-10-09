@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminWorkspaceHeader } from "./admin-workspace-header";
+import AdminWorkspaceFooter from "./admin-workspace-footer";
 import { AdminMetricCard } from "./admin-metric-card";
 import { ClipboardCheck, Clock3, Star, MessageSquareText } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -258,6 +259,7 @@ export default function AdminReviewDashboard({
           )}
         </section>
       </main>
+      <AdminWorkspaceFooter />
     </div>
   );
 }

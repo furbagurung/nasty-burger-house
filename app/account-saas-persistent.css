@@ -600,3 +600,59 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+/* Account dashboard loading state mirrors the compact app card layout. */
+.account-saas-route-content .account-skeleton-stats--overview {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.account-saas-route-content .account-skeleton-body--overview {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.account-saas-route-content .account-skeleton-card--account-action {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 5.25rem;
+  padding: 1.1rem;
+}
+
+.account-saas-route-content .account-skeleton-action-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 2.75rem;
+  border-radius: 0.85rem;
+}
+
+.account-saas-route-content .account-skeleton-action-copy {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 0.4rem;
+}
+
+.account-saas-route-content .account-skeleton-action-copy .account-skeleton-subtitle {
+  height: 0.9rem;
+  margin: 0;
+}
+
+.account-saas-route-content .account-skeleton-action-copy .account-skeleton-copy {
+  width: 70%;
+  height: 0.55rem;
+  margin: 0;
+}
+
+.account-saas-route-content .account-skeleton-action-button {
+  width: 3.8rem;
+  height: 2.35rem;
+  flex: 0 0 3.8rem;
+  border-radius: 0.7rem;
+}
+
+@media (max-width: 680px) {
+  .account-saas-route-content .account-skeleton-card--account-action {
+    padding: 0.95rem;
+  }
+}

@@ -643,8 +643,6 @@
 @media (max-width: 700px) {
   .admin-traffic-section {
     gap: 0.7rem;
-    margin-top: 0.2rem;
-    padding-top: 0.9rem;
   }
 
   .admin-traffic-device-card [data-slot="card-content"] {

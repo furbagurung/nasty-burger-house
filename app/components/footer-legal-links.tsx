@@ -56,6 +56,10 @@ export function FooterUtilityLinks() {
 export default function FooterLegalLinks() {
   const pathname = usePathname();
 
+  // Admin workspaces and login have their own layout. Never show customer
+  // marketing, social, privacy or cookie links beneath admin screens.
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) return null;
+
   // Focused authentication screens use a Back to Home link instead of a
   // distracting site footer or mobile tab bar.
   if (

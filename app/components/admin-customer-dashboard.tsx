@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { CircleCheck, ClipboardList, Crown, Search, Users } from "lucide-react";
 import { AdminWorkspaceHeader } from "./admin-workspace-header";
+import AdminWorkspaceFooter from "./admin-workspace-footer";
 import { AdminMetricCard } from "./admin-metric-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -298,6 +299,7 @@ export default function AdminCustomerDashboard({
           )}
         </Card>
       </main>
+      <AdminWorkspaceFooter />
     </div>
   );
 }

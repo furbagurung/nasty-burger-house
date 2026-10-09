@@ -22,6 +22,7 @@ import {
 } from "../lib/customer-store";
 import { getBrowserClientOrNull } from "../lib/supabase/client";
 import { googleProfilePhoto } from "../lib/google-profile-photo";
+import ThemeToggle from "./theme-toggle";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
@@ -332,6 +333,7 @@ export default function HomeTopHeader() {
       </nav>
 
       <div className="home-top-header__actions">
+        <ThemeToggle className="nb-theme-toggle--customer" />
         <div className="home-top-header__account-menu" ref={accountMenuRef}>
           <button
             className="home-top-header__account"

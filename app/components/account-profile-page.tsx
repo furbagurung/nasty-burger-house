@@ -17,6 +17,7 @@ import { DRIP_REWARD_TARGET, dripProgressPercent } from "../lib/loyalty";
 import { getBrowserClientOrNull } from "../lib/supabase/client";
 import { googleProfilePhoto } from "../lib/google-profile-photo";
 import AccountDashboardSkeleton from "./account-dashboard-skeleton";
+import AccountChangePassword from "./account-change-password";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 type SquareLoyaltyStatus = {
@@ -280,6 +281,8 @@ export default function AccountProfilePage() {
           </div>
         </form>
       </section>
+
+      <AccountChangePassword />
 
       {backendMode === "supabase" && !profile.phone && phoneModalOpen && (
         <div className="account-loyalty-modal-backdrop" role="presentation">

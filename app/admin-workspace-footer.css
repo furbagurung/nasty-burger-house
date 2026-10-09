@@ -1,0 +1,92 @@
+/* Admin-only footer. The customer website footer is deliberately separate.
+   Keep the established flat layout and reuse admin/light + dark-theme tokens. */
+.admin-shell.admin-modern {
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+}
+
+.admin-shell.admin-modern > .admin-main {
+  flex-grow: 1;
+}
+
+.admin-modern .admin-workspace-footer {
+  display: flex;
+  width: calc(100% - var(--admin-jobtracker-sidebar-width));
+  min-height: 4rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-left: var(--admin-jobtracker-sidebar-width);
+  border-top: 1px solid var(--admin-jobtracker-line);
+  padding: 0.85rem clamp(1rem, 3vw, 2.5rem);
+  background: var(--admin-jobtracker-canvas);
+  color: var(--admin-jobtracker-muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+  transition: margin-left 340ms ease, width 340ms ease;
+}
+
+.admin-workspace-footer__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.4rem;
+}
+
+.admin-modern .admin-workspace-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.25rem;
+  color: var(--admin-jobtracker-text);
+  font-weight: 650;
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+
+.admin-modern .admin-workspace-footer a:hover {
+  text-decoration: underline;
+}
+
+.admin-modern .admin-workspace-footer a:focus-visible {
+  outline: 2px solid var(--admin-jobtracker-accent);
+  outline-offset: 3px;
+}
+
+.dark .admin-modern .admin-workspace-footer {
+  border-top-color: var(--nb-dark-border);
+  background: var(--nb-dark-surface);
+  color: var(--nb-dark-text-secondary);
+}
+
+.dark .admin-modern .admin-workspace-footer a {
+  color: var(--nb-dark-text-primary);
+}
+
+.dark .admin-modern .admin-workspace-footer a:focus-visible {
+  outline-color: var(--nb-dark-focus);
+}
+
+@media (max-width: 900px) {
+  .admin-modern .admin-workspace-footer {
+    width: 100%;
+    margin-left: 0;
+    padding-inline: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-modern .admin-workspace-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 1rem 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-modern .admin-workspace-footer {
+    transition: none;
+  }
+}

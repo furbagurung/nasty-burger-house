@@ -686,3 +686,193 @@
     padding: 0.9rem;
   }
 }
+
+
+/* Watermelon macOS sidebar: use the installed component as the desktop admin
+   navigation. The shadcn Sheet remains the mobile navigation at <=900px. */
+@media (min-width: 901px) {
+  .admin-modern:has(.admin-macos-sidebar[data-collapsed="true"]) {
+    --admin-jobtracker-sidebar-width: 5.25rem;
+  }
+
+  .admin-modern .admin-main {
+    transition: margin-left 340ms ease, width 340ms ease;
+  }
+  .admin-modern .admin-modern-header.admin-jobtracker-topbar {
+    transition: margin-left 340ms ease;
+  }
+}
+
+.admin-modern .admin-macos-sidebar.admin-jobtracker-sidebar {
+  padding: 0.55rem;
+  background: #eceef1;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.admin-macos-sidebar__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 2.5rem;
+  padding: 0.25rem;
+}
+
+.admin-macos-sidebar__toggle {
+  display: inline-flex;
+  width: 2.15rem;
+  height: 2.15rem;
+  flex: 0 0 2.15rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.65rem;
+  color: #545c67;
+}
+
+.admin-macos-sidebar__toggle:hover {
+  background: #fff;
+  color: #1b222c;
+}
+
+.admin-macos-sidebar__brand {
+  min-width: 0;
+  border-radius: 0.9rem;
+  background: #f9fafb;
+}
+
+.admin-macos-sidebar__navigation {
+  display: grid;
+  align-content: start;
+  gap: 0.3rem;
+  min-width: 0;
+  margin-top: 0.55rem;
+  border-radius: 0.9rem;
+  padding: 0.8rem 0.5rem;
+  background: #f9fafb;
+}
+
+.admin-macos-sidebar__navigation .admin-jobtracker-nav-label {
+  margin-bottom: 0.35rem;
+}
+
+.admin-macos-sidebar__link {
+  position: relative;
+  display: flex;
+  min-height: 2.7rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.7rem;
+  color: #616c7a;
+  font-family: var(--font-dm-sans), Arial, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 750;
+  text-decoration: none;
+  outline-offset: 2px;
+}
+
+.admin-macos-sidebar__link.is-current {
+  color: #e94c2b;
+}
+
+.admin-macos-sidebar__link:focus-visible {
+  outline: 2px solid #e94c2b;
+}
+
+.admin-macos-sidebar__selection,
+.admin-macos-sidebar__hover {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 0.7rem;
+  pointer-events: none;
+}
+
+.admin-macos-sidebar__selection {
+  background: #fff;
+  box-shadow: 0 1px 5px rgba(25, 30, 40, 0.08);
+}
+
+.admin-macos-sidebar__hover {
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.admin-macos-sidebar__link-icon,
+.admin-macos-sidebar__link-text {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+}
+
+.admin-macos-sidebar__link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.admin-macos-sidebar__footer {
+  min-width: 0;
+  margin-top: auto;
+  border-radius: 0.9rem;
+  background: #f9fafb;
+}
+
+.admin-macos-sidebar__footer .admin-jobtracker-sidebar-bottom {
+  border-top: 0;
+  margin-top: 0;
+}
+
+.admin-macos-sidebar[data-collapsed="true"] .admin-macos-sidebar__toolbar {
+  justify-content: center;
+}
+
+.admin-macos-sidebar[data-collapsed="true"] .admin-macos-sidebar__brand .admin-jobtracker-sidebar-brand {
+  padding: 0.6rem 0.2rem;
+}
+
+.admin-macos-sidebar[data-collapsed="true"] .admin-jobtracker-brand-copy,
+.admin-macos-sidebar[data-collapsed="true"] .admin-jobtracker-nav-label,
+.admin-macos-sidebar[data-collapsed="true"] .admin-jobtracker-sidebar-bottom .admin-jobtracker-nav-link > span,
+.admin-macos-sidebar[data-collapsed="true"] .admin-jobtracker-nav-logout > span,
+.admin-macos-sidebar[data-collapsed="true"] .admin-jobtracker-sidebar-profile > span:last-child {
+  display: none;
+}
+
+.admin-macos-sidebar[data-collapsed="true"] .admin-macos-sidebar__navigation {
+  padding: 0.5rem 0.2rem;
+}
+
+.admin-macos-sidebar[data-collapsed="true"] .admin-macos-sidebar__link {
+  justify-content: center;
+  padding: 0.65rem;
+}
+
+.admin-macos-sidebar[data-collapsed="true"] .admin-jobtracker-sidebar-bottom {
+  padding: 0.6rem 0.25rem;
+}
+
+.admin-macos-sidebar[data-collapsed="true"] .admin-jobtracker-brand-link,
+.admin-macos-sidebar[data-collapsed="true"] .admin-jobtracker-sidebar-bottom .admin-jobtracker-nav-link,
+.admin-macos-sidebar[data-collapsed="true"] .admin-jobtracker-nav-logout {
+  justify-content: center !important;
+}
+
+.admin-macos-sidebar[data-collapsed="true"] .admin-jobtracker-sidebar-profile {
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .admin-modern .admin-macos-sidebar.admin-jobtracker-sidebar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-modern .admin-main,
+  .admin-modern .admin-modern-header.admin-jobtracker-topbar {
+    transition: none;
+  }
+}

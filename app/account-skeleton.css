@@ -616,3 +616,73 @@
     height: 3.25rem;
   }
 }
+
+
+/* On Order History mobile, loading placeholders follow the same flat
+   store / order facts layout instead of the old rounded order cards. */
+.account-saas-layout-page--orders .account-skeleton-order-list--mobile {
+  display: none;
+}
+
+@media (max-width: 680px) {
+  .account-saas-layout-page--orders .account-skeleton-heading,
+  .account-saas-layout-page--orders .account-skeleton-order-list--desktop {
+    display: none;
+  }
+
+  .account-saas-layout-page--orders .account-skeleton-order-list--mobile {
+    display: grid;
+    gap: 0.6rem;
+    padding: 0.6rem 0 1.5rem;
+    background: #f3f4f6;
+  }
+
+  .account-saas-layout-page--orders .account-skeleton-order-mobile-card {
+    padding: 1.25rem clamp(1rem, 4vw, 1.4rem) 1.3rem;
+    background: #fff;
+  }
+
+  .account-saas-layout-page--orders .account-skeleton-order-mobile-merchant {
+    display: grid;
+    gap: 0.55rem;
+    border-bottom: 1px solid #ebedef;
+    padding-bottom: 1.05rem;
+  }
+
+  .account-saas-layout-page--orders .account-skeleton-order-mobile-name {
+    width: min(68%, 11rem);
+    height: 1.1rem;
+    border-radius: 0.35rem;
+  }
+
+  .account-saas-layout-page--orders .account-skeleton-order-mobile-pickup {
+    width: min(78%, 15rem);
+    height: 0.8rem;
+    border-radius: 0.3rem;
+  }
+
+  .account-saas-layout-page--orders .account-skeleton-order-mobile-details {
+    display: grid;
+    gap: 0.84rem;
+    padding-top: 1.05rem;
+  }
+
+  .account-saas-layout-page--orders .account-skeleton-order-mobile-row {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .account-saas-layout-page--orders .account-skeleton-order-mobile-label {
+    width: 70%;
+    height: 0.72rem;
+    border-radius: 0.3rem;
+  }
+
+  .account-saas-layout-page--orders .account-skeleton-order-mobile-value {
+    width: 75%;
+    height: 0.72rem;
+    border-radius: 0.3rem;
+  }
+}

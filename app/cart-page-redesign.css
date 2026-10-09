@@ -826,7 +826,21 @@
   }
 
   .cart-redesign-page .cart-redesign-header--desktop {
+    display: flex;
+    width: 100%;
+    max-width: none;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 1.75rem;
+    text-align: center;
+  }
+
+  .cart-redesign-page .cart-redesign-header--desktop .cart-redesign-title-wrap {
+    width: 100%;
+  }
+
+  .cart-redesign-page .cart-redesign-header--desktop .cart-redesign-title-row {
+    justify-content: center;
   }
 
   .cart-redesign-page .cart-redesign-layout {

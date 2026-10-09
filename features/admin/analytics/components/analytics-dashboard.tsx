@@ -9,9 +9,9 @@ import {
 import {
   Area,
   AreaChart,
-  Bar,
-  BarChart,
   CartesianGrid,
+  Pie,
+  PieChart,
   XAxis,
   YAxis,
 } from "recharts";
@@ -49,7 +49,7 @@ function compactMoney(value: number, currency: string) {
 }
 
 function changeHint(change: number | null) {
-  if (change === null) return "No previous-period baseline";
+  if (change === null) return "No prior baseline";
   const rounded = Math.abs(change) < 0.05 ? 0 : change;
   const sign = rounded > 0 ? "+" : "";
   return `${sign}${rounded.toFixed(1)}% vs previous 30 days`;
@@ -63,9 +63,13 @@ const revenueChartConfig = {
 } satisfies ChartConfig;
 
 const sourceChartConfig = {
-  revenue: {
-    label: "Revenue",
+  website: {
+    label: "Website",
     color: "var(--admin-analytics-accent)",
+  },
+  square: {
+    label: "Square / POS",
+    color: "var(--admin-analytics-neutral)",
   },
 } satisfies ChartConfig;
 
@@ -90,6 +94,22 @@ export default function AnalyticsDashboard({
   }
 
   const money = moneyFormatter(data.currency);
+  const totalSourceRevenue = data.sourceBreakdown.reduce(
+    (total, entry) => total + entry.revenue,
+    0,
+  );
+  const sourceChartData = data.sourceBreakdown.map((entry) => ({
+    ...entry,
+    key: entry.source === "Website" ? "website" : "square",
+    fill:
+      entry.source === "Website"
+        ? "var(--color-website)"
+        : "var(--color-square)",
+    share:
+      totalSourceRevenue > 0
+        ? (entry.revenue / totalSourceRevenue) * 100
+        : 0,
+  }));
   const maxItemQuantity = Math.max(
     1,
     ...data.topItems.map((item) => item.quantity),
@@ -133,7 +153,7 @@ export default function AnalyticsDashboard({
           label="Customers"
           value={data.metrics.customers}
           icon={<Users size={20} />}
-          hint={`Unique identified buyers · ${changeHint(data.metrics.customersChange)}`}
+          hint={`Unique buyers · ${changeHint(data.metrics.customersChange)}`}
           index={3}
         />
       </section>
@@ -189,57 +209,82 @@ export default function AnalyticsDashboard({
           </CardContent>
         </Card>
 
-        <Card className="admin-analytics-card">
+        <Card className="admin-analytics-card admin-analytics-card--source">
           <CardHeader>
             <CardTitle>Sales source</CardTitle>
             <CardDescription>
-              Website checkout compared with other Square / POS sales.
+              Revenue share from website checkout and Square / POS.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer
-              config={sourceChartConfig}
-              className="admin-analytics-chart admin-analytics-chart--source h-[18rem] w-full aspect-auto"
-            >
-              <BarChart
-                accessibilityLayer
-                data={data.sourceBreakdown}
-                margin={{ left: 0, right: 8, top: 8, bottom: 0 }}
+            <div className="admin-analytics-donut-wrap">
+              <ChartContainer
+                config={sourceChartConfig}
+                className="admin-analytics-chart admin-analytics-chart--source h-[13.5rem] w-full aspect-auto"
               >
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="source"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  width={58}
-                  tickFormatter={(value) =>
-                    compactMoney(Number(value), data.currency)
-                  }
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent />}
-                />
-                <Bar
-                  dataKey="revenue"
-                  fill="var(--color-revenue)"
-                  radius={[6, 6, 2, 2]}
-                />
-              </BarChart>
-            </ChartContainer>
+                <PieChart accessibilityLayer>
+                  <ChartTooltip
+                    cursor={false}
+                    content={
+                      <ChartTooltipContent
+                        hideLabel
+                        nameKey="key"
+                        formatter={(value, _name, item) => {
+                          const amount =
+                            typeof value === "number"
+                              ? value
+                              : Number(value);
+                          const payload = item.payload as {
+                            source?: string;
+                            share?: number;
+                          };
+
+                          return (
+                            <div className="flex w-full items-center justify-between gap-4">
+                              <span className="text-muted-foreground">
+                                {payload.source ?? "Revenue"}
+                              </span>
+                              <span className="font-medium tabular-nums text-foreground">
+                                {money.format(Number.isFinite(amount) ? amount : 0)}
+                              </span>
+                            </div>
+                          );
+                        }}
+                      />
+                    }
+                  />
+                  <Pie
+                    data={sourceChartData}
+                    dataKey="revenue"
+                    nameKey="key"
+                    innerRadius={62}
+                    outerRadius={86}
+                    paddingAngle={3}
+                    strokeWidth={0}
+                  />
+                </PieChart>
+              </ChartContainer>
+              <div className="admin-analytics-donut-center" aria-hidden="true">
+                <span>Revenue</span>
+                <strong>{compactMoney(data.metrics.revenue, data.currency)}</strong>
+                <small>30 days</small>
+              </div>
+            </div>
 
             <div className="admin-analytics-source-summary">
-              {data.sourceBreakdown.map((entry) => (
+              {sourceChartData.map((entry) => (
                 <div key={entry.source}>
-                  <span>{entry.source}</span>
+                  <div className="admin-analytics-source-label">
+                    <span
+                      className={`admin-analytics-source-dot is-${entry.key}`}
+                      aria-hidden="true"
+                    />
+                    <span>{entry.source}</span>
+                  </div>
                   <strong>{money.format(entry.revenue)}</strong>
                   <small>
-                    {entry.orders} order{entry.orders === 1 ? "" : "s"}
+                    {entry.share.toFixed(1)}% · {entry.orders} order
+                    {entry.orders === 1 ? "" : "s"}
                   </small>
                 </div>
               ))}

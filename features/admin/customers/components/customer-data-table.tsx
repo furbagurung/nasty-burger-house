@@ -1,6 +1,10 @@
 "use client";
 
-import { useTable } from "@tanstack/react-table";
+import * as React from "react";
+import {
+  useTable,
+  type SortingState,
+} from "@tanstack/react-table";
 import type { AdminCustomer } from "@/app/lib/admin-customers";
 import { Card } from "@/components/ui/card";
 import {
@@ -11,18 +15,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { customerColumns, customerTableFeatures } from "./customer-columns";
+import { customerColumns } from "./customer-columns";
+import { customerTableFeatures } from "./customer-data-table-features";
 
 export default function CustomerDataTable({
   data,
 }: {
   data: AdminCustomer[];
 }) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+
   const table = useTable({
     features: customerTableFeatures,
     data,
     columns: customerColumns,
     getRowId: (row) => row.id,
+    onSortingChange: setSorting,
+    state: {
+      sorting,
+    },
   });
 
   return (
@@ -35,7 +46,7 @@ export default function CustomerDataTable({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead key={header.id} colSpan={header.colSpan}>
                   {header.isPlaceholder ? null : (
                     <table.FlexRender header={header} />
                   )}

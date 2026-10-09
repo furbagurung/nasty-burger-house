@@ -180,6 +180,35 @@ body:has(.admin-customer-shell) > .home-top-header {
   letter-spacing: 0.01em;
 }
 
+.admin-customer-sort-header {
+  height: 2rem;
+  margin-left: -0.6rem;
+  padding-inline: 0.55rem;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+}
+
+.admin-customer-sort-header:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.admin-customer-sort-header svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+.admin-customer-sort-header[data-sorted="true"] {
+  color: var(--foreground);
+}
+
+.admin-customer-sort-header[data-sorted="true"] svg {
+  color: var(--foreground);
+}
+
 .admin-customer-table [data-slot="table-cell"] {
   max-width: 16rem;
   padding: 0.85rem 1rem;

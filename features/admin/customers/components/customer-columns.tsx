@@ -1,9 +1,10 @@
 "use client";
 
-import { tableFeatures } from "@tanstack/react-table";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { AdminCustomer } from "@/app/lib/admin-customers";
 import { Badge } from "@/components/ui/badge";
+import { CustomerDataTableColumnHeader } from "./customer-data-table-column-header";
+import type { CustomerTableFeatures } from "./customer-data-table-features";
 
 const STORE_TIME_ZONE = "Australia/Sydney";
 
@@ -39,22 +40,32 @@ function customerDripPoints(customer: AdminCustomer) {
   );
 }
 
-export const customerTableFeatures = tableFeatures({});
+function customerLastActivity(customer: AdminCustomer) {
+  return customer.websiteAccount
+    ? customer.lastSignInAt
+    : customer.updatedAt;
+}
 
 export const customerColumns: ColumnDef<
-  typeof customerTableFeatures,
+  CustomerTableFeatures,
   AdminCustomer
 >[] = [
   {
     accessorKey: "name",
-    header: "Name",
+    sortFn: "text",
+    header: ({ column }) => (
+      <CustomerDataTableColumnHeader column={column} title="Name" />
+    ),
     cell: ({ row }) => (
       <strong className="admin-customer-name">{row.original.name}</strong>
     ),
   },
   {
     accessorKey: "email",
-    header: "Email",
+    sortFn: "text",
+    header: ({ column }) => (
+      <CustomerDataTableColumnHeader column={column} title="Email" />
+    ),
     cell: ({ row }) =>
       row.original.email ? (
         <a
@@ -69,7 +80,10 @@ export const customerColumns: ColumnDef<
   },
   {
     accessorKey: "phone",
-    header: "Phone",
+    sortFn: "alphanumeric",
+    header: ({ column }) => (
+      <CustomerDataTableColumnHeader column={column} title="Phone" />
+    ),
     cell: ({ row }) =>
       row.original.phone ? (
         <a
@@ -84,12 +98,17 @@ export const customerColumns: ColumnDef<
   },
   {
     id: "lastActivity",
-    header: "Last activity",
+    accessorFn: (customer) => {
+      const value = customerLastActivity(customer);
+      return value ? Date.parse(value) : 0;
+    },
+    sortFn: "basic",
+    header: ({ column }) => (
+      <CustomerDataTableColumnHeader column={column} title="Last activity" />
+    ),
     cell: ({ row }) => {
       const customer = row.original;
-      const lastActivity = customer.websiteAccount
-        ? customer.lastSignInAt
-        : customer.updatedAt;
+      const lastActivity = customerLastActivity(customer);
 
       return (
         <div className="admin-customer-table-stack">
@@ -103,7 +122,11 @@ export const customerColumns: ColumnDef<
   },
   {
     id: "dripPoints",
-    header: "Drip Points",
+    accessorFn: (customer) => customerDripPoints(customer) ?? -1,
+    sortFn: "basic",
+    header: ({ column }) => (
+      <CustomerDataTableColumnHeader column={column} title="Drip Points" />
+    ),
     cell: ({ row }) => {
       const points = customerDripPoints(row.original);
 
@@ -116,7 +139,11 @@ export const customerColumns: ColumnDef<
   },
   {
     id: "source",
-    header: "Source",
+    accessorFn: sourceLabel,
+    sortFn: "text",
+    header: ({ column }) => (
+      <CustomerDataTableColumnHeader column={column} title="Source" />
+    ),
     cell: ({ row }) => (
       <Badge
         variant="secondary"

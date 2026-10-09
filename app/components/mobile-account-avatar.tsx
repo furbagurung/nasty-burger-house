@@ -75,7 +75,7 @@ export default function MobileAccountAvatar() {
 
   return (
     <Link
-      className="mobile-account-avatar"
+      className={`mobile-account-avatar${customer ? " is-signed-in" : ""}`}
       href={customer ? "/account" : "/account/sign-in"}
       aria-label={customer ? "Open my account" : "Sign in to your account"}
     >

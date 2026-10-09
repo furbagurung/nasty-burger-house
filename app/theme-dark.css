@@ -376,3 +376,134 @@
   :is(input, textarea)::placeholder {
   color: var(--nb-dark-text-secondary);
 }
+
+
+/* Follow-up coverage for legacy checkout/cart/account mobile UI that still
+   uses literal light colours. Keep individual brand CTA graphics untouched. */
+.dark .checkout-page :is(
+  .checkout-page-layout,
+  .checkout-page-sections,
+  .checkout-panel,
+  .checkout-page-review,
+  .checkout-location-card,
+  .checkout-at-a-glance,
+  .checkout-loading-card,
+  .checkout-page-section
+),
+.dark .cart-redesign-page :is(
+  .cart-redesign-main,
+  .cart-redesign-layout,
+  .cart-redesign-summary,
+  .cart-redesign-quantity
+),
+.dark .account-saas-route-content :is(
+  .account-manage-card,
+  .account-manage-list,
+  .account-security__toggle
+) {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-surface);
+  color: var(--nb-dark-text-primary);
+  box-shadow: none;
+}
+
+.dark .checkout-page :is(
+  .checkout-panel__heading h2,
+  .checkout-summary-heading > h2,
+  .checkout-page-review__total strong,
+  .checkout-at-a-glance > strong,
+  .checkout-payment-card__details strong
+),
+.dark .cart-redesign-page :is(
+  .cart-redesign-summary__mobile-toggle,
+  .cart-redesign-summary__mobile-copy strong,
+  .cart-redesign-summary__mobile-amount
+),
+.dark .account-saas-route-content :is(
+  .account-profile-identity__details h1,
+  .account-security__intro h2,
+  .account-security__toggle
+) {
+  color: var(--nb-dark-text-primary);
+}
+
+.dark .checkout-page .checkout-review-content > [data-slot="separator"] {
+  background: var(--nb-dark-border);
+}
+.dark .checkout-page .checkout-service-notice {
+  background: #203028;
+  border-color: #3d594b;
+  color: var(--nb-dark-success);
+}
+.dark .checkout-page .checkout-service-notice.is-closed {
+  background: #382922;
+  border-color: #624536;
+  color: var(--nb-dark-warning);
+}
+
+@media (max-width: 900px) {
+  .dark :is(.mobile-page-header, .account-saas-layout-page--orders > .mobile-page-header,
+    .account-saas-layout-page--profile > .mobile-page-header,
+    .account-saas-layout-page--order-detail > .mobile-page-header,
+    .checkout-page .mobile-page-header, .cart-redesign-page .mobile-page-header) {
+    border-bottom-color: var(--nb-dark-border);
+    background: var(--nb-dark-surface);
+    color: var(--nb-dark-text-primary);
+  }
+  .dark .mobile-page-header :is(.mobile-page-header__title, .mobile-page-header__back) {
+    color: var(--nb-dark-text-primary);
+  }
+  .dark .mobile-page-header__back {
+    border-color: var(--nb-dark-border);
+    background: var(--nb-dark-raised);
+  }
+}
+
+/* Match admin controls to the neutral background while preserving status
+   semantics. Every badge keeps text visible over its own surface. */
+.dark .admin-modern :is(.admin-square-sync, .admin-filter-bar button, .admin-empty-state) {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-surface);
+  color: var(--nb-dark-text-primary);
+  box-shadow: none;
+}
+.dark .admin-modern .admin-filter-bar button.is-active {
+  background: var(--nb-dark-raised);
+  border-color: var(--nb-dark-accent);
+  color: var(--nb-dark-accent);
+}
+.dark .admin-modern .admin-square-sync:is(.is-connected, .is-warning) {
+  background: var(--nb-dark-raised);
+  border-color: var(--nb-dark-border);
+}
+.dark .admin-modern :is(.admin-square-sync strong, .admin-empty-state strong) {
+  color: var(--nb-dark-text-primary);
+}
+.dark .admin-modern :is(.admin-square-sync span, .admin-square-sync small, .admin-empty-state span) {
+  color: var(--nb-dark-text-secondary);
+}
+.dark .admin-modern .admin-customer-list {
+  background: transparent;
+}
+.dark .admin-modern .admin-customer-row {
+  background: var(--nb-dark-surface);
+}
+.dark .admin-modern .admin-customer-avatar {
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-primary);
+}
+.dark .admin-modern .admin-modern-metric {
+  background: var(--nb-dark-surface) !important;
+}
+.dark .admin-modern .admin-modern-metric-value {
+  color: var(--nb-dark-text-primary);
+}
+.dark .admin-modern .admin-jobtracker-topbar-tools [data-slot="button"],
+.dark .admin-modern .admin-jobtracker-site-button {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-primary);
+}
+.dark .admin-modern .admin-jobtracker-topbar-tools [data-slot="button"]:hover {
+  background: var(--nb-dark-hover);
+}

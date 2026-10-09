@@ -945,17 +945,18 @@
    The mobile shadcn Sheet is portalled, so style it separately. */
 .admin-modern .admin-macos-sidebar.admin-jobtracker-sidebar,
 .admin-jobtracker-mobile-drawer[data-slot="sheet-content"] {
-  --admin-sidebar-bg: #f8f9fb;
-  --admin-sidebar-line: #e2e6ed;
-  --admin-sidebar-muted: #586374;
-  --admin-sidebar-text: #1d2736;
-  --admin-sidebar-nav: #3a4658;
-  --admin-sidebar-active: #aa422c;
-  --admin-sidebar-selected: #e5eaf1;
-  --admin-sidebar-hover: #e9edf2;
-  --admin-sidebar-toggle: #243043;
-  --admin-sidebar-toggle-hover: #e8edf3;
-  --admin-sidebar-logout: #9b4336;
+  /* Muted red + blush light palette inspired by the supplied reference. */
+  --admin-sidebar-bg: #fffdfd;
+  --admin-sidebar-line: #efe2e3;
+  --admin-sidebar-muted: #655b60;
+  --admin-sidebar-text: #2f292d;
+  --admin-sidebar-nav: #4d4548;
+  --admin-sidebar-active: #ac3342;
+  --admin-sidebar-selected: #f8e2e5;
+  --admin-sidebar-hover: #fbedef;
+  --admin-sidebar-toggle: #5b5155;
+  --admin-sidebar-toggle-hover: #f8e2e5;
+  --admin-sidebar-logout: #a5414b;
   border-color: var(--admin-sidebar-line);
   background: var(--admin-sidebar-bg);
   color: var(--admin-sidebar-text);

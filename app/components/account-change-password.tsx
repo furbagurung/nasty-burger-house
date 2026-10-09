@@ -3,6 +3,7 @@
 import { Eye, EyeOff, KeyRound, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getBrowserClientOrNull } from "../lib/supabase/client";
@@ -70,24 +71,28 @@ export default function AccountChangePassword() {
     }
 
     let active = true;
-    void supabase.auth.getUser().then(({ data: { user }, error: authError }) => {
-      if (!active) return;
-      if (authError || !user) {
-        setSignInMethod("unavailable");
-        return;
+    void (async () => {
+      try {
+        const { data, error: authError } = await supabase.auth.getUser();
+        const user = data.user as User | null;
+        if (!active) return;
+        if (authError || !user) {
+          setSignInMethod("unavailable");
+          return;
+        }
+        const providers = user.identities?.map((identity) => identity.provider) ?? [];
+        const linkedProviders = Array.isArray(user.app_metadata?.providers)
+          ? (user.app_metadata.providers as unknown[])
+          : [];
+        const googleOnly =
+          providers.includes("google") &&
+          !providers.includes("email") &&
+          !linkedProviders.includes("email");
+        setSignInMethod(googleOnly ? "google" : "password");
+      } catch {
+        if (active) setSignInMethod("unavailable");
       }
-      const providers = user.identities?.map((identity) => identity.provider) ?? [];
-      const linkedProviders = Array.isArray(user.app_metadata?.providers)
-        ? (user.app_metadata.providers as unknown[])
-        : [];
-      const googleOnly =
-        providers.includes("google") &&
-        !providers.includes("email") &&
-        !linkedProviders.includes("email");
-      setSignInMethod(googleOnly ? "google" : "password");
-    }).catch(() => {
-      if (active) setSignInMethod("unavailable");
-    });
+    })();
 
     return () => { active = false; };
   }, []);

@@ -1,0 +1,298 @@
+/*
+ * Nasty Burger House — shared dark theme (customer + admin)
+ *
+ * Activation: <html class="dark"> (next-themes).
+ * Light remains the default. Keep component layouts independent from theme.
+ * No #000 surfaces, no elevation shadows: lighter surfaces convey elevation.
+ *
+ * Text opacity: 87% primary / 60% secondary / 38% disabled.
+ * Disabled controls are not required by WCAG to reach 4.5:1; never put
+ * essential information exclusively in the disabled style.
+ */
+:root {
+  --nb-dark-canvas: #121212;
+  --nb-dark-surface: #1e1e1e;
+  --nb-dark-raised: #232323;
+  --nb-dark-hover: #2d2d2d;
+  --nb-dark-border: #393939;
+  --nb-dark-text-primary: rgb(255 255 255 / 87%);
+  --nb-dark-text-secondary: rgb(255 255 255 / 60%);
+  --nb-dark-text-disabled: rgb(255 255 255 / 38%);
+  --nb-dark-accent: #d88b7d;
+  --nb-dark-accent-hover: #e39b8e;
+  --nb-dark-accent-ink: #121212;
+  --nb-dark-success: #8bbda0;
+  --nb-dark-warning: #e3c38c;
+  --nb-dark-danger: #e69a98;
+  --nb-dark-focus: #e3a494;
+}
+
+:root.dark {
+  color-scheme: dark;
+
+  /* shadcn/ui + Tailwind v4 variables defined in globals.css */
+  --background: var(--nb-dark-canvas);
+  --foreground: var(--nb-dark-text-primary);
+  --card: var(--nb-dark-surface);
+  --card-foreground: var(--nb-dark-text-primary);
+  --popover: var(--nb-dark-raised);
+  --popover-foreground: var(--nb-dark-text-primary);
+  --primary: var(--nb-dark-accent);
+  --primary-foreground: var(--nb-dark-accent-ink);
+  --secondary: var(--nb-dark-raised);
+  --secondary-foreground: var(--nb-dark-text-primary);
+  --muted: #262626;
+  --muted-foreground: var(--nb-dark-text-secondary);
+  --accent: var(--nb-dark-hover);
+  --accent-foreground: var(--nb-dark-text-primary);
+  --destructive: var(--nb-dark-danger);
+  --border: var(--nb-dark-border);
+  --input: var(--nb-dark-border);
+  --ring: var(--nb-dark-focus);
+  --sidebar: var(--nb-dark-surface);
+  --sidebar-foreground: var(--nb-dark-text-primary);
+  --sidebar-primary: var(--nb-dark-accent);
+  --sidebar-primary-foreground: var(--nb-dark-accent-ink);
+  --sidebar-accent: var(--nb-dark-hover);
+  --sidebar-accent-foreground: var(--nb-dark-text-primary);
+  --sidebar-border: var(--nb-dark-border);
+  --sidebar-ring: var(--nb-dark-focus);
+
+  /* Existing customer-site semantic variables used throughout legacy CSS. */
+  --paper: var(--nb-dark-canvas);
+  --ink: var(--nb-dark-text-primary);
+  --line: var(--nb-dark-border);
+  --hot: var(--nb-dark-accent);
+  --hot-dark: var(--nb-dark-accent);
+  --gold: var(--nb-dark-focus);
+}
+
+:root.dark body {
+  background: var(--nb-dark-canvas);
+  color: var(--nb-dark-text-primary);
+}
+
+:root.dark :is(button, a, input, textarea, select, [tabindex]):focus-visible {
+  outline-color: var(--nb-dark-focus);
+}
+
+:root.dark :is(button, input, textarea, select):disabled,
+:root.dark [aria-disabled="true"] {
+  color: var(--nb-dark-text-disabled);
+  opacity: 1;
+}
+
+:root.dark ::selection {
+  background: #604039;
+  color: var(--nb-dark-text-primary);
+}
+
+/* Reusable theme surface and typography utilities for new shadcn sections. */
+.dark .nb-theme-canvas { background: var(--nb-dark-canvas); color: var(--nb-dark-text-primary); }
+.dark .nb-theme-surface { background: var(--nb-dark-surface); color: var(--nb-dark-text-primary); }
+.dark .nb-theme-raised { background: var(--nb-dark-raised); color: var(--nb-dark-text-primary); }
+.dark .nb-theme-text-primary { color: var(--nb-dark-text-primary); }
+.dark .nb-theme-text-secondary { color: var(--nb-dark-text-secondary); }
+.dark .nb-theme-text-disabled { color: var(--nb-dark-text-disabled); }
+.dark .nb-theme-divider { border-color: var(--nb-dark-border); }
+
+/* Shared shadcn primitives. Elevated cards use lightness, not shadows. */
+.dark [data-slot="card"],
+.dark [data-slot="popover-content"],
+.dark [data-slot="dropdown-menu-content"],
+.dark [data-slot="dialog-content"],
+.dark [data-slot="sheet-content"]:not(.admin-jobtracker-mobile-drawer) {
+  background: var(--nb-dark-surface);
+  color: var(--nb-dark-text-primary);
+  border-color: var(--nb-dark-border);
+  box-shadow: none;
+}
+
+.dark [data-slot="input"],
+.dark [data-slot="textarea"],
+.dark [data-slot="select-trigger"] {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-primary);
+}
+.dark :is([data-slot="input"], [data-slot="textarea"])::placeholder {
+  color: var(--nb-dark-text-secondary);
+}
+.dark [data-slot="button"]:focus-visible {
+  outline-color: var(--nb-dark-focus);
+}
+
+/* Customer pages: page shells, product cards, account surfaces and forms. */
+.dark .catalogue-shell,
+.dark .catalogue-main,
+.dark .standalone-page,
+.dark .cart-redesign-page,
+.dark .checkout-page,
+.dark .account-page,
+.dark .account-saas-layout-page,
+.dark .drip-page {
+  background: var(--nb-dark-canvas);
+  color: var(--nb-dark-text-primary);
+}
+
+.dark .catalogue-main::before {
+  background: linear-gradient(180deg, #242121, transparent);
+}
+
+.dark .catalogue-service-bar,
+.dark .catalogue-product,
+.dark .product-detail__layout,
+.dark .account-card,
+.dark .account-saas-route-content .account-card,
+.dark .order-history-card,
+.dark .order-detail-items,
+.dark .utility-footer,
+.dark .cookie-settings-modal,
+.dark .cookie-consent-banner {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-surface);
+  color: var(--nb-dark-text-primary);
+  box-shadow: none;
+}
+
+.dark .catalogue-product:hover {
+  border-color: #575757;
+  background: var(--nb-dark-raised);
+  box-shadow: none;
+}
+.dark .catalogue-product__media,
+.dark .product-detail__media {
+  background: var(--nb-dark-raised);
+}
+.dark .catalogue-product :is(h2, p),
+.dark .catalogue-heading,
+.dark .product-detail__content h1,
+.dark .product-detail__options strong,
+.dark .order-history-card h2,
+.dark .account-card h2 {
+  color: var(--nb-dark-text-primary);
+}
+.dark .catalogue-product > p,
+.dark .catalogue-heading > p:last-child,
+.dark .product-detail__description,
+.dark .product-detail__notice,
+.dark .product-detail__options span,
+.dark .catalogue-service-bar p,
+.dark .account-card p {
+  color: var(--nb-dark-text-secondary);
+}
+.dark .product-detail__tags span,
+.dark .product-detail__options > div,
+.dark .catalogue-disclaimer {
+  border-color: var(--nb-dark-border);
+  color: var(--nb-dark-text-primary);
+}
+
+/* App-style mobile customer navigation stays clearly separated. */
+.dark .mobile-tab-bar,
+.dark .mobile-more-sheet {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-surface);
+  color: var(--nb-dark-text-primary);
+}
+
+/* Preserve intentionally branded artwork/hero gradients and Drip reward cards. */
+.dark .drip-dashboard-balance {
+  background: linear-gradient(130deg, #171110, #351c17);
+}
+
+/* Admin: dark body canvas, one flat sidebar, lighter elevated content. */
+.dark body:has(.admin-shell),
+.dark .admin-shell.admin-modern,
+.dark .admin-modern .admin-main {
+  background: var(--nb-dark-canvas);
+  color: var(--nb-dark-text-primary);
+}
+.dark .admin-modern .admin-modern-header.admin-jobtracker-topbar {
+  border-bottom-color: var(--nb-dark-border);
+  background: var(--nb-dark-surface);
+  color: var(--nb-dark-text-primary);
+  box-shadow: none;
+}
+.dark .admin-modern .admin-jobtracker-page-identity h1,
+.dark .admin-modern .admin-jobtracker-topbar-user,
+.dark .admin-modern .admin-review-card__header h2,
+.dark .admin-modern .admin-customer-toolbar h2 {
+  color: var(--nb-dark-text-primary);
+}
+.dark .admin-modern .admin-jobtracker-page-identity p,
+.dark .admin-modern .admin-modern-metric-label,
+.dark .admin-modern .admin-modern-metric-hint {
+  color: var(--nb-dark-text-secondary);
+}
+
+.dark .admin-modern :is(.admin-customer-table-wrap, .admin-customer-toolbar, .admin-review-card, .admin-review-guidance, .admin-order-card, .admin-alert-health),
+.dark .admin-modern .admin-modern-metric {
+  border-color: var(--nb-dark-border) !important;
+  background: var(--nb-dark-surface);
+  color: var(--nb-dark-text-primary);
+  box-shadow: none !important;
+}
+.dark .admin-modern .admin-customer-table-head,
+.dark .admin-modern .admin-customer-row:hover {
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-primary);
+}
+.dark .admin-modern .admin-customer-row {
+  border-color: var(--nb-dark-border);
+}
+.dark .admin-modern .admin-customer-search input {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-primary);
+}
+.dark .admin-modern .admin-review-card__message,
+.dark .admin-modern .admin-customer-identity strong,
+.dark .admin-modern .admin-customer-cell strong {
+  color: var(--nb-dark-text-primary);
+}
+.dark .admin-modern .admin-review-card__header p,
+.dark .admin-modern .admin-review-guidance span,
+.dark .admin-modern .admin-customer-identity a {
+  color: var(--nb-dark-text-secondary);
+}
+
+/* The sidebar is intentionally dark even in light mode; in full dark mode
+   use the same neutral elevation scale and quieter orange accent. */
+.dark .admin-modern .admin-macos-sidebar.admin-jobtracker-sidebar,
+.dark .admin-jobtracker-mobile-drawer[data-slot="sheet-content"] {
+  --admin-sidebar-bg: var(--nb-dark-canvas);
+  --admin-sidebar-line: var(--nb-dark-border);
+  --admin-sidebar-muted: var(--nb-dark-text-secondary);
+  --admin-sidebar-text: var(--nb-dark-text-primary);
+  --admin-sidebar-active: var(--nb-dark-accent);
+  background: var(--nb-dark-canvas);
+}
+.dark .admin-modern .admin-macos-sidebar .admin-macos-sidebar__link.is-current {
+  color: var(--nb-dark-accent);
+}
+.dark .admin-modern .admin-macos-sidebar .admin-macos-sidebar__selection,
+.dark .admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link.is-current {
+  background: var(--nb-dark-hover) !important;
+}
+.dark .admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link.is-current {
+  color: var(--nb-dark-accent) !important;
+}
+
+/* Global appearance toggle is shared by both customer and admin UI. */
+.nb-theme-toggle {
+  flex: 0 0 auto;
+}
+.nb-theme-toggle--menu {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  text-align: left;
+}
+.dark .nb-theme-toggle {
+  color: var(--nb-dark-text-primary);
+}
+.dark .nb-theme-toggle:hover {
+  background: var(--nb-dark-hover);
+}

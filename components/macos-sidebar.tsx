@@ -14,7 +14,7 @@ export type MacOSSidebarNavigationItem = {
 };
 
 export interface MacOSSidebarProps {
-  items: string[];
+  items?: string[];
   defaultOpen?: boolean;
   initialSelectedIndex?: number;
   children?: ReactNode;
@@ -27,7 +27,7 @@ export interface MacOSSidebarProps {
 }
 
 export function MacOSSidebar({
-  items,
+  items = [],
   defaultOpen = true,
   initialSelectedIndex = 0,
   children,
@@ -71,7 +71,7 @@ export function MacOSSidebar({
         <div className="admin-macos-sidebar__brand">{header}</div>
         <nav className="admin-macos-sidebar__navigation" aria-label="Admin sections">
           {isOpen && <p className="admin-jobtracker-nav-label">Workspace</p>}
-          {navigationItems.map((item) => {
+          {navigationItems.map((item, index) => {
             const active = activeHref === item.href;
             return (
               <Link
@@ -81,7 +81,7 @@ export function MacOSSidebar({
                 aria-label={!isOpen ? item.label : undefined}
                 aria-current={active ? "page" : undefined}
                 className={`admin-macos-sidebar__link${active ? " is-current" : ""}`}
-                onMouseEnter={() => setHoveredIndex(navigationItems.indexOf(item))}
+                onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <AnimatePresence>
@@ -97,7 +97,7 @@ export function MacOSSidebar({
                   )}
                 </AnimatePresence>
                 <AnimatePresence>
-                  {hoveredIndex === navigationItems.indexOf(item) && !active && (
+                  {hoveredIndex === index && !active && (
                     <motion.span
                       layoutId="admin-macos-sidebar-hover"
                       className="admin-macos-sidebar__hover"

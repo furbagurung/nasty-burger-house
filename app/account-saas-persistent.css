@@ -780,3 +780,42 @@
     display: none;
   }
 }
+
+
+/* Individual order receipts reuse the Profile/Order History app header.
+   The order ID and status stay in the receipt below the navigation header. */
+@media (min-width: 681px) {
+  .account-saas-layout-page--order-detail > .mobile-page-header {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .account-saas-layout-page--order-detail > .mobile-page-header {
+    top: 0;
+    border-bottom-color: #e6e6e9;
+    background: #f6f7f9;
+  }
+
+  .account-saas-layout-page--order-detail .account-saas-shell--persistent {
+    padding-top: 0.95rem;
+    padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
+  }
+
+  .account-saas-layout-page--order-detail .standalone-main.order-detail-main,
+  .account-saas-layout-page--order-detail .standalone-main.account-empty-main {
+    padding-top: 0;
+    padding-bottom: 1rem;
+  }
+
+  .account-saas-layout-page--order-detail .order-detail-heading {
+    gap: 0.65rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .account-saas-layout-page--order-detail .order-detail-heading h1 {
+    font-size: clamp(1.4rem, 5.6vw, 1.8rem);
+    line-height: 1.12;
+    overflow-wrap: anywhere;
+  }
+}

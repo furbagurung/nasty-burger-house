@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { AdminCustomer } from "../lib/admin-customers";
 
 const STORE_TIME_ZONE = "Australia/Sydney";
@@ -116,17 +118,18 @@ export default function AdminCustomerDashboard({
             <h2>Customer directory</h2>
             <p>Website accounts and Square loyalty members.</p>
           </div>
-          <label className="admin-customer-search">
+          <Label className="admin-customer-search" htmlFor="admin-customer-search">
             <span className="sr-only">Search customers</span>
             <Search size={18} aria-hidden="true" />
             <Input
+              id="admin-customer-search"
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search name, email or phone"
               autoComplete="off"
             />
-          </label>
+          </Label>
         </section>
 
         <Card
@@ -212,9 +215,11 @@ export default function AdminCustomerDashboard({
                     transition={{ duration: 0.22, delay: Math.min(index, 12) * 0.018 }}
                   >
                     <div className="admin-customer-identity">
-                      <span className="admin-customer-avatar" aria-hidden="true">
-                        {customer.name.trim().charAt(0).toUpperCase() || "C"}
-                      </span>
+                      <Avatar className="admin-customer-avatar" aria-hidden="true">
+                        <AvatarFallback>
+                          {customer.name.trim().charAt(0).toUpperCase() || "C"}
+                        </AvatarFallback>
+                      </Avatar>
                       <div>
                         <strong>{customer.name}</strong>
                         {customer.email ? (

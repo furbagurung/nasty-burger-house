@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { MacOSSidebar } from "@/components/macos-sidebar";
+import ThemeToggle from "./theme-toggle";
 
 /**
  * Nasty Burger House adaptation of Watermelon UI's Jobtracker dashboard
@@ -208,6 +209,7 @@ export function AdminWorkspaceHeader({
           </div>
 
           <div className="admin-jobtracker-topbar-tools">
+            <ThemeToggle className="nb-theme-toggle--admin" />
             {onEnableAlerts && (
               <Button
                 type="button"

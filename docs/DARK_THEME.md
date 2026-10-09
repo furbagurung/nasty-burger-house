@@ -61,7 +61,7 @@ Use **shadcn/ui components** (Card, Button, Input, Sheet, Dialog) and the semant
 - The shared `ThemeToggle` selects **Light** / **Dark**, saved under `nasty-burger-appearance` by `next-themes`.
 - Customer desktop: toggle in the top header.
 - Customer mobile: toggle under **More** in the bottom app navigation.
-- Admin: toggle in the dashboard top bar. Its navigation sidebar stays dark even when the overall app uses Light.
+- Admin: toggle in the dashboard top bar. The desktop sidebar and mobile navigation Sheet follow the same Light/Dark selection as the rest of the app.
 - Choice is shared when moving between public website and admin on the same origin/browser.
 - Initial default is **Light**, and system appearance does not override the explicit user choice.
 

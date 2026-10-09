@@ -1,0 +1,157 @@
+/*
+ * Nasty Burger House — admin SaaS typography.
+ * Inter only, scoped to authenticated admin pages, admin access/login,
+ * and the portalled mobile Sheet. Public marketing pages retain their fonts.
+ *
+ * Source of truth: docs/TYPOGRAPHY.md + docs/FONTS.md.
+ * Theme source of truth: docs/DARK_THEME.md.
+ */
+:is(.admin-shell.admin-modern, .admin-access-page, .admin-jobtracker-mobile-drawer) {
+  --admin-font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  --admin-font-weight-regular: 400;
+  --admin-font-weight-medium: 500;
+  --admin-font-weight-semibold: 600;
+  --admin-font-weight-bold: 700;
+  --admin-font-weight-extrabold: 800;
+  --admin-type-caption: 0.75rem;  /* 12px: metadata, table hints */
+  --admin-type-label: 0.75rem;    /* 12px: labels, grouping */
+  --admin-type-nav: 0.8125rem;   /* 13px: sidebar */
+  --admin-type-body: 0.875rem;   /* 14px: form + dashboard body */
+  --admin-type-body-lg: 1rem;    /* 16px: prominent body */
+  --admin-type-section: 1.125rem;/* 18px: section heading */
+  --admin-type-page: 1.25rem;    /* 20px: topbar/page title */
+  --admin-type-display: clamp(1.5rem, 2.5vw, 2rem);
+  --admin-leading-tight: 1.25;
+  --admin-leading-body: 1.55;
+  --admin-leading-data: 1.4;
+  font-family: var(--admin-font-family);
+  font-optical-sizing: auto;
+}
+
+/* Make shadcn controls and any heading utility use the admin font without
+   changing components outside the protected admin UI. */
+:is(.admin-shell.admin-modern, .admin-access-page, .admin-jobtracker-mobile-drawer)
+  :is(button, input, textarea, select, [role="combobox"]) {
+  font-family: var(--admin-font-family);
+}
+:is(.admin-shell.admin-modern, .admin-access-page, .admin-jobtracker-mobile-drawer) .font-heading {
+  font-family: var(--admin-font-family);
+}
+
+/* Branding and navigation: quiet but readable on both Light and Dark. */
+.admin-modern .admin-jobtracker-brand-copy strong,
+.admin-jobtracker-mobile-drawer .admin-jobtracker-brand-copy strong {
+  font-family: var(--admin-font-family);
+  font-weight: var(--admin-font-weight-bold);
+  letter-spacing: -0.01em;
+}
+.admin-modern .admin-jobtracker-brand-copy small,
+.admin-jobtracker-mobile-drawer .admin-jobtracker-brand-copy small {
+  font-weight: var(--admin-font-weight-medium);
+}
+.admin-modern .admin-jobtracker-nav-label,
+.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-label {
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-type-label);
+  font-weight: var(--admin-font-weight-bold);
+  letter-spacing: 0.06em;
+}
+.admin-modern .admin-macos-sidebar .admin-macos-sidebar__link {
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-type-nav);
+  font-weight: var(--admin-font-weight-semibold);
+}
+.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-link,
+.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-logout {
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-type-nav) !important;
+  font-weight: var(--admin-font-weight-semibold) !important;
+}
+.admin-modern .admin-macos-sidebar .admin-jobtracker-nav-link,
+.admin-modern .admin-macos-sidebar .admin-jobtracker-nav-logout {
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-type-nav) !important;
+  font-weight: var(--admin-font-weight-semibold) !important;
+}
+
+/* Page header, sections and data.
+   Existing table/card layouts remain intact; no Bento redesign. */
+.admin-modern .admin-jobtracker-page-identity h1 {
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-type-page);
+  font-weight: var(--admin-font-weight-semibold);
+  line-height: var(--admin-leading-tight);
+  letter-spacing: -0.025em;
+}
+.admin-modern .admin-jobtracker-page-identity p {
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-type-caption);
+  font-weight: var(--admin-font-weight-medium);
+  letter-spacing: 0;
+}
+.admin-modern :is(
+  .admin-customer-toolbar h2,
+  .admin-review-card__header h2,
+  .admin-order-card__top h2,
+  .admin-planned-page__body h2
+) {
+  font-family: var(--admin-font-family);
+  font-weight: var(--admin-font-weight-semibold);
+  letter-spacing: -0.02em;
+}
+.admin-modern :is(
+  .admin-modern-metric-value,
+  .admin-customer-cell > strong,
+  .admin-review-card__rating
+) {
+  font-variant-numeric: tabular-nums;
+}
+.admin-modern .admin-workspace-footer {
+  font-family: var(--admin-font-family);
+  font-size: var(--admin-type-caption);
+  font-weight: var(--admin-font-weight-regular);
+}
+
+/* Admin login + setup/error screens also use Inter rather than the customer
+   site's display face, while retaining existing authentication functionality. */
+.admin-access-page h1 {
+  font-family: var(--admin-font-family);
+  font-weight: var(--admin-font-weight-bold);
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+.admin-login-page :is(
+  .admin-login-card,
+  .admin-login-form,
+  .admin-login-brand,
+  .admin-login-note
+) {
+  font-family: var(--admin-font-family);
+}
+.admin-login-page :is(input, button, label) {
+  font-family: var(--admin-font-family);
+}
+
+/* New admin modules can opt into semantic type classes without raw sizes. */
+.admin-type-page {
+  font-size: var(--admin-type-page);
+  font-weight: var(--admin-font-weight-semibold);
+  line-height: var(--admin-leading-tight);
+  letter-spacing: -0.025em;
+}
+.admin-type-section {
+  font-size: var(--admin-type-section);
+  font-weight: var(--admin-font-weight-semibold);
+  line-height: var(--admin-leading-tight);
+  letter-spacing: -0.015em;
+}
+.admin-type-body {
+  font-size: var(--admin-type-body);
+  font-weight: var(--admin-font-weight-regular);
+  line-height: var(--admin-leading-body);
+}
+.admin-type-caption {
+  font-size: var(--admin-type-caption);
+  font-weight: var(--admin-font-weight-medium);
+  line-height: var(--admin-leading-data);
+}

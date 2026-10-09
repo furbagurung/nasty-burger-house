@@ -74,6 +74,12 @@ The admin sidebar follows the user-selected appearance setting. In **Light**, us
 
 Use flat selected and hover surfaces, no Bento panels or elevation shadows. The Light active red on selected blush is ~5.1:1, and normal navigation text on the light sidebar is ~9.2:1. The existing **Dark** palette continues to use shared `--nb-dark-*` tokens in `app/theme-dark.css`; do not substitute Light pink styles into Dark mode.
 
+## Admin SaaS font and typography
+
+The admin interface uses **Inter** exclusively for app typography, including desktop sidebar, mobile Sheet, admin login, header, tables, loading states, planned management routes, and the admin-only footer. **Bowlby One SC remains customer/brand display typography only** and must not appear in admin UI headings or text. Font ownership and loading details are documented in [FONTS.md](./FONTS.md). The reusable font-weight, size and line-height rules for admin components are in [TYPOGRAPHY.md](./TYPOGRAPHY.md), implemented in `app/admin-typography.css`.
+
+Text-color and contrast rules in this document take priority over typography styling, in both Light and Dark. A heavier font does not replace the 4.5:1 meaningful text contrast requirement.
+
 ## Switching and persistence
 
 - The shared `ThemeToggle` selects **Light** / **Dark**, saved under `nasty-burger-appearance` by `next-themes`.

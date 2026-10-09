@@ -172,9 +172,6 @@ export default function AccountProfilePage() {
           <p className="standalone-eyebrow">Dashboard</p>
           <h1>Welcome back, {firstName}</h1>
         </div>
-        <ButtonWithIcon href="/menu/burgers" tone="dark">
-          Order now
-        </ButtonWithIcon>
       </header>
 
       <section className="account-overview-grid account-saas-stats" aria-label="Account overview">

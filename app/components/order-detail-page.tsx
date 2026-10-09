@@ -11,6 +11,7 @@ import {
 } from "../lib/customer-backend";
 import type { CustomerOrder, CustomerReview } from "../lib/customer-store";
 import MobileBottomNav from "./mobile-bottom-nav";
+import AccountDashboardSkeleton from "./account-dashboard-skeleton";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 const money = new Intl.NumberFormat("en-US", {
@@ -70,7 +71,13 @@ export default function OrderDetailPage() {
   }, [backendMode, params.orderId]);
 
   if (!ready) {
-    return <div className="standalone-page"><main className="standalone-main"><div className="cart-page-loading">Loading order…</div></main></div>;
+    return (
+      <div className="standalone-page account-page">
+        <main className="standalone-main order-detail-main">
+          <AccountDashboardSkeleton variant="order-detail" />
+        </main>
+      </div>
+    );
   }
 
   if (!order) {

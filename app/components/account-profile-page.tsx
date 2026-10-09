@@ -277,30 +277,30 @@ export default function AccountProfilePage() {
         {saved && <p className="account-security__success" role="status">Profile updated successfully.</p>}
         {profileOpen && (
           <form id="account-profile-form" className="account-profile-form account-saas-profile-card account-manage-card__form" onSubmit={submit}>
-          <div className="account-form-grid">
-            <label>
-              Full name
-              <input value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={80} required />
-            </label>
-            <label>
-              Email address
-              <input type="email" value={email} readOnly={backendMode === "supabase"} onChange={(event) => setEmail(event.target.value)} required />
-              {backendMode === "supabase" && <small>Managed by secure account authentication.</small>}
-            </label>
-            <label>
-              Mobile number
-              <input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="0491 570 006" required />
-              {backendMode === "supabase" && !profile.phone && <small>Required to activate Square POS Loyalty.</small>}
-            </label>
-          </div>
+            <div className="account-form-grid">
+              <label>
+                Full name
+                <input value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={80} required />
+              </label>
+              <label>
+                Email address
+                <input type="email" value={email} readOnly={backendMode === "supabase"} onChange={(event) => setEmail(event.target.value)} required />
+                {backendMode === "supabase" && <small>Managed by secure account authentication.</small>}
+              </label>
+              <label>
+                Mobile number
+                <input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="0491 570 006" required />
+                {backendMode === "supabase" && !profile.phone && <small>Required to activate Square POS Loyalty.</small>}
+              </label>
+            </div>
 
-          {error && <p className="account-form-error" role="alert">{error}</p>}
+            {error && <p className="account-form-error" role="alert">{error}</p>}
 
-          <div className="account-saas-form-actions">
-            <ButtonWithIcon tone="red" type="submit" disabled={saving}>
-              {saving ? "Saving…" : "Save changes"}
-            </ButtonWithIcon>
-          </div>
+            <div className="account-saas-form-actions">
+              <ButtonWithIcon tone="red" type="submit" disabled={saving}>
+                {saving ? "Saving…" : "Save changes"}
+              </ButtonWithIcon>
+            </div>
           </form>
         )}
       </section>

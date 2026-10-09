@@ -55,20 +55,22 @@ export function MacOSSidebar({
         animate={{ width: isOpen ? "15.5rem" : "5.25rem" }}
         transition={reducedMotion ? { duration: 0 } : { type: "spring", bounce: 0.12, duration: 0.38 }}
       >
-        <div className="admin-macos-sidebar__toolbar">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="admin-macos-sidebar__toggle"
-            aria-label={isOpen ? "Collapse admin sidebar" : "Expand admin sidebar"}
-            aria-expanded={isOpen}
-            onClick={() => setIsOpen((open) => !open)}
-          >
-            <HugeiconsIcon icon={SidebarLeftIcon} className="size-5" />
-          </Button>
+        <div className="admin-macos-sidebar__top">
+          {isOpen && <div className="admin-macos-sidebar__brand">{header}</div>}
+          <div className="admin-macos-sidebar__toolbar">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="admin-macos-sidebar__toggle"
+              aria-label={isOpen ? "Collapse admin sidebar" : "Expand admin sidebar"}
+              aria-expanded={isOpen}
+              onClick={() => setIsOpen((open) => !open)}
+            >
+              <HugeiconsIcon icon={SidebarLeftIcon} className="size-5" />
+            </Button>
+          </div>
         </div>
-        <div className="admin-macos-sidebar__brand">{header}</div>
         <nav className="admin-macos-sidebar__navigation" aria-label="Admin sections">
           {isOpen && <p className="admin-jobtracker-nav-label">Workspace</p>}
           {navigationItems.map((item, index) => {

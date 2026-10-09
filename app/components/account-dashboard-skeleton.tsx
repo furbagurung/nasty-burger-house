@@ -6,7 +6,7 @@ function Shimmer({ className = "" }: { className?: string }) {
   return <span className={`account-skeleton-block ${className}`.trim()} aria-hidden="true" />;
 }
 
-function HeadingSkeleton() {
+function HeadingSkeleton({ showAction = true }: { showAction?: boolean }) {
   return (
     <div className="account-skeleton-heading" aria-hidden="true">
       <div>
@@ -14,7 +14,7 @@ function HeadingSkeleton() {
         <Shimmer className="account-skeleton-title" />
         <Shimmer className="account-skeleton-copy" />
       </div>
-      <Shimmer className="account-skeleton-button" />
+      {showAction && <Shimmer className="account-skeleton-button" />}
     </div>
   );
 }
@@ -22,7 +22,7 @@ function HeadingSkeleton() {
 function OverviewSkeleton() {
   return (
     <>
-      <HeadingSkeleton />
+      <HeadingSkeleton showAction={false} />
       <div className="account-skeleton-stats" aria-hidden="true">
         <article className="account-skeleton-card account-skeleton-card--reward">
           <Shimmer className="account-skeleton-label account-skeleton-block--dark" />

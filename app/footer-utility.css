@@ -113,10 +113,11 @@
 }
 
 @media (max-width: 767px) {
-  /* Cart and checkout are focused mobile flows. Keep the footer on desktop
-     and on all other routes; the root layout mounts it after each page. */
+  /* Focused mobile Cart, Checkout and Profile screens use app-style navigation
+     without the sitewide footer. Other routes and desktop keep their footer. */
   body:has(.cart-redesign-page) > .utility-footer,
-  body:has(.checkout-page) > .utility-footer {
+  body:has(.checkout-page) > .utility-footer,
+  body:has(.account-saas-layout-page--profile) > .utility-footer {
     display: none;
   }
 }

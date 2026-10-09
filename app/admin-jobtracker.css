@@ -960,7 +960,7 @@
   --admin-sidebar-nav: #4d4548;
   --admin-sidebar-active: #ac3342;
   --admin-sidebar-selected: #f8e2e5;
-  --admin-sidebar-hover: #fbedef;
+  --admin-sidebar-hover: transparent;
   --admin-sidebar-toggle: #5b5155;
   --admin-sidebar-toggle-hover: #f8e2e5;
   --admin-sidebar-logout: #a5414b;

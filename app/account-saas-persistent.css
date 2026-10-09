@@ -559,6 +559,10 @@
   margin-top: 0.85rem;
 }
 
+.account-saas-route-content #profile.account-manage-card {
+  margin-top: 0;
+}
+
 .account-saas-route-content .account-manage-card__link {
   display: inline-flex;
   gap: 0.2rem;

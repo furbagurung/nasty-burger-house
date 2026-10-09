@@ -157,6 +157,8 @@ Then test:
 - test admin access is forbidden to ordinary customer accounts
 
 
-## Admin Menu Management drafts (Phase 2A)
+## Menu Sold Out feature
 
-After the existing migrations, apply `supabase/migrations/202610090001_admin_menu_drafts.sql` to enable private menu draft storage, optimistic version checks and an automatic audit history. Do not run against production without approval. The menu admin page remains read-only until this migration exists. These drafts do **not** change customer prices or Square checkout. Details: [MENU_MANAGEMENT.md](./MENU_MANAGEMENT.md).
+Apply `supabase/migrations/202610090002_menu_availability.sql` with the owner's approval. This creates an admin-only Sold Out / Available status table and audit log. The previous menu-drafts migration is no longer part of this feature and is not required.
+
+Without this migration, the Menu screen explains why its switches are disabled. Read [MENU_MANAGEMENT.md](./MENU_MANAGEMENT.md) for full tests and checkout protections.

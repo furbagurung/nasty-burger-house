@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ProductDetailPage from "../../components/product-detail-page";
 import { menuItems } from "../../data/menu";
+import { readMenuAvailability } from "../../lib/menu-availability";
 
 type ProductPageProps = {
   params: Promise<{ item: string }>;
 };
 
 export const dynamicParams = false;
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return menuItems.map((item) => ({ item: item.id }));
@@ -32,6 +34,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const item = menuItems.find((entry) => entry.id === itemId);
 
   if (!item) notFound();
-
-  return <ProductDetailPage item={item} />;
+  const availability = await readMenuAvailability();
+  const soldOutIds = availability.soldOutIds;
+  return <ProductDetailPage item={{ ...item, soldOut: soldOutIds.includes(item.id) }} soldOutIds={soldOutIds} />;
 }

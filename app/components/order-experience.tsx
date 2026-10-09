@@ -274,7 +274,7 @@ export default function OrderExperience({
   }, []);
 
   const burgerItems = useMemo(
-    () => items.filter((item) => item.category === "burgers"),
+    () => items.filter((item) => item.category === "burgers" && !item.soldOut),
     [items],
   );
 
@@ -282,7 +282,7 @@ export default function OrderExperience({
     () =>
       popularPickIds
         .map((id) => items.find((item) => item.id === id))
-        .filter((item): item is MenuItem => Boolean(item)),
+        .filter((item): item is MenuItem => Boolean(item) && !item?.soldOut),
     [items, popularPickIds],
   );
 
@@ -532,6 +532,7 @@ export default function OrderExperience({
     amount: number,
   ) {
     if (!selectedItem?.boxConfig) return;
+    if (amount > 0 && (type === "drink" ? drinkSoldOut(value) : items.some((item) => item.id === value && item.soldOut))) return;
     const values = type === "burger" ? boxBurgers : boxDrinks;
     const maximum =
       type === "burger"
@@ -552,6 +553,21 @@ export default function OrderExperience({
 
   function addSelectedItem() {
     if (!selectedItem) return;
+    if (selectedItem.soldOut) {
+      setSelectionError("This item is sold out. Please select another product.");
+      return;
+    }
+    if (isCombo && selectedDrink && drinkSoldOut(selectedDrink)) {
+      setSelectionError("This drink is sold out. Please choose a different drink.");
+      return;
+    }
+    if (selectedItem.boxConfig && (
+      boxBurgers.some((id) => items.find((item) => item.id === id)?.soldOut) ||
+      boxDrinks.some((drink) => drinkSoldOut(drink))
+    )) {
+      setSelectionError("A Beast Box selection is sold out. Please choose available items.");
+      return;
+    }
     if (isCombo && !selectedDrink) {
       setSelectionError("Choose a drink before adding this combo.");
       return;
@@ -813,9 +829,13 @@ export default function OrderExperience({
     }
   }
 
-  const drinksForSelectedItem = selectedItem?.isKidsItem
+  function drinkSoldOut(name: string) {
+    return items.some((item) => item.category === "drinks" && item.name === name && item.soldOut);
+  }
+
+  const drinksForSelectedItem = (selectedItem?.isKidsItem
     ? kidsDrinkChoices
-    : adultDrinkChoices;
+    : adultDrinkChoices).filter((name) => !drinkSoldOut(name));
   const allowedModifiers = modifierChoices.filter((modifier) =>
     selectedItem?.modifierIds?.includes(modifier.id),
   );
@@ -1325,7 +1345,7 @@ export default function OrderExperience({
                     </span>
                   </legend>
                   <div className="stepper-list">
-                    {adultDrinkChoices.map((drink) => {
+                    {adultDrinkChoices.filter((drink) => !drinkSoldOut(drink)).map((drink) => {
                       const count = boxDrinks.filter(
                         (value) => value === drink,
                       ).length;
@@ -1504,9 +1524,15 @@ export default function OrderExperience({
                 {selectionError}
               </p>
             )}
-            <ButtonWithIcon tone="red" fullWidth onClick={addSelectedItem}>
-              {editingLineId ? "Save changes" : "Add to order"}
-            </ButtonWithIcon>
+            {selectedItem.soldOut ? (
+              <p role="status" className="rounded-lg bg-destructive/10 p-3 text-sm font-semibold text-destructive">
+                Sold out — this item cannot be ordered.
+              </p>
+            ) : (
+              <ButtonWithIcon tone="red" fullWidth onClick={addSelectedItem}>
+                {editingLineId ? "Save changes" : "Add to order"}
+              </ButtonWithIcon>
+            )}
           </section>
         </div>
       )}

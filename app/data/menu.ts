@@ -30,6 +30,8 @@ export type MenuItem = {
   priceConfirmed?: boolean;
   image?: string;
   featured?: boolean;
+  /** Server-resolved live availability. Defaults to available when absent. */
+  soldOut?: boolean;
   canUpgrade?: boolean;
   isKidsItem?: boolean;
   dietaryTags?: DietaryTag[];

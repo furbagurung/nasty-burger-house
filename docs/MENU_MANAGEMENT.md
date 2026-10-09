@@ -1,61 +1,48 @@
-# Nasty Burger House — Menu Management (Phase 2A)
+# Nasty Burger House — Sold Out Management
 
-**Current scope:** Admin-only editing of draft changes to the existing menu catalogue. No live prices, checkout totals, Square payment links, or availability are changed by this feature.
+Only one change can be made from the admin Menu screen: **Sold out ⇄ Available**.
+There is no draft editor, price editing, photo editing, product creation or publishing.
 
-## Why draft-first
+## How it works
 
-`app/data/menu.ts` is currently the source of truth for the customer website **and** for checkout/order validation. Public pages and cart logic import that module directly; changing only an admin database table without migrating those consumers together could allow prices to disagree. Therefore **Menu Management intentionally cannot publish** until the public catalogue, cart display, server-side order validation and Square checkout all use one authoritative published snapshot.
+- The authenticated admin visits `/admin/menu`, searches/filters the existing catalogue, and clicks **Mark sold out** or **Mark available** on an item.
+- The status is saved immediately to a dedicated Supabase `menu_availability` table via an admin-only server endpoint. An audit trigger records who changed it and when.
+- The customer-facing Home/Menu/Product pages read the same status on a fresh page visit and display Sold out. Product purchase buttons are removed for sold-out items.
+- Combo drinks and Beast Box burger/drink options use availability too.
+- **Before creating a Square checkout**, the server checks availability again and rejects sold-out line items or sold-out combo/box components. Older saved carts cannot bypass the check.
+- Names, prices, photos, original menu IDs and checkout total calculations remain unchanged.
 
-The `/admin/menu` route is real, not a placeholder. It requires existing `verifyAdmin()` membership and uses the persistent admin layout and content-only loading skeleton.
+## One-time setup
 
-## Available features
+Apply only `supabase/migrations/202610090002_menu_availability.sql` to your Supabase database **with your approval**. This migration is separate from the old unused drafts migration. No draft storage is required.
 
-- Browse products directly from `app/data/menu.ts` without duplicating canonical IDs.
-- Search by name, ID, category, description; filter by category.
-- Inspect draft price, availability, status, category, existing product photos.
-- Edit draft name, description, price (AUD), existing bundled photo, featured flag and availability. **Save to Supabase**.
-- Detect concurrent edits with an optimistic `version` check; outdated saves return HTTP 409.
-- Maintain an automatic database history row on every draft insert/update.
-- Show a clear setup/error state and disable editing until the database migration is applied.
+The SQL creates `menu_availability` and `menu_availability_audit`, enables RLS, and prevents the public roles from directly reading or editing availability. Only server-side service credentials read it; only `verifyAdmin()`-approved administrators can call the mutation API.
 
-**Not included:** New product creation, deleting products, category editing, modifiers, combo rules, image uploads, publish/revert, Square catalog synchronization. Product IDs and order modifiers remain immutable.
+If the migration has not been applied, the admin screen shows a setup note and disables toggles. The public site continues to use the original all-available state, preserving preexisting checkout functionality. If availability fails due to a transient service error after setup, the checkout API rejects the order safely rather than risking an unavailable-item purchase.
 
-## Prerequisite: apply the migration
-
-Apply `supabase/migrations/202610090001_admin_menu_drafts.sql` in Supabase **before** trying to save drafts. This is an explicit database operation and should not be performed on production without the owner's approval.
-
-It creates `public.menu_item_drafts`, `public.menu_item_draft_history` and the audit trigger. Both tables have RLS enabled with no customer policies; `anon` and `authenticated` are denied. Draft reads and saves use the **server-only** Supabase secret key after verifying the current admin in `admin_users`. Do not expose `SUPABASE_SECRET_KEY` to client code.
-
-## Code map
+## Source locations
 
 ```text
-app/admin/(workspace)/menu/page.tsx         Protected server page
-features/admin/menu/types.ts                Shared draft validation/types
-features/admin/menu/server.ts               Server-only draft storage and versioning
+app/admin/(workspace)/menu/page.tsx
 features/admin/menu/components/menu-management.tsx
-                                            shadcn table + mobile list + edit Sheet
-app/api/admin/menu/[itemId]/route.ts         Authorized, validated draft update
-supabase/migrations/202610090001_admin_menu_drafts.sql
-                                            Tables, permissions, audit trigger
+app/lib/menu-availability.ts
+app/api/admin/menu/[itemId]/route.ts          PATCH
+app/api/menu/availability/route.ts            GET (read-only)
+supabase/migrations/202610090002_menu_availability.sql
 ```
 
-## Publish milestone (requires separate approval)
+Live status is also applied to `app/page.tsx`, `app/menu/[category]/page.tsx`, `app/product/[item]/page.tsx`, `app/components/order-experience.tsx`, `app/components/product-detail-page.tsx`, and `app/api/orders/route.ts`.
 
-1. Define the **published menu** schema and choose a single authoritative server-side catalogue source.
-2. Load published values consistently on Home, category pages, product pages, cart, server-side order validation, order dispatch and Square checkout.
-3. Reprice every order on the server and ensure storefront/cart preview matches authoritative published prices. Reject stale/removed/disabled items safely.
-4. Plan caching/revalidation, storefront availability, modifier consistency and existing carts when a price changes.
-5. Add an audited, permission-gated **Publish** action with preview, rollback and verification.
-6. Test live product/box/combo flows end-to-end *before* enabling publishing.
+## Verification
 
-## Local verification
+1. Run `npm run lint` and `npm run build` in the checked-out project.
+2. Before applying SQL, verify the setup warning and disabled admin controls.
+3. Apply SQL with approval, refresh `/admin/menu`, mark an item sold out, refresh again, and confirm persistence.
+4. Open its menu listing and product page in a new browser session; verify Sold out and no add-to-cart action.
+5. Try a saved cart containing that item; the checkout API must reject it before Square payment.
+6. Mark a **drink** sold out: verify combos and boxes cannot select it, and older carts with that drink cannot check out.
+7. Mark a **burger** sold out: verify box selection also excludes it.
+8. Restore status and verify ordering works again.
+9. Confirm audit rows, non-admin PATCH=403/401, keyboard controls, admin Light/Dark contrast, 320–430px mobile and desktop layouts.
 
-- Run `npm run lint` and `npm run build`.
-- Admin unauthorized/anonymous PUT requests are rejected.
-- Before migration: /admin/menu shows setup-required and Edit is disabled.
-- After migration: save a draft, refresh, verify persistence, edit in second session and test 409 conflict.
-- Test invalid ID, overlong text, negative/malformed price, external image URL, missing admin, request too large and service interruptions.
-- Check audit rows in `menu_item_draft_history`, light/dark text contrast, collapsed sidebar, mobile Sheet, keyboard navigation.
-- Confirm **public** Home/Menu/Product prices and Square checkout remain exactly unchanged after draft edits.
-
-**No deployment without explicit approval.**
+**No automatic deployment and no unapproved production database changes.**

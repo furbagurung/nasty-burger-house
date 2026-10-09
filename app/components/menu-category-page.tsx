@@ -131,6 +131,7 @@ export default function MenuCategoryPage({
                   />
                 </div>
                 <h2>{item.name}</h2>
+                {item.soldOut && <span className="inline-flex w-fit rounded-full bg-destructive/10 px-2 py-1 text-xs font-semibold text-destructive" aria-label={`${item.name} is sold out`}>Sold out</span>}
               </Link>
             ))}
           </div>

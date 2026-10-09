@@ -10,7 +10,7 @@
 | | Analytics | `/admin/analytics` | Protected planned-module page; verified reporting data not yet wired |
 | | Customers | `/admin/customers` | Existing real customer management |
 | | Reviews | `/admin/reviews` | Existing real review moderation |
-| **Business** | Menu | `/admin/menu` | Admin-only Supabase-backed draft management; not published |
+| **Business** | Menu | `/admin/menu` | Live Sold Out / Available switches; no product editing |
 | | Drip Points | `/admin/drip-points` | Protected planned-module page |
 | | Promotions | `/admin/promotions` | Protected planned-module page |
 | **Management** | Reports | `/admin/reports` | Protected planned-module page |
@@ -51,7 +51,7 @@ All admin routes must keep the same sidebar, header, main-content inset, and ded
 - Auth guards, consistent shell, skeleton fallback, admin-only footer
 
 ### Phase 2 — real operational modules (requires feature approval)
-- Menu: admin-only draft editing with validation and audit logs (implemented; needs database migration). Public publication remains a separate release milestone
+- Menu: Sold Out / Available status only (implemented; requires menu availability database migration). Checkout blocks unavailable items
 - Drip Points: supported balance/ledger management only after loyalty source-of-truth and secure write rules are agreed
 - Promotions: scheduled offers with validation and rollback
 

@@ -30,6 +30,7 @@ import { QuantityStepper } from "@/components/ui/quantity-stepper";
 
 type ProductDetailPageProps = {
   item: MenuItem;
+  soldOutIds: string[];
 };
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
@@ -125,8 +126,10 @@ function readStoredCart(): CartLine[] {
   }
 }
 
-export default function ProductDetailPage({ item }: ProductDetailPageProps) {
+export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPageProps) {
   const category = findMenuPageCategory(item.category);
+  const soldOutSet = new Set(soldOutIds);
+  const drinkSoldOut = (name: string) => soldOutSet.has(name.toLowerCase().replaceAll(" ", "-"));
   const [quantity, setQuantity] = useState(1);
   const [isCombo, setIsCombo] = useState(false);
   const reducedMotion = useReducedMotion();
@@ -176,8 +179,8 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
     sauceModifierSet.has(modifier.id),
   );
   const addOnModifiers = [...foodAddOnModifiers, ...sauceAddOnModifiers];
-  const drinks = item.isKidsItem ? kidsDrinkChoices : adultDrinkChoices;
-  const burgerChoices = menuItems.filter((entry) => entry.category === "burgers");
+  const drinks = (item.isKidsItem ? kidsDrinkChoices : adultDrinkChoices).filter((name) => !drinkSoldOut(name));
+  const burgerChoices = menuItems.filter((entry) => entry.category === "burgers" && !soldOutSet.has(entry.id));
 
   useEffect(() => {
     if (!isDrinkDrawerOpen && !isExtrasDrawerOpen && !isBoxDrawerOpen) return;
@@ -241,6 +244,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
     const maximum = type === "burger" ? item.boxConfig.burgerCount : item.boxConfig.drinkCount;
     const next = [...source];
 
+    if (amount > 0 && (type === "burger" ? soldOutSet.has(value) : drinkSoldOut(value))) return;
     if (amount > 0 && next.length < maximum) next.push(value);
     if (amount < 0) {
       const index = next.lastIndexOf(value);
@@ -273,6 +277,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
   }
 
   function chooseDrink(choice: string) {
+    if (drinkSoldOut(choice)) return;
     setDrink(choice);
     setSelectionError("");
     setAddedToCart(false);
@@ -292,6 +297,16 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
   }
 
   function addToCart() {
+    if (item.soldOut) {
+      setSelectionError("This product is sold out.");
+      return;
+    }
+    if ((isCombo && drink && drinkSoldOut(drink)) ||
+        boxBurgers.some((id) => soldOutSet.has(id)) ||
+        boxDrinks.some((name) => drinkSoldOut(name))) {
+      setSelectionError("A selected item is sold out. Please choose available options.");
+      return;
+    }
     if (isCombo && !drink) {
       setSelectionError("Choose a drink for your Beast Combo before adding it to the cart.");
       setIsExtrasDrawerOpen(false);
@@ -544,6 +559,11 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
               </section>
             )}
 
+            {item.soldOut ? (
+              <p role="status" className="rounded-lg bg-destructive/10 p-4 text-sm font-semibold text-destructive">
+                Sold out — temporarily unavailable for ordering.
+              </p>
+            ) : (
             <div className="product-purchase-panel">
               <QuantityStepper
                  label="Product quantity"
@@ -564,6 +584,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                   : `Add to cart · ${money.format(totalPrice)}`}
               </ButtonWithIcon>
             </div>
+            )}
 
             {selectionError && <p className="product-selection-error" role="alert">{selectionError}</p>}
 
@@ -776,7 +797,7 @@ export default function ProductDetailPage({ item }: ProductDetailPageProps) {
                     <p>{boxDrinks.length} of {item.boxConfig!.drinkCount} selected.</p>
                   </div>
                   <div className="product-drawer-group__list">
-                    {adultDrinkChoices.map((choice) => {
+                    {adultDrinkChoices.filter((name) => !drinkSoldOut(name)).map((choice) => {
                       const selected = countSelection(boxDrinks, choice);
                       const choiceImage = drinkThumbnail(choice);
                       return (

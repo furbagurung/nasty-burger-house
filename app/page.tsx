@@ -7,12 +7,19 @@ import HomeSquareCheckoutEnhancer from "./components/home-square-checkout-enhanc
 import OrderExperience from "./components/order-experience";
 import { menuItems } from "./data/menu";
 import { getServiceStatus } from "./lib/service";
+import { readMenuAvailability } from "./lib/menu-availability";
 
-export default function Home() {
+// Availability must reflect fresh admin Sold Out changes, not a build-time snapshot.
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const availability = await readMenuAvailability();
+  const soldOut = new Set(availability.soldOutIds);
+  const items = menuItems.map((item) => ({ ...item, soldOut: soldOut.has(item.id) }));
   return (
     <>
       <OrderExperience
-        items={menuItems}
+        items={items}
         initialServiceStatus={getServiceStatus()}
       />
       <FindUsSection />

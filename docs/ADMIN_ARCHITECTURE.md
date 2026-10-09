@@ -54,8 +54,10 @@ Run `npm run lint`, `npm run build`; test all admin routes, auth redirects, logi
 **Never deploy without explicit approval.**
 
 
-## Menu Management: draft-only module
+## Menu Management: availability-only module
 
-The new `features/admin/menu/` module owns product draft validation, admin-only server persistence and the shadcn UI. The protected route is `app/admin/(workspace)/menu/page.tsx`; the authorized write endpoint is `app/api/admin/menu/[itemId]/route.ts`. Database storage and versioned audit history require `supabase/migrations/202610090001_admin_menu_drafts.sql`.
+The Menu module now supports only Sold Out / Available. The `features/admin/menu/components/menu-management.tsx` UI, server-only `app/lib/menu-availability.ts`, admin `PATCH /api/admin/menu/[itemId]` and dedicated migration form a single simple availability workflow. No draft editing, publishing, item creation or product-price updates remain.
 
-**Intentional safety boundary:** Drafts do not change `app/data/menu.ts`, public pages, order validation, or Square checkout. Refer to [MENU_MANAGEMENT.md](./MENU_MANAGEMENT.md) before designing a publish workflow.
+The public Home/Menu/Product pages use the same status on fresh requests and `POST /api/orders` validates it again before Square checkout. The existing protected shell, navigation, skeletons, Inter typography, Light/Dark themes and unrelated admin features remain intact.
+
+Details: [MENU_MANAGEMENT.md](./MENU_MANAGEMENT.md).

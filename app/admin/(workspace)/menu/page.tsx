@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { verifyAdmin } from "@/app/lib/admin-auth";
-import { loadMenuManagement } from "@/features/admin/menu/server";
+import { readMenuAvailability } from "@/app/lib/menu-availability";
 import { AdminMenuManagement } from "@/features/admin/menu/components/menu-management";
 
 export const dynamic = "force-dynamic";
@@ -16,17 +16,21 @@ export default async function AdminMenuPage() {
       <main className="admin-access-page">
         <section>
           <h1>Admin backend setup required.</h1>
-          <p>Configure Supabase admin access to manage menu drafts.</p>
+          <p>Configure Supabase admin access to manage sold-out items.</p>
           <Link href="/">Return to website</Link>
         </section>
       </main>
     );
   }
 
-  const catalogue = await loadMenuManagement(auth.admin);
+  const availability = await readMenuAvailability();
   return (
-    <main className="admin-main" aria-label="Menu management">
-      <AdminMenuManagement initialProducts={catalogue.products} storage={catalogue.storage} />
+    <main className="admin-main" aria-label="Menu sold-out management">
+      <AdminMenuManagement
+        initialSoldOutIds={availability.soldOutIds}
+        ready={availability.ok}
+        reason={availability.reason}
+      />
     </main>
   );
 }

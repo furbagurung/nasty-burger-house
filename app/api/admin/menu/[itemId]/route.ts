@@ -1,65 +1,62 @@
 import { menuItems } from "@/app/data/menu";
 import { verifyAdmin } from "@/app/lib/admin-auth";
-import { isMenuDraftValues } from "@/features/admin/menu/types";
-import { saveMenuDraft } from "@/features/admin/menu/server";
+import { readMenuAvailability } from "@/app/lib/menu-availability";
 
-const responseHeaders = { "Cache-Control": "no-store" };
-const MAX_REQUEST_BYTES = 12_000;
+const headers = { "Cache-Control": "no-store" };
 
-export async function PUT(
+export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ itemId: string }> },
 ) {
   const auth = await verifyAdmin();
   if (!auth.ok) {
     const status = auth.reason === "unauthenticated" ? 401 : auth.reason === "forbidden" ? 403 : 503;
-    return Response.json({ ok: false, error: "Admin access is required." }, { status, headers: responseHeaders });
+    return Response.json({ ok: false, error: "Admin access required." }, { status, headers });
   }
 
+  // A cookie-authenticated state change must be initiated from this origin.
+  const origin = request.headers.get("origin");
+  if (origin && origin !== new URL(request.url).origin) {
+    return Response.json({ ok: false, error: "Invalid request origin." }, { status: 403, headers });
+  }
   const { itemId } = await params;
   if (!menuItems.some((item) => item.id === itemId)) {
-    return Response.json({ ok: false, error: "Product not found." }, { status: 404, headers: responseHeaders });
+    return Response.json({ ok: false, error: "Menu item not found." }, { status: 404, headers });
   }
 
-  const length = Number(request.headers.get("content-length") || 0);
-  if (length > MAX_REQUEST_BYTES) {
-    return Response.json({ ok: false, error: "Request is too large." }, { status: 413, headers: responseHeaders });
-  }
-
-  let payload: unknown;
+  let body: unknown;
   try {
-    const text = await request.text();
-    if (text.length > MAX_REQUEST_BYTES) throw new Error("too-large");
-    payload = JSON.parse(text);
+    const raw = await request.text();
+    if (raw.length > 512) return Response.json({ ok: false, error: "Request too large." }, { status: 413, headers });
+    body = JSON.parse(raw);
   } catch {
-    return Response.json({ ok: false, error: "Invalid JSON request." }, { status: 400, headers: responseHeaders });
+    return Response.json({ ok: false, error: "Invalid request." }, { status: 400, headers });
+  }
+  if (!body || typeof body !== "object" || Array.isArray(body) ||
+      typeof (body as Record<string, unknown>).soldOut !== "boolean") {
+    return Response.json({ ok: false, error: "Choose Sold out or Available." }, { status: 422, headers });
   }
 
-  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
-    return Response.json({ ok: false, error: "Invalid menu draft." }, { status: 422, headers: responseHeaders });
+  const ready = await readMenuAvailability();
+  if (!ready.ok) {
+    return Response.json({ ok: false, error: ready.reason === "setup-required"
+      ? "Apply the menu availability SQL migration before updating products."
+      : "Menu availability could not be checked. Try again." },
+      { status: 503, headers });
   }
 
-  const record = payload as Record<string, unknown>;
-  const expectedVersion = record.expectedVersion;
-  if (!Number.isInteger(expectedVersion) || (expectedVersion as number) < 0 || (expectedVersion as number) > 2147483640 || !isMenuDraftValues(record.values)) {
-    return Response.json({ ok: false, error: "Check all fields, including the price, and try again." }, { status: 422, headers: responseHeaders });
+  const soldOut = (body as { soldOut: boolean }).soldOut;
+  const { error } = await auth.admin.from("menu_availability").upsert({
+    item_id: itemId,
+    is_sold_out: soldOut,
+    updated_by: auth.user.id,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: "item_id" });
+
+  if (error) {
+    console.error("[NBH sold-out update failed]", error.code);
+    return Response.json({ ok: false, error: "Could not save availability. Try again." }, { status: 503, headers });
   }
 
-  // Images must be selected from bundled, known files. No arbitrary URLs or
-  // uploads are accepted by this endpoint.
-  const allowedImages = new Set(menuItems.map((item) => item.image ?? null));
-  if (!allowedImages.has(record.values.imagePath)) {
-    return Response.json({ ok: false, error: "Choose an existing product image." }, { status: 422, headers: responseHeaders });
-  }
-
-  const result = await saveMenuDraft(auth.admin, itemId, auth.user.id, record.values, expectedVersion as number);
-  if (!result.ok) {
-    return Response.json({
-      ok: false,
-      error: result.reason === "conflict"
-        ? "This draft was changed in another session. Refresh before saving."
-        : "Could not save this draft. Verify the menu database migration.",
-    }, { status: result.reason === "conflict" ? 409 : 503, headers: responseHeaders });
-  }
-  return Response.json({ ok: true, product: result.product }, { headers: responseHeaders });
+  return Response.json({ ok: true, itemId, soldOut }, { headers });
 }

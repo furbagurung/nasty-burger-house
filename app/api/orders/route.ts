@@ -3,6 +3,7 @@ import { sendAdminOrderEmail } from "../../lib/admin-notifications";
 import { reportAdminError } from "../../lib/error-monitoring";
 import { consumeRateLimit, requestIp } from "../../lib/rate-limit";
 import { validateOrderPayload } from "../../lib/order";
+import { readMenuAvailability, findSoldOutOrderItems } from "../../lib/menu-availability";
 import {
   createOrderDispatchPayload,
   createOrderId,
@@ -154,6 +155,23 @@ export async function POST(request: Request) {
       status: 422,
       headers: { "Cache-Control": "no-store" },
     });
+  }
+
+  // Verify live availability immediately before any Square customer/payment
+  // side effects. Reject sold-out items even from older stored carts.
+  const availability = await readMenuAvailability();
+  if (!availability.ok && availability.reason !== "setup-required") {
+    return Response.json(
+      { ok: false, errors: ["Could not verify menu availability. Please try again."] },
+      { status: 503, headers: { "Cache-Control": "no-store" } },
+    );
+  }
+  const unavailable = findSoldOutOrderItems(validation.order.cart, new Set(availability.soldOutIds));
+  if (unavailable.length > 0) {
+    return Response.json(
+      { ok: false, errors: [`Sold out: ${unavailable.join(", ")}. Please update your cart.`] },
+      { status: 409, headers: { "Cache-Control": "no-store" } },
+    );
   }
 
   const orderId = createOrderId(validation.order.requestId);

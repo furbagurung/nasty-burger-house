@@ -14,7 +14,7 @@ export default async function AdminAnalyticsPage() {
   const traffic = await loadAdminTrafficAnalytics();
 
   return (
-    <main className="admin-main admin-analytics-main">
+    <main className="admin-main admin-analytics-main admin-traffic-main">
       <TrafficAnalyticsSection data={traffic} />
     </main>
   );

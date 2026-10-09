@@ -1,10 +1,10 @@
 "use client";
 
-import { Eye, Layers3, Smartphone, UsersRound } from "lucide-react";
+import { CalendarDays, Eye, Layers3, Smartphone, UsersRound } from "lucide-react";
 import {
-  Area,
-  AreaChart,
   CartesianGrid,
+  Line,
+  LineChart,
   Pie,
   PieChart,
   XAxis,
@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import type { AdminTrafficAnalyticsData } from "@/app/lib/admin-traffic-analytics";
 import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -29,7 +30,11 @@ import {
 const trafficChartConfig = {
   pageviews: {
     label: "Page views",
-    color: "var(--admin-analytics-accent)",
+    color: "var(--admin-traffic-accent)",
+  },
+  visitors: {
+    label: "Visitors",
+    color: "var(--admin-traffic-visitor)",
   },
 } satisfies ChartConfig;
 
@@ -92,7 +97,7 @@ function RankedList({
     <ol className="admin-traffic-ranked-list">
       {items.map((item, index) => (
         <li key={item.label + "-" + index}>
-          <span className="admin-analytics-item-rank">
+          <span className="admin-traffic-item-rank">
             {String(index + 1).padStart(2, "0")}
           </span>
           <div className="admin-traffic-ranked-copy">
@@ -103,11 +108,10 @@ function RankedList({
                 {item.pageviews.toLocaleString("en-AU")} views
               </span>
             </div>
-            <div className="admin-analytics-item-bar" aria-hidden="true">
+            <div className="admin-traffic-item-bar" aria-hidden="true">
               <span
                 style={{
-                  width:
-                    Math.max(4, (item[metric] / maxValue) * 100) + "%",
+                  width: (item[metric] > 0 ? (item[metric] / maxValue) * 100 : 0) + "%",
                 }}
               />
             </div>
@@ -125,7 +129,7 @@ export default function TrafficAnalyticsSection({
 }) {
   return (
     <section
-      className="admin-traffic-section"
+      className="admin-traffic-section admin-traffic-dashboard"
       aria-labelledby="website-traffic-heading"
     >
       <div className="admin-analytics-intro admin-traffic-intro">
@@ -136,9 +140,10 @@ export default function TrafficAnalyticsSection({
             are excluded.
           </p>
         </div>
-        <span className="admin-analytics-range">
-          {data.available ? data.periodLabel : "Vercel Web Analytics"}
-        </span>
+        <Badge variant="outline" className="admin-traffic-period">
+          <CalendarDays aria-hidden="true" />
+          {data.available ? data.periodLabel + " · Vercel" : "Vercel Web Analytics"}
+        </Badge>
       </div>
 
       {!data.available ? (
@@ -167,6 +172,7 @@ export default function TrafficAnalyticsSection({
               value={data.metrics.visitors}
               icon={<UsersRound size={20} />}
               hint="Unique website visitors"
+              tone="brand"
               index={0}
             />
             <AdminMetricCard
@@ -193,50 +199,87 @@ export default function TrafficAnalyticsSection({
           </section>
 
           <section className="admin-analytics-grid" aria-label="Website traffic charts">
-            <Card className="admin-analytics-card admin-analytics-card--trend">
+            <Card className="admin-analytics-card admin-traffic-trend-card">
               <CardHeader>
-                <CardTitle>Traffic trend</CardTitle>
-                <CardDescription>
-                  Daily production page views for the last 30 days.
-                </CardDescription>
+                <div className="admin-traffic-card-heading">
+                  <div>
+                    <CardTitle>Website performance</CardTitle>
+                    <CardDescription>Daily page views and visitors over the last 30 days.</CardDescription>
+                  </div>
+                  <span className="admin-traffic-card-period">30 days</span>
+                </div>
               </CardHeader>
               <CardContent>
+                <div className="admin-traffic-chart-legend" aria-label="Line chart series">
+                  <span>
+                    <i className="admin-traffic-line-key is-pageviews" aria-hidden="true" />
+                    Page views
+                  </span>
+                  <span>
+                    <i className="admin-traffic-line-key is-visitors" aria-hidden="true" />
+                    Visitors
+                  </span>
+                </div>
                 <ChartContainer
                   config={trafficChartConfig}
-                  className="admin-analytics-chart h-[16.5rem] w-full aspect-auto"
+                  className="admin-traffic-line-chart h-[16rem] w-full aspect-auto"
                 >
-                  <AreaChart
+                  <LineChart
                     accessibilityLayer
                     data={data.dailyTraffic}
-                    margin={{ left: 0, right: 8, top: 8, bottom: 0 }}
+                    margin={{ left: 0, right: 10, top: 14, bottom: 0 }}
                   >
-                    <CartesianGrid vertical={false} />
+                    <CartesianGrid
+                      vertical={false}
+                      stroke="var(--border)"
+                      strokeOpacity={0.65}
+                    />
                     <XAxis
                       dataKey="label"
                       tickLine={false}
                       axisLine={false}
-                      tickMargin={8}
-                      minTickGap={28}
+                      tickMargin={10}
+                      minTickGap={26}
                     />
                     <YAxis
                       tickLine={false}
                       axisLine={false}
                       width={44}
+                      allowDecimals={false}
                       tickFormatter={(value) => compactNumber(Number(value))}
                     />
                     <ChartTooltip
-                      cursor={false}
+                      cursor={{ stroke: "var(--border)", strokeDasharray: "4 4" }}
                       content={<ChartTooltipContent indicator="line" />}
                     />
-                    <Area
+                    <Line
                       dataKey="pageviews"
                       type="monotone"
-                      fill="var(--color-pageviews)"
-                      fillOpacity={0.14}
                       stroke="var(--color-pageviews)"
-                      strokeWidth={2}
+                      strokeWidth={2.5}
+                      dot={false}
+                      activeDot={{
+                        r: 4,
+                        fill: "var(--color-pageviews)",
+                        stroke: "var(--card)",
+                        strokeWidth: 2,
+                      }}
                     />
-                  </AreaChart>
+                    <Line
+                      dataKey="visitors"
+                      type="linear"
+                      stroke="var(--color-visitors)"
+                      strokeWidth={2.1}
+                      strokeDasharray="6 4"
+                      dot={false}
+                      activeDot={{
+                        r: 4,
+                        fill: "var(--color-visitors)",
+                        stroke: "var(--card)",
+                        strokeWidth: 2,
+                      }}
+                    />
+                  </LineChart>
                 </ChartContainer>
               </CardContent>
             </Card>
@@ -312,6 +355,7 @@ export default function TrafficAnalyticsSection({
                         />
                         <span>{deviceLabel(entry.device)}</span>
                         <strong>{entry.sharePercent.toFixed(1)}%</strong>
+                        <small>{entry.pageviews.toLocaleString("en-AU")} views</small>
                       </div>
                     );
                   })}

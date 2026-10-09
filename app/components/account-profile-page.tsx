@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Phone } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   customerBackendMode,
@@ -12,6 +14,8 @@ import {
 } from "../lib/customer-backend";
 import type { CustomerProfile } from "../lib/customer-store";
 import { DRIP_REWARD_TARGET, dripProgressPercent } from "../lib/loyalty";
+import { getBrowserClientOrNull } from "../lib/supabase/client";
+import { googleProfilePhoto } from "../lib/google-profile-photo";
 import AccountDashboardSkeleton from "./account-dashboard-skeleton";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
@@ -48,6 +52,7 @@ export default function AccountProfilePage() {
   const [loyaltyReady, setLoyaltyReady] = useState(false);
   const [orderCount, setOrderCount] = useState(0);
   const [reviewCount, setReviewCount] = useState(0);
+  const [profilePhoto, setProfilePhoto] = useState<string | undefined>();
 
   useEffect(() => {
     let active = true;
@@ -91,6 +96,26 @@ export default function AccountProfilePage() {
       active = false;
     };
   }, [backendMode]);
+
+  useEffect(() => {
+    const supabase = getBrowserClientOrNull();
+    if (!supabase) return;
+    let active = true;
+
+    async function loadProfilePhoto() {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (active) setProfilePhoto(error ? undefined : googleProfilePhoto(user));
+      } catch {
+        if (active) setProfilePhoto(undefined);
+      }
+    }
+
+    void loadProfilePhoto();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const progress = useMemo(() => dripProgressPercent(balance), [balance]);
 
@@ -163,14 +188,35 @@ export default function AccountProfilePage() {
     );
   }
 
-  const firstName = profile.name.trim().split(/\s+/)[0] || "there";
+  const fullName = profile.name.trim() || profile.email;
+  const initials = fullName
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+  const mobileNumber = profile.phone.trim();
 
   return (
     <>
-      <header className="account-dashboard-heading account-saas-heading account-saas-heading--overview">
-        <div>
-          <p className="standalone-eyebrow">Dashboard</p>
-          <h1>Welcome back, {firstName}</h1>
+      <header className="account-dashboard-heading account-saas-heading account-saas-heading--overview account-profile-identity">
+        <Avatar size="lg" className="account-profile-identity__avatar">
+          {profilePhoto && (
+            <AvatarImage src={profilePhoto} alt="" referrerPolicy="no-referrer" />
+          )}
+          <AvatarFallback className="account-profile-identity__avatar-fallback">
+            {initials || "NB"}
+          </AvatarFallback>
+        </Avatar>
+        <div className="account-profile-identity__details">
+          <h1>{fullName}</h1>
+          <p className="account-profile-identity__phone">
+            <Phone size={15} strokeWidth={1.9} aria-hidden="true" />
+            {mobileNumber ? (
+              <span>{mobileNumber}</span>
+            ) : (
+              <a href="#profile">Add mobile number</a>
+            )}
+          </p>
         </div>
       </header>
 

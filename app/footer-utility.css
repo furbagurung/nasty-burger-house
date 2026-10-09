@@ -113,12 +113,13 @@
 }
 
 @media (max-width: 767px) {
-  /* Focused mobile Cart, Checkout, Profile and Order History screens use
-     app-style navigation without the sitewide footer. Desktop is unaffected. */
+  /* Focused mobile customer flows use app-style screens without the website
+     footer. Desktop and other routes keep their existing footer. */
   body:has(.cart-redesign-page) > .utility-footer,
   body:has(.checkout-page) > .utility-footer,
   body:has(.account-saas-layout-page--profile) > .utility-footer,
-  body:has(.account-saas-layout-page--orders) > .utility-footer {
+  body:has(.account-saas-layout-page--orders) > .utility-footer,
+  body:has(.account-saas-layout-page--order-detail) > .utility-footer {
     display: none;
   }
 }

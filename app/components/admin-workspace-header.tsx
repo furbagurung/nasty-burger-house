@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
@@ -69,7 +70,7 @@ function SidebarContent({
     <>
       <div className="admin-jobtracker-sidebar-brand">
         <Link href="/admin" className="admin-jobtracker-brand-link" onClick={onNavigate}>
-          <span className="admin-jobtracker-brand-mark" aria-hidden="true">N<span>.</span></span>
+          <span className="admin-jobtracker-brand-mark" aria-hidden="true"><Image src="/logo.webp" alt="" width={72} height={72} className="admin-jobtracker-brand-logo" /></span>
           <span className="admin-jobtracker-brand-copy">
             <strong>NASTY BURGER HOUSE</strong>
             <small>Admin workspace</small>
@@ -131,7 +132,7 @@ export function AdminWorkspaceHeader({
         header={
           <div className="admin-jobtracker-sidebar-brand">
             <Link href="/admin" className="admin-jobtracker-brand-link" title="Nasty Burger House admin home">
-              <span className="admin-jobtracker-brand-mark" aria-hidden="true">N<span>.</span></span>
+              <span className="admin-jobtracker-brand-mark" aria-hidden="true"><Image src="/logo.webp" alt="" width={72} height={72} className="admin-jobtracker-brand-logo" /></span>
               <span className="admin-jobtracker-brand-copy">
                 <strong>NASTY BURGER HOUSE</strong>
                 <small>Admin workspace</small>

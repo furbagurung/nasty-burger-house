@@ -83,7 +83,7 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
 
   if (!ready) {
     return (
-      <div className="account-page account-saas-page account-saas-layout-page">
+      <div className={`account-page account-saas-page account-saas-layout-page${pathname === "/account" ? " account-saas-layout-page--profile" : ""}`}>
         {pathname === "/account" && <MobilePageHeader title="Profile" backHref="/" backLabel="Back to home" />}
         <main className="account-saas-shell account-saas-shell--persistent">
           <aside className="account-saas-sidebar account-skeleton-sidebar" aria-hidden="true">
@@ -126,17 +126,17 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
 
   if (!profile) {
     return (
-      <>
+      <div className={`account-page account-saas-page account-saas-layout-page${pathname === "/account" ? " account-saas-layout-page--profile" : ""}`}>
         {pathname === "/account" && <MobilePageHeader title="Profile" backHref="/" backLabel="Back to home" />}
         {children}
-      </>
+      </div>
     );
   }
 
   const initials = initialsFor(profile.name);
 
   return (
-    <div className="account-page account-saas-page account-saas-layout-page">
+    <div className={`account-page account-saas-page account-saas-layout-page${pathname === "/account" ? " account-saas-layout-page--profile" : ""}`}>
       {pathname === "/account" && <MobilePageHeader title="Profile" backHref="/" backLabel="Back to home" />}
       <main className="account-saas-shell account-saas-shell--persistent">
         <aside className="account-saas-sidebar" aria-label="Account navigation">

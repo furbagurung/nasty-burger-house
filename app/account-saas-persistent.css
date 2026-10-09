@@ -363,11 +363,27 @@
   min-width: 0;
 }
 
+/* Account action menu uses DM Sans rather than the global Bowlby headings.
+   Heading !important declarations deliberately beat brand-typography.css. */
+.account-saas-route-content .account-security-card {
+  font-family: var(--font-dm-sans), "DM Sans", Arial, sans-serif;
+}
+
 .account-saas-route-content .account-security__intro h2 {
   margin: 0;
   color: #201b19;
+  font-family: var(--font-dm-sans), "DM Sans", Arial, sans-serif !important;
   font-size: clamp(1.12rem, 2vw, 1.4rem);
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
   line-height: 1.25;
+  text-transform: none;
+}
+
+.account-saas-route-content .account-security__intro p,
+.account-saas-route-content .account-security__toggle,
+.account-saas-route-content .account-manage-card__link {
+  font-family: var(--font-dm-sans), "DM Sans", Arial, sans-serif !important;
 }
 
 .account-saas-route-content .account-security__intro p,

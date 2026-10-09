@@ -431,11 +431,143 @@ body:has(.admin-customer-shell) > .home-top-header {
   }
 
   .admin-customer-table-wrap {
-    border-radius: 0.75rem;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .admin-customer-table-wrap [data-slot="table-container"] {
+    overflow: visible;
   }
 
   .admin-customer-table {
-    min-width: 48rem;
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .admin-customer-table [data-slot="table-header"] {
+    display: block;
+    margin-bottom: 0.65rem;
+    background: transparent;
+  }
+
+  .admin-customer-table [data-slot="table-header"] [data-slot="table-row"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    border: 0;
+  }
+
+  .admin-customer-table [data-slot="table-head"] {
+    display: block;
+    width: auto;
+    height: auto;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+
+  .admin-customer-sort-header {
+    min-height: 2.75rem;
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: 0.65rem;
+    padding-inline: 0.7rem;
+    background: var(--card);
+    color: var(--muted-foreground);
+    font-size: 0.7rem;
+  }
+
+  .admin-customer-sort-header:hover {
+    background: var(--muted);
+  }
+
+  .admin-customer-sort-header[data-sorted="true"] {
+    border-color: color-mix(in srgb, var(--foreground) 32%, var(--border));
+    background: var(--muted);
+    color: var(--foreground);
+  }
+
+  .admin-customer-table [data-slot="table-body"] {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .admin-customer-table [data-slot="table-body"] [data-slot="table-row"] {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) minmax(6rem, 0.42fr);
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: var(--card);
+  }
+
+  .admin-customer-table [data-slot="table-body"] [data-slot="table-row"]:hover {
+    background: var(--card);
+  }
+
+  .admin-customer-table [data-slot="table-cell"] {
+    display: grid;
+    max-width: none;
+    gap: 0.2rem;
+    padding: 0.5rem 0;
+    white-space: normal;
+  }
+
+  .admin-customer-table [data-slot="table-cell"]::before {
+    color: var(--muted-foreground);
+    font-size: 0.61rem;
+    font-weight: 720;
+    letter-spacing: 0.045em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .admin-customer-table [data-column="name"] {
+    grid-column: 1 / -1;
+    padding-top: 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .admin-customer-table [data-column="name"]::before { content: "Name"; }
+  .admin-customer-table [data-column="email"]::before { content: "Email"; }
+  .admin-customer-table [data-column="phone"]::before { content: "Phone"; }
+  .admin-customer-table [data-column="lastActivity"]::before { content: "Last activity"; }
+  .admin-customer-table [data-column="dripPoints"]::before { content: "Drip Points"; }
+  .admin-customer-table [data-column="source"]::before { content: "Source"; }
+
+  .admin-customer-table [data-column="email"],
+  .admin-customer-table [data-column="phone"],
+  .admin-customer-table [data-column="source"] {
+    grid-column: 1 / -1;
+  }
+
+  .admin-customer-table [data-column="lastActivity"] {
+    grid-column: 1;
+    min-width: 0;
+  }
+
+  .admin-customer-table [data-column="dripPoints"] {
+    grid-column: 2;
+    min-width: 0;
+    justify-items: end;
+    text-align: right;
+  }
+
+  .admin-customer-contact-link,
+  .admin-customer-muted,
+  .admin-customer-table-stack > strong,
+  .admin-customer-table-stack > span,
+  .admin-customer-name,
+  .admin-customer-points {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .admin-customer-name,
@@ -447,6 +579,26 @@ body:has(.admin-customer-shell) > .home-top-header {
   .admin-customer-muted,
   .admin-customer-table-stack > span {
     font-size: 0.72rem;
+  }
+
+  .admin-customer-table [data-column="source"] {
+    padding-bottom: 0;
+  }
+
+  .admin-customer-table [data-slot="table-row"]:has(.admin-customer-table-empty) {
+    display: block;
+    padding: 0;
+  }
+
+  .admin-customer-table-empty {
+    display: block !important;
+    width: 100%;
+    height: auto;
+    padding: 2.5rem 1rem !important;
+  }
+
+  .admin-customer-table-empty::before {
+    content: none !important;
   }
 }
 
@@ -473,7 +625,4 @@ body:has(.admin-customer-shell) > .home-top-header {
     font-size: 0.7rem;
   }
 
-  .admin-customer-table {
-    min-width: 46rem;
-  }
 }

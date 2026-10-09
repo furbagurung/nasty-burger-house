@@ -645,8 +645,8 @@
   }
   .admin-modern .admin-customer-toolbar { padding: 0.2rem 0; }
   .admin-modern .admin-customer-table-wrap {
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
+    border: 0;
+    border-radius: 0;
   }
 }
 

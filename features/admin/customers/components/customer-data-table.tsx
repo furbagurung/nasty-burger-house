@@ -77,7 +77,7 @@ export default function CustomerDataTable({
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getAllCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} data-column={cell.column.id}>
                     <table.FlexRender cell={cell} />
                   </TableCell>
                 ))}

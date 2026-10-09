@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowUpRight,
@@ -10,11 +10,11 @@ import {
   LogOut,
   Menu,
   MessageSquareText,
-  X,
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
 /**
  * Nasty Burger House adaptation of Watermelon UI's Jobtracker dashboard
@@ -89,9 +89,9 @@ function SidebarContent({
           </Button>
         </form>
         <div className="admin-jobtracker-sidebar-profile">
-          <Badge variant="secondary" className="admin-jobtracker-profile-avatar" aria-hidden="true">
-            {(adminEmail || "A").charAt(0).toUpperCase()}
-          </Badge>
+          <Avatar className="admin-jobtracker-profile-avatar" aria-hidden="true">
+            <AvatarFallback>{(adminEmail || "A").charAt(0).toUpperCase()}</AvatarFallback>
+          </Avatar>
           <span title={adminEmail}>
             <strong>Administrator</strong>
             <small>{adminEmail || "Admin"}</small>
@@ -117,91 +117,27 @@ export function AdminWorkspaceHeader({
 }) {
   const reduceMotion = useReducedMotion();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (!mobileOpen) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    closeButtonRef.current?.focus();
-
-    function handleKeydown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setMobileOpen(false);
-      }
-
-      // Keep keyboard focus within the open mobile navigation drawer.
-      if (event.key === "Tab") {
-        const drawer = document.getElementById("admin-jobtracker-mobile-drawer");
-        if (!drawer) return;
-        const focusable = Array.from(
-          drawer.querySelectorAll<HTMLElement>(
-            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
-          ),
-        );
-        if (focusable.length === 0) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first.focus();
-        }
-      }
-    }
-
-    window.addEventListener("keydown", handleKeydown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeydown);
-      menuButtonRef.current?.focus();
-    };
-  }, [mobileOpen]);
-
   return (
     <>
       <aside className="admin-jobtracker-sidebar" aria-label="Admin workspace sidebar">
         <SidebarContent active={active} adminEmail={adminEmail} />
       </aside>
 
-      {mobileOpen && (
-        <div className="admin-jobtracker-drawer-root">
-          <button
-            type="button"
-            className="admin-jobtracker-drawer-backdrop"
-            aria-label="Close navigation"
-            onClick={() => setMobileOpen(false)}
-            tabIndex={-1}
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetContent
+          id="admin-jobtracker-mobile-drawer"
+          side="left"
+          className="admin-jobtracker-mobile-drawer"
+          aria-label="Admin navigation"
+        >
+          <SheetTitle className="sr-only">Admin navigation</SheetTitle>
+          <SidebarContent
+            active={active}
+            adminEmail={adminEmail}
+            onNavigate={() => setMobileOpen(false)}
           />
-          <aside
-            id="admin-jobtracker-mobile-drawer"
-            className="admin-jobtracker-mobile-drawer"
-            role="dialog"
-            aria-label="Admin navigation"
-            aria-modal="true"
-          >
-            <Button
-              ref={closeButtonRef}
-              type="button"
-              variant="ghost"
-              className="admin-jobtracker-drawer-close"
-              aria-label="Close menu"
-              onClick={() => setMobileOpen(false)}
-            >
-              <X size={19} aria-hidden="true" />
-            </Button>
-            <SidebarContent
-              active={active}
-              adminEmail={adminEmail}
-              onNavigate={() => setMobileOpen(false)}
-            />
-          </aside>
-        </div>
-      )}
+        </SheetContent>
+      </Sheet>
 
       <motion.header
         className="admin-modern-header admin-jobtracker-topbar"
@@ -212,7 +148,6 @@ export function AdminWorkspaceHeader({
         <div className="admin-jobtracker-topbar-inner">
           <div className="admin-jobtracker-topbar-title">
             <Button
-              ref={menuButtonRef}
               type="button"
               variant="ghost"
               className="admin-jobtracker-menu-button"
@@ -251,9 +186,9 @@ export function AdminWorkspaceHeader({
               <ArrowUpRight size={18} aria-hidden="true" />
             </a>
             <div className="admin-jobtracker-topbar-user" title={adminEmail || "Admin"}>
-              <Badge variant="secondary" className="admin-jobtracker-profile-avatar" aria-hidden="true">
-                {(adminEmail || "A").charAt(0).toUpperCase()}
-              </Badge>
+              <Avatar className="admin-jobtracker-profile-avatar" aria-hidden="true">
+                <AvatarFallback>{(adminEmail || "A").charAt(0).toUpperCase()}</AvatarFallback>
+              </Avatar>
               <span>{adminEmail || "Admin"}</span>
             </div>
           </div>

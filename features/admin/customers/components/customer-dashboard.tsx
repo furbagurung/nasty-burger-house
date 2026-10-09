@@ -1,43 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
 import { CircleCheck, ClipboardList, Link2, Search, Users } from "lucide-react";
 import type { AdminCustomer } from "@/app/lib/admin-customers";
 import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-const STORE_TIME_ZONE = "Australia/Sydney";
-
-function formatDateTime(value: string | null) {
-  if (!value) return "Never";
-  return new Intl.DateTimeFormat("en-AU", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: STORE_TIME_ZONE,
-  }).format(new Date(value));
-}
+import CustomerDataTable from "./customer-data-table";
 
 type Filter = "all" | "website" | "square" | "both";
-
-function sourceLabel(customer: AdminCustomer) {
-  if (customer.source === "both") return "Website + Square";
-  if (customer.source === "square") return "Square";
-  return "Website";
-}
-
-function sourceClass(customer: AdminCustomer) {
-  if (customer.source === "both") return "is-both";
-  if (customer.source === "square") return "is-square";
-  return "is-website";
-}
 
 export default function AdminCustomerDashboard({
   customers,
@@ -52,7 +25,6 @@ export default function AdminCustomerDashboard({
     error: string | null;
   };
 }) {
-  const reducedMotion = useReducedMotion();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
 
@@ -192,95 +164,7 @@ export default function AdminCustomerDashboard({
         ))}
       </div>
 
-      <Card className="admin-customer-table-wrap" aria-label="Customer directory">
-        <div className="admin-customer-table-head" aria-hidden="true">
-          <span>Name</span>
-          <span>Email</span>
-          <span>Phone</span>
-          <span>Last activity</span>
-          <span>Drip Points</span>
-          <span>Source</span>
-        </div>
-
-        {visibleCustomers.length === 0 ? (
-          <div className="admin-empty-state">
-            <strong>No customers match this view.</strong>
-            <span>Try another search or filter.</span>
-          </div>
-        ) : (
-          <div className="admin-customer-list">
-            {visibleCustomers.map((customer, index) => {
-              const lastActivity = customer.websiteAccount
-                ? customer.lastSignInAt
-                : customer.updatedAt;
-              const dripPoints =
-                customer.squareDripPoints ??
-                (customer.websiteAccount ? customer.websiteDripPoints : null);
-
-              return (
-                <motion.article
-                  className="admin-customer-row"
-                  key={customer.id}
-                  initial={
-                    reducedMotion || index > 12 ? false : { opacity: 0, y: 6 }
-                  }
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.22,
-                    delay: Math.min(index, 12) * 0.018,
-                  }}
-                >
-                  <div className="admin-customer-identity" data-label="Name">
-                    <strong>{customer.name}</strong>
-                  </div>
-
-                  <div className="admin-customer-cell admin-customer-contact" data-label="Email">
-                    {customer.email ? (
-                      <a href={`mailto:${customer.email}`}>{customer.email}</a>
-                    ) : (
-                      <span>—</span>
-                    )}
-                  </div>
-
-                  <div className="admin-customer-cell admin-customer-contact" data-label="Phone">
-                    {customer.phone ? (
-                      <a href={`tel:${customer.phone}`}>{customer.phone}</a>
-                    ) : (
-                      <span>—</span>
-                    )}
-                  </div>
-
-                  <div className="admin-customer-cell" data-label="Last activity">
-                    <strong>{formatDateTime(lastActivity)}</strong>
-                    <span>
-                      {customer.websiteAccount
-                        ? "Website sign in"
-                        : "Square activity"}
-                    </span>
-                  </div>
-
-                  <div className="admin-customer-cell" data-label="Drip Points">
-                    <strong>
-                      {dripPoints === null
-                        ? "—"
-                        : dripPoints.toLocaleString("en-AU")}
-                    </strong>
-                  </div>
-
-                  <div className="admin-customer-cell" data-label="Source">
-                    <Badge
-                      variant="secondary"
-                      className={`admin-customer-source ${sourceClass(customer)}`}
-                    >
-                      {sourceLabel(customer)}
-                    </Badge>
-                  </div>
-                </motion.article>
-              );
-            })}
-          </div>
-        )}
-      </Card>
+      <CustomerDataTable data={visibleCustomers} />
     </main>
   );
 }

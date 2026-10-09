@@ -505,6 +505,18 @@
 .dark .admin-modern .admin-modern-metric-value {
   color: var(--nb-dark-text-primary);
 }
+.dark .admin-modern .admin-customer-source.is-website {
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-primary);
+}
+.dark .admin-modern .admin-customer-source.is-square {
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-accent);
+}
+.dark .admin-modern .admin-customer-source.is-both {
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-success);
+}
 .dark .admin-modern .admin-jobtracker-topbar-tools [data-slot="button"],
 .dark .admin-modern .admin-jobtracker-site-button {
   border-color: var(--nb-dark-border);

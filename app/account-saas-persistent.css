@@ -162,3 +162,25 @@
     text-align: center;
   }
 }
+
+/* Phone-sized account pages use the shared bottom app navigation instead of
+   the horizontal Overview / Orders / Drip Points / Reviews tab strip.
+   Tablet and desktop retain the existing sidebar navigation. */
+@media (max-width: 680px) {
+  .account-saas-layout-page .account-saas-sidebar {
+    display: none;
+  }
+
+  .account-saas-layout-page .account-saas-shell--persistent {
+    padding-top: 1.1rem;
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom));
+  }
+
+  .account-saas-layout-page .account-saas-route-content {
+    padding-top: 0;
+  }
+
+  .account-saas-route-content .account-saas-heading--overview {
+    margin-bottom: 1.25rem;
+  }
+}

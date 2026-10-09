@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bowlby_One_SC, DM_Sans, Geist_Mono } from "next/font/google";
+import { Bowlby_One_SC, DM_Sans, Geist_Mono, Inter } from "next/font/google";
 
 import AppearanceProvider from "./components/appearance-provider";
 import CartDrawerEnhancer from "./components/cart-drawer-enhancer";
@@ -93,6 +93,7 @@ import "./mobile-page-header.css";
 import "./quantity-stepper.css";
 import "./admin-workspace-footer.css";
 import "./admin-navigation.css";
+import "./admin-typography.css";
 import "./theme-dark.css";
 
 const dmSans = DM_Sans({
@@ -111,6 +112,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Available on both sides, but only used within admin scopes.
+// Disabling preload avoids an additional font request on customer pages.
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+});
+
 export const metadata: Metadata = {
   title: "Nasty Burger House | Order Pickup Online",
   description:
@@ -121,7 +131,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${bowlbyOneSC.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${bowlbyOneSC.variable} ${geistMono.variable} ${inter.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body>

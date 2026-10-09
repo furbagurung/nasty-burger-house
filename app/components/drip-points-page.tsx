@@ -236,13 +236,12 @@ export default function DripPointsPage() {
               </div>
             )}
 
-            <section className="drip-dashboard-balance" aria-label="Drip Points balance">
-              <div className="drip-dashboard-balance__decor" aria-hidden="true" />
+            <section className="drip-dashboard-balance" aria-label={`Drip Points balance for ${profile.name}`}>
               <div className="drip-dashboard-balance__top">
                 <div className="drip-dashboard-balance__identity">
-                  <p>{profile.name}</p>
+                  <p>Available Drip Points</p>
                   <strong>{balance.toLocaleString()}</strong>
-                  <span>Your available Drip Points</span>
+                  <span>{progress}% toward {DRIP_REWARD_TARGET.toLocaleString()} Drip Points</span>
                 </div>
 
                 <div className="drip-dashboard-balance__member">
@@ -265,16 +264,13 @@ export default function DripPointsPage() {
                 </span>
                 <div>
                   <small>
-                    {progress}% to reward
-                    {pendingPoints > 0
-                      ? ` · ${pendingPoints.toLocaleString()} pending`
-                      : ""}
-                  </small>
-                  <strong>
                     {remaining === 0
                       ? "Reward target reached"
                       : `${remaining.toLocaleString()} points to go`}
-                  </strong>
+                  </small>
+                  {pendingPoints > 0 && (
+                    <strong>{pendingPoints.toLocaleString()} points pending</strong>
+                  )}
                 </div>
               </div>
             </section>

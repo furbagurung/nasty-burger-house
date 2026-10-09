@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, CheckCircle2, ChevronLeft, ShieldCheck } from "lucide-react";
+import { AlertCircle, CheckCircle2, ShieldCheck } from "lucide-react";
 import { menuItems } from "../data/menu";
 import {
   calculateCartSubtotal,
@@ -376,9 +376,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
       />
       <main className="standalone-main checkout-page-main">
         <header className="checkout-intro checkout-desktop-header cart-redesign-header">
-          <Link className="cart-redesign-back" href="/cart" aria-label="Back to cart">
-            <ChevronLeft size={24} strokeWidth={2.3} aria-hidden="true" />
-          </Link>
           <div className="cart-redesign-title-wrap">
             <div className="cart-redesign-title-row">
               <h1>Checkout</h1>

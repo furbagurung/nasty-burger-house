@@ -10,6 +10,7 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,6 +21,7 @@ import {
   signOutCustomer,
 } from "../lib/customer-store";
 import { getBrowserClientOrNull } from "../lib/supabase/client";
+import { googleProfilePhoto } from "../lib/google-profile-photo";
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
 
@@ -73,6 +75,7 @@ export default function HomeTopHeader() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPhoto, setCustomerPhoto] = useState<string | undefined>();
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const lastScrollY = useRef(0);
   const accountMenuRef = useRef<HTMLDivElement>(null);
@@ -106,6 +109,7 @@ export default function HomeTopHeader() {
           setIsSignedIn(Boolean(localProfile));
           setCustomerName(localProfile?.name ?? "");
           setCustomerEmail(localProfile?.email ?? "");
+          setCustomerPhoto(undefined);
         }
         return;
       }
@@ -133,12 +137,14 @@ export default function HomeTopHeader() {
           setIsSignedIn(Boolean(user));
           setCustomerName(resolvedName);
           setCustomerEmail(resolvedEmail);
+          setCustomerPhoto(googleProfilePhoto(user));
         }
       } catch {
         if (active) {
           setIsSignedIn(Boolean(localProfile));
           setCustomerName(localProfile?.name ?? "");
           setCustomerEmail(localProfile?.email ?? "");
+          setCustomerPhoto(undefined);
         }
       }
     }
@@ -156,6 +162,7 @@ export default function HomeTopHeader() {
         setCustomerEmail(
           session?.user?.email?.trim() || localProfile?.email || "",
         );
+        setCustomerPhoto(googleProfilePhoto(session?.user));
         if (
           session?.user &&
           !authDisplayName(session.user) &&
@@ -260,6 +267,7 @@ export default function HomeTopHeader() {
       setIsSignedIn(false);
       setCustomerName("");
       setCustomerEmail("");
+      setCustomerPhoto(undefined);
       setIsAccountOpen(false);
       window.location.assign("/");
     }
@@ -338,12 +346,23 @@ export default function HomeTopHeader() {
             onClick={() => setIsAccountOpen((current) => !current)}
           >
             <span className="home-top-header__icon" aria-hidden="true">
-              <HugeiconsIcon
-                icon={UserIcon}
-                size={22}
-                color="currentColor"
-                strokeWidth={1.9}
-              />
+              {isSignedIn ? (
+                <Avatar className="home-top-header__signed-avatar">
+                  {customerPhoto && (
+                    <AvatarImage src={customerPhoto} alt="" referrerPolicy="no-referrer" />
+                  )}
+                  <AvatarFallback className="home-top-header__signed-avatar-fallback">
+                    {avatarInitial}
+                  </AvatarFallback>
+                </Avatar>
+              ) : (
+                <HugeiconsIcon
+                  icon={UserIcon}
+                  size={22}
+                  color="currentColor"
+                  strokeWidth={1.9}
+                />
+              )}
             </span>
             <span className="home-top-header__action-copy">
               <small>Account</small>
@@ -371,12 +390,14 @@ export default function HomeTopHeader() {
                     className="home-top-header__profile-summary"
                     role="presentation"
                   >
-                    <span
-                      className="home-top-header__profile-avatar"
-                      aria-hidden="true"
-                    >
-                      {avatarInitial}
-                    </span>
+                    <Avatar className="home-top-header__profile-avatar" aria-hidden="true">
+                      {customerPhoto && (
+                        <AvatarImage src={customerPhoto} alt="" referrerPolicy="no-referrer" />
+                      )}
+                      <AvatarFallback className="home-top-header__profile-avatar-fallback">
+                        {avatarInitial}
+                      </AvatarFallback>
+                    </Avatar>
                     <span className="home-top-header__profile-identity">
                       <strong>{customerName || "Nasty member"}</strong>
                       <small>{customerEmail || "Your Nasty account"}</small>

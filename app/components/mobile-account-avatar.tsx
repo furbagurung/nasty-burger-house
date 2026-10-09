@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { readSignedInCustomerProfile } from "../lib/customer-store";
 import { getBrowserClientOrNull } from "../lib/supabase/client";
 
 type CustomerIdentity = {
   name: string;
   email: string;
+  imageUrl?: string;
 };
 
 // Customer avatar for the homepage's compact mobile header.
@@ -40,7 +41,12 @@ export default function MobileAccountAvatar() {
         }
 
         const metadataName = user.user_metadata?.name;
+        const picture = user.user_metadata?.avatar_url ?? user.user_metadata?.picture;
+        const imageUrl = typeof picture === "string" && /^https:\/\//i.test(picture)
+          ? picture
+          : undefined;
         setCustomer({
+          imageUrl,
           name: typeof metadataName === "string" && metadataName.trim()
             ? metadataName.trim()
             : localProfile?.name ?? "",
@@ -80,6 +86,9 @@ export default function MobileAccountAvatar() {
       aria-label={customer ? "Open my account" : "Sign in to your account"}
     >
       <Avatar size="lg" className="mobile-account-avatar__avatar">
+        {customer?.imageUrl && (
+          <AvatarImage src={customer.imageUrl} alt="" referrerPolicy="no-referrer" />
+        )}
         <AvatarFallback className="mobile-account-avatar__fallback">
           {initial || <UserRound size={21} strokeWidth={1.85} aria-hidden="true" />}
         </AvatarFallback>

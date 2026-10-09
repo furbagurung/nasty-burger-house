@@ -1,54 +1,70 @@
-# Nasty Burger House — Admin Sidebar Plan
+# Nasty Burger House — Admin Sidebar & Route Plan
 
-**Status:** Proposal only — navigation additions are **not implemented** until approved.
+**Status:** Navigation groups and authenticated route shells implemented. Feature backends for new modules are **not yet implemented**.
 
-## Current pages
+## Approved navigation structure
 
-| Tab | Route | Current state |
-| --- | --- | --- |
-| Dashboard | `/admin` | Live protected route, intentionally blank for a future custom dashboard; currently accessible through the logo |
-| Customers | `/admin/customers` | Live customer management directory |
-| Reviews | `/admin/reviews` | Live review moderation |
+| Group | Tab | Route | Current status |
+| --- | --- | --- | --- |
+| **Overview** | Dashboard | `/admin` | Existing secure, intentionally blank dashboard |
+| | Analytics | `/admin/analytics` | Protected planned-module page; verified reporting data not yet wired |
+| | Customers | `/admin/customers` | Existing real customer management |
+| | Reviews | `/admin/reviews` | Existing real review moderation |
+| **Business** | Menu | `/admin/menu` | Protected planned-module page |
+| | Drip Points | `/admin/drip-points` | Protected planned-module page |
+| | Promotions | `/admin/promotions` | Protected planned-module page |
+| **Management** | Reports | `/admin/reports` | Protected planned-module page |
+| | Settings | `/admin/settings` | Protected planned-module page |
+| | Team & Access | `/admin/team-access` | Protected planned-module page |
 
-**Important:** The Orders navigation tab was intentionally removed earlier. Do **not** reintroduce it without an explicit request. The existing order/backend APIs must remain untouched.
+**Orders is intentionally excluded from navigation.** The existing backend order processing and APIs remain unchanged. Do not restore the Orders tab unless explicitly requested.
 
-## Proposed sidebar structure
+## Technical architecture
 
-### Workspace (priority 1)
+- `app/components/admin-workspace-header.tsx`: one source of truth for all **Overview / Business / Management** navigation groups. Grouped, accessible links in the desktop macOS sidebar and mobile shadcn Sheet.
+- `components/macos-sidebar.tsx`: existing reusable sidebar, now supporting optional group labels, icon-only collapsed mode, keyboard-focus styles and route highlighting.
+- `app/admin/[section]/page.tsx`: one small, server-rendered protected route for the **seven planned modules** above. Unknown section slugs return 404. Auth is checked server-side with `verifyAdmin()` before a module screen renders.
+- `app/admin/page.tsx`, `app/admin/customers/page.tsx`, `app/admin/reviews/page.tsx`: existing explicit routes take precedence; business logic and moderation remain unchanged.
+- `app/components/admin-workspace-footer.tsx`: shared admin-only footer on all authenticated admin pages; no public customer footer.
+- `app/admin/loading.tsx`: shared shadcn `Skeleton` route fallback for server-side auth/data loading, with matching nav/topbar/content geometry. No mock business data or fake figures.
+- `app/admin-navigation.css`: flat grouped sidebar spacing, common planned-page presentation and responsive skeleton. The theme is still controlled by `docs/DARK_THEME.md`.
 
-1. **Dashboard** — operational overview (currently a blank, protected page)
-2. **Customers** — customer directory, account status and customer activity (existing)
-3. **Reviews** — moderation and verification (existing)
+### One layout, not ten redesigned pages
 
-### Business (priority 2, future)
+All admin routes must keep the same sidebar, header, main-content inset, and dedicated admin footer. New sections start with a simple text notice until their data and operations are real, rather than premature Bento cards, pretend KPIs or disabled mock forms.
 
-4. **Menu** — manage burgers, sides, pricing, categories and availability
-5. **Drip Points** — loyalty customer balances, earning/redemption rules and adjustments
-6. **Promotions** — coupon campaigns, homepage offers and banners
+### Speed and loading rules
 
-### Insights & administration (priority 3, future)
+1. Keep navigation and the placeholder pages lightweight; avoid per-page copies of the shared layout and avoid unnecessary client fetching.
+2. Use real, server-side data only once it exists; do not add costly background polling to inactive routes.
+3. Use the existing shadcn `Skeleton` component for route/loading transitions and real async loading states. Never remove current customer/account skeleton loaders.
+4. Show actionable empty/error states after loading, never indefinite skeletons.
+5. Paginate/filter larger tables server-side when the backend expands, and lazy-load heavy charts only when Analytics/Reports are implemented.
+6. Verify keyboard/focus behavior, collapse animation, responsive mobile Sheet, and WCAG AA contrast in **both Light and Dark**.
 
-7. **Reports** — customer, product and sales reporting (only after verified data wiring)
-8. **Settings** — business hours, pickup availability, integrations, admin preferences
-9. **Team & Access** — roles, invitations and audit history, if more operators require access
+## Roadmap
 
-This is a **proposed information architecture**, not a claim that these management capabilities, routes or APIs already exist. Final order and labels require approval.
+### Phase 1 — navigation and route foundation (implemented; needs browser/build checks)
+- Overview: Dashboard, Analytics, Customers, Reviews
+- Business: Menu, Drip Points, Promotions
+- Management: Reports, Settings, Team & Access
+- Auth guards, consistent shell, skeleton fallback, admin-only footer
 
-## UX implementation rules
+### Phase 2 — real operational modules (requires feature approval)
+- Menu: real item/price/availability editing with validation and audit logs
+- Drip Points: supported balance/ledger management only after loyalty source-of-truth and secure write rules are agreed
+- Promotions: scheduled offers with validation and rollback
 
-- Reuse the installed macOS Sidebar and shadcn Sheet, Button, Avatar primitives.
-- **Flat, non-Bento layout**; compact grouping, clear active item, no floating cards.
-- Light and Dark follow `docs/DARK_THEME.md`; no pure black in dark.
-- Desktop can collapse to icon-only with accessible names/tooltips. Mobile uses the current shadcn Sheet.
-- Navigation items must link to working, permission-checked routes. Do not create dead links, fake metrics or empty public placeholder pages.
-- Keep logo/home access, website link, logout, and administrator identity functional.
-- Role-specific options are visible only to authorized operators once permission rules are implemented.
-- The new admin-only page footer is separate from the public website footer.
+### Phase 3 — real reporting and management (requires feature approval)
+- Analytics: genuine verified activity metrics, not estimates or placeholder numbers
+- Reports: auditable datasets, exports and filters; differentiate from analytics visual exploration
+- Settings: access-checked business, integration and operating-hour controls
+- Team & Access: invitation-only accounts, role checks and audit trails
 
-## Implementation stages
+**Important:** The new route shells are live code, but their data features are not. Review/approve each backend workflow before exposing writes, managing users or changing production configuration.
 
-1. **Approved foundation:** Dashboard / Customers / Reviews links and grouping (retain current routes).
-2. **Operations:** Implement Menu / Drip Points / Promotions pages and secure APIs one feature at a time before adding navigation links.
-3. **Management:** Implement Reports / Settings / Team only after data, permissions and audit requirements are defined.
+## Release checklist
 
-**Release policy:** Review `docs/DARK_THEME.md` before design work; test Light/Dark, mobile, keyboard navigation and admin authentication; commit approved changes to `main`; never deploy without explicit user approval.
+Run `npm run lint` and `npm run build`; manually test direct URL navigation to all ten tabs, unauthenticated redirects, unknown routes returning 404, skeleton loading, mobile and desktop, collapsed/expanded sidebar, Light/Dark, existing Customers & Reviews actions, admin sign-out and customer ordering.
+
+**Policy:** Read `docs/DARK_THEME.md` before design edits. Commit approved changes to GitHub `main`. **Never deploy without explicit approval.**

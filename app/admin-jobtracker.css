@@ -994,11 +994,15 @@
 
 .admin-modern .admin-macos-sidebar .admin-jobtracker-brand-copy small,
 .admin-jobtracker-mobile-drawer .admin-jobtracker-brand-copy small,
-.admin-modern .admin-macos-sidebar .admin-jobtracker-nav-label,
-.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-label,
 .admin-modern .admin-macos-sidebar .admin-jobtracker-sidebar-profile small,
 .admin-jobtracker-mobile-drawer .admin-jobtracker-sidebar-profile small {
   color: var(--admin-sidebar-muted);
+}
+
+.admin-modern .admin-macos-sidebar .admin-jobtracker-nav-label,
+.admin-jobtracker-mobile-drawer .admin-jobtracker-nav-label {
+  color: var(--admin-sidebar-text);
+  font-weight: 850;
 }
 
 .admin-modern .admin-macos-sidebar .admin-macos-sidebar__toggle {

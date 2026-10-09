@@ -66,13 +66,14 @@ The admin sidebar follows the user-selected appearance setting. In **Light**, us
 | Border / separator | `--admin-sidebar-line` | `#EFE2E3` |
 | Primary sidebar text | `--admin-sidebar-text` | `#2F292D` |
 | Navigation icons & text | `--admin-sidebar-nav` | `#4D4548` |
-| Muted labels | `--admin-sidebar-muted` | `#655B60` |
+| Supporting / muted text | `--admin-sidebar-muted` | `#655B60` |
+| Section labels | `--admin-sidebar-text` | `#2F292D` |
 | Active icon/text | `--admin-sidebar-active` | `#AC3342` |
 | Active-row blush | `--admin-sidebar-selected` | `#F8E2E5` |
 | Navigation hover background | `--admin-sidebar-hover` | `transparent` |
 | Toggle hover | `--admin-sidebar-toggle-hover` | `#F8E2E5` |
 
-Use a flat selected surface, no Bento panels or elevation shadows. In Light mode, navigation hover has no tinted overlay; hover may change text/icon emphasis while keyboard focus remains clearly outlined. The Light active red on selected blush is ~5.1:1, and normal navigation text on the light sidebar is ~9.2:1. The existing **Dark** palette continues to use shared `--nb-dark-*` tokens in `app/theme-dark.css`; do not substitute Light pink styles into Dark mode.
+Use a flat selected surface, no Bento panels or elevation shadows. Sidebar section labels such as **Overview**, **Business**, and **Management** use the primary sidebar text token with strong weight; supporting copy remains muted. In Light mode, navigation hover has no tinted overlay; hover may change text/icon emphasis while keyboard focus remains clearly outlined. The Light active red on selected blush is ~5.1:1, and normal navigation text on the light sidebar is ~9.2:1. The existing **Dark** palette continues to use shared `--nb-dark-*` tokens in `app/theme-dark.css`; do not substitute Light pink styles into Dark mode.
 
 ## Admin SaaS font and typography
 

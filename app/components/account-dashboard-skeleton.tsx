@@ -1,5 +1,5 @@
 type AccountDashboardSkeletonProps = {
-  variant?: "overview" | "orders" | "reviews";
+  variant?: "overview" | "orders" | "reviews" | "order-detail";
 };
 
 function Shimmer({ className = "" }: { className?: string }) {
@@ -110,13 +110,72 @@ function ReviewsSkeleton() {
   );
 }
 
+
+function OrderDetailSkeleton() {
+  return (
+    <>
+      <div className="account-skeleton-detail-heading" aria-hidden="true">
+        <div className="account-skeleton-detail-heading-copy">
+          <Shimmer className="account-skeleton-detail-order-id" />
+          <Shimmer className="account-skeleton-detail-date" />
+        </div>
+        <Shimmer className="account-skeleton-detail-status" />
+      </div>
+      <div className="account-skeleton-detail-layout" aria-hidden="true">
+        <article className="account-skeleton-card account-skeleton-detail-items">
+          <div className="account-skeleton-detail-items-heading">
+            <Shimmer className="account-skeleton-detail-section-title" />
+            <Shimmer className="account-skeleton-detail-price" />
+          </div>
+          {[0, 1, 2].map((item) => (
+            <div className="account-skeleton-detail-item" key={item}>
+              <Shimmer className="account-skeleton-detail-image" />
+              <div className="account-skeleton-detail-item-copy">
+                <Shimmer className="account-skeleton-detail-item-name" />
+                <Shimmer className="account-skeleton-detail-item-note" />
+              </div>
+              <Shimmer className="account-skeleton-detail-item-total" />
+            </div>
+          ))}
+          <div className="account-skeleton-detail-total">
+            <Shimmer className="account-skeleton-detail-total-label" />
+            <Shimmer className="account-skeleton-detail-price" />
+          </div>
+        </article>
+        <div className="account-skeleton-detail-sidebar">
+          <article className="account-skeleton-card account-skeleton-detail-info">
+            <Shimmer className="account-skeleton-detail-section-title" />
+            <Shimmer className="account-skeleton-detail-customer" />
+            <Shimmer className="account-skeleton-detail-date" />
+            <Shimmer className="account-skeleton-detail-item-note" />
+          </article>
+          <article className="account-skeleton-card account-skeleton-detail-points">
+            <Shimmer className="account-skeleton-detail-points-coin" />
+            <div className="account-skeleton-detail-item-copy">
+              <Shimmer className="account-skeleton-detail-item-note" />
+              <Shimmer className="account-skeleton-detail-points-number" />
+            </div>
+          </article>
+          <article className="account-skeleton-card account-skeleton-detail-info">
+            <Shimmer className="account-skeleton-detail-section-title" />
+            <Shimmer className="account-skeleton-detail-customer" />
+            <Shimmer className="account-skeleton-detail-item-note" />
+          </article>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function AccountDashboardSkeleton({
   variant = "overview",
 }: AccountDashboardSkeletonProps) {
   return (
-    <section className="account-skeleton" role="status" aria-live="polite" aria-label="Loading account">
-      <span className="account-skeleton-sr-only">Loading your account…</span>
-      {variant === "orders" ? (
+    <section className="account-skeleton" role="status" aria-live="polite" aria-label={variant === "order-detail" ? "Loading order details" : "Loading account"}>
+      <span className="account-skeleton-sr-only">{variant === "order-detail" ? "Loading your order details…" : "Loading your account…"}</span>
+      {variant === "order-detail" ? (
+        <OrderDetailSkeleton />
+      ) : variant === "orders" ? (
         <OrdersSkeleton />
       ) : variant === "reviews" ? (
         <ReviewsSkeleton />

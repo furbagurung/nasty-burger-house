@@ -13,10 +13,10 @@ const OAUTH_RETURN_COOKIE = "nbh_oauth_return";
 
 function safeReturnPath() {
   const requested =
-    new URLSearchParams(window.location.search).get("return") ?? "/account";
+    new URLSearchParams(window.location.search).get("return") ?? "/";
   return requested.startsWith("/") && !requested.startsWith("//")
     ? requested
-    : "/account";
+    : "/";
 }
 
 export default function GoogleAuthButton({

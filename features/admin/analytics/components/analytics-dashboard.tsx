@@ -16,7 +16,9 @@ import {
   YAxis,
 } from "recharts";
 import type { AdminAnalyticsData } from "@/app/lib/admin-analytics";
+import type { AdminTrafficAnalyticsData } from "@/app/lib/admin-traffic-analytics";
 import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
+import TrafficAnalyticsSection from "./traffic-analytics-section";
 import {
   Card,
   CardContent,
@@ -75,20 +77,30 @@ const sourceChartConfig = {
 
 export default function AnalyticsDashboard({
   data,
+  traffic,
 }: {
   data: AdminAnalyticsData;
+  traffic: AdminTrafficAnalyticsData;
 }) {
   if (!data.available) {
     return (
       <main className="admin-main admin-analytics-main">
+        <section className="admin-analytics-intro" aria-labelledby="analytics-heading">
+          <div>
+            <h2 id="analytics-heading">Sales overview</h2>
+            <p>Completed Square orders across the current store location.</p>
+          </div>
+          <span className="admin-analytics-range">Square</span>
+        </section>
         <Card className="admin-analytics-unavailable">
           <CardHeader>
-            <CardTitle>Analytics unavailable</CardTitle>
+            <CardTitle>Sales analytics unavailable</CardTitle>
             <CardDescription>
-              {data.error} Customer and menu administration are unaffected.
+              {data.error} Website traffic analytics can still be available below.
             </CardDescription>
           </CardHeader>
         </Card>
+        <TrafficAnalyticsSection data={traffic} />
       </main>
     );
   }
@@ -340,6 +352,8 @@ export default function AnalyticsDashboard({
           )}
         </CardContent>
       </Card>
+
+      <TrafficAnalyticsSection data={traffic} />
     </main>
   );
 }

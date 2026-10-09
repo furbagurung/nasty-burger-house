@@ -473,3 +473,218 @@
     height: 1.5rem;
   }
 }
+
+
+/* Website traffic analytics stays separate from Square sales analytics. */
+.admin-traffic-section {
+  display: grid;
+  min-width: 0;
+  gap: 0.8rem;
+  margin-top: 0.35rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border);
+}
+
+.admin-traffic-intro {
+  padding-top: 0;
+}
+
+.admin-traffic-metrics {
+  margin-top: 0;
+}
+
+.admin-traffic-setup-note {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.admin-traffic-device-card {
+  justify-content: space-between;
+}
+
+.admin-traffic-donut-wrap {
+  min-height: 12.5rem;
+}
+
+.admin-traffic-device-legend {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.admin-traffic-device-legend > div {
+  display: grid;
+  grid-template-columns: 0.55rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.4rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.45rem;
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+}
+
+.admin-traffic-device-legend strong {
+  color: var(--foreground);
+  font-size: 0.68rem;
+  font-weight: 760;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-analytics-source-dot.is-traffic-mobile {
+  background: var(--admin-analytics-accent);
+}
+
+.admin-analytics-source-dot.is-traffic-desktop {
+  background: var(--admin-analytics-neutral);
+}
+
+.admin-analytics-source-dot.is-traffic-other {
+  background: var(--muted-foreground);
+}
+
+.admin-traffic-lists {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(14rem, 0.82fr));
+  gap: 0.8rem;
+}
+
+.admin-traffic-list-card {
+  min-width: 0;
+}
+
+.admin-traffic-ranked-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-traffic-ranked-list li {
+  display: grid;
+  grid-template-columns: 1.9rem minmax(0, 1fr);
+  gap: 0.7rem;
+  padding: 0.62rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-traffic-ranked-list li:first-child {
+  padding-top: 0;
+}
+
+.admin-traffic-ranked-list li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.admin-traffic-ranked-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.38rem;
+}
+
+.admin-traffic-ranked-copy > div:first-child {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.admin-traffic-ranked-copy strong {
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 0.73rem;
+  font-weight: 720;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-traffic-ranked-copy > div:first-child > span {
+  flex: 0 0 auto;
+  color: var(--muted-foreground);
+  font-size: 0.62rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 1180px) {
+  .admin-traffic-lists {
+    grid-template-columns: minmax(0, 1.25fr) minmax(14rem, 0.75fr);
+  }
+
+  .admin-traffic-list-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 980px) {
+  .admin-traffic-device-card [data-slot="card-content"] {
+    display: grid;
+    grid-template-columns: minmax(13rem, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .admin-traffic-lists {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-traffic-list-card--pages {
+    grid-column: 1 / -1;
+  }
+
+  .admin-traffic-list-card:last-child {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-traffic-section {
+    gap: 0.7rem;
+    margin-top: 0.2rem;
+    padding-top: 0.9rem;
+  }
+
+  .admin-traffic-device-card [data-slot="card-content"] {
+    display: block;
+  }
+
+  .admin-traffic-lists {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-traffic-list-card--pages,
+  .admin-traffic-list-card:last-child {
+    grid-column: auto;
+  }
+
+  .admin-traffic-ranked-copy > div:first-child {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.12rem;
+  }
+
+  .admin-traffic-ranked-copy > div:first-child > span {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 440px) {
+  .admin-traffic-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-traffic-ranked-list li {
+    grid-template-columns: 1.55rem minmax(0, 1fr);
+    gap: 0.55rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-traffic-metrics {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Bowlby_One_SC, DM_Sans, Geist_Mono, Inter } from "next/font/google";
 
 import AppearanceProvider from "./components/appearance-provider";
@@ -152,6 +153,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <FooterLegalLinks />
         <CookieSettings />
         <ToastProvider />
+        <Analytics />
         </AppearanceProvider>
       </body>
     </html>

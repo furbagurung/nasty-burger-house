@@ -480,9 +480,8 @@
   display: grid;
   min-width: 0;
   gap: 0.8rem;
-  margin-top: 0.35rem;
-  padding-top: 1.1rem;
-  border-top: 1px solid var(--border);
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .admin-traffic-intro {

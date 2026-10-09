@@ -16,9 +16,7 @@ import {
   YAxis,
 } from "recharts";
 import type { AdminAnalyticsData } from "@/app/lib/admin-analytics";
-import type { AdminTrafficAnalyticsData } from "@/app/lib/admin-traffic-analytics";
 import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
-import TrafficAnalyticsSection from "./traffic-analytics-section";
 import {
   Card,
   CardContent,
@@ -75,32 +73,27 @@ const sourceChartConfig = {
   },
 } satisfies ChartConfig;
 
-export default function AnalyticsDashboard({
+export default function SalesOverview({
   data,
-  traffic,
 }: {
   data: AdminAnalyticsData;
-  traffic: AdminTrafficAnalyticsData;
 }) {
   if (!data.available) {
     return (
       <main className="admin-main admin-analytics-main">
-        <section className="admin-analytics-intro" aria-labelledby="analytics-heading">
+        <section className="admin-analytics-intro" aria-labelledby="business-overview-heading">
           <div>
-            <h2 id="analytics-heading">Sales overview</h2>
-            <p>Completed Square orders across the current store location.</p>
+            <h2 id="business-overview-heading">Business overview</h2>
+            <p>Square sales performance for the current store location.</p>
           </div>
-          <span className="admin-analytics-range">Square</span>
+          <span className="admin-analytics-range">Last 30 days · Square</span>
         </section>
         <Card className="admin-analytics-unavailable">
           <CardHeader>
             <CardTitle>Sales analytics unavailable</CardTitle>
-            <CardDescription>
-              {data.error} Website traffic analytics can still be available below.
-            </CardDescription>
+            <CardDescription>{data.error}</CardDescription>
           </CardHeader>
         </Card>
-        <TrafficAnalyticsSection data={traffic} />
       </main>
     );
   }
@@ -129,9 +122,9 @@ export default function AnalyticsDashboard({
 
   return (
     <main className="admin-main admin-analytics-main">
-      <section className="admin-analytics-intro" aria-labelledby="analytics-heading">
+      <section className="admin-analytics-intro" aria-labelledby="business-overview-heading">
         <div>
-          <h2 id="analytics-heading">Sales overview</h2>
+          <h2 id="business-overview-heading">Business overview</h2>
           <p>
             Completed Square orders across the current store location.
           </p>
@@ -353,7 +346,6 @@ export default function AnalyticsDashboard({
         </CardContent>
       </Card>
 
-      <TrafficAnalyticsSection data={traffic} />
     </main>
   );
 }

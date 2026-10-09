@@ -1,24 +1,21 @@
 import { redirect } from "next/navigation";
-import AnalyticsDashboard from "@/features/admin/analytics/components/analytics-dashboard";
-import { verifyAdmin } from "../../../lib/admin-auth";
-import { loadAdminAnalytics } from "../../../lib/admin-analytics";
-import { loadAdminTrafficAnalytics } from "../../../lib/admin-traffic-analytics";
+import TrafficAnalyticsSection from "@/features/admin/analytics/components/traffic-analytics-section";
+import { verifyAdmin } from "@/app/lib/admin-auth";
+import { loadAdminTrafficAnalytics } from "@/app/lib/admin-traffic-analytics";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminAnalyticsPage() {
   const auth = await verifyAdmin();
-
   if (!auth.ok) {
-    redirect(
-      `/admin/login?return=${encodeURIComponent("/admin/analytics")}`,
-    );
+    redirect("/admin/login?return=/admin/analytics");
   }
 
-  const [analytics, traffic] = await Promise.all([
-    loadAdminAnalytics(),
-    loadAdminTrafficAnalytics(),
-  ]);
+  const traffic = await loadAdminTrafficAnalytics();
 
-  return <AnalyticsDashboard data={analytics} traffic={traffic} />;
+  return (
+    <main className="admin-main admin-analytics-main">
+      <TrafficAnalyticsSection data={traffic} />
+    </main>
+  );
 }

@@ -22,6 +22,7 @@ import {
 import { getServiceStatus, type ServiceStatus } from "../lib/service";
 import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import MobileBottomNav from "./mobile-bottom-nav";
+import MobileAccountAvatar from "./mobile-account-avatar";
 import HomepageTestimonials from "./homepage-testimonials";
 import ReviewStories from "./review-stories";
 import DripPointsBanner from "./drip-points-banner";
@@ -852,18 +853,7 @@ export default function OrderExperience({
             </button>
           </nav>
           <div className="header-actions">
-            <button
-              className="mobile-menu-button"
-              type="button"
-              aria-label="Open navigation"
-              aria-expanded={false}
-              aria-controls="nasty-find-navigation"
-              onClick={() => window.dispatchEvent(new Event("nasty:toggle-mobile-navigation"))}
-            >
-              <span aria-hidden="true" />
-              <span aria-hidden="true" />
-              <span aria-hidden="true" />
-            </button>
+            <MobileAccountAvatar />
             <button
               className="cart-button"
               type="button"

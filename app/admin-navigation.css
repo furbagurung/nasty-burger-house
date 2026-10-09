@@ -30,7 +30,7 @@
 
 .admin-macos-sidebar[data-collapsed="true"] .admin-macos-sidebar__nav-entry.is-group-start:not(:first-child) {
   margin-top: 0.65rem;
-  border-top: 1px solid var(--admin-sidebar-line, #e2e6ed);
+  border-top: 1px solid var(--admin-sidebar-line, #efe2e3);
   padding-top: 0.65rem;
 }
 
@@ -89,7 +89,7 @@
 .admin-modern .admin-loading-sidebar {
   gap: 1.5rem;
   padding: 1.05rem 0.75rem;
-  background: var(--admin-sidebar-bg, #f8f9fb);
+  background: var(--admin-sidebar-bg, #fffdfd);
 }
 .admin-loading-sidebar__brand {
   display: flex;

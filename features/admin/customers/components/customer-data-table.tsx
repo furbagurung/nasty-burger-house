@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { useTable } from "@tanstack/react-table";
 import type { AdminCustomer } from "@/app/lib/admin-customers";
 import { Card } from "@/components/ui/card";
 import {
@@ -15,17 +11,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { customerColumns } from "./customer-columns";
+import { customerColumns, customerTableFeatures } from "./customer-columns";
 
 export default function CustomerDataTable({
   data,
 }: {
   data: AdminCustomer[];
 }) {
-  const table = useReactTable({
+  const table = useTable({
+    features: customerTableFeatures,
     data,
     columns: customerColumns,
-    getCoreRowModel: getCoreRowModel(),
     getRowId: (row) => row.id,
   });
 
@@ -40,12 +36,9 @@ export default function CustomerDataTable({
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                  {header.isPlaceholder ? null : (
+                    <table.FlexRender header={header} />
+                  )}
                 </TableHead>
               ))}
             </TableRow>
@@ -56,12 +49,9 @@ export default function CustomerDataTable({
           {table.getRowModel().rows.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
+                {row.getAllCells().map((cell) => (
                   <TableCell key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext(),
-                    )}
+                    <table.FlexRender cell={cell} />
                   </TableCell>
                 ))}
               </TableRow>

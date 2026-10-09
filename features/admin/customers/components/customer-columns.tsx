@@ -1,5 +1,6 @@
 "use client";
 
+import { tableFeatures } from "@tanstack/react-table";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { AdminCustomer } from "@/app/lib/admin-customers";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +39,12 @@ function customerDripPoints(customer: AdminCustomer) {
   );
 }
 
-export const customerColumns: ColumnDef<AdminCustomer>[] = [
+export const customerTableFeatures = tableFeatures({});
+
+export const customerColumns: ColumnDef<
+  typeof customerTableFeatures,
+  AdminCustomer
+>[] = [
   {
     accessorKey: "name",
     header: "Name",

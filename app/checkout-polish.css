@@ -605,12 +605,21 @@ body:has(.checkout-page) .mobile-tab-bar--v2 {
   }
 
   .checkout-page .checkout-desktop-header.cart-redesign-header {
-    display: grid;
-    grid-template-columns: 3rem minmax(0, 1fr);
+    display: flex;
+    width: 100%;
+    max-width: none;
     align-items: center;
-    gap: 1rem;
-    max-width: 46rem;
+    justify-content: center;
     margin: 0 0 2rem;
+    text-align: center;
+  }
+
+  .checkout-page .checkout-desktop-header .cart-redesign-title-wrap {
+    width: 100%;
+  }
+
+  .checkout-page .checkout-desktop-header .cart-redesign-title-row {
+    justify-content: center;
   }
 
   .checkout-page .checkout-desktop-header .cart-redesign-title-row h1 {

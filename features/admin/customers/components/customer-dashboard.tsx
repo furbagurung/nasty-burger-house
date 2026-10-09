@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from "motion/react";
 import { CircleCheck, ClipboardList, Link2, Search, Users } from "lucide-react";
 import type { AdminCustomer } from "@/app/lib/admin-customers";
 import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -242,11 +241,6 @@ export default function AdminCustomerDashboard({
                   }}
                 >
                   <div className="admin-customer-identity">
-                    <Avatar className="admin-customer-avatar" aria-hidden="true">
-                      <AvatarFallback>
-                        {customer.name.trim().charAt(0).toUpperCase() || "C"}
-                      </AvatarFallback>
-                    </Avatar>
                     <div>
                       <strong>{customer.name}</strong>
                       {customer.email ? (

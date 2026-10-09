@@ -2,10 +2,20 @@
 
 import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card";
 
 export function AdminMetricCard({
-  label, value, icon, hint, index = 0,
+  label,
+  value,
+  icon,
+  hint,
+  index = 0,
 }: {
   label: string;
   value: number | string;
@@ -14,24 +24,30 @@ export function AdminMetricCard({
   index?: number;
 }) {
   const reducedMotion = useReducedMotion();
+  const formattedValue =
+    typeof value === "number" ? value.toLocaleString("en-AU") : value;
 
   return (
     <motion.div
       className="min-w-0"
-      initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+      initial={reducedMotion ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: Math.min(index, 4) * 0.045 }}
+      transition={{ duration: 0.24, delay: Math.min(index, 4) * 0.035 }}
     >
-      <Card className="admin-modern-metric h-full">
-        <CardContent className="flex h-full flex-col justify-between gap-5 p-5">
-          <div className="flex items-start justify-between gap-2">
-            <span className="admin-modern-metric-label">{label}</span>
-            <span className="admin-modern-metric-icon" aria-hidden>{icon}</span>
-          </div>
-          <div>
-            <div className="admin-modern-metric-value">{typeof value === "number" ? value.toLocaleString("en-AU") : value}</div>
-            {hint && <p className="admin-modern-metric-hint">{hint}</p>}
-          </div>
+      <Card className="admin-modern-metric h-full" size="sm">
+        <CardHeader className="admin-modern-metric-header">
+          <CardDescription className="admin-modern-metric-label">
+            {label}
+          </CardDescription>
+          <CardAction>
+            <span className="admin-modern-metric-icon" aria-hidden="true">
+              {icon}
+            </span>
+          </CardAction>
+        </CardHeader>
+        <CardContent className="admin-modern-metric-content">
+          <strong className="admin-modern-metric-value">{formattedValue}</strong>
+          {hint && <p className="admin-modern-metric-hint">{hint}</p>}
         </CardContent>
       </Card>
     </motion.div>

@@ -39,7 +39,7 @@ const securityHeaders = [
             "form-action 'self'",
             "script-src 'self' 'unsafe-inline'",
             "style-src 'self' 'unsafe-inline'",
-            "img-src 'self' data: blob: https://res.cloudinary.com",
+            "img-src 'self' data: blob: https://res.cloudinary.com https://www.google.com https://flagcdn.com",
             "media-src 'self' blob: https://res.cloudinary.com",
             "font-src 'self' data:",
             "frame-src 'self' https://www.google.com https://maps.google.com",
@@ -56,6 +56,10 @@ const nextConfig: NextConfig = {
     // Serve source assets directly so optimizer quota failures cannot hide images.
     unoptimized: true,
     qualities: [75, 100],
+    remotePatterns: [
+      { protocol: "https", hostname: "www.google.com", pathname: "/s2/favicons" },
+      { protocol: "https", hostname: "flagcdn.com", pathname: "/24x18/**" },
+    ],
   },
   async headers() {
     return [

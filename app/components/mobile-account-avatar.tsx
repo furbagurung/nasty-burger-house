@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
+import { googleProfilePhoto } from "../lib/google-profile-photo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { readSignedInCustomerProfile } from "../lib/customer-store";
 import { getBrowserClientOrNull } from "../lib/supabase/client";
@@ -13,26 +13,6 @@ type CustomerIdentity = {
   email: string;
   imageUrl?: string;
 };
-
-// Google places the profile picture in its identity metadata. Supabase may
-// also copy it into user_metadata, so check both without requesting extra
-// Google permissions or storing the photo on our servers.
-function googleProfilePhoto(user: User): string | undefined {
-  const googleIdentity = user.identities?.find((identity) => identity.provider === "google");
-  const googleData = googleIdentity?.identity_data;
-
-  const candidateUrls = [
-    googleData?.avatar_url,
-    googleData?.picture,
-    user.user_metadata?.avatar_url,
-    user.user_metadata?.picture,
-  ];
-
-  return candidateUrls.find(
-    (value): value is string =>
-      typeof value === "string" && /^https:\/\//i.test(value),
-  );
-}
 
 // Customer avatar for the homepage's compact mobile header.
 // Full site navigation remains available from the mobile bottom "More" tab.

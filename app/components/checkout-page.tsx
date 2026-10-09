@@ -407,7 +407,6 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                     <span className="checkout-wizard-progress__number" aria-hidden="true">
                       {isComplete ? <CheckCircle2 size={20} strokeWidth={2.4} /> : position}
                     </span>
-                    <span className="checkout-wizard-progress__step" aria-hidden="true">Step {position}</span>
                   </button>
                 </li>
               );

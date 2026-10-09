@@ -23,7 +23,7 @@ function OverviewSkeleton() {
   return (
     <>
       <HeadingSkeleton showAction={false} />
-      <div className="account-skeleton-stats" aria-hidden="true">
+      <div className="account-skeleton-stats account-skeleton-stats--overview" aria-hidden="true">
         <article className="account-skeleton-card account-skeleton-card--reward">
           <Shimmer className="account-skeleton-label account-skeleton-block--dark" />
           <Shimmer className="account-skeleton-number account-skeleton-block--dark" />
@@ -31,39 +31,18 @@ function OverviewSkeleton() {
           <Shimmer className="account-skeleton-progress account-skeleton-block--dark" />
           <span className="account-skeleton-coin" />
         </article>
-        {[0, 1].map((item) => (
-          <article className="account-skeleton-card" key={item}>
-            <Shimmer className="account-skeleton-label" />
-            <Shimmer className="account-skeleton-number account-skeleton-number--small" />
-            <Shimmer className="account-skeleton-copy" />
+      </div>
+      <div className="account-skeleton-body account-skeleton-body--overview" aria-hidden="true">
+        {[0, 1, 2, 3].map((item) => (
+          <article className="account-skeleton-card account-skeleton-card--account-action" key={item}>
+            <Shimmer className="account-skeleton-action-icon" />
+            <div className="account-skeleton-action-copy">
+              <Shimmer className="account-skeleton-subtitle account-skeleton-subtitle--short" />
+              <Shimmer className="account-skeleton-copy" />
+            </div>
+            <Shimmer className="account-skeleton-action-button" />
           </article>
         ))}
-      </div>
-      <div className="account-skeleton-body" aria-hidden="true">
-        <article className="account-skeleton-card account-skeleton-form-card">
-          <Shimmer className="account-skeleton-eyebrow" />
-          <Shimmer className="account-skeleton-subtitle" />
-          <Shimmer className="account-skeleton-copy account-skeleton-copy--wide" />
-          <div className="account-skeleton-field-grid">
-            {[0, 1, 2, 3].map((item) => (
-              <div className="account-skeleton-field" key={item}>
-                <Shimmer className="account-skeleton-field-label" />
-                <Shimmer className="account-skeleton-input" />
-              </div>
-            ))}
-          </div>
-          <Shimmer className="account-skeleton-save" />
-        </article>
-        <article className="account-skeleton-card account-skeleton-shortcuts">
-          <Shimmer className="account-skeleton-eyebrow" />
-          <Shimmer className="account-skeleton-subtitle account-skeleton-subtitle--short" />
-          {[0, 1, 2, 3].map((item) => (
-            <div className="account-skeleton-shortcut" key={item}>
-              <Shimmer className="account-skeleton-shortcut-line" />
-              <Shimmer className="account-skeleton-shortcut-icon" />
-            </div>
-          ))}
-        </article>
       </div>
     </>
   );

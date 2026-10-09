@@ -12,6 +12,14 @@ import {
   Menu,
   MessageSquareText,
   Users,
+  LayoutDashboard,
+  BarChart3,
+  UtensilsCrossed,
+  Coins,
+  Megaphone,
+  FileText,
+  Settings,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -24,12 +32,50 @@ import ThemeToggle from "./theme-toggle";
  * AppSidebar + TopNavbar. Uses our existing shadcn primitives, real admin
  * routes and server-side session/logout instead of template demo data.
  */
-type AdminSection = "dashboard" | "orders" | "customers" | "reviews";
+export type AdminSection =
+  | "dashboard"
+  | "analytics"
+  | "customers"
+  | "reviews"
+  | "menu"
+  | "drip-points"
+  | "promotions"
+  | "reports"
+  | "settings"
+  | "team-access"
+  | "orders";
 
-const sections = [
-  { id: "customers" as const, label: "Customers", href: "/admin/customers", icon: Users },
-  { id: "reviews" as const, label: "Reviews", href: "/admin/reviews", icon: MessageSquareText },
-];
+const navigationGroups = [
+  {
+    label: "Overview",
+    items: [
+      { id: "dashboard", label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+      { id: "analytics", label: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+      { id: "customers", label: "Customers", href: "/admin/customers", icon: Users },
+      { id: "reviews", label: "Reviews", href: "/admin/reviews", icon: MessageSquareText },
+    ],
+  },
+  {
+    label: "Business",
+    items: [
+      { id: "menu", label: "Menu", href: "/admin/menu", icon: UtensilsCrossed },
+      { id: "drip-points", label: "Drip Points", href: "/admin/drip-points", icon: Coins },
+      { id: "promotions", label: "Promotions", href: "/admin/promotions", icon: Megaphone },
+    ],
+  },
+  {
+    label: "Management",
+    items: [
+      { id: "reports", label: "Reports", href: "/admin/reports", icon: FileText },
+      { id: "settings", label: "Settings", href: "/admin/settings", icon: Settings },
+      { id: "team-access", label: "Team & Access", href: "/admin/team-access", icon: ShieldCheck },
+    ],
+  },
+] as const;
+
+const sections = navigationGroups.flatMap((group) =>
+  group.items.map((item) => ({ ...item, group: group.label })),
+);
 
 function WorkspaceNavigation({
   active,
@@ -40,19 +86,23 @@ function WorkspaceNavigation({
 }) {
   return (
     <nav className="admin-jobtracker-navigation" aria-label="Admin sections">
-      <p className="admin-jobtracker-nav-label">Workspace</p>
-      {sections.map(({ id, label, href, icon: Icon }) => (
-        <Link
-          key={id}
-          href={href}
-          onClick={onNavigate}
-          className={`admin-jobtracker-nav-link${active === id ? " is-current" : ""}`}
-          aria-current={active === id ? "page" : undefined}
-        >
-          <Icon size={19} aria-hidden="true" />
-          <span>{label}</span>
-          {active === id && <span className="admin-jobtracker-nav-indicator" aria-hidden="true" />}
-        </Link>
+      {navigationGroups.map((group) => (
+        <div className="admin-jobtracker-nav-group" key={group.label}>
+          <p className="admin-jobtracker-nav-label">{group.label}</p>
+          {group.items.map(({ id, label, href, icon: Icon }) => (
+            <Link
+              key={id}
+              href={href}
+              onClick={onNavigate}
+              className={`admin-jobtracker-nav-link${active === id ? " is-current" : ""}`}
+              aria-current={active === id ? "page" : undefined}
+            >
+              <Icon size={19} aria-hidden="true" />
+              <span>{label}</span>
+              {active === id && <span className="admin-jobtracker-nav-indicator" aria-hidden="true" />}
+            </Link>
+          ))}
+        </div>
       ))}
     </nav>
   );
@@ -124,12 +174,13 @@ export function AdminWorkspaceHeader({
     <>
       <MacOSSidebar
         className="admin-jobtracker-sidebar"
-        navigationItems={sections.map(({ label, href, icon: Icon }) => ({
+        navigationItems={sections.map(({ label, href, group, icon: Icon }) => ({
           label,
           href,
+          group,
           icon: <Icon size={19} aria-hidden="true" />,
         }))}
-        activeHref={active === "orders" ? undefined : sections.find((section) => section.id === active)?.href}
+        activeHref={sections.find((section) => section.id === active)?.href}
         header={
           <div className="admin-jobtracker-sidebar-brand">
             <Link href="/admin" className="admin-jobtracker-brand-link" title="Nasty Burger House admin home">
@@ -203,7 +254,7 @@ export function AdminWorkspaceHeader({
               <Menu size={21} aria-hidden="true" />
             </Button>
             <div className="admin-jobtracker-page-identity">
-              <p>Workspace <span aria-hidden="true">/</span> {title}</p>
+              <p>{navigationGroups.find((group) => group.items.some((item) => item.id === active))?.label ?? "Overview"} <span aria-hidden="true">/</span> {title}</p>
               <h1>{title}</h1>
             </div>
           </div>

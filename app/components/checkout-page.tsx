@@ -379,13 +379,9 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
             <ChevronLeft size={24} strokeWidth={2.3} aria-hidden="true" />
           </Link>
           <div className="cart-redesign-title-wrap">
-            <p>Secure checkout</p>
             <div className="cart-redesign-title-row">
               <h1>Checkout</h1>
             </div>
-            <p className="checkout-desktop-subtitle">
-              Add your details, review your order and pay securely with Square.
-            </p>
           </div>
         </header>
 

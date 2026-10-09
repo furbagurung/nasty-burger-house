@@ -296,3 +296,80 @@
 .dark .nb-theme-toggle:hover {
   background: var(--nb-dark-hover);
 }
+
+
+/* Accessible presentation of the shared appearance control. */
+.home-top-header__actions .nb-theme-toggle--customer {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 25%);
+  color: #f0eeec;
+}
+.home-top-header__actions .nb-theme-toggle--customer:hover {
+  background: rgb(255 255 255 / 12%);
+}
+.dark .admin-modern .admin-jobtracker-topbar-tools .nb-theme-toggle--admin {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-primary);
+}
+.dark .admin-modern .admin-jobtracker-topbar-tools .nb-theme-toggle--admin:hover {
+  background: var(--nb-dark-hover);
+}
+
+@media (max-width: 767px) {
+  /* Customer theme selection lives in the More drawer on phones. */
+  .home-top-header__actions .nb-theme-toggle--customer {
+    display: none;
+  }
+  .mobile-more-sheet__links > .nb-theme-toggle--mobile {
+    width: 100%;
+    min-height: 4.25rem;
+    border-bottom: 1px solid var(--nb-dark-border);
+    border-radius: 0;
+    padding: 0.72rem 0.1rem;
+    text-align: left;
+    font-size: 0.93rem;
+    font-weight: 750;
+  }
+  .mobile-more-sheet__links > .nb-theme-toggle--mobile svg {
+    width: 1.3rem;
+    height: 1.3rem;
+    margin-inline: auto;
+  }
+  .mobile-more-sheet__links > .nb-theme-toggle--mobile span {
+    min-width: 0;
+  }
+  .dark .mobile-tab-bar--v2 {
+    border-top-color: var(--nb-dark-border) !important;
+    background: var(--nb-dark-surface) !important;
+  }
+  .dark .mobile-tab-bar--v2 .mobile-tab:not(.is-active) {
+    color: var(--nb-dark-text-secondary) !important;
+  }
+  .dark .mobile-tab-bar--v2 .mobile-tab.is-active {
+    color: var(--nb-dark-accent) !important;
+  }
+  .dark .mobile-more-sheet__links > :is(a, button) {
+    border-bottom-color: var(--nb-dark-border);
+    color: var(--nb-dark-text-primary);
+  }
+  .dark .mobile-more-sheet__links :is(small, p) {
+    color: var(--nb-dark-text-secondary);
+  }
+}
+
+/* Force a clear input treatment for legacy forms that lack shadcn data-slot. */
+.dark :is(.checkout-page, .cart-redesign-page, .account-page, .admin-modern)
+  :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-primary);
+}
+
+.dark :is(.checkout-page, .cart-redesign-page, .account-page, .admin-modern)
+  :is(input, textarea)::placeholder {
+  color: var(--nb-dark-text-secondary);
+}

@@ -60,29 +60,65 @@
     display: none !important;
   }
 
-  .site-shell > .site-header .mobile-menu-button {
-    display: flex !important;
+  /* The mobile homepage header now uses an account avatar rather than a hamburger.
+     The bottom More tab remains the primary navigation drawer. */
+  .site-shell > .site-header .mobile-account-avatar {
+    display: inline-grid !important;
     width: 2.95rem !important;
     height: 2.95rem !important;
     min-width: 2.95rem !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-direction: column !important;
-    gap: 0.27rem !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    border-radius: 999px !important;
-    padding: 0 !important;
-    background: #171615 !important;
-    color: #ffffff !important;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025) !important;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    padding: 0.25rem;
+    background: #1b1a19;
+    color: #ffffff;
+    text-decoration: none;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 150ms ease, background-color 150ms ease;
   }
 
-  .site-shell > .site-header .mobile-menu-button span {
-    display: block !important;
-    width: 1.05rem !important;
-    height: 1.5px !important;
-    border-radius: 999px !important;
-    background: currentColor !important;
+  .site-shell > .site-header .mobile-account-avatar:hover,
+  .site-shell > .site-header .mobile-account-avatar:focus-visible {
+    border-color: #e83b18;
+    background: #292321;
+  }
+
+  .site-shell > .site-header .mobile-account-avatar:focus-visible {
+    outline: 2px solid #e83b18;
+    outline-offset: 3px;
+  }
+
+  .site-shell > .site-header .mobile-account-avatar__avatar {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    border-radius: 999px;
+  }
+
+  .site-shell > .site-header .mobile-account-avatar__fallback {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #ffffff;
+    font-family: var(--font-dm-sans), Arial, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .site-shell > .site-header .mobile-account-avatar.is-signed-in {
+    border-color: rgba(232, 59, 24, 0.65);
+  }
+
+  .site-shell > .site-header .mobile-account-avatar.is-signed-in .mobile-account-avatar__fallback {
+    background: #e83b18;
+    color: #ffffff;
   }
 
   .mobile-home-location {
@@ -209,7 +245,7 @@
     height: 3.05rem !important;
   }
 
-  .site-shell > .site-header .mobile-menu-button {
+  .site-shell > .site-header .mobile-account-avatar {
     width: 2.7rem !important;
     height: 2.7rem !important;
     min-width: 2.7rem !important;

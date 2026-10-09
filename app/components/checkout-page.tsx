@@ -541,7 +541,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                   </div>
                   <p className="checkout-payment-card__note">
                     <ShieldCheck size={15} aria-hidden="true" />
-                    <span>You'll complete payment securely on Square.</span>
+                    <span>You&apos;ll complete payment securely on Square.</span>
                   </p>
                 </div>
               </CardContent>

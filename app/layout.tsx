@@ -62,6 +62,7 @@ import "./customer-reviews.css";
 import "./admin-reviews.css";
 import "./admin-dashboard.css";
 import "./admin-customers.css";
+import "./admin-analytics.css";
 import "./admin-notification-ui.css";
 import "./mobile-header-always-dark.css";
 import "./homepage-spacing-tight.css";

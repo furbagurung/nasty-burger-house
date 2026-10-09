@@ -6,11 +6,6 @@ export const dynamic = "force-dynamic";
 /** Real modules can replace these content-only routes without remounting
  * the persistent admin sidebar, header or footer. */
 const plannedModules: Record<string, { title: string; description: string; phase: string }> = {
-  analytics: {
-    title: "Analytics",
-    description: "Traffic, orders and customer insights will appear here when verified reporting sources are connected.",
-    phase: "Overview",
-  },
   promotions: {
     title: "Promotions",
     description: "Promotional offers, campaign scheduling and featured banners are planned for this section.",

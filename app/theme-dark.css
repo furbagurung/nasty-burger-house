@@ -513,6 +513,20 @@
   background: var(--nb-dark-raised);
   color: var(--nb-dark-success);
 }
+.dark .admin-modern .admin-analytics-main {
+  --admin-analytics-accent: var(--nb-dark-accent);
+}
+.dark .admin-modern :is(.admin-analytics-card, .admin-analytics-unavailable) {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-surface);
+  color: var(--nb-dark-text-primary);
+  box-shadow: none;
+}
+.dark .admin-modern .admin-analytics-range {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-secondary);
+}
 .dark .admin-modern .admin-jobtracker-topbar-tools [data-slot="button"],
 .dark .admin-modern .admin-jobtracker-site-button {
   border-color: var(--nb-dark-border);

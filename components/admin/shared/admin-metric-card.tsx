@@ -4,15 +4,9 @@ import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowDownRight, ArrowRight, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription } from "@/components/ui/card";
 
-type MetricTone = "brand" | "neutral";
+export type AdminMetricTone = "brand" | "success" | "warning" | "neutral";
 
 export function AdminMetricCard({
   label,
@@ -27,24 +21,26 @@ export function AdminMetricCard({
   value: number | string;
   icon: ReactNode;
   hint?: string;
-  /** Percentage change; null means no meaningful comparison baseline. */
+  /** Percentage change compared with the previous period; null means no baseline. */
   trend?: number | null;
-  tone?: MetricTone;
+  tone?: AdminMetricTone;
   index?: number;
 }) {
   const reducedMotion = useReducedMotion();
   const formattedValue =
     typeof value === "number" ? value.toLocaleString("en-AU") : value;
+
   const trendState =
     trend === undefined
       ? undefined
-      : trend === null
+      : trend === null || !Number.isFinite(trend)
         ? "unknown"
         : Math.abs(trend) < 0.05
           ? "flat"
           : trend > 0
             ? "up"
             : "down";
+
   const TrendIcon =
     trendState === "up"
       ? ArrowUpRight
@@ -53,7 +49,7 @@ export function AdminMetricCard({
         : ArrowRight;
 
   const trendText =
-    trend === null
+    trendState === "unknown"
       ? "No prior baseline"
       : trend === undefined
         ? ""
@@ -61,41 +57,37 @@ export function AdminMetricCard({
 
   return (
     <motion.div
-      className="min-w-0"
+      className="admin-kpi-cell min-w-0"
       initial={reducedMotion ? false : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.24, delay: Math.min(index, 4) * 0.035 }}
     >
-      <Card className="admin-modern-metric h-full" size="sm" data-tone={tone}>
-        <CardHeader className="admin-modern-metric-header">
-          <CardDescription className="admin-modern-metric-label">
-            {label}
-          </CardDescription>
-          <CardAction>
-            <span className="admin-modern-metric-icon" aria-hidden="true">
+      <Card size="sm" className="admin-kpi-card h-full" data-tone={tone}>
+        <CardContent className="admin-kpi-content">
+          <div className="admin-kpi-heading">
+            <span className="admin-kpi-icon" aria-hidden="true">
               {icon}
             </span>
-          </CardAction>
-        </CardHeader>
-        <CardContent className="admin-modern-metric-content">
-          <strong className="admin-modern-metric-value">{formattedValue}</strong>
-          {trendState !== undefined && (
-            <div className="admin-modern-metric-trend-row">
-              <Badge
-                variant="secondary"
-                className={`admin-modern-metric-trend is-${trendState}`}
-              >
-                {trend !== null && <TrendIcon aria-hidden="true" />}
-                {trendText}
-              </Badge>
-              {trend !== null && (
-                <span className="admin-modern-metric-comparison">
-                  vs previous 30 days
-                </span>
-              )}
-            </div>
-          )}
-          {hint && <p className="admin-modern-metric-hint">{hint}</p>}
+            <strong className="admin-kpi-value">{formattedValue}</strong>
+          </div>
+          <div className="admin-kpi-details">
+            <CardDescription className="admin-kpi-label">{label}</CardDescription>
+            {trendState !== undefined && (
+              <div className="admin-kpi-trend-row">
+                <Badge
+                  variant="secondary"
+                  className={`admin-kpi-trend is-${trendState}`}
+                >
+                  {trendState !== "unknown" && <TrendIcon aria-hidden="true" />}
+                  {trendText}
+                </Badge>
+                {trendState !== "unknown" && (
+                  <span className="admin-kpi-comparison">vs previous 30 days</span>
+                )}
+              </div>
+            )}
+            {hint && <p className="admin-kpi-hint">{hint}</p>}
+          </div>
         </CardContent>
       </Card>
     </motion.div>

@@ -171,7 +171,7 @@ export default function TrafficAnalyticsSection({
       ) : (
         <>
           <section
-            className="admin-summary-grid admin-traffic-metrics"
+            className="admin-summary-grid admin-traffic-metrics admin-kpi-grid"
             aria-label="Website traffic summary"
           >
             <AdminMetricCard
@@ -184,6 +184,7 @@ export default function TrafficAnalyticsSection({
             />
             <AdminMetricCard
               label="Page views"
+              tone="success"
               value={data.metrics.pageviews}
               icon={<Eye size={20} />}
               hint="Pages viewed across the site"

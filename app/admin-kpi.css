@@ -1,0 +1,270 @@
+/*
+ * Shared admin KPI cards — Sales, Website Traffic, Menu.
+ * Shadcn Card/Badge + Lucide + Motion; tokens follow docs/DARK_THEME.md.
+ * Keep chart, catalogue, and customer styles out of this module.
+ */
+
+.admin-modern .admin-kpi-grid {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 0.8rem;
+}
+
+.admin-modern .admin-kpi-grid--menu {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-modern .admin-kpi-cell {
+  min-width: 0;
+  height: 100%;
+}
+
+.admin-modern .admin-kpi-card {
+  --admin-kpi-tone: #536073;
+  --admin-kpi-positive: #21694b;
+  --admin-kpi-negative: #ac3342;
+  min-width: 0;
+  min-height: 9rem;
+  height: 100%;
+  container-type: inline-size;
+  border: 1px solid var(--border);
+  border-radius: 0.95rem;
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: none;
+  padding-block: 0;
+}
+
+.admin-modern .admin-kpi-card[data-tone="brand"] {
+  --admin-kpi-tone: #ac3342;
+}
+
+.admin-modern .admin-kpi-card[data-tone="success"] {
+  --admin-kpi-tone: #21694b;
+}
+
+.admin-modern .admin-kpi-card[data-tone="warning"] {
+  --admin-kpi-tone: #865416;
+}
+
+.admin-modern .admin-kpi-card [data-slot="card-content"].admin-kpi-content {
+  display: flex;
+  height: 100%;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.05rem;
+  padding: 1.05rem 1.15rem 1.1rem;
+}
+
+.admin-modern .admin-kpi-heading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-modern .admin-kpi-icon {
+  display: grid;
+  width: 2.55rem;
+  height: 2.55rem;
+  flex: 0 0 2.55rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--admin-kpi-tone) 25%, var(--border));
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--admin-kpi-tone) 9%, var(--card));
+  color: var(--admin-kpi-tone);
+}
+
+.admin-modern .admin-kpi-icon svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  stroke-width: 1.8;
+}
+
+.admin-modern .admin-kpi-value {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--foreground);
+  font-size: clamp(1.65rem, 2.1vw, 2.05rem);
+  font-weight: 790;
+  letter-spacing: -0.052em;
+  line-height: 1.08;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-modern .admin-kpi-details {
+  display: grid;
+  min-width: 0;
+  gap: 0.36rem;
+}
+
+.admin-modern .admin-kpi-label {
+  color: var(--foreground);
+  font-size: 0.77rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.admin-modern .admin-kpi-hint {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.67rem;
+  line-height: 1.45;
+}
+
+.admin-modern .admin-kpi-trend-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.admin-modern .admin-kpi-trend {
+  display: inline-flex;
+  width: max-content;
+  min-height: 1.35rem;
+  gap: 0.2rem;
+  border: 1px solid transparent;
+  border-radius: 0.4rem;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.66rem;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+
+.admin-modern .admin-kpi-trend svg {
+  width: 0.78rem;
+  height: 0.78rem;
+}
+
+.admin-modern .admin-kpi-trend.is-up {
+  border-color: color-mix(in srgb, var(--admin-kpi-positive) 20%, var(--border));
+  background: color-mix(in srgb, var(--admin-kpi-positive) 10%, var(--card));
+  color: var(--admin-kpi-positive);
+}
+
+.admin-modern .admin-kpi-trend.is-down {
+  border-color: color-mix(in srgb, var(--admin-kpi-negative) 20%, var(--border));
+  background: color-mix(in srgb, var(--admin-kpi-negative) 10%, var(--card));
+  color: var(--admin-kpi-negative);
+}
+
+.admin-modern .admin-kpi-trend:is(.is-unknown, .is-flat) {
+  border-color: var(--border);
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.admin-modern .admin-kpi-comparison {
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+  line-height: 1.35;
+}
+
+.dark .admin-modern .admin-kpi-card {
+  --admin-kpi-tone: var(--nb-dark-text-secondary);
+  --admin-kpi-positive: var(--nb-dark-success);
+  --admin-kpi-negative: var(--nb-dark-danger);
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-surface);
+  color: var(--nb-dark-text-primary);
+  box-shadow: none;
+}
+
+.dark .admin-modern .admin-kpi-card[data-tone="brand"] {
+  --admin-kpi-tone: var(--nb-dark-accent);
+}
+
+.dark .admin-modern .admin-kpi-card[data-tone="success"] {
+  --admin-kpi-tone: var(--nb-dark-success);
+}
+
+.dark .admin-modern .admin-kpi-card[data-tone="warning"] {
+  --admin-kpi-tone: var(--nb-dark-warning);
+}
+
+.dark .admin-modern .admin-kpi-value,
+.dark .admin-modern .admin-kpi-label {
+  color: var(--nb-dark-text-primary);
+}
+
+.dark .admin-modern .admin-kpi-hint,
+.dark .admin-modern .admin-kpi-comparison {
+  color: var(--nb-dark-text-secondary);
+}
+
+@media (max-width: 1120px) {
+  .admin-modern .admin-kpi-grid:not(.admin-kpi-grid--menu) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-modern .admin-kpi-grid {
+    gap: 0.58rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-modern .admin-kpi-grid--menu {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-modern .admin-kpi-card {
+    min-height: 8.35rem;
+  }
+
+  .admin-modern .admin-kpi-card [data-slot="card-content"].admin-kpi-content {
+    padding: 0.88rem 0.88rem 0.95rem;
+    gap: 0.8rem;
+  }
+
+  .admin-modern .admin-kpi-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-basis: 2.25rem;
+    border-radius: 0.64rem;
+  }
+
+  .admin-modern .admin-kpi-value {
+    font-size: clamp(1.42rem, 5.8vw, 1.9rem);
+  }
+
+  .admin-modern .admin-kpi-label {
+    font-size: 0.72rem;
+  }
+
+  .admin-modern .admin-kpi-comparison {
+    display: none;
+  }
+}
+
+@media (max-width: 350px) {
+  .admin-modern .admin-kpi-grid,
+  .admin-modern .admin-kpi-grid--menu {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-modern .admin-kpi-heading {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* Container sizing takes precedence over page-specific KPI layouts. */
+@container (max-width: 225px) {
+  .admin-modern .admin-kpi-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .admin-modern .admin-kpi-value {
+    font-size: 1.6rem;
+  }
+}

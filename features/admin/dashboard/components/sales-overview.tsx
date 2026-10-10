@@ -78,7 +78,7 @@ export default function SalesOverview({ data }: { data: AdminAnalyticsData }) {
         </Badge>
       </section>
 
-      <section className="admin-summary-grid admin-sales-metrics" aria-label="Sales summary">
+      <section className="admin-summary-grid admin-sales-metrics admin-kpi-grid" aria-label="Sales summary">
         <AdminMetricCard
           label="Revenue"
           value={formatCurrency(data.metrics.revenue, currency)}
@@ -89,6 +89,7 @@ export default function SalesOverview({ data }: { data: AdminAnalyticsData }) {
         />
         <AdminMetricCard
           label="Orders"
+          tone="success"
           value={data.metrics.orders}
           icon={<ShoppingBag size={20} />}
           trend={data.metrics.ordersChange}

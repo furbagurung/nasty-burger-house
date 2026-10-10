@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { menuItems } from "@/app/data/menu";
 import { menuPageCategories } from "@/app/data/menu-pages";
+import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -196,28 +197,31 @@ export function AdminMenuManagement({
         </Badge>
       </header>
 
-      <section className="admin-menu-stats" aria-label="Menu availability summary">
-        <Card size="sm" className="admin-menu-stat">
-          <CardHeader>
-            <CardDescription>Total items</CardDescription>
-            <Package aria-hidden="true" />
-          </CardHeader>
-          <CardContent><strong>{menuItems.length}</strong><span>Products in your menu</span></CardContent>
-        </Card>
-        <Card size="sm" className="admin-menu-stat" data-kind="available">
-          <CardHeader>
-            <CardDescription>Available</CardDescription>
-            <CheckCircle2 aria-hidden="true" />
-          </CardHeader>
-          <CardContent><strong>{ready ? availableCount : "—"}</strong><span>{ready ? "Ready for customers" : "Status unavailable"}</span></CardContent>
-        </Card>
-        <Card size="sm" className="admin-menu-stat" data-kind="sold-out">
-          <CardHeader>
-            <CardDescription>Sold out</CardDescription>
-            <CircleOff aria-hidden="true" />
-          </CardHeader>
-          <CardContent><strong>{ready ? soldOutCount : "—"}</strong><span>{ready ? "Not orderable right now" : "Status unavailable"}</span></CardContent>
-        </Card>
+      <section className="admin-menu-stats admin-kpi-grid admin-kpi-grid--menu" aria-label="Menu availability summary">
+        <AdminMetricCard
+          label="Total items"
+          value={menuItems.length}
+          icon={<Package size={20} />}
+          tone="brand"
+          hint="Products in your menu"
+          index={0}
+        />
+        <AdminMetricCard
+          label="Available"
+          value={ready ? availableCount : "—"}
+          icon={<CheckCircle2 size={20} />}
+          tone="success"
+          hint={ready ? "Ready for customers" : "Status unavailable"}
+          index={1}
+        />
+        <AdminMetricCard
+          label="Sold out"
+          value={ready ? soldOutCount : "—"}
+          icon={<CircleOff size={20} />}
+          tone="warning"
+          hint={ready ? "Not orderable right now" : "Status unavailable"}
+          index={2}
+        />
       </section>
 
       {!ready && (

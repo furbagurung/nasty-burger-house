@@ -70,9 +70,11 @@ function AvailabilityControl({
         {!known ? "Unknown" : soldOut ? "Sold out" : "Available"}
       </Badge>
       <div className="admin-menu-availability-control">
-        <span className="admin-menu-switch-caption" aria-live={saving ? "polite" : "off"}>
-          {saving ? "Saving…" : known ? "Available" : "Unavailable"}
-        </span>
+        {saving && (
+          <span className="admin-menu-switch-caption" aria-live="polite">
+            Saving…
+          </span>
+        )}
         <Switch
           checked={known && !soldOut}
           disabled={disabled}
@@ -146,7 +148,7 @@ export function AdminMenuManagement({
         throw new Error(
           typeof body.error === "string"
             ? body.error
-            : "Availability could not be saved.",
+            : "Could not save availability.",
         );
       }
 
@@ -158,7 +160,7 @@ export function AdminMenuManagement({
 
       const name = menuItems.find((item) => item.id === itemId)?.name ?? "Product";
       setNotice(
-        `${name} marked ${soldOut ? "sold out" : "available"}. New customer orders will use this status.`,
+        `${name}: ${soldOut ? "sold out" : "available"}.`,
       );
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not update availability.");
@@ -189,7 +191,7 @@ export function AdminMenuManagement({
       <header className="admin-menu-intro">
         <div>
           <h2>Menu management</h2>
-          <p>Control product availability without changing prices or menu details.</p>
+          <p>Manage item availability.</p>
         </div>
         <Badge variant="outline" className="admin-menu-total-pill">
           <Package size={14} aria-hidden="true" />
@@ -203,7 +205,6 @@ export function AdminMenuManagement({
           value={menuItems.length}
           icon={<Package size={20} />}
           tone="brand"
-          hint="Products in your menu"
           index={0}
         />
         <AdminMetricCard
@@ -211,7 +212,7 @@ export function AdminMenuManagement({
           value={ready ? availableCount : "—"}
           icon={<CheckCircle2 size={20} />}
           tone="success"
-          hint={ready ? "Ready for customers" : "Status unavailable"}
+          hint={ready ? undefined : "Status unavailable"}
           index={1}
         />
         <AdminMetricCard
@@ -219,7 +220,7 @@ export function AdminMenuManagement({
           value={ready ? soldOutCount : "—"}
           icon={<CircleOff size={20} />}
           tone="warning"
-          hint={ready ? "Not orderable right now" : "Status unavailable"}
+          hint={ready ? undefined : "Status unavailable"}
           index={2}
         />
       </section>
@@ -230,8 +231,8 @@ export function AdminMenuManagement({
             <AlertCircle size={18} aria-hidden="true" />
             <p>
               {reason === "setup-required"
-                ? "Availability storage is not ready. Apply supabase/migrations/202610090002_menu_availability.sql in Supabase to enable controls."
-                : "Availability could not be loaded. Please try again later. Controls are disabled until status is confirmed."}
+                ? "Setup required. Apply Supabase migration 202610090002_menu_availability.sql."
+                : "Could not load availability. Controls are disabled."}
             </p>
           </CardContent>
         </Card>
@@ -263,7 +264,7 @@ export function AdminMenuManagement({
       <Card size="sm" className="admin-menu-filter-card">
         <CardHeader>
           <CardTitle>Products</CardTitle>
-          <CardDescription>Find an item and change its availability.</CardDescription>
+          <CardDescription>Search and update availability.</CardDescription>
         </CardHeader>
         <CardContent className="admin-menu-filter-fields">
           <div className="admin-menu-field admin-menu-search">
@@ -272,7 +273,7 @@ export function AdminMenuManagement({
               <Search size={17} aria-hidden="true" />
               <Input
                 id="menu-availability-search"
-                placeholder="Name or product ID"
+                placeholder="Name or ID"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
               />
@@ -324,7 +325,7 @@ export function AdminMenuManagement({
         <div className="admin-menu-results-toolbar">
           <div className="admin-menu-results-details">
             <p aria-live="polite">
-              Showing <strong>{visibleItems.length}</strong> of {menuItems.length} products
+              <strong>{visibleItems.length}</strong> of {menuItems.length} products
             </p>
             {filtersActive && (
               <Button variant="ghost" type="button" size="sm" onClick={clearFilters}>
@@ -348,7 +349,7 @@ export function AdminMenuManagement({
             <CardContent>
               <Search size={22} aria-hidden="true" />
               <h3>No matching products</h3>
-              <p>Try a different search or reset your filters.</p>
+              <p>Try another search or filter.</p>
               {filtersActive && (
                 <Button type="button" size="sm" variant="outline" onClick={clearFilters}>
                   Clear filters

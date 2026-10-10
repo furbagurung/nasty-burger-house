@@ -50,7 +50,7 @@ export function AdminMetricCard({
 
   const trendText =
     trendState === "unknown"
-      ? "No prior baseline"
+      ? "No prior period"
       : trend === undefined
         ? ""
         : `${trend > 0.05 ? "+" : trend < -0.05 ? "−" : ""}${Math.abs(trend) < 0.05 ? "0.0" : Math.abs(trend).toFixed(1)}%`;
@@ -82,7 +82,7 @@ export function AdminMetricCard({
                   {trendText}
                 </Badge>
                 {trendState !== "unknown" && (
-                  <span className="admin-kpi-comparison">vs previous 30 days</span>
+                  <span className="admin-kpi-comparison">vs prior 30d</span>
                 )}
               </div>
             )}

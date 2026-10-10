@@ -94,7 +94,7 @@ function RankedList({
   const maxValue = Math.max(1, ...items.map((item) => item[metric]));
 
   if (items.length === 0) {
-    return <div className="admin-analytics-empty">No traffic data yet.</div>;
+    return <div className="admin-analytics-empty">No data yet.</div>;
   }
 
   return (
@@ -142,10 +142,7 @@ export default function TrafficAnalyticsSection({
       <div className="admin-analytics-intro admin-traffic-intro">
         <div>
           <h2 id="website-traffic-heading">Website traffic</h2>
-          <p>
-            Production website visits from Vercel Web Analytics. Admin routes
-            are excluded.
-          </p>
+          <p>Website visits, excluding admin pages.</p>
         </div>
         <Badge variant="outline" className="admin-traffic-period">
           <CalendarDays aria-hidden="true" />
@@ -156,14 +153,13 @@ export default function TrafficAnalyticsSection({
       {!data.available ? (
         <Card className="admin-analytics-unavailable">
           <CardHeader>
-            <CardTitle>Traffic analytics unavailable</CardTitle>
+            <CardTitle>Traffic unavailable</CardTitle>
             <CardDescription>{data.error}</CardDescription>
           </CardHeader>
           {data.needsToken && (
             <CardContent>
               <p className="admin-traffic-setup-note">
-                The page is ready. Add a server-only Vercel Analytics API token
-                to this environment to display the live traffic data here.
+                Add a server-only Vercel API token to view traffic.
               </p>
             </CardContent>
           )}
@@ -175,10 +171,9 @@ export default function TrafficAnalyticsSection({
             aria-label="Website traffic summary"
           >
             <AdminMetricCard
-              label="Visitors"
+              label="Unique visitors"
               value={data.metrics.visitors}
               icon={<UsersRound size={20} />}
-              hint="Unique website visitors"
               tone="brand"
               index={0}
             />
@@ -187,21 +182,19 @@ export default function TrafficAnalyticsSection({
               tone="success"
               value={data.metrics.pageviews}
               icon={<Eye size={20} />}
-              hint="Pages viewed across the site"
               index={1}
             />
             <AdminMetricCard
               label="Views / visitor"
               value={data.metrics.viewsPerVisitor.toFixed(1)}
               icon={<Layers3 size={20} />}
-              hint="Average depth per visitor"
               index={2}
             />
             <AdminMetricCard
               label="Mobile share"
               value={data.metrics.mobileShare.toFixed(1) + "%"}
               icon={<Smartphone size={20} />}
-              hint="Share of website page views"
+              hint="Of page views"
               index={3}
             />
           </section>
@@ -211,8 +204,8 @@ export default function TrafficAnalyticsSection({
               <CardHeader>
                 <div className="admin-traffic-card-heading">
                   <div>
-                    <CardTitle>Website performance</CardTitle>
-                    <CardDescription>Daily page views and visitors over the last 30 days.</CardDescription>
+                    <CardTitle>Traffic trend</CardTitle>
+                    <CardDescription>Daily views and visitors</CardDescription>
                   </div>
                   <span className="admin-traffic-card-period">30 days</span>
                 </div>
@@ -296,7 +289,7 @@ export default function TrafficAnalyticsSection({
               <CardHeader>
                 <CardTitle>Devices</CardTitle>
                 <CardDescription>
-                  Page-view share by device type.
+                  Share of page views
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -377,7 +370,7 @@ export default function TrafficAnalyticsSection({
               <CardHeader>
                 <CardTitle>Top pages</CardTitle>
                 <CardDescription>
-                  Most-viewed website pages in this period.
+                  By page views
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -395,7 +388,7 @@ export default function TrafficAnalyticsSection({
               <CardHeader>
                 <CardTitle>Traffic sources</CardTitle>
                 <CardDescription>
-                  Referring sites that sent visitors.
+                  Referrers and direct visits
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -415,7 +408,7 @@ export default function TrafficAnalyticsSection({
               <CardHeader>
                 <CardTitle>Countries</CardTitle>
                 <CardDescription>
-                  Top visitor locations reported by Vercel.
+                  Visitor locations
                 </CardDescription>
               </CardHeader>
               <CardContent>

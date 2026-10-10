@@ -82,7 +82,7 @@ export default function AdminReviewDashboard({
         | null;
 
       if (!response.ok || !result?.ok) {
-        setError(result?.error ?? "Could not update the review.");
+        setError(result?.error ?? "Could not update review.");
         return;
       }
 
@@ -92,7 +92,7 @@ export default function AdminReviewDashboard({
         ),
       );
     } catch {
-      setError("Could not reach the review service.");
+      setError("Review service unavailable.");
     } finally {
       setBusyReviewId("");
     }
@@ -101,20 +101,20 @@ export default function AdminReviewDashboard({
   return (
     <main className="admin-main admin-review-main">
         <section className="admin-summary-grid" aria-label="Review summary">
-          <AdminMetricCard label="Pending approval" value={pendingCount} icon={<Clock3 size={20} />} index={0} hint="Awaiting moderation" />
-          <AdminMetricCard label="Published" value={publishedReviews.length} icon={<ClipboardCheck size={20} />} index={1} hint="Visible to customers" />
-          <AdminMetricCard label="Published rating" value={publishedReviews.length === 0 ? "—" : averagePublished.toFixed(1) + "/5"} icon={<Star size={20} />} index={2} hint="Average published review" />
-          <AdminMetricCard label="Total reviews" value={reviews.length} icon={<MessageSquareText size={20} />} index={3} hint="All review statuses" />
+          <AdminMetricCard label="Pending" value={pendingCount} icon={<Clock3 size={20} />} index={0} />
+          <AdminMetricCard label="Published" value={publishedReviews.length} icon={<ClipboardCheck size={20} />} index={1} />
+          <AdminMetricCard label="Average rating" value={publishedReviews.length === 0 ? "—" : averagePublished.toFixed(1) + "/5"} icon={<Star size={20} />} index={2} />
+          <AdminMetricCard label="Total reviews" value={reviews.length} icon={<MessageSquareText size={20} />} index={3} />
         </section>
 
         <Card className="admin-review-guidance">
           <div>
             <p>Moderation</p>
-            <strong>Only publish genuine customer feedback.</strong>
+            <strong>Check before publishing.</strong>
           </div>
           <span>
-            Reviews are already tied to completed customer orders. Check the
-            wording for spam, abuse or private information before publishing.
+            Reviews are linked to completed orders. Check for spam, abuse, or
+            private information.
           </span>
         </Card>
 
@@ -149,8 +149,7 @@ export default function AdminReviewDashboard({
         <section className="admin-review-list" aria-label="Customer reviews">
           {visibleReviews.length === 0 ? (
             <div className="admin-empty-state">
-              <strong>No reviews in this view.</strong>
-              <span>New verified reviews will appear here for moderation.</span>
+              <strong>No reviews match this filter.</strong>
             </div>
           ) : (
             visibleReviews.map((review) => (
@@ -195,7 +194,7 @@ export default function AdminReviewDashboard({
                 </div>
 
                 <p className="admin-review-card__message">
-                  {review.message || "Rating only — no written comment."}
+                  {review.message || "Rating only."}
                 </p>
 
                 <div className="admin-review-card__actions">
@@ -243,7 +242,7 @@ export default function AdminReviewDashboard({
                       disabled={busyReviewId === review.id}
                       onClick={() => void updateStatus(review.id, "pending")}
                     >
-                      Move to pending
+                      Mark pending
                     </Button>
                   )}
                 </div>

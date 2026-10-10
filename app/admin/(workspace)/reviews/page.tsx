@@ -18,12 +18,11 @@ export default async function AdminReviewsPage() {
       <main className="admin-access-page">
         <section>
           <p>Nasty Burger House</p>
-          <h1>Review moderation setup required.</h1>
+          <h1>Review setup required.</h1>
           <p>
-            Add the Supabase admin environment variables before opening review
-            moderation.
+            Set Supabase admin environment variables to manage reviews.
           </p>
-          <Link href="/">Return to website</Link>
+          <Link href="/">Back to website</Link>
         </section>
       </main>
     );

@@ -328,8 +328,8 @@ export async function loadAdminTrafficAnalytics(): Promise<AdminTrafficAnalytics
       available: false,
       needsToken,
       error: needsToken
-        ? "Vercel Web Analytics is collecting traffic, but this environment cannot read the Analytics API yet."
-        : "Website traffic analytics could not be loaded right now.",
+        ? "Cannot read Vercel Analytics. Check API token access."
+        : "Could not load website traffic.",
     };
   }
 }

@@ -38,7 +38,7 @@ export default function SalesOverview({ data }: { data: AdminAnalyticsData }) {
         <section className="admin-analytics-intro" aria-labelledby="business-overview-heading">
           <div>
             <h2 id="business-overview-heading">Business overview</h2>
-            <p>Square sales performance for the current store location.</p>
+            <p>Completed Square orders.</p>
           </div>
         </section>
         <Card className="admin-analytics-unavailable">
@@ -70,7 +70,7 @@ export default function SalesOverview({ data }: { data: AdminAnalyticsData }) {
       <section className="admin-analytics-intro" aria-labelledby="business-overview-heading">
         <div>
           <h2 id="business-overview-heading">Business overview</h2>
-          <p>Business performance from completed Square orders.</p>
+          <p>Completed Square orders.</p>
         </div>
         <Badge variant="outline" className="admin-sales-period">
           <CalendarDays aria-hidden="true" />
@@ -107,7 +107,7 @@ export default function SalesOverview({ data }: { data: AdminAnalyticsData }) {
           value={data.metrics.customers}
           icon={<Users size={20} />}
           trend={data.metrics.customersChange}
-          hint="Identified buyers only"
+          hint="Identified buyers"
           index={3}
         />
       </section>
@@ -118,7 +118,7 @@ export default function SalesOverview({ data }: { data: AdminAnalyticsData }) {
             <div className="admin-sales-card-heading">
               <div>
                 <CardTitle>Revenue performance</CardTitle>
-                <CardDescription>Daily completed-order revenue.</CardDescription>
+                <CardDescription>Daily sales</CardDescription>
               </div>
               <span className="admin-sales-card-period">30 days</span>
             </div>
@@ -182,11 +182,11 @@ export default function SalesOverview({ data }: { data: AdminAnalyticsData }) {
         <Card className="admin-analytics-card admin-sales-channels-card">
           <CardHeader>
             <CardTitle>Sales channels</CardTitle>
-            <CardDescription>Revenue split across website checkout and Square / POS.</CardDescription>
+            <CardDescription>Website vs Square / POS</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="admin-sales-channel-total">
-              <span>Total channel revenue</span>
+              <span>Channel revenue</span>
               <strong>{formatCurrency(totalChannelRevenue, currency)}</strong>
             </div>
 
@@ -227,8 +227,8 @@ export default function SalesOverview({ data }: { data: AdminAnalyticsData }) {
         <CardHeader>
           <div className="admin-sales-card-heading">
             <div>
-              <CardTitle>Top-selling items</CardTitle>
-              <CardDescription>Best performers ranked by units sold.</CardDescription>
+              <CardTitle>Top items</CardTitle>
+              <CardDescription>By units sold</CardDescription>
             </div>
             <span className="admin-sales-card-period">{data.periodLabel}</span>
           </div>
@@ -236,7 +236,7 @@ export default function SalesOverview({ data }: { data: AdminAnalyticsData }) {
         <CardContent>
           {data.topItems.length === 0 ? (
             <div className="admin-analytics-empty">
-              No completed item sales in this period.
+              No item sales this period.
             </div>
           ) : (
             <Table className="admin-sales-products-table" aria-label="Top-selling items">

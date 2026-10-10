@@ -1,5 +1,4 @@
 import { after } from "next/server";
-import { sendAdminOrderEmail } from "../../lib/admin-notifications";
 import { reportAdminError } from "../../lib/error-monitoring";
 import { consumeRateLimit, requestIp } from "../../lib/rate-limit";
 import { validateOrderPayload } from "../../lib/order";
@@ -7,7 +6,6 @@ import { readMenuAvailability, findSoldOutOrderItems } from "../../lib/menu-avai
 import {
   createOrderDispatchPayload,
   createOrderId,
-  dispatchOrder,
 } from "../../lib/order-dispatch";
 import { getServiceStatus } from "../../lib/service";
 import { SquareApiError, squareConfigurationState } from "../../lib/square/api";
@@ -212,20 +210,8 @@ export async function POST(request: Request) {
       resolveCheckoutOrigin(request),
     );
 
-    // Square is the commerce source of truth. Existing email/webhook alerts are
-    // retained only as optional operational notifications and never block checkout.
-    void Promise.all([
-      dispatchOrder(orderPayload),
-      sendAdminOrderEmail(orderPayload),
-    ]).then(([webhookDispatch, emailDispatch]) => {
-      if (!webhookDispatch.ok && !emailDispatch.ok) {
-        console.warn("[NBH optional order alert unavailable]", {
-          orderId,
-          webhook: webhookDispatch.reason,
-          email: emailDispatch.reason,
-        });
-      }
-    });
+    // Do not notify the restaurant yet. Paid-order notifications are triggered
+    // only by Square payment webhooks after verifying payment completion.
 
     return Response.json(
       {

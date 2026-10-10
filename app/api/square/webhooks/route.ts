@@ -1,4 +1,11 @@
-import { squareRequest } from "../../../lib/square/api";
+import { squareRequest, getSquareConfig } from "../../../lib/square/api";
+import { sendAdminPaidOrderEmail } from "../../../lib/admin-notifications";
+import { dispatchOrder } from "../../../lib/order-dispatch";
+import {
+  createPaidSquareOrderNotifications,
+  type SquarePaidPayment,
+  type SquarePaidOrder,
+} from "../../../lib/square/paid-order-notifications";
 import { accumulateSquareLoyaltyPoints } from "../../../lib/square/loyalty";
 import { validateSquareWebhookSignature } from "../../../lib/square/webhooks";
 
@@ -20,6 +27,7 @@ type SquareWebhookEvent = {
         location_id?: string;
         state?: string;
       };
+      payment?: SquarePaidPayment;
     };
   };
 };
@@ -87,6 +95,60 @@ async function accrueCompletedOrder(event: SquareWebhookEvent) {
   });
 }
 
+/**
+ * Square payment.created may already be COMPLETED; payment.updated handles
+ * delayed capture. Do not send from checkout creation or order.updated alone.
+ * Re-fetch both records using server credentials before trusting payment status.
+ */
+async function notifyPaidWebsiteOrder(event: SquareWebhookEvent) {
+  if (event.type !== "payment.created" && event.type !== "payment.updated") {
+    return;
+  }
+  const receivedPayment = event.data?.object?.payment;
+  if (receivedPayment?.status !== "COMPLETED") return;
+
+  const paymentId = receivedPayment.id ?? event.data?.id;
+  if (!paymentId) return;
+
+  const paymentResponse = await squareRequest<{ payment?: SquarePaidPayment }>(
+    `/v2/payments/${encodeURIComponent(paymentId)}`,
+  );
+  const payment = paymentResponse.payment;
+  if (!payment || payment.id !== paymentId || payment.status !== "COMPLETED" ||
+      !payment.order_id) return;
+
+  const orderResponse = await squareRequest<{ order?: SquarePaidOrder }>(
+    `/v2/orders/${encodeURIComponent(payment.order_id)}`,
+  );
+  if (!orderResponse.order) throw new Error("Paid Square order cannot be retrieved.");
+
+  const notification = createPaidSquareOrderNotifications(
+    payment, orderResponse.order, getSquareConfig().locationId,
+  );
+  if (!notification) return; // POS orders, unpaid/partial payments, wrong location
+
+  const [email, webhook] = await Promise.all([
+    sendAdminPaidOrderEmail(notification.email),
+    dispatchOrder(notification.webhook),
+  ]);
+
+  // Square retries failed delivery (with the same stable Resend idempotency
+  // key derived from the Square order ID). Unconfigured optional channels
+  // do not block payment handling.
+  const emailFailed = !email.ok && email.reason === "delivery-failed";
+  const webhookFailed = !webhook.ok && webhook.reason === "delivery-failed";
+  if (emailFailed || webhookFailed) {
+    throw new Error("Paid order notification delivery failed; retry webhook.");
+  }
+
+  console.info("[NBH paid order alert]", {
+    squareOrderId: notification.email.squareOrderId,
+    squarePaymentId: notification.email.paymentId,
+    email: email.ok ? "sent" : "not-configured",
+    webhook: webhook.ok ? "sent" : "not-configured",
+  });
+}
+
 export async function POST(request: Request) {
   const rawBody = await request.text();
   const signature = request.headers.get("x-square-hmacsha256-signature");
@@ -116,10 +178,11 @@ export async function POST(request: Request) {
 
   try {
     await accrueCompletedOrder(event);
+    await notifyPaidWebsiteOrder(event);
   } catch (error) {
-    console.error("[NBH Square loyalty purchase]", error);
+    console.error("[NBH Square webhook processing]", error);
     return Response.json(
-      { ok: false, error: "Could not apply Square Loyalty purchase points." },
+      { ok: false, error: "Could not process Square payment or loyalty event." },
       { status: 500 },
     );
   }

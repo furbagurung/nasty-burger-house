@@ -5,6 +5,7 @@ import {
   type ValidatedOrder,
 } from "./order";
 import type { ServiceStatus } from "./service";
+import type { PaidSquareOrderDispatchPayload } from "./square/paid-order-notifications";
 
 type DispatchResult =
   | { ok: true }
@@ -107,7 +108,7 @@ export function createOrderDispatchPayload(
 }
 
 export async function dispatchOrder(
-  payload: ReturnType<typeof createOrderDispatchPayload>,
+  payload: ReturnType<typeof createOrderDispatchPayload> | PaidSquareOrderDispatchPayload,
 ): Promise<DispatchResult> {
   const endpoint = process.env.ORDER_WEBHOOK_URL?.trim();
   if (!endpoint) return { ok: false, reason: "not-configured" };

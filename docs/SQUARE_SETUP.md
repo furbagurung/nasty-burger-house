@@ -102,7 +102,19 @@ SQUARE_WEBHOOK_NOTIFICATION_URL=https://www.nastyburgerhouse.com.au/api/square/w
 
 The URL in `SQUARE_WEBHOOK_NOTIFICATION_URL` must exactly match Square's configured notification URL because it is included in webhook signature validation.
 
-Recommended events for the first production version include payment/order updates relevant to checkout completion and refunds. The endpoint already rejects notifications that fail Square HMAC-SHA256 validation.
+Subscribe this exact webhook URL to **`payment.created`**, **`payment.updated`**, and **`order.updated`** in the Square Developer Console. The first two events are required for paid-order email alerts; `order.updated` is retained for existing Square Loyalty accrual. The application needs **`PAYMENTS_READ`** and **`ORDERS_READ`** permissions.
+
+**Restaurant notifications are sent only after Square confirms payment.** Checkout creation no longer sends a restaurant email or external order webhook. When a `payment.created` or `payment.updated` event reports `COMPLETED`, the server retrieves the payment and its order directly from Square, verifies a fully paid, website-created NBH pickup order at the configured location, then sends the Resend email and any configured `ORDER_WEBHOOK_URL` alert.
+
+Resend email requests use a stable Square order-based idempotency key to avoid duplicate sends during normal webhook retries. **Resend retains idempotency keys for 24 hours**; longer-term deduplication would require a persistent delivery log. If Square fails to deliver a webhook, the email will not arrive: check the Square webhook delivery log and Vercel function logs. Ensure `RESEND_API_KEY`, `ORDER_NOTIFICATION_EMAIL` and `ORDER_NOTIFICATION_FROM` remain configured in Vercel.
+
+**After the next approved deployment, test in Sandbox first:**
+1. Start checkout without paying: no restaurant order email should be sent.
+2. Complete a test payment: expect one **Paid Nasty order** email with the correct buyer, items and total.
+3. Retry/replay the same payment event: no second email should arrive within the 24-hour idempotency window.
+4. Send a failed, canceled, or partially paid event: no restaurant order alert.
+5. Confirm existing `order.updated` loyalty handling still works.
+6. Check Square's webhook delivery logs for 2xx responses and verify recipients in Resend.
 
 ## 6. Supabase retirement
 

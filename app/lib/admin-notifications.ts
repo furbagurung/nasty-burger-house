@@ -1,8 +1,8 @@
 import "server-only";
 
-import type { createOrderDispatchPayload } from "./order-dispatch";
+import type { PaidOrderNotification } from "./square/paid-order-notifications";
 
-type OrderNotificationPayload = ReturnType<typeof createOrderDispatchPayload>;
+type OrderNotificationPayload = PaidOrderNotification;
 
 type EmailNotificationResult =
   | { ok: true }
@@ -32,27 +32,7 @@ function money(value: number) {
 }
 
 function lineDetails(line: OrderNotificationPayload["lines"][number]) {
-  const details: string[] = [];
-  if (line.combo.selected && "drink" in line.combo && line.combo.drink) {
-    details.push(`Combo drink: ${line.combo.drink}`);
-  }
-  if (line.extras.length > 0) {
-    details.push(
-      `Extras: ${line.extras.map((extra) => `${extra.quantity}× ${extra.name}`).join(", ")}`,
-    );
-  }
-  if (line.removedIngredients.length > 0) {
-    details.push(`Removed: ${line.removedIngredients.join(", ")}`);
-  }
-  if (line.beastBox) {
-    if (line.beastBox.burgers.length > 0) {
-      details.push(`Burgers: ${line.beastBox.burgers.join(", ")}`);
-    }
-    if (line.beastBox.drinks.length > 0) {
-      details.push(`Drinks: ${line.beastBox.drinks.join(", ")}`);
-    }
-  }
-  return details;
+  return line.details;
 }
 
 export function getAdminNotificationConfig() {
@@ -66,7 +46,7 @@ export function getAdminNotificationConfig() {
   };
 }
 
-export async function sendAdminOrderEmail(
+export async function sendAdminPaidOrderEmail(
   payload: OrderNotificationPayload,
 ): Promise<EmailNotificationResult> {
   const apiKey = process.env.RESEND_API_KEY?.trim();
@@ -99,7 +79,7 @@ export async function sendAdminOrderEmail(
     <div style="max-width:680px;margin:0 auto;padding:32px 18px">
       <div style="background:#11100f;color:#fff;border-radius:20px 20px 0 0;padding:24px 28px">
         <div style="color:#ff5938;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase">Nasty Burger House</div>
-        <h1 style="margin:8px 0 0;font-size:34px;line-height:1">New pickup order</h1>
+        <h1 style="margin:8px 0 0;font-size:34px;line-height:1">Paid pickup order</h1>
       </div>
       <div style="background:#fff;border-radius:0 0 20px 20px;padding:28px">
         <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">
@@ -107,11 +87,12 @@ export async function sendAdminOrderEmail(
             <div style="font-size:13px;color:#77716a">Order</div>
             <div style="font-size:24px;font-weight:900">${escapeHtml(payload.orderId)}</div>
           </div>
-          <div style="font-size:24px;font-weight:900">${money(payload.totals.total)}</div>
+          <div style="font-size:24px;font-weight:900">${money(payload.total)}</div>
         </div>
         <p style="margin:18px 0 6px"><strong>${escapeHtml(payload.customer.name)}</strong></p>
         <p style="margin:0;color:#66615b;font-size:14px">${escapeHtml(payload.customer.phone)} · ${escapeHtml(payload.customer.email)}</p>
-        <p style="margin:6px 0 20px;color:#66615b;font-size:14px">${escapeHtml(payload.fulfilment.locationName)} · ASAP pickup</p>
+        <p style="margin:6px 0 20px;color:#66615b;font-size:14px">${escapeHtml(payload.locationName)} · ASAP pickup</p>
+        <p style="font-weight:700;color:#21694b;margin:0 0 16px">Payment confirmed by Square</p>
         <table role="presentation" style="width:100%;border-collapse:collapse">${rows}</table>
         ${payload.notes ? `<div style="margin-top:20px;padding:14px 16px;border-radius:12px;background:#fff4df"><strong>Customer note</strong><div style="margin-top:5px">${escapeHtml(payload.notes)}</div></div>` : ""}
         ${adminUrl ? `<a href="${escapeHtml(adminUrl)}" style="display:inline-block;margin-top:24px;border-radius:999px;background:#ef3d1d;color:#fff;text-decoration:none;font-weight:800;padding:13px 20px">Open Order Control</a>` : ""}
@@ -127,13 +108,13 @@ export async function sendAdminOrderEmail(
     ])
     .join("\n");
   const text = [
-    `New Nasty Burger House pickup order ${payload.orderId}`,
+    `Paid Nasty Burger House pickup order ${payload.orderId}`,
     `${payload.customer.name} · ${payload.customer.phone} · ${payload.customer.email}`,
-    `${payload.fulfilment.locationName} · ASAP pickup`,
+    `${payload.locationName} · ASAP pickup`,
     "",
     textLines,
     "",
-    `Total: ${money(payload.totals.total)}`,
+    `Paid: ${money(payload.total)}`,
     payload.notes ? `Note: ${payload.notes}` : "",
     adminUrl ? `Order Control: ${adminUrl}` : "",
   ]
@@ -146,15 +127,15 @@ export async function sendAdminOrderEmail(
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "Idempotency-Key": `nasty-order-${payload.requestId}`,
+        "Idempotency-Key": `nasty-paid-square-${payload.squareOrderId}`,
       },
       body: JSON.stringify({
         from,
         to,
-        subject: `New Nasty order ${payload.orderId} · ${money(payload.totals.total)}`,
+        subject: `Paid Nasty order ${payload.orderId} · ${money(payload.total)}`,
         html,
         text,
-        reply_to: payload.customer.email,
+        ...(payload.customer.email ? { reply_to: payload.customer.email } : {}),
       }),
       cache: "no-store",
       signal: AbortSignal.timeout(10_000),

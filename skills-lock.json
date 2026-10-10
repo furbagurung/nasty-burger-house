@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "agentation": {
+      "source": "benjitaylor/agentation",
+      "sourceType": "github",
+      "skillPath": "skills/agentation/SKILL.md",
+      "computedHash": "25951380db60f312979ce4e7940c2999eb6a806c3780c2a6359f17fbd17f0e86"
+    },
     "tailwind-design-system": {
       "source": "wshobson/agents",
       "sourceType": "github",

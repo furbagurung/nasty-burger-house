@@ -1,6 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
 import type { AdminCustomer } from "@/app/lib/admin-customers";
 import { Badge } from "@/components/ui/badge";
 import { CustomerDataTableColumnHeader } from "./customer-data-table-column-header";
@@ -57,7 +58,17 @@ export const customerColumns: ColumnDef<
       <CustomerDataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => (
-      <strong className="admin-customer-name">{row.original.name}</strong>
+      <div className="admin-history-customer-cell">
+        <strong className="admin-customer-name">{row.original.name}</strong>
+        {row.original.squareCustomerId && (
+          <Link
+            className="admin-history-customer-link"
+            href={`/admin/orders?customer=${encodeURIComponent(row.original.squareCustomerId)}`}
+          >
+            View orders
+          </Link>
+        )}
+      </div>
     ),
   },
   {

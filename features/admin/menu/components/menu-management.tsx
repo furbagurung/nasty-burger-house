@@ -107,7 +107,7 @@ export function AdminMenuManagement({
   const [soldOutIds, setSoldOutIds] = useState(initialSoldOutIds);
   const [view, setView] = useState<MenuView>("grid");
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("all");
+  const [category, setCategory] = useState<"all" | (typeof menuItems)[number]["category"]>("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState<MenuSort>("default");
   // Track saves by product so updating one item does not lock the entire menu.
@@ -312,7 +312,14 @@ export function AdminMenuManagement({
             <Label htmlFor="menu-availability-category">Category</Label>
             <Select
               value={category}
-              onValueChange={(next) => { if (typeof next === "string") setCategory(next); }}
+              onValueChange={(next) => {
+                if (next === "all") {
+                  setCategory("all");
+                  return;
+                }
+                const selected = categories.find((id) => id === next);
+                if (selected) setCategory(selected);
+              }}
             >
               <SelectTrigger id="menu-availability-category" className="admin-menu-select">
                 <SelectValue>{category === "all" ? "All categories" : categoryLabels.get(category) ?? category}</SelectValue>

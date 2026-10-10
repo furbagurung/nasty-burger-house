@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, Eye, Layers3, Smartphone, UsersRound } from "lucide-react";
+import { Eye, Layers3, Smartphone, UsersRound } from "lucide-react";
 import {
   CartesianGrid,
   Line,
@@ -11,9 +11,11 @@ import {
   YAxis,
 } from "recharts";
 import type { AdminTrafficAnalyticsData } from "@/app/lib/admin-traffic-analytics";
+import type { ReportPeriod } from "@/app/lib/admin-report-period";
+import { reportPeriodLabel } from "@/app/lib/admin-report-period";
+import { AdminPeriodFilter } from "@/components/admin/shared/admin-period-filter";
 import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
 import { CountryFlagIcon, ReferrerFavicon } from "./traffic-rank-icon";
-import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -131,8 +133,10 @@ function RankedList({
 
 export default function TrafficAnalyticsSection({
   data,
+  period,
 }: {
   data: AdminTrafficAnalyticsData;
+  period: ReportPeriod;
 }) {
   return (
     <section
@@ -144,10 +148,7 @@ export default function TrafficAnalyticsSection({
           <h2 id="website-traffic-heading">Website traffic</h2>
           <p>Website visits, excluding admin pages.</p>
         </div>
-        <Badge variant="outline" className="admin-traffic-period">
-          <CalendarDays aria-hidden="true" />
-          {data.available ? data.periodLabel + " · Vercel" : "Vercel Web Analytics"}
-        </Badge>
+        <AdminPeriodFilter pathname="/admin/analytics" period={period} />
       </div>
 
       {!data.available ? (
@@ -205,9 +206,9 @@ export default function TrafficAnalyticsSection({
                 <div className="admin-traffic-card-heading">
                   <div>
                     <CardTitle>Traffic trend</CardTitle>
-                    <CardDescription>Daily views and visitors</CardDescription>
+                    <CardDescription>{period === "24h" ? "Hourly views and visitors" : "Daily views and visitors"}</CardDescription>
                   </div>
-                  <span className="admin-traffic-card-period">30 days</span>
+                  <span className="admin-traffic-card-period">{reportPeriodLabel(period)}</span>
                 </div>
               </CardHeader>
               <CardContent>

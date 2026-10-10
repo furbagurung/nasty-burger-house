@@ -1,12 +1,10 @@
 /** Shared Sydney calendar-day range rules for Square sales analytics. */
-export const MAX_SALES_RANGE_DAYS = 366;
-export type SalesRangeMode = "7d" | "30d" | "90d" | "custom";
+import { reportPeriodLabel, type ReportPeriod } from "./admin-report-period";
 
 export type SalesRange = {
-  mode: SalesRangeMode;
+  mode: ReportPeriod;
   from: string;
   to: string;
-  today: string;
   days: number;
   label: string;
 };
@@ -55,12 +53,6 @@ export function sydneyToday(now: Date) {
   return dateKey(year, month, day);
 }
 
-export function isValidDateKey(value: string) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const date = new Date(`${value}T00:00:00.000Z`);
-  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value;
-}
-
 export function addSalesDays(date: string, days: number) {
   const time = Date.parse(`${date}T00:00:00.000Z`);
   return new Date(time + days * DAY_MS).toISOString().slice(0, 10);
@@ -90,55 +82,17 @@ export function sydneyMidnightUtc(dateKeyValue: string) {
   return new Date(utc);
 }
 
-function displayDate(key: string) {
-  return new Intl.DateTimeFormat("en-AU", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(new Date(`${key}T00:00:00.000Z`));
-}
-
 export function resolveSalesRange(
-  params: { range?: string; from?: string; to?: string },
+  mode: ReportPeriod,
   now = new Date(),
 ): SalesRange {
   const today = sydneyToday(now);
-  const mode: SalesRangeMode =
-    params.range === "7d" || params.range === "90d" || params.range === "custom"
-      ? params.range
-      : "30d";
-  const daysForMode = mode === "7d" ? 7 : mode === "90d" ? 90 : 30;
-  let from = addSalesDays(today, 1 - daysForMode);
-  let to = today;
-  let chosenMode = mode;
-
-  if (mode === "custom") {
-    const start = params.from ?? "";
-    const end = params.to ?? "";
-    if (
-      isValidDateKey(start) &&
-      isValidDateKey(end) &&
-      start <= end &&
-      end <= today &&
-      salesDaysInclusive(start, end) <= MAX_SALES_RANGE_DAYS
-    ) {
-      from = start;
-      to = end;
-    } else {
-      chosenMode = "30d";
-    }
-  }
-
-  const days = salesDaysInclusive(from, to);
+  const days = mode === "7d" ? 7 : mode === "30d" ? 30 : 1;
   return {
-    mode: chosenMode,
-    from,
-    to,
-    today,
+    mode,
+    from: addSalesDays(today, 1 - days),
+    to: today,
     days,
-    label: chosenMode === "custom"
-      ? `${displayDate(from)} – ${displayDate(to)}`
-      : `Last ${days} days`,
+    label: reportPeriodLabel(mode),
   };
 }

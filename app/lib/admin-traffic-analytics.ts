@@ -1,9 +1,9 @@
 import "server-only";
 
 import { unstable_cache } from "next/cache";
+import { reportPeriodLabel, type ReportPeriod } from "./admin-report-period";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-const PERIOD_DAYS = 30;
 const VERCEL_ANALYTICS_BASE =
   "https://api.vercel.com/v1/query/web-analytics/visits";
 const PROJECT_ID_FALLBACK = "prj_RF19kTzJ95hpVLJKrWpJ5HZHrw1k";
@@ -77,6 +77,13 @@ export type AdminTrafficAnalyticsData =
 const dayLabelFormatter = new Intl.DateTimeFormat("en-AU", {
   day: "numeric",
   month: "short",
+  timeZone: "Australia/Sydney",
+});
+
+const hourLabelFormatter = new Intl.DateTimeFormat("en-AU", {
+  hour: "numeric",
+  hour12: true,
+  timeZone: "Australia/Sydney",
 });
 
 function numberValue(value: unknown) {
@@ -149,9 +156,11 @@ async function vercelAnalyticsRequest<T>(
   return payload.data;
 }
 
-async function buildAdminTrafficAnalytics(): Promise<AdminTrafficAnalyticsData> {
+async function buildAdminTrafficAnalytics(period: ReportPeriod): Promise<AdminTrafficAnalyticsData> {
   const now = new Date();
-  const since = new Date(now.getTime() - PERIOD_DAYS * DAY_MS);
+  const hours = period === "24h" ? 24 : period === "7d" ? 7 * 24 : 30 * 24;
+  const since = new Date(now.getTime() - hours * 60 * 60 * 1000);
+  const hourly = period === "24h";
 
   const query = {
     since: since.toISOString(),
@@ -163,7 +172,7 @@ async function buildAdminTrafficAnalytics(): Promise<AdminTrafficAnalyticsData> 
       vercelAnalyticsRequest<TrafficCount>("count", query),
       vercelAnalyticsRequest<TrafficAggregateRow[]>("aggregate", {
         ...query,
-        by: "day",
+        by: hourly ? "hour" : "day",
         limit: 100,
       }),
       vercelAnalyticsRequest<TrafficAggregateRow[]>("aggregate", {
@@ -251,7 +260,7 @@ async function buildAdminTrafficAnalytics(): Promise<AdminTrafficAnalyticsData> 
 
   return {
     available: true,
-    periodLabel: "Last 30 days",
+    periodLabel: reportPeriodLabel(period),
     metrics: {
       visitors,
       pageviews,
@@ -264,7 +273,7 @@ async function buildAdminTrafficAnalytics(): Promise<AdminTrafficAnalyticsData> 
 
       return {
         date: timestamp,
-        label: dayLabelFormatter.format(date),
+        label: (hourly ? hourLabelFormatter : dayLabelFormatter).format(date),
         visitors: numberValue(row.visitors),
         pageviews: numberValue(row.pageviews),
       };
@@ -305,16 +314,16 @@ async function buildAdminTrafficAnalytics(): Promise<AdminTrafficAnalyticsData> 
 
 const loadCachedAdminTrafficAnalytics = unstable_cache(
   buildAdminTrafficAnalytics,
-  ["nbh-admin-traffic-vercel-v1"],
+  ["nbh-admin-traffic-vercel-v2"],
   {
     revalidate: 300,
     tags: ["nbh-admin-traffic-vercel"],
   },
 );
 
-export async function loadAdminTrafficAnalytics(): Promise<AdminTrafficAnalyticsData> {
+export async function loadAdminTrafficAnalytics(period: ReportPeriod): Promise<AdminTrafficAnalyticsData> {
   try {
-    return await loadCachedAdminTrafficAnalytics();
+    return await loadCachedAdminTrafficAnalytics(period);
   } catch (error) {
     const detail = error instanceof Error ? error.message : "";
     const needsToken =

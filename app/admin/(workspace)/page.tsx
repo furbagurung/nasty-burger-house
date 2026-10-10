@@ -3,17 +3,14 @@ import SalesOverview from "@/features/admin/dashboard/components/sales-overview"
 import { verifyAdmin } from "@/app/lib/admin-auth";
 import { loadAdminAnalytics } from "@/app/lib/admin-analytics";
 import { resolveSalesRange } from "@/app/lib/admin-sales-range";
+import { resolveReportPeriod } from "@/app/lib/admin-report-period";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{
-    range?: string | string[];
-    from?: string | string[];
-    to?: string | string[];
-  }>;
+  searchParams: Promise<{ range?: string | string[] }>;
 }) {
   const auth = await verifyAdmin();
   if (!auth.ok) {
@@ -23,11 +20,7 @@ export default async function AdminPage({
   const params = await searchParams;
   const first = (value: string | string[] | undefined) =>
     typeof value === "string" ? value : undefined;
-  const selection = resolveSalesRange({
-    range: first(params.range),
-    from: first(params.from),
-    to: first(params.to),
-  });
+  const selection = resolveSalesRange(resolveReportPeriod(first(params.range)));
   const sales = await loadAdminAnalytics(selection);
   return <SalesOverview data={sales} selection={selection} />;
 }

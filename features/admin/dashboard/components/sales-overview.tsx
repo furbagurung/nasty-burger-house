@@ -4,7 +4,7 @@ import { BadgeDollarSign, ReceiptText, ShoppingBag, Users } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import type { AdminAnalyticsData } from "@/app/lib/admin-analytics";
 import type { SalesRange } from "@/app/lib/admin-sales-range";
-import { SalesDateFilter } from "./sales-date-filter";
+import { AdminPeriodFilter } from "@/components/admin/shared/admin-period-filter";
 import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
@@ -41,7 +41,7 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
             <h2 id="business-overview-heading">Business overview</h2>
             <p>Completed Square orders.</p>
           </div>
-          <SalesDateFilter selection={selection} />
+          <AdminPeriodFilter pathname="/admin" period={selection.mode} />
         </section>
         <Card className="admin-analytics-unavailable">
           <CardHeader>
@@ -74,7 +74,7 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
           <h2 id="business-overview-heading">Business overview</h2>
           <p>Completed Square orders.</p>
         </div>
-        <SalesDateFilter selection={selection} />
+        <AdminPeriodFilter pathname="/admin" period={selection.mode} />
       </section>
 
       <section className="admin-summary-grid admin-sales-metrics admin-kpi-grid" aria-label="Sales summary">
@@ -83,7 +83,7 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
           value={formatCurrency(data.metrics.revenue, currency)}
           icon={<BadgeDollarSign size={20} />}
           trend={data.metrics.revenueChange}
-          comparisonLabel={`vs prior ${data.periodDays}d`}
+          comparisonLabel={selection.mode === "24h" ? "vs prior 24 hours" : `vs prior ${data.periodDays} days`}
           tone="brand"
           index={0}
         />
@@ -93,7 +93,7 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
           value={data.metrics.orders}
           icon={<ShoppingBag size={20} />}
           trend={data.metrics.ordersChange}
-          comparisonLabel={`vs prior ${data.periodDays}d`}
+          comparisonLabel={selection.mode === "24h" ? "vs prior 24 hours" : `vs prior ${data.periodDays} days`}
           index={1}
         />
         <AdminMetricCard
@@ -101,7 +101,7 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
           value={formatCurrency(data.metrics.averageOrderValue, currency)}
           icon={<ReceiptText size={20} />}
           trend={data.metrics.averageOrderValueChange}
-          comparisonLabel={`vs prior ${data.periodDays}d`}
+          comparisonLabel={selection.mode === "24h" ? "vs prior 24 hours" : `vs prior ${data.periodDays} days`}
           index={2}
         />
         <AdminMetricCard
@@ -109,7 +109,7 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
           value={data.metrics.customers}
           icon={<Users size={20} />}
           trend={data.metrics.customersChange}
-          comparisonLabel={`vs prior ${data.periodDays}d`}
+          comparisonLabel={selection.mode === "24h" ? "vs prior 24 hours" : `vs prior ${data.periodDays} days`}
           hint="Identified buyers"
           index={3}
         />
@@ -121,9 +121,9 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
             <div className="admin-sales-card-heading">
               <div>
                 <CardTitle>Revenue performance</CardTitle>
-                <CardDescription>Daily sales</CardDescription>
+                <CardDescription>{selection.mode === "24h" ? "Hourly sales" : "Daily sales"}</CardDescription>
               </div>
-              <span className="admin-sales-card-period">{data.periodDays} days</span>
+              <span className="admin-sales-card-period">{data.periodLabel}</span>
             </div>
           </CardHeader>
           <CardContent>
@@ -233,7 +233,7 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
               <CardTitle>Top items</CardTitle>
               <CardDescription>By units sold</CardDescription>
             </div>
-            <span className="admin-sales-card-period">{data.periodDays} days</span>
+            <span className="admin-sales-card-period">{data.periodLabel}</span>
           </div>
         </CardHeader>
         <CardContent>

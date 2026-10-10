@@ -3,6 +3,9 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import { getSquareConfig, squareRequest } from "./square/api";
 import { addSalesDays, sydneyMidnightUtc, sydneyToday, type SalesRange } from "./admin-sales-range";
+import type { ReportPeriod } from "./admin-report-period";
+
+const HOUR_MS = 60 * 60 * 1000;
 
 const STORE_TIME_ZONE = "Australia/Sydney";
 
@@ -79,6 +82,12 @@ export type AdminAnalyticsData =
 const storeDateLabelFormatter = new Intl.DateTimeFormat("en-AU", {
   day: "numeric",
   month: "short",
+  timeZone: STORE_TIME_ZONE,
+});
+
+const storeHourLabelFormatter = new Intl.DateTimeFormat("en-AU", {
+  hour: "numeric",
+  hour12: true,
   timeZone: STORE_TIME_ZONE,
 });
 
@@ -184,16 +193,22 @@ async function searchCompletedOrders(startAt: Date, endAt: Date) {
 }
 
 async function buildAdminAnalytics(
+  mode: ReportPeriod,
   from: string,
   to: string,
   periodLabel: string,
   periodDays: number,
 ): Promise<AdminAnalyticsData> {
   const now = new Date();
-  const currentStart = sydneyMidnightUtc(from);
+  const hourly = mode === "24h";
+  const currentStart = hourly
+    ? new Date(now.getTime() - 24 * HOUR_MS)
+    : sydneyMidnightUtc(from);
   const endExclusive = sydneyMidnightUtc(addSalesDays(to, 1));
   const currentEnd = new Date(Math.min(now.getTime(), endExclusive.getTime()));
-  const previousStart = sydneyMidnightUtc(addSalesDays(from, -periodDays));
+  const previousStart = hourly
+    ? new Date(currentStart.getTime() - 24 * HOUR_MS)
+    : sydneyMidnightUtc(addSalesDays(from, -periodDays));
 
   const orders = await searchCompletedOrders(previousStart, currentEnd);
 
@@ -228,21 +243,38 @@ async function buildAdminAnalytics(
     { date: string; label: string; revenue: number; orders: number }
   >();
 
-  for (let index = 0; index < periodDays; index += 1) {
-    const key = addSalesDays(from, index);
-    const point = sydneyMidnightUtc(key);
-    dailyMap.set(key, {
-      date: key,
-      label: storeDateLabelFormatter.format(point.getTime() + 12 * 60 * 60 * 1000),
-      revenue: 0,
-      orders: 0,
-    });
+  if (hourly) {
+    const firstHour = Math.floor(currentStart.getTime() / HOUR_MS) * HOUR_MS;
+    for (let hour = firstHour; hour <= now.getTime(); hour += HOUR_MS) {
+      const point = new Date(hour);
+      const key = point.toISOString();
+      dailyMap.set(key, {
+        date: key,
+        label: storeHourLabelFormatter.format(point),
+        revenue: 0,
+        orders: 0,
+      });
+    }
+  } else {
+    for (let index = 0; index < periodDays; index += 1) {
+      const key = addSalesDays(from, index);
+      const point = sydneyMidnightUtc(key);
+      dailyMap.set(key, {
+        date: key,
+        label: storeDateLabelFormatter.format(point.getTime() + 12 * HOUR_MS),
+        revenue: 0,
+        orders: 0,
+      });
+    }
   }
 
   for (const order of currentOrders) {
     const timestamp = orderClosedAt(order);
     if (!timestamp) continue;
-    const key = sydneyToday(new Date(timestamp));
+    const when = new Date(timestamp);
+    const key = hourly
+      ? new Date(Math.floor(when.getTime() / HOUR_MS) * HOUR_MS).toISOString()
+      : sydneyToday(when);
     const day = dailyMap.get(key);
     if (!day) continue;
     day.revenue += orderRevenue(order);
@@ -317,7 +349,7 @@ async function buildAdminAnalytics(
 
 const loadCachedAdminAnalytics = unstable_cache(
   buildAdminAnalytics,
-  ["nbh-admin-analytics-square-v2"],
+  ["nbh-admin-analytics-square-v3"],
   {
     revalidate: 300,
     tags: ["nbh-admin-analytics-square"],
@@ -326,7 +358,7 @@ const loadCachedAdminAnalytics = unstable_cache(
 
 export async function loadAdminAnalytics(range: SalesRange): Promise<AdminAnalyticsData> {
   try {
-    return await loadCachedAdminAnalytics(range.from, range.to, range.label, range.days);
+    return await loadCachedAdminAnalytics(range.mode, range.from, range.to, range.label, range.days);
   } catch (error) {
     console.error("[NBH admin analytics Square load failed]", error);
     return {

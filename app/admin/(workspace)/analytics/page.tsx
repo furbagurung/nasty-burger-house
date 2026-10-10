@@ -2,14 +2,15 @@ import { redirect } from "next/navigation";
 import TrafficAnalyticsSection from "@/features/admin/analytics/components/traffic-analytics-section";
 import { verifyAdmin } from "@/app/lib/admin-auth";
 import { loadAdminTrafficAnalytics } from "@/app/lib/admin-traffic-analytics";
-import { resolveReportPeriod } from "@/app/lib/admin-report-period";
+import { resolveCustomDays, resolveReportPeriod } from "@/app/lib/admin-report-period";
+import { resolveSalesRange } from "@/app/lib/admin-sales-range";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminAnalyticsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ range?: string | string[] }>;
+  searchParams: Promise<{ range?: string | string[]; days?: string | string[] }>;
 }) {
   const auth = await verifyAdmin();
   if (!auth.ok) {
@@ -17,14 +18,16 @@ export default async function AdminAnalyticsPage({
   }
 
   const params = await searchParams;
-  const period = resolveReportPeriod(
-    typeof params.range === "string" ? params.range : undefined,
+  const selection = resolveSalesRange(
+    resolveReportPeriod(typeof params.range === "string" ? params.range : undefined),
+    new Date(),
+    resolveCustomDays(typeof params.days === "string" ? params.days : undefined),
   );
-  const traffic = await loadAdminTrafficAnalytics(period);
+  const traffic = await loadAdminTrafficAnalytics(selection);
 
   return (
     <main className="admin-main admin-analytics-main admin-traffic-main">
-      <TrafficAnalyticsSection data={traffic} period={period} />
+      <TrafficAnalyticsSection data={traffic} selection={selection} />
     </main>
   );
 }

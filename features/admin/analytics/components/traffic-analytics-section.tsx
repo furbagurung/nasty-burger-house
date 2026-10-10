@@ -11,8 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import type { AdminTrafficAnalyticsData } from "@/app/lib/admin-traffic-analytics";
-import type { ReportPeriod } from "@/app/lib/admin-report-period";
-import { reportPeriodLabel } from "@/app/lib/admin-report-period";
+import type { SalesRange } from "@/app/lib/admin-sales-range";
 import { AdminPeriodFilter } from "@/components/admin/shared/admin-period-filter";
 import { AdminMetricCard } from "@/components/admin/shared/admin-metric-card";
 import { CountryFlagIcon, ReferrerFavicon } from "./traffic-rank-icon";
@@ -133,10 +132,10 @@ function RankedList({
 
 export default function TrafficAnalyticsSection({
   data,
-  period,
+  selection,
 }: {
   data: AdminTrafficAnalyticsData;
-  period: ReportPeriod;
+  selection: SalesRange;
 }) {
   return (
     <section
@@ -148,7 +147,7 @@ export default function TrafficAnalyticsSection({
           <h2 id="website-traffic-heading">Website traffic</h2>
           <p>Website visits, excluding admin pages.</p>
         </div>
-        <AdminPeriodFilter pathname="/admin/analytics" period={period} />
+        <AdminPeriodFilter pathname="/admin/analytics" selection={selection} />
       </div>
 
       {!data.available ? (
@@ -206,9 +205,9 @@ export default function TrafficAnalyticsSection({
                 <div className="admin-traffic-card-heading">
                   <div>
                     <CardTitle>Traffic trend</CardTitle>
-                    <CardDescription>{period === "24h" ? "Hourly views and visitors" : "Daily views and visitors"}</CardDescription>
+                    <CardDescription>{selection.mode === "24h" ? "Hourly views and visitors" : selection.mode === "1y" ? "Monthly views and visitors" : selection.mode === "3m" ? "Weekly views and visitors" : "Daily views and visitors"}</CardDescription>
                   </div>
-                  <span className="admin-traffic-card-period">{reportPeriodLabel(period)}</span>
+                  <span className="admin-traffic-card-period">{selection.label}</span>
                 </div>
               </CardHeader>
               <CardContent>
@@ -334,7 +333,7 @@ export default function TrafficAnalyticsSection({
                         data.devices.reduce((total, row) => total + row.pageviews, 0),
                       )}
                     </strong>
-                    <small>30 days</small>
+                    <small>{selection.label}</small>
                   </div>
                 </div>
 

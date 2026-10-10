@@ -41,7 +41,7 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
             <h2 id="business-overview-heading">Business overview</h2>
             <p>Completed Square orders.</p>
           </div>
-          <AdminPeriodFilter pathname="/admin" period={selection.mode} />
+          <AdminPeriodFilter pathname="/admin" selection={selection} />
         </section>
         <Card className="admin-analytics-unavailable">
           <CardHeader>
@@ -74,7 +74,7 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
           <h2 id="business-overview-heading">Business overview</h2>
           <p>Completed Square orders.</p>
         </div>
-        <AdminPeriodFilter pathname="/admin" period={selection.mode} />
+        <AdminPeriodFilter pathname="/admin" selection={selection} />
       </section>
 
       <section className="admin-summary-grid admin-sales-metrics admin-kpi-grid" aria-label="Sales summary">
@@ -121,7 +121,7 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
             <div className="admin-sales-card-heading">
               <div>
                 <CardTitle>Revenue performance</CardTitle>
-                <CardDescription>{selection.mode === "24h" ? "Hourly sales" : "Daily sales"}</CardDescription>
+                <CardDescription>{selection.mode === "24h" ? "Hourly sales" : selection.mode === "1y" ? "Monthly sales" : selection.mode === "3m" ? "Weekly sales" : "Daily sales"}</CardDescription>
               </div>
               <span className="admin-sales-card-period">{data.periodLabel}</span>
             </div>

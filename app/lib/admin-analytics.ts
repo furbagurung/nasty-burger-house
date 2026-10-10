@@ -315,6 +315,26 @@ async function buildAdminAnalytics(
     }
   }
 
+  const salesPoints = [...dailyMap.values()];
+  const chartPoints = mode === "3m" || mode === "1y"
+    ? [...salesPoints.reduce((groups, point, index) => {
+        const key = mode === "1y" ? point.date.slice(0, 7) : String(Math.floor(index / 7));
+        const existing = groups.get(key);
+        if (existing) {
+          existing.revenue += point.revenue;
+          existing.orders += point.orders;
+        } else {
+          const label = mode === "1y"
+            ? new Intl.DateTimeFormat("en-AU", {
+                month: "short", year: "2-digit", timeZone: "UTC",
+              }).format(new Date(`${point.date}T12:00:00.000Z`))
+            : point.label;
+          groups.set(key, { date: point.date, label, revenue: point.revenue, orders: point.orders });
+        }
+        return groups;
+      }, new Map<string, { date: string; label: string; revenue: number; orders: number }>()).values()]
+    : salesPoints;
+
   return {
     available: true,
     currency,
@@ -333,7 +353,7 @@ async function buildAdminAnalytics(
       ),
       customersChange: percentChange(current.customers, previous.customers),
     },
-    dailySales: [...dailyMap.values()],
+    dailySales: chartPoints,
     sourceBreakdown: [sourceTotals.website, sourceTotals.square],
     topItems: [...itemTotals.values()]
       .sort(

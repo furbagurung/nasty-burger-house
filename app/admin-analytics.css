@@ -1853,3 +1853,71 @@
     min-width: 0;
   }
 }
+
+/* Shared Sales / Website reporting controls, including custom 1–30 days. */
+.admin-report-filter-stack {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.admin-report-custom-days {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.admin-report-custom-days [data-slot="label"] {
+  font-size: var(--admin-type-caption);
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+.admin-report-custom-days [data-slot="input"] {
+  width: 4.5rem;
+  height: 2.45rem;
+  border-color: var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  font-size: var(--admin-type-body);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-report-custom-days [data-slot="button"] {
+  min-height: 2.45rem;
+  font-size: var(--admin-type-body);
+}
+
+.admin-modern .admin-report-period-trigger[data-slot="select-trigger"] {
+  font-size: var(--admin-type-body);
+  font-weight: 600;
+}
+
+.dark .admin-report-custom-days [data-slot="input"] {
+  background: var(--nb-dark-raised);
+  border-color: var(--nb-dark-border);
+  color: var(--nb-dark-text-primary);
+}
+
+@media (max-width: 640px) {
+  .admin-report-filter-stack {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 420px) {
+  .admin-report-filter-stack,
+  .admin-report-custom-days {
+    width: 100%;
+  }
+
+  .admin-report-custom-days [data-slot="button"] {
+    margin-left: auto;
+  }
+}

@@ -82,17 +82,38 @@ export function sydneyMidnightUtc(dateKeyValue: string) {
   return new Date(utc);
 }
 
+/**
+ * Calendar-aware reporting in Australia/Sydney. Custom day ranges are
+ * inclusive of today; 3m and 1y use real calendar months, not 90/365 guesses.
+ */
 export function resolveSalesRange(
   mode: ReportPeriod,
   now = new Date(),
+  customDays = 14,
 ): SalesRange {
   const today = sydneyToday(now);
-  const days = mode === "7d" ? 7 : mode === "30d" ? 30 : 1;
+  const days = mode === "7d" ? 7 : mode === "30d" ? 30 :
+    mode === "custom" ? customDays : 1;
+
+  let from = addSalesDays(today, 1 - days);
+  if (mode === "3m" || mode === "1y") {
+    const [year, month, day] = today.split("-").map(Number);
+    const monthsBack = mode === "3m" ? 3 : 12;
+    const startMonth = new Date(Date.UTC(year, month - 1 - monthsBack, 1));
+    const lastDay = new Date(Date.UTC(startMonth.getUTCFullYear(), startMonth.getUTCMonth() + 1, 0)).getUTCDate();
+    const matchingDate = dateKey(
+      startMonth.getUTCFullYear(),
+      startMonth.getUTCMonth() + 1,
+      Math.min(day, lastDay),
+    );
+    // E.g. 10 Oct -> 11 Jul when reporting the last three months.
+    from = addSalesDays(matchingDate, 1);
+  }
   return {
     mode,
-    from: addSalesDays(today, 1 - days),
+    from,
     to: today,
-    days,
-    label: reportPeriodLabel(mode),
+    days: salesDaysInclusive(from, today),
+    label: reportPeriodLabel(mode, customDays),
   };
 }

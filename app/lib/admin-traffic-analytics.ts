@@ -1,7 +1,8 @@
 import "server-only";
 
 import { unstable_cache } from "next/cache";
-import { reportPeriodLabel, type ReportPeriod } from "./admin-report-period";
+import type { ReportPeriod } from "./admin-report-period";
+import { addSalesDays, sydneyMidnightUtc, type SalesRange } from "./admin-sales-range";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const VERCEL_ANALYTICS_BASE =
@@ -85,6 +86,12 @@ const hourLabelFormatter = new Intl.DateTimeFormat("en-AU", {
   hour12: true,
   timeZone: "Australia/Sydney",
 });
+const weekLabelFormatter = new Intl.DateTimeFormat("en-AU", {
+  day: "numeric", month: "short", timeZone: "Australia/Sydney",
+});
+const monthLabelFormatter = new Intl.DateTimeFormat("en-AU", {
+  month: "short", year: "2-digit", timeZone: "Australia/Sydney",
+});
 
 function numberValue(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
@@ -156,15 +163,22 @@ async function vercelAnalyticsRequest<T>(
   return payload.data;
 }
 
-async function buildAdminTrafficAnalytics(period: ReportPeriod): Promise<AdminTrafficAnalyticsData> {
+async function buildAdminTrafficAnalytics(
+  period: ReportPeriod,
+  from: string,
+  to: string,
+  periodLabel: string,
+): Promise<AdminTrafficAnalyticsData> {
   const now = new Date();
-  const hours = period === "24h" ? 24 : period === "7d" ? 7 * 24 : 30 * 24;
-  const since = new Date(now.getTime() - hours * 60 * 60 * 1000);
   const hourly = period === "24h";
+  const since = hourly ? new Date(now.getTime() - DAY_MS) : sydneyMidnightUtc(from);
+  const endExclusive = sydneyMidnightUtc(addSalesDays(to, 1));
+  const until = new Date(Math.min(now.getTime(), endExclusive.getTime()));
+  const granularity = hourly ? "hour" : period === "1y" ? "month" : period === "3m" ? "week" : "day";
 
   const query = {
     since: since.toISOString(),
-    until: now.toISOString(),
+    until: until.toISOString(),
   };
 
   const [count, daily, pages, referrers, countries, devices] =
@@ -172,7 +186,7 @@ async function buildAdminTrafficAnalytics(period: ReportPeriod): Promise<AdminTr
       vercelAnalyticsRequest<TrafficCount>("count", query),
       vercelAnalyticsRequest<TrafficAggregateRow[]>("aggregate", {
         ...query,
-        by: hourly ? "hour" : "day",
+        by: granularity,
         limit: 100,
       }),
       vercelAnalyticsRequest<TrafficAggregateRow[]>("aggregate", {
@@ -260,7 +274,7 @@ async function buildAdminTrafficAnalytics(period: ReportPeriod): Promise<AdminTr
 
   return {
     available: true,
-    periodLabel: reportPeriodLabel(period),
+    periodLabel,
     metrics: {
       visitors,
       pageviews,
@@ -273,7 +287,7 @@ async function buildAdminTrafficAnalytics(period: ReportPeriod): Promise<AdminTr
 
       return {
         date: timestamp,
-        label: (hourly ? hourLabelFormatter : dayLabelFormatter).format(date),
+        label: (hourly ? hourLabelFormatter : period === "1y" ? monthLabelFormatter : period === "3m" ? weekLabelFormatter : dayLabelFormatter).format(date),
         visitors: numberValue(row.visitors),
         pageviews: numberValue(row.pageviews),
       };
@@ -321,9 +335,9 @@ const loadCachedAdminTrafficAnalytics = unstable_cache(
   },
 );
 
-export async function loadAdminTrafficAnalytics(period: ReportPeriod): Promise<AdminTrafficAnalyticsData> {
+export async function loadAdminTrafficAnalytics(range: SalesRange): Promise<AdminTrafficAnalyticsData> {
   try {
-    return await loadCachedAdminTrafficAnalytics(period);
+    return await loadCachedAdminTrafficAnalytics(range.mode, range.from, range.to, range.label);
   } catch (error) {
     const detail = error instanceof Error ? error.message : "";
     const needsToken =
@@ -338,7 +352,9 @@ export async function loadAdminTrafficAnalytics(period: ReportPeriod): Promise<A
       needsToken,
       error: needsToken
         ? "Cannot read Vercel Analytics. Check API token access."
-        : "Could not load website traffic.",
+        : range.mode === "1y" || range.mode === "3m"
+          ? "Historical website traffic is unavailable for this period. Check your Vercel Analytics data retention or try a shorter range."
+          : "Could not load website traffic.",
     };
   }
 }

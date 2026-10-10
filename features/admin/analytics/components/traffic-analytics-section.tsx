@@ -166,6 +166,14 @@ export default function TrafficAnalyticsSection({
         </Card>
       ) : (
         <>
+          {data.notice && (
+            <p
+              role="status"
+              className="rounded-md border border-border bg-muted px-3 py-2 text-sm text-foreground"
+            >
+              {data.notice}
+            </p>
+          )}
           <section
             className="admin-summary-grid admin-traffic-metrics admin-kpi-grid"
             aria-label="Website traffic summary"
@@ -205,9 +213,9 @@ export default function TrafficAnalyticsSection({
                 <div className="admin-traffic-card-heading">
                   <div>
                     <CardTitle>Traffic trend</CardTitle>
-                    <CardDescription>{selection.mode === "24h" ? "Hourly views and visitors" : selection.mode === "1y" ? "Monthly views and visitors" : selection.mode === "3m" ? "Weekly views and visitors" : "Daily views and visitors"}</CardDescription>
+                    <CardDescription>{data.trendDescription}</CardDescription>
                   </div>
-                  <span className="admin-traffic-card-period">{selection.label}</span>
+                  <span className="admin-traffic-card-period">{data.periodLabel}</span>
                 </div>
               </CardHeader>
               <CardContent>
@@ -333,7 +341,7 @@ export default function TrafficAnalyticsSection({
                         data.devices.reduce((total, row) => total + row.pageviews, 0),
                       )}
                     </strong>
-                    <small>{selection.label}</small>
+                    <small>{data.periodLabel}</small>
                   </div>
                 </div>
 

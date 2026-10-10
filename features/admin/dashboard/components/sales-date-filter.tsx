@@ -66,14 +66,14 @@ export function SalesDateFilter({ selection }: { selection: SalesRange }) {
   }
 
   return (
-    <div className="admin-sales-date-filter" aria-label="Sales date filter">
-      <div className="admin-sales-date-select">
+    <>
+      <div className="admin-sales-date-select" role="group" aria-label="Sales period">
         <CalendarDays size={15} aria-hidden="true" />
         <Select value={mode} onValueChange={changeMode} disabled={isPending}>
           <SelectTrigger aria-label="Sales period" className="admin-sales-date-trigger">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent align="end">
+          <SelectContent side="bottom" sideOffset={8} align="end" alignItemWithTrigger={false} className="admin-sales-range-options">
             <SelectItem value="7d">Last 7 days</SelectItem>
             <SelectItem value="30d">Last 30 days</SelectItem>
             <SelectItem value="90d">Last 90 days</SelectItem>
@@ -83,7 +83,7 @@ export function SalesDateFilter({ selection }: { selection: SalesRange }) {
       </div>
 
       {mode === "custom" && (
-        <form className="admin-sales-custom-range" onSubmit={applyCustom}>
+        <form className="admin-sales-custom-range" onSubmit={applyCustom} aria-label="Custom sales date range">
           <div className="admin-sales-date-field">
             <Label htmlFor="sales-date-from">From</Label>
             <Input
@@ -114,6 +114,6 @@ export function SalesDateFilter({ selection }: { selection: SalesRange }) {
           {error && <p className="admin-sales-date-error" role="alert">{error}</p>}
         </form>
       )}
-    </div>
+    </>
   );
 }

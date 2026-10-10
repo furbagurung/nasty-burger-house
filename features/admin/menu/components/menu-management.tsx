@@ -44,6 +44,14 @@ const money = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD
 
 type AvailabilityError = "setup-required" | "unavailable";
 type MenuView = "grid" | "list";
+type MenuSort = "default" | "name-asc" | "name-desc" | "price-asc" | "price-desc";
+const menuSortLabels: Record<MenuSort, string> = {
+  default: "Menu order",
+  "name-asc": "Name: A–Z",
+  "name-desc": "Name: Z–A",
+  "price-asc": "Price: Low to high",
+  "price-desc": "Price: High to low",
+};
 
 function AvailabilityControl({
   name,
@@ -101,6 +109,7 @@ export function AdminMenuManagement({
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState<MenuSort>("default");
   // Track saves by product so updating one item does not lock the entire menu.
   // The ref also blocks repeat requests before React has rendered the disabled state.
   const pendingIdsRef = useRef<Set<string>>(new Set());
@@ -117,7 +126,7 @@ export function AdminMenuManagement({
   const visibleItems = useMemo(() => {
     const needle = query.trim().toLowerCase();
 
-    return menuItems.filter(
+    const items = menuItems.filter(
       (item) =>
         (category === "all" || item.category === category) &&
         (statusFilter === "all" ||
@@ -128,9 +137,15 @@ export function AdminMenuManagement({
             part.toLowerCase().includes(needle),
           )),
     );
-  }, [category, query, soldOutSet, statusFilter]);
 
-  const filtersActive = query.trim() !== "" || category !== "all" || statusFilter !== "all";
+    if (sortBy === "name-asc") return items.sort((a, b) => a.name.localeCompare(b.name));
+    if (sortBy === "name-desc") return items.sort((a, b) => b.name.localeCompare(a.name));
+    if (sortBy === "price-asc") return items.sort((a, b) => a.price - b.price || a.name.localeCompare(b.name));
+    if (sortBy === "price-desc") return items.sort((a, b) => b.price - a.price || a.name.localeCompare(b.name));
+    return items;
+  }, [category, query, soldOutSet, statusFilter, sortBy]);
+
+  const filtersActive = query.trim() !== "" || category !== "all" || statusFilter !== "all" || sortBy !== "default";
 
   async function updateSoldOut(itemId: string, soldOut: boolean) {
     if (
@@ -186,6 +201,7 @@ export function AdminMenuManagement({
     setQuery("");
     setCategory("all");
     setStatusFilter("all");
+    setSortBy("default");
   }
 
   function availabilityProps(item: (typeof menuItems)[number]) {
@@ -299,9 +315,9 @@ export function AdminMenuManagement({
               onValueChange={(next) => { if (typeof next === "string") setCategory(next); }}
             >
               <SelectTrigger id="menu-availability-category" className="admin-menu-select">
-                <SelectValue />
+                <SelectValue>{category === "all" ? "All categories" : categoryLabels.get(category) ?? category}</SelectValue>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent side="bottom" sideOffset={6} align="start" alignItemWithTrigger={false}>
                 <SelectItem value="all">All categories</SelectItem>
                 {categories.map((id) => (
                   <SelectItem key={id} value={id}>
@@ -318,12 +334,33 @@ export function AdminMenuManagement({
               onValueChange={(next) => { if (typeof next === "string") setStatusFilter(next); }}
             >
               <SelectTrigger id="menu-availability-filter" className="admin-menu-select">
-                <SelectValue />
+                <SelectValue>{statusFilter === "all" ? "All items" : statusFilter === "sold-out" ? "Sold out" : "Available"}</SelectValue>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent side="bottom" sideOffset={6} align="start" alignItemWithTrigger={false}>
                 <SelectItem value="all">All items</SelectItem>
                 <SelectItem value="available">Available</SelectItem>
                 <SelectItem value="sold-out">Sold out</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="admin-menu-field">
+            <Label htmlFor="menu-product-sort">Sort by</Label>
+            <Select
+              value={sortBy}
+              onValueChange={(next) => {
+                if (next === "default" || next === "name-asc" ||
+                  next === "name-desc" || next === "price-asc" || next === "price-desc") {
+                  setSortBy(next);
+                }
+              }}
+            >
+              <SelectTrigger id="menu-product-sort" className="admin-menu-select">
+                <SelectValue>{menuSortLabels[sortBy]}</SelectValue>
+              </SelectTrigger>
+              <SelectContent side="bottom" sideOffset={6} align="start" alignItemWithTrigger={false}>
+                {(Object.entries(menuSortLabels) as Array<[MenuSort, string]>).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>{label}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

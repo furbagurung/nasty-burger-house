@@ -179,3 +179,93 @@
   font-family: var(--font-inter), Arial, Helvetica, sans-serif !important;
 }
 
+
+
+/*
+ * Shared admin page typography. One scale for Dashboard, Analytics, Customers,
+ * Reviews, Orders and Menu; preserve Inter and public website font styles.
+ */
+.admin-shell.admin-modern .admin-main :is(
+  .admin-analytics-intro h2,
+  .admin-customer-toolbar h2,
+  .admin-menu-intro h2,
+  .admin-history-heading h2
+) {
+  font-family: var(--admin-font-family) !important;
+  font-size: var(--admin-type-section) !important;
+  font-weight: var(--admin-font-weight-semibold) !important;
+  line-height: var(--admin-leading-tight) !important;
+  letter-spacing: -0.015em !important;
+}
+
+.admin-shell.admin-modern .admin-main :is(
+  .admin-analytics-intro p,
+  .admin-customer-toolbar__intro > p,
+  .admin-menu-intro p,
+  .admin-history-heading p
+) {
+  color: var(--muted-foreground);
+  font-size: var(--admin-type-body) !important;
+  font-weight: var(--admin-font-weight-regular) !important;
+  line-height: var(--admin-leading-body);
+  letter-spacing: normal !important;
+  text-transform: none;
+}
+
+.admin-shell.admin-modern .admin-main :is(
+  .admin-customer-table,
+  .admin-history-table,
+  .admin-menu-table
+) [data-slot="table-cell"] {
+  font-size: var(--admin-type-body) !important;
+  font-weight: var(--admin-font-weight-regular);
+  line-height: var(--admin-leading-data);
+}
+
+.admin-shell.admin-modern .admin-main :is(
+  .admin-customer-table,
+  .admin-history-table,
+  .admin-menu-table
+) [data-slot="table-head"] {
+  font-size: var(--admin-type-caption) !important;
+  font-weight: var(--admin-font-weight-semibold) !important;
+  line-height: var(--admin-leading-data);
+}
+
+.admin-shell.admin-modern .admin-main :is(
+  .admin-history-toolbar,
+  .admin-menu-field,
+  .admin-customer-search
+) :is(input, [data-slot="select-trigger"]) {
+  font-size: var(--admin-type-body) !important;
+  font-weight: var(--admin-font-weight-regular);
+}
+
+.admin-shell.admin-modern .admin-main :is(
+  .admin-menu-field [data-slot="label"],
+  .admin-filter-bar [data-slot="button"]
+) {
+  font-size: var(--admin-type-caption);
+  font-weight: var(--admin-font-weight-semibold);
+}
+
+.admin-shell.admin-modern .admin-main :is(
+  .admin-menu-product-copy h3,
+  .admin-menu-table-product strong,
+  .admin-history-mobile-card strong,
+  .admin-review-card__message
+) {
+  font-size: var(--admin-type-body) !important;
+  line-height: var(--admin-leading-data);
+}
+
+.admin-shell.admin-modern .admin-main :is(
+  .admin-history-footnote,
+  .admin-history-count,
+  .admin-menu-results-details,
+  .admin-customer-muted,
+  .admin-customer-table-stack > span
+) {
+  font-size: var(--admin-type-caption);
+  line-height: var(--admin-leading-data);
+}

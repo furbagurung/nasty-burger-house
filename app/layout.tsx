@@ -99,6 +99,7 @@ import "./admin-navigation.css";
 import "./admin-typography.css";
 import "./admin-kpi.css";
 import "./admin-order-history.css";
+import "./admin-table-pagination.css";
 import "./admin-login.css";
 import "./theme-dark.css";
 

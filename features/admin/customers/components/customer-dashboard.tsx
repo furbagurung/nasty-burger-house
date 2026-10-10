@@ -60,7 +60,7 @@ export default function AdminCustomerDashboard({
       >
         <div className="admin-customer-toolbar__intro">
           <h2>Customer directory</h2>
-          <p>Search and review customer records from the website and Square.</p>
+          <p>Website and Square customer records.</p>
         </div>
         <Label className="admin-customer-search" htmlFor="admin-customer-search">
           <span className="sr-only">Search customers</span>
@@ -96,7 +96,7 @@ export default function AdminCustomerDashboard({
         ))}
       </div>
 
-      <CustomerDataTable data={visibleCustomers} />
+      <CustomerDataTable key={`${filter}:${query.trim().toLowerCase()}`} data={visibleCustomers} />
     </main>
   );
 }

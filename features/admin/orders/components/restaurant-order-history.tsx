@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Search, ShoppingBag } from "lucide-react";
 import type {
@@ -12,6 +12,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
+  AdminTablePagination, DEFAULT_ADMIN_PAGE_SIZE,
+  type AdminPageSize,
+} from "@/components/admin/shared/admin-table-pagination";
+import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
@@ -20,6 +24,21 @@ import {
 
 type Channel = "all" | "website" | "square";
 type Status = "all" | "Completed" | "Cancelled";
+
+function filterOrders(
+  orders: RestaurantOrder[], term: string, channel: Channel, status: Status,
+) {
+  const search = term.trim().toLowerCase();
+  return orders.filter((order) =>
+    (channel === "all" ||
+      (channel === "website" ? order.channel === "Website" : order.channel === "Square / POS")) &&
+    (status === "all" || order.status === status) &&
+    (!search || [
+      order.id, order.reference, order.customerName,
+      order.channel, ...order.items.map((item) => item.name),
+    ].some((value) => value.toLowerCase().includes(search))),
+  );
+}
 
 function dateTime(value: string) {
   const time = Date.parse(value);
@@ -84,22 +103,27 @@ export default function RestaurantOrderHistory({
   const [search, setSearch] = useState("");
   const [channel, setChannel] = useState<Channel>("all");
   const [status, setStatus] = useState<Status>("all");
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState<AdminPageSize>(DEFAULT_ADMIN_PAGE_SIZE);
+  const fetchBusy = useRef(false);
 
-  const visible = useMemo(() => {
-    const term = search.trim().toLowerCase();
-    return orders.filter((order) =>
-      (channel === "all" ||
-        (channel === "website" ? order.channel === "Website" : order.channel === "Square / POS")) &&
-      (status === "all" || order.status === status) &&
-      (!term || [
-        order.id, order.reference, order.customerName,
-        order.channel, ...order.items.map((item) => item.name),
-      ].some((value) => value.toLowerCase().includes(term))),
-    );
-  }, [orders, search, channel, status]);
+  const visible = useMemo(
+    () => filterOrders(orders, search, channel, status),
+    [orders, search, channel, status],
+  );
+  const pageCount = Math.max(1, Math.ceil(visible.length / pageSize));
+  const currentPage = Math.min(pageIndex, pageCount - 1);
+  const pageOrders = visible.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
 
-  async function loadMore() {
-    if (!cursor || loading) return;
+  async function goToPage(nextPage: number) {
+    if (nextPage < 0 || loading) return;
+    if (nextPage * pageSize < visible.length) {
+      setPageIndex(nextPage);
+      return;
+    }
+    if (!cursor || fetchBusy.current) return;
+
+    fetchBusy.current = true;
     setLoading(true);
     setError("");
     try {
@@ -117,24 +141,30 @@ export default function RestaurantOrderHistory({
       if (!response.ok || !body.ok || !Array.isArray(body.orders)) {
         throw new Error(body.error || "Could not load more orders.");
       }
-      setOrders((current) => {
-        const ids = new Set(current.map((order) => order.id));
-        return [...current, ...body.orders!.filter((order) => !ids.has(order.id))];
-      });
+
+      const ids = new Set(orders.map((order) => order.id));
+      const combined = [...orders, ...body.orders.filter((order) => !ids.has(order.id))];
+      const matching = filterOrders(combined, search, channel, status);
+      setOrders(combined);
       setCursor(body.nextCursor ?? null);
+      if (nextPage * pageSize < matching.length) {
+        setPageIndex(nextPage);
+      }
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not load more orders.");
     } finally {
+      fetchBusy.current = false;
       setLoading(false);
     }
   }
+
 
   return (
     <main className="admin-main admin-history-main">
       <section className="admin-history-heading">
         <div>
           <h2>Order history</h2>
-          <p>Completed and cancelled Square orders, including website and walk-in sales.</p>
+          <p>Website and Square/POS transactions.</p>
         </div>
         {customerId && (
           <Button variant="outline" render={<Link href="/admin/orders" />}>
@@ -145,7 +175,7 @@ export default function RestaurantOrderHistory({
 
       {customerId && (
         <p className="admin-history-customer-note">
-          Showing orders linked to this Square customer. Some orders may not have a customer ID.
+          Square-linked purchases only. Some sales have no customer ID.
         </p>
       )}
 
@@ -155,16 +185,19 @@ export default function RestaurantOrderHistory({
           <span className="sr-only">Search loaded orders</span>
           <Input
             type="search"
-            placeholder="Search loaded orders"
+            placeholder="Search orders"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => { setSearch(event.target.value); setPageIndex(0); }}
             autoComplete="off"
           />
         </label>
         <Select value={channel} onValueChange={(value) => {
-          if (value === "all" || value === "website" || value === "square") setChannel(value);
+          if (value === "all" || value === "website" || value === "square") {
+            setChannel(value);
+            setPageIndex(0);
+          }
         }}>
-          <SelectTrigger aria-label="Filter by sales channel"><SelectValue /></SelectTrigger>
+<SelectTrigger aria-label="Filter by sales channel"><SelectValue>{channel === "all" ? "All channels" : channel === "website" ? "Website" : "Square / POS"}</SelectValue></SelectTrigger>
           <SelectContent side="bottom" alignItemWithTrigger={false}>
             <SelectItem value="all">All channels</SelectItem>
             <SelectItem value="website">Website</SelectItem>
@@ -172,9 +205,12 @@ export default function RestaurantOrderHistory({
           </SelectContent>
         </Select>
         <Select value={status} onValueChange={(value) => {
-          if (value === "all" || value === "Completed" || value === "Cancelled") setStatus(value);
+          if (value === "all" || value === "Completed" || value === "Cancelled") {
+            setStatus(value);
+            setPageIndex(0);
+          }
         }}>
-          <SelectTrigger aria-label="Filter by status"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by status"><SelectValue>{status === "all" ? "All statuses" : status}</SelectValue></SelectTrigger>
           <SelectContent side="bottom" alignItemWithTrigger={false}>
             <SelectItem value="all">All statuses</SelectItem>
             <SelectItem value="Completed">Completed</SelectItem>
@@ -184,8 +220,7 @@ export default function RestaurantOrderHistory({
       </section>
 
       <div className="admin-history-count" role="status">
-        {visible.length} of {orders.length} loaded orders
-        {cursor ? " · More history available" : ""}
+        {visible.length} matching · {orders.length} loaded{cursor ? " · Older orders available" : ""}
       </div>
 
       {visible.length === 0 ? (
@@ -209,7 +244,7 @@ export default function RestaurantOrderHistory({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {visible.map((order) => (
+                {pageOrders.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell>{dateTime(order.closedAt)}</TableCell>
                     <TableCell><strong>{order.customerName}</strong></TableCell>
@@ -224,7 +259,7 @@ export default function RestaurantOrderHistory({
             </Table>
           </Card>
           <div className="admin-history-mobile">
-            {visible.map((order) => (
+            {pageOrders.map((order) => (
               <Card className="admin-history-mobile-card" key={order.id}>
                 <div className="admin-history-mobile-top">
                   <div><strong>{order.customerName}</strong><span>{dateTime(order.closedAt)}</span></div>
@@ -244,17 +279,19 @@ export default function RestaurantOrderHistory({
         </>
       )}
 
+      <AdminTablePagination
+        pageIndex={currentPage}
+        pageSize={pageSize}
+        total={visible.length}
+        hasMore={Boolean(cursor)}
+        loading={loading}
+        onPageChange={(next) => { void goToPage(next); }}
+        onPageSizeChange={(next) => { setPageSize(next); setPageIndex(0); }}
+      />
       {error && <p className="admin-history-error" role="alert">{error}</p>}
-      {cursor && (
-        <div className="admin-history-more">
-          <Button type="button" variant="outline" disabled={loading} onClick={loadMore}>
-            {loading ? "Loading…" : "Load more orders"}
-          </Button>
-        </div>
-      )}
       <p className="admin-history-footnote">
-        Records are read-only. Customer names are shown when linked in Square;
-        guest purchases may not identify the buyer. Search and filters apply to loaded orders.
+        Read-only Square history. Guest sales may not identify the buyer.
+        Search and filters cover loaded orders; Next loads older records.
       </p>
     </main>
   );

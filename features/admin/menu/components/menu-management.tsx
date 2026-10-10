@@ -2,20 +2,87 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { AlertCircle, CheckCircle2, Grid2X2, List, Search, XCircle } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  CircleOff,
+  Grid2X2,
+  List,
+  Package,
+  Search,
+  X,
+} from "lucide-react";
 import { menuItems } from "@/app/data/menu";
 import { menuPageCategories } from "@/app/data/menu-pages";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const categories = [...new Set(menuItems.map((item) => item.category))];
 const categoryLabels = new Map(menuPageCategories.map((cat) => [cat.id, cat.label]));
 const money = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" });
 
 type AvailabilityError = "setup-required" | "unavailable";
+type MenuView = "grid" | "list";
+
+function AvailabilityControl({
+  name,
+  soldOut,
+  saving,
+  disabled,
+  known,
+  onToggle,
+}: {
+  name: string;
+  soldOut: boolean;
+  saving: boolean;
+  disabled: boolean;
+  known: boolean;
+  onToggle: (available: boolean) => void;
+}) {
+  return (
+    <div className="admin-menu-availability">
+      <Badge
+        variant="secondary"
+        className="admin-menu-status"
+        data-status={!known ? "unknown" : soldOut ? "sold-out" : "available"}
+      >
+        {!known ? "Unknown" : soldOut ? "Sold out" : "Available"}
+      </Badge>
+      <div className="admin-menu-availability-control">
+        <span className="admin-menu-switch-caption" aria-live={saving ? "polite" : "off"}>
+          {saving ? "Saving…" : known ? "Available" : "Unavailable"}
+        </span>
+        <Switch
+          checked={known && !soldOut}
+          disabled={disabled}
+          onCheckedChange={onToggle}
+          aria-label={known ? `Available for ${name}` : `Availability unknown for ${name}`}
+          className="admin-menu-switch"
+        />
+      </div>
+    </div>
+  );
+}
 
 export function AdminMenuManagement({
   initialSoldOutIds,
@@ -27,7 +94,7 @@ export function AdminMenuManagement({
   reason?: AvailabilityError;
 }) {
   const [soldOutIds, setSoldOutIds] = useState(initialSoldOutIds);
-  const [view, setView] = useState<"grid" | "list">("grid");
+  const [view, setView] = useState<MenuView>("grid");
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -38,37 +105,60 @@ export function AdminMenuManagement({
   useEffect(() => setSoldOutIds(initialSoldOutIds), [initialSoldOutIds]);
 
   const soldOutSet = useMemo(() => new Set(soldOutIds), [soldOutIds]);
+  const soldOutCount = menuItems.filter((item) => soldOutSet.has(item.id)).length;
+  const availableCount = menuItems.length - soldOutCount;
+
   const visibleItems = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return menuItems.filter((item) =>
-      (category === "all" || item.category === category) &&
-      (statusFilter === "all" ||
-        (statusFilter === "sold-out" && soldOutSet.has(item.id)) ||
-        (statusFilter === "available" && !soldOutSet.has(item.id))) &&
-      (!needle || [item.name, item.id, item.category].some((part) => part.toLowerCase().includes(needle))),
+
+    return menuItems.filter(
+      (item) =>
+        (category === "all" || item.category === category) &&
+        (statusFilter === "all" ||
+          (statusFilter === "sold-out" && soldOutSet.has(item.id)) ||
+          (statusFilter === "available" && !soldOutSet.has(item.id))) &&
+        (!needle ||
+          [item.name, item.id, item.category].some((part) =>
+            part.toLowerCase().includes(needle),
+          )),
     );
-  }, [query, category, statusFilter, soldOutSet]);
+  }, [category, query, soldOutSet, statusFilter]);
+
+  const filtersActive = query.trim() !== "" || category !== "all" || statusFilter !== "all";
 
   async function updateSoldOut(itemId: string, soldOut: boolean) {
-    if (!ready || pendingId) return;
+    if (!ready || pendingId !== null || soldOutSet.has(itemId) === soldOut) return;
+
     setError("");
     setNotice("");
     setPendingId(itemId);
+
     try {
       const response = await fetch(`/api/admin/menu/${encodeURIComponent(itemId)}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ soldOut }),
       });
+
       const body = await response.json();
       if (!response.ok || body.ok !== true) {
-        throw new Error(typeof body.error === "string" ? body.error : "Availability could not be saved.");
+        throw new Error(
+          typeof body.error === "string"
+            ? body.error
+            : "Availability could not be saved.",
+        );
       }
+
       setSoldOutIds((current) =>
-        soldOut ? [...new Set([...current, itemId])] : current.filter((id) => id !== itemId),
+        soldOut
+          ? [...new Set([...current, itemId])]
+          : current.filter((id) => id !== itemId),
       );
+
       const name = menuItems.find((item) => item.id === itemId)?.name ?? "Product";
-      setNotice(`${name} marked ${soldOut ? "sold out" : "available"}. New customer orders will use this status.`);
+      setNotice(
+        `${name} marked ${soldOut ? "sold out" : "available"}. New customer orders will use this status.`,
+      );
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not update availability.");
     } finally {
@@ -76,198 +166,286 @@ export function AdminMenuManagement({
     }
   }
 
+  function clearFilters() {
+    setQuery("");
+    setCategory("all");
+    setStatusFilter("all");
+  }
+
+  function availabilityProps(item: (typeof menuItems)[number]) {
+    return {
+      name: item.name,
+      soldOut: soldOutSet.has(item.id),
+      saving: pendingId === item.id,
+      disabled: !ready || pendingId !== null,
+      known: ready,
+      onToggle: (available: boolean) => void updateSoldOut(item.id, !available),
+    };
+  }
+
   return (
-    <div className="w-full max-w-6xl space-y-5 pb-10">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-4">
-        <div className="space-y-1">
-          <h2 className="admin-type-section text-foreground">Menu availability</h2>
-          <p className="admin-type-body text-muted-foreground">
-            Mark items Sold out or Available. Prices and product details stay unchanged.
-          </p>
+    <div className="admin-menu-page">
+      <header className="admin-menu-intro">
+        <div>
+          <h2>Menu management</h2>
+          <p>Control product availability without changing prices or menu details.</p>
         </div>
-        <Badge variant="secondary">{soldOutSet.size} sold out · {menuItems.length} items</Badge>
-      </div>
+        <Badge variant="outline" className="admin-menu-total-pill">
+          <Package size={14} aria-hidden="true" />
+          {menuItems.length} products
+        </Badge>
+      </header>
+
+      <section className="admin-menu-stats" aria-label="Menu availability summary">
+        <Card size="sm" className="admin-menu-stat">
+          <CardHeader>
+            <CardDescription>Total items</CardDescription>
+            <Package aria-hidden="true" />
+          </CardHeader>
+          <CardContent><strong>{menuItems.length}</strong><span>Products in your menu</span></CardContent>
+        </Card>
+        <Card size="sm" className="admin-menu-stat" data-kind="available">
+          <CardHeader>
+            <CardDescription>Available</CardDescription>
+            <CheckCircle2 aria-hidden="true" />
+          </CardHeader>
+          <CardContent><strong>{ready ? availableCount : "—"}</strong><span>{ready ? "Ready for customers" : "Status unavailable"}</span></CardContent>
+        </Card>
+        <Card size="sm" className="admin-menu-stat" data-kind="sold-out">
+          <CardHeader>
+            <CardDescription>Sold out</CardDescription>
+            <CircleOff aria-hidden="true" />
+          </CardHeader>
+          <CardContent><strong>{ready ? soldOutCount : "—"}</strong><span>{ready ? "Not orderable right now" : "Status unavailable"}</span></CardContent>
+        </Card>
+      </section>
 
       {!ready && (
-        <div role="alert" className="flex items-start gap-3 rounded-lg border border-border bg-muted/40 p-4 text-sm text-foreground">
-          <AlertCircle className="mt-0.5 shrink-0" size={18} aria-hidden="true" />
-          <p>{reason === "setup-required"
-            ? "Availability storage is not ready. Apply supabase/migrations/202610090002_menu_availability.sql in Supabase to enable the switches."
-            : "Availability could not be loaded. Please try again later. Switches are disabled until status is confirmed."}</p>
-        </div>
+        <Card role="alert" className="admin-menu-feedback is-error" size="sm">
+          <CardContent>
+            <AlertCircle size={18} aria-hidden="true" />
+            <p>
+              {reason === "setup-required"
+                ? "Availability storage is not ready. Apply supabase/migrations/202610090002_menu_availability.sql in Supabase to enable controls."
+                : "Availability could not be loaded. Please try again later. Controls are disabled until status is confirmed."}
+            </p>
+          </CardContent>
+        </Card>
       )}
 
-      {notice && <p role="status" className="rounded-md border border-border p-3 text-sm text-foreground">{notice}</p>}
-      {error && <p role="alert" className="rounded-md border border-destructive p-3 text-sm text-foreground">{error}</p>}
-
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-        <div className="flex-1 space-y-1.5">
-          <Label htmlFor="menu-availability-search">Search products</Label>
-          <div className="relative">
-            <Search size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-            <Input
-              id="menu-availability-search"
-              className="w-full pl-9"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Name or product ID"
-            />
-          </div>
-        </div>
-        <div className="space-y-1.5 sm:w-44">
-          <Label htmlFor="menu-availability-category">Category</Label>
-          <select
-            id="menu-availability-category" value={category} onChange={(event) => setCategory(event.target.value)}
-            className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            <option value="all">All categories</option>
-            {categories.map((id) => <option key={id} value={id}>{categoryLabels.get(id) ?? id}</option>)}
-          </select>
-        </div>
-        <div className="space-y-1.5 sm:w-44">
-          <Label htmlFor="menu-availability-filter">Status</Label>
-          <select
-            id="menu-availability-filter" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}
-            className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          >
-            <option value="all">All items</option>
-            <option value="available">Available</option>
-            <option value="sold-out">Sold out</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs text-muted-foreground" aria-live="polite">
-          Showing {visibleItems.length} of {menuItems.length} products
-        </p>
-        <div role="group" aria-label="Menu view" className="inline-flex items-center gap-1 rounded-lg border border-border bg-muted/40 p-1">
-          <Button type="button" size="sm" variant={view === "grid" ? "secondary" : "ghost"}
-            aria-label="Grid view" aria-pressed={view === "grid"}
-            onClick={() => setView("grid")}>
-            <Grid2X2 size={16} aria-hidden="true" /> Grid
-          </Button>
-          <Button type="button" size="sm" variant={view === "list" ? "secondary" : "ghost"}
-            aria-label="List view" aria-pressed={view === "list"}
-            onClick={() => setView("list")}>
-            <List size={16} aria-hidden="true" /> List
-          </Button>
-        </div>
-      </div>
-
-      {view === "grid" && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {visibleItems.map((item) => {
-            const soldOut = soldOutSet.has(item.id);
-            return (
-              <article key={item.id} className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card p-2.5 sm:p-3">
-                <div className="relative aspect-square overflow-hidden rounded-md bg-muted/30">
-                  <Image src={item.image ?? "/logo.webp"} alt="" fill
-                    sizes="(max-width: 639px) 45vw, (max-width: 1023px) 30vw, 240px"
-                    className="object-contain p-2" />
-                  {soldOut && (
-                    <Badge variant="destructive" className="absolute left-2 top-2">Sold out</Badge>
-                  )}
-                </div>
-                <div className="flex flex-1 flex-col gap-1 px-0.5 pt-3">
-                  <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-foreground">{item.name}</h3>
-                  <p className="text-xs text-muted-foreground">{categoryLabels.get(item.category) ?? item.category}</p>
-                  <p className="mt-auto pt-1 text-sm font-semibold tabular-nums text-foreground">{money.format(item.price)}</p>
-                </div>
-                <Button className="mt-3 w-full" type="button" size="sm"
-                  variant={soldOut ? "outline" : "secondary"}
-                  disabled={!ready || Boolean(pendingId)}
-                  aria-pressed={soldOut}
-                  aria-label={`${soldOut ? "Mark available" : "Mark sold out"}: ${item.name}`}
-                  onClick={() => void updateSoldOut(item.id, !soldOut)}>
-                  {soldOut ? <CheckCircle2 size={15} aria-hidden="true" /> : <XCircle size={15} aria-hidden="true" />}
-                  {pendingId === item.id ? "Saving…" : soldOut ? "Mark available" : "Mark sold out"}
-                </Button>
-              </article>
-            );
-          })}
-        </div>
+      {notice && (
+        <Card role="status" size="sm" className="admin-menu-feedback is-success">
+          <CardContent>
+            <CheckCircle2 size={18} aria-hidden="true" />
+            <p>{notice}</p>
+            <Button type="button" size="icon-sm" variant="ghost" aria-label="Dismiss success message" onClick={() => setNotice("")}>
+              <X aria-hidden="true" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+      {error && (
+        <Card role="alert" size="sm" className="admin-menu-feedback is-error">
+          <CardContent>
+            <AlertCircle size={18} aria-hidden="true" />
+            <p>{error}</p>
+            <Button type="button" size="icon-sm" variant="ghost" aria-label="Dismiss error" onClick={() => setError("")}>
+              <X aria-hidden="true" />
+            </Button>
+          </CardContent>
+        </Card>
       )}
 
-      {view === "list" && (
-        <>
-      <div className="hidden overflow-hidden rounded-lg border border-border md:block">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/40">
-              <TableHead>Product</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {visibleItems.map((item) => {
-              const soldOut = soldOutSet.has(item.id);
-              return (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <div className="flex min-w-44 items-center gap-3">
-                      <Image src={item.image ?? "/logo.webp"} alt="" width={48} height={48} className="size-12 rounded-lg border border-border bg-muted object-cover" />
-                      <div className="min-w-0">
-                        <p className="font-semibold text-foreground">{item.name}</p>
-                        <p className="text-xs text-muted-foreground">{item.id}</p>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{categoryLabels.get(item.category) ?? item.category}</TableCell>
-                  <TableCell className="tabular-nums">{money.format(item.price)}</TableCell>
-                  <TableCell>
-                    <Badge variant={soldOut ? "destructive" : "outline"}>{soldOut ? "Sold out" : "Available"}</Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      type="button" size="sm" variant={soldOut ? "outline" : "secondary"}
-                      disabled={!ready || Boolean(pendingId)}
-                      aria-pressed={soldOut}
-                      onClick={() => void updateSoldOut(item.id, !soldOut)}
-                    >
-                      {soldOut ? <CheckCircle2 size={15} aria-hidden="true" /> : <XCircle size={15} aria-hidden="true" />}
-                      {pendingId === item.id ? "Saving…" : soldOut ? "Mark available" : "Mark sold out"}
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </div>
-
-      <div className="space-y-2 md:hidden">
-        {visibleItems.map((item) => {
-          const soldOut = soldOutSet.has(item.id);
-          return (
-            <div key={item.id} className="flex items-center gap-3 rounded-lg border border-border bg-card p-3">
-              <Image src={item.image ?? "/logo.webp"} alt="" width={48} height={48} className="size-12 shrink-0 rounded-lg border border-border bg-muted object-cover" />
-              <div className="min-w-0 flex-1 space-y-1">
-                <p className="text-sm font-semibold text-foreground">{item.name}</p>
-                <p className="text-xs text-muted-foreground">{money.format(item.price)} · {categoryLabels.get(item.category)}</p>
-                <Badge variant={soldOut ? "destructive" : "outline"}>{soldOut ? "Sold out" : "Available"}</Badge>
-              </div>
-              <Button
-                size="sm" type="button" variant="outline" aria-pressed={soldOut}
-                disabled={!ready || Boolean(pendingId)}
-                onClick={() => void updateSoldOut(item.id, !soldOut)}
-              >
-                {pendingId === item.id ? "Saving…" : soldOut ? "Available" : "Sold out"}
-              </Button>
+      <Card size="sm" className="admin-menu-filter-card">
+        <CardHeader>
+          <CardTitle>Products</CardTitle>
+          <CardDescription>Find an item and change its availability.</CardDescription>
+        </CardHeader>
+        <CardContent className="admin-menu-filter-fields">
+          <div className="admin-menu-field admin-menu-search">
+            <Label htmlFor="menu-availability-search">Search products</Label>
+            <div className="admin-menu-search-input">
+              <Search size={17} aria-hidden="true" />
+              <Input
+                id="menu-availability-search"
+                placeholder="Name or product ID"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+              />
             </div>
-          );
-        })}
-      </div>
-        </>
-      )}
+          </div>
+          <div className="admin-menu-field">
+            <Label htmlFor="menu-availability-category">Category</Label>
+            <Select
+              value={category}
+              onValueChange={(next) => { if (typeof next === "string") setCategory(next); }}
+            >
+              <SelectTrigger id="menu-availability-category" className="admin-menu-select">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All categories</SelectItem>
+                {categories.map((id) => (
+                  <SelectItem key={id} value={id}>
+                    {categoryLabels.get(id) ?? id}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="admin-menu-field">
+            <Label htmlFor="menu-availability-filter">Status</Label>
+            <Select
+              value={statusFilter}
+              onValueChange={(next) => { if (typeof next === "string") setStatusFilter(next); }}
+            >
+              <SelectTrigger id="menu-availability-filter" className="admin-menu-select">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All items</SelectItem>
+                <SelectItem value="available">Available</SelectItem>
+                <SelectItem value="sold-out">Sold out</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
 
-      {visibleItems.length === 0 &&
-        <p role="status" className="rounded-lg border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-          No products match your filters.
-        </p>}
+      <Tabs
+        className="admin-menu-tabs"
+        value={view}
+        onValueChange={(next) => { if (next === "grid" || next === "list") setView(next); }}
+      >
+        <div className="admin-menu-results-toolbar">
+          <div className="admin-menu-results-details">
+            <p aria-live="polite">
+              Showing <strong>{visibleItems.length}</strong> of {menuItems.length} products
+            </p>
+            {filtersActive && (
+              <Button variant="ghost" type="button" size="sm" onClick={clearFilters}>
+                <X size={14} aria-hidden="true" />
+                Clear filters
+              </Button>
+            )}
+          </div>
+          <TabsList aria-label="Menu view" className="admin-menu-view-tabs">
+            <TabsTrigger value="grid">
+              <Grid2X2 size={16} aria-hidden="true" /> Grid
+            </TabsTrigger>
+            <TabsTrigger value="list">
+              <List size={16} aria-hidden="true" /> List
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        {visibleItems.length === 0 ? (
+          <Card size="sm" className="admin-menu-empty">
+            <CardContent>
+              <Search size={22} aria-hidden="true" />
+              <h3>No matching products</h3>
+              <p>Try a different search or reset your filters.</p>
+              {filtersActive && (
+                <Button type="button" size="sm" variant="outline" onClick={clearFilters}>
+                  Clear filters
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            <TabsContent value="grid" className="admin-menu-grid">
+              {visibleItems.map((item) => {
+                const soldOut = soldOutSet.has(item.id);
+                return (
+                  <Card key={item.id} size="sm" className="admin-menu-product" data-status={soldOut ? "sold-out" : "available"}>
+                    <CardContent>
+                      <div className="admin-menu-product-image">
+                        <Image
+                          src={item.image ?? "/logo.webp"}
+                          alt=""
+                          fill
+                          sizes="(max-width: 480px) 45vw, (max-width: 800px) 32vw, (max-width: 1200px) 25vw, 220px"
+                          className="object-contain"
+                        />
+                      </div>
+                      <div className="admin-menu-product-copy">
+                        <h3 title={item.name}>{item.name}</h3>
+                        <p>{categoryLabels.get(item.category) ?? item.category}</p>
+                        <strong>{money.format(item.price)}</strong>
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <AvailabilityControl {...availabilityProps(item)} />
+                    </CardFooter>
+                  </Card>
+                );
+              })}
+            </TabsContent>
+
+            <TabsContent value="list" className="admin-menu-list">
+              <Card size="sm" className="admin-menu-table-card">
+                <Table className="admin-menu-table">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Product</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead className="admin-menu-table-status-col">Availability</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {visibleItems.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell>
+                          <div className="admin-menu-table-product">
+                            <div className="admin-menu-table-image">
+                              <Image src={item.image ?? "/logo.webp"} alt="" fill sizes="54px" className="object-contain" />
+                            </div>
+                            <div>
+                              <strong>{item.name}</strong>
+                              <span>{item.id}</span>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{categoryLabels.get(item.category) ?? item.category}</TableCell>
+                        <TableCell className="admin-menu-table-price">{money.format(item.price)}</TableCell>
+                        <TableCell>
+                          <AvailabilityControl {...availabilityProps(item)} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Card>
+              <div className="admin-menu-mobile-list">
+                {visibleItems.map((item) => (
+                  <Card key={item.id} size="sm" className="admin-menu-mobile-row">
+                    <CardContent>
+                      <div className="admin-menu-table-product">
+                        <div className="admin-menu-table-image">
+                          <Image
+                            src={item.image ?? "/logo.webp"}
+                            alt=""
+                            fill
+                            sizes="64px"
+                            className="object-contain"
+                          />
+                        </div>
+                        <div>
+                          <strong>{item.name}</strong>
+                          <span>{categoryLabels.get(item.category) ?? item.category} · {money.format(item.price)}</span>
+                        </div>
+                      </div>
+                      <AvailabilityControl {...availabilityProps(item)} />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+          </>
+        )}
+      </Tabs>
     </div>
   );
 }

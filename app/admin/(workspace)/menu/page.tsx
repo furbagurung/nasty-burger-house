@@ -25,7 +25,7 @@ export default async function AdminMenuPage() {
 
   const availability = await readMenuAvailability();
   return (
-    <main className="admin-main" aria-label="Menu sold-out management">
+    <main className="admin-main admin-menu-main" aria-label="Menu availability management">
       <AdminMenuManagement
         initialSoldOutIds={availability.soldOutIds}
         ready={availability.ok}

@@ -89,7 +89,7 @@ export default function SalesOverview({ data }: { data: AdminAnalyticsData }) {
         />
         <AdminMetricCard
           label="Orders"
-          tone="success"
+          tone="comparison"
           value={data.metrics.orders}
           icon={<ShoppingBag size={20} />}
           trend={data.metrics.ordersChange}

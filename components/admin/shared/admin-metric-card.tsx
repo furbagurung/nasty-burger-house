@@ -6,7 +6,7 @@ import { ArrowDownRight, ArrowRight, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription } from "@/components/ui/card";
 
-export type AdminMetricTone = "brand" | "success" | "warning" | "neutral";
+export type AdminMetricTone = "brand" | "comparison" | "success" | "warning" | "neutral";
 
 export function AdminMetricCard({
   label,

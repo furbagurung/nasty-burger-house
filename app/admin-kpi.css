@@ -4,6 +4,23 @@
  * Keep chart, catalogue, and customer styles out of this module.
  */
 
+/* Data visualization palette; semantic meaning is shared by all admin views. */
+.admin-modern {
+  --admin-data-brand: #ac3342;
+  --admin-data-comparison: #54889a;
+  --admin-data-neutral: #718096;
+  --admin-data-positive: #21694b;
+  --admin-data-warning: #865416;
+}
+
+.dark .admin-modern {
+  --admin-data-brand: var(--nb-dark-accent);
+  --admin-data-comparison: #8cb6c6;
+  --admin-data-neutral: #9aaabd;
+  --admin-data-positive: var(--nb-dark-success);
+  --admin-data-warning: var(--nb-dark-warning);
+}
+
 .admin-modern .admin-kpi-grid {
   display: grid;
   min-width: 0;
@@ -22,9 +39,9 @@
 }
 
 .admin-modern .admin-kpi-card {
-  --admin-kpi-tone: #536073;
-  --admin-kpi-positive: #21694b;
-  --admin-kpi-negative: #ac3342;
+  --admin-kpi-tone: var(--admin-data-neutral);
+  --admin-kpi-positive: var(--admin-data-positive);
+  --admin-kpi-negative: var(--admin-data-brand);
   min-width: 0;
   min-height: 9rem;
   height: 100%;
@@ -38,15 +55,19 @@
 }
 
 .admin-modern .admin-kpi-card[data-tone="brand"] {
-  --admin-kpi-tone: #ac3342;
+  --admin-kpi-tone: var(--admin-data-brand);
+}
+
+.admin-modern .admin-kpi-card[data-tone="comparison"] {
+  --admin-kpi-tone: var(--admin-data-comparison);
 }
 
 .admin-modern .admin-kpi-card[data-tone="success"] {
-  --admin-kpi-tone: #21694b;
+  --admin-kpi-tone: var(--admin-data-positive);
 }
 
 .admin-modern .admin-kpi-card[data-tone="warning"] {
-  --admin-kpi-tone: #865416;
+  --admin-kpi-tone: var(--admin-data-warning);
 }
 
 .admin-modern .admin-kpi-card [data-slot="card-content"].admin-kpi-content {
@@ -168,8 +189,8 @@
 }
 
 .dark .admin-modern .admin-kpi-card {
-  --admin-kpi-tone: var(--nb-dark-text-secondary);
-  --admin-kpi-positive: var(--nb-dark-success);
+  --admin-kpi-tone: var(--admin-data-neutral);
+  --admin-kpi-positive: var(--admin-data-positive);
   --admin-kpi-negative: var(--nb-dark-danger);
   border-color: var(--nb-dark-border);
   background: var(--nb-dark-surface);
@@ -178,15 +199,19 @@
 }
 
 .dark .admin-modern .admin-kpi-card[data-tone="brand"] {
-  --admin-kpi-tone: var(--nb-dark-accent);
+  --admin-kpi-tone: var(--admin-data-brand);
+}
+
+.dark .admin-modern .admin-kpi-card[data-tone="comparison"] {
+  --admin-kpi-tone: var(--admin-data-comparison);
 }
 
 .dark .admin-modern .admin-kpi-card[data-tone="success"] {
-  --admin-kpi-tone: var(--nb-dark-success);
+  --admin-kpi-tone: var(--admin-data-positive);
 }
 
 .dark .admin-modern .admin-kpi-card[data-tone="warning"] {
-  --admin-kpi-tone: var(--nb-dark-warning);
+  --admin-kpi-tone: var(--admin-data-warning);
 }
 
 .dark .admin-modern .admin-kpi-value,

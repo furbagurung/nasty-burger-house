@@ -1,6 +1,6 @@
 .admin-analytics-main {
-  --admin-analytics-accent: #ac3342;
-  --admin-analytics-neutral: color-mix(in srgb, var(--muted-foreground) 68%, var(--foreground));
+  --admin-analytics-accent: var(--admin-data-brand);
+  --admin-analytics-neutral: var(--admin-data-neutral);
   display: grid;
   width: 100%;
   min-width: 0;
@@ -531,15 +531,15 @@
 }
 
 .admin-analytics-source-dot.is-traffic-mobile {
-  background: var(--admin-analytics-accent);
+  background: var(--admin-traffic-accent);
 }
 
 .admin-analytics-source-dot.is-traffic-desktop {
-  background: var(--admin-analytics-neutral);
+  background: var(--admin-traffic-visitor);
 }
 
 .admin-analytics-source-dot.is-traffic-other {
-  background: var(--muted-foreground);
+  background: var(--admin-traffic-neutral);
 }
 
 .admin-traffic-lists {
@@ -687,10 +687,10 @@
  * Colours are semantic and follow docs/DARK_THEME.md.
  */
 .admin-modern .admin-main.admin-sales-main {
-  --admin-sales-accent: var(--admin-sidebar-active, #ac3342);
-  --admin-sales-positive: #21694b;
+  --admin-sales-accent: var(--admin-data-brand);
+  --admin-sales-positive: var(--admin-data-positive);
   --admin-sales-negative: var(--admin-sales-accent);
-  --admin-sales-secondary: color-mix(in srgb, var(--muted-foreground) 73%, var(--foreground));
+  --admin-sales-secondary: var(--admin-data-comparison);
   display: grid;
   align-content: start;
   gap: 1rem;
@@ -1110,14 +1110,18 @@
   display: block;
   height: 100%;
   border-radius: inherit;
+  background: var(--admin-sales-secondary);
+}
+
+.admin-sales-products-table [data-slot="table-body"] [data-slot="table-row"]:first-child .admin-sales-product-track > span {
   background: var(--admin-sales-accent);
 }
 
 .dark .admin-modern .admin-sales-main {
-  --admin-sales-accent: var(--nb-dark-accent);
-  --admin-sales-positive: var(--nb-dark-success);
+  --admin-sales-accent: var(--admin-data-brand);
+  --admin-sales-positive: var(--admin-data-positive);
   --admin-sales-negative: var(--nb-dark-danger);
-  --admin-sales-secondary: color-mix(in srgb, var(--nb-dark-text-secondary) 70%, var(--nb-dark-text-primary));
+  --admin-sales-secondary: var(--admin-data-comparison);
   background: var(--nb-dark-canvas);
 }
 
@@ -1252,8 +1256,9 @@
  * Scoped to the Vercel traffic route to avoid changing Square sales views.
  */
 .admin-modern .admin-main.admin-traffic-main {
-  --admin-traffic-accent: #ac3342;
-  --admin-traffic-visitor: #21694b;
+  --admin-traffic-accent: var(--admin-data-brand);
+  --admin-traffic-visitor: var(--admin-data-comparison);
+  --admin-traffic-neutral: var(--admin-data-neutral);
   display: grid;
   align-content: start;
   gap: 1rem;
@@ -1564,9 +1569,19 @@
   background: var(--admin-traffic-accent);
 }
 
+/* Related metrics use one secondary hue; status colours remain reserved for status. */
+.admin-traffic-list-card--sources .admin-traffic-item-bar > span {
+  background: var(--admin-traffic-visitor);
+}
+
+.admin-traffic-list-card--countries .admin-traffic-item-bar > span {
+  background: var(--admin-traffic-neutral);
+}
+
 .dark .admin-modern .admin-traffic-main {
-  --admin-traffic-accent: var(--nb-dark-accent);
-  --admin-traffic-visitor: var(--nb-dark-success);
+  --admin-traffic-accent: var(--admin-data-brand);
+  --admin-traffic-visitor: var(--admin-data-comparison);
+  --admin-traffic-neutral: var(--admin-data-neutral);
   background: var(--nb-dark-canvas);
 }
 

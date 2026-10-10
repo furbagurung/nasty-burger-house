@@ -42,15 +42,15 @@ const trafficChartConfig = {
 const deviceChartConfig = {
   mobile: {
     label: "Mobile",
-    color: "var(--admin-analytics-accent)",
+    color: "var(--admin-traffic-accent)",
   },
   desktop: {
     label: "Desktop",
-    color: "var(--admin-analytics-neutral)",
+    color: "var(--admin-traffic-visitor)",
   },
   other: {
     label: "Other",
-    color: "var(--muted-foreground)",
+    color: "var(--admin-traffic-neutral)",
   },
 } satisfies ChartConfig;
 
@@ -179,7 +179,7 @@ export default function TrafficAnalyticsSection({
             />
             <AdminMetricCard
               label="Page views"
-              tone="success"
+              tone="comparison"
               value={data.metrics.pageviews}
               icon={<Eye size={20} />}
               index={1}
@@ -384,7 +384,7 @@ export default function TrafficAnalyticsSection({
               </CardContent>
             </Card>
 
-            <Card className="admin-analytics-card admin-traffic-list-card">
+            <Card className="admin-analytics-card admin-traffic-list-card admin-traffic-list-card--sources">
               <CardHeader>
                 <CardTitle>Traffic sources</CardTitle>
                 <CardDescription>
@@ -404,7 +404,7 @@ export default function TrafficAnalyticsSection({
               </CardContent>
             </Card>
 
-            <Card className="admin-analytics-card admin-traffic-list-card">
+            <Card className="admin-analytics-card admin-traffic-list-card admin-traffic-list-card--countries">
               <CardHeader>
                 <CardTitle>Countries</CardTitle>
                 <CardDescription>

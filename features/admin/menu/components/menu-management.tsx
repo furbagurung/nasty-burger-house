@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertCircle,
   CheckCircle2,
@@ -101,7 +101,10 @@ export function AdminMenuManagement({
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [pendingId, setPendingId] = useState<string | null>(null);
+  // Track saves by product so updating one item does not lock the entire menu.
+  // The ref also blocks repeat requests before React has rendered the disabled state.
+  const pendingIdsRef = useRef<Set<string>>(new Set());
+  const [pendingIds, setPendingIds] = useState<Set<string>>(() => new Set());
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
@@ -130,11 +133,16 @@ export function AdminMenuManagement({
   const filtersActive = query.trim() !== "" || category !== "all" || statusFilter !== "all";
 
   async function updateSoldOut(itemId: string, soldOut: boolean) {
-    if (!ready || pendingId !== null || soldOutSet.has(itemId) === soldOut) return;
+    if (
+      !ready ||
+      pendingIdsRef.current.has(itemId) ||
+      soldOutSet.has(itemId) === soldOut
+    ) return;
 
+    pendingIdsRef.current.add(itemId);
+    setPendingIds((current) => new Set(current).add(itemId));
     setError("");
     setNotice("");
-    setPendingId(itemId);
 
     try {
       const response = await fetch(`/api/admin/menu/${encodeURIComponent(itemId)}`, {
@@ -165,7 +173,12 @@ export function AdminMenuManagement({
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not update availability.");
     } finally {
-      setPendingId(null);
+      pendingIdsRef.current.delete(itemId);
+      setPendingIds((current) => {
+        const next = new Set(current);
+        next.delete(itemId);
+        return next;
+      });
     }
   }
 
@@ -179,8 +192,8 @@ export function AdminMenuManagement({
     return {
       name: item.name,
       soldOut: soldOutSet.has(item.id),
-      saving: pendingId === item.id,
-      disabled: !ready || pendingId !== null,
+      saving: pendingIds.has(item.id),
+      disabled: !ready || pendingIds.has(item.id),
       known: ready,
       onToggle: (available: boolean) => void updateSoldOut(item.id, !available),
     };

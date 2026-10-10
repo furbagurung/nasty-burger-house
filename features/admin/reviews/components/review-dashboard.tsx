@@ -107,17 +107,6 @@ export default function AdminReviewDashboard({
           <AdminMetricCard label="Total reviews" value={reviews.length} icon={<MessageSquareText size={20} />} index={3} />
         </section>
 
-        <Card className="admin-review-guidance">
-          <div>
-            <p>Moderation</p>
-            <strong>Publish genuine reviews only.</strong>
-          </div>
-          <span>
-            Reviews are linked to completed orders. Check for spam, abuse, or
-            private information.
-          </span>
-        </Card>
-
         <div
           className="admin-filter-bar"
           role="group"

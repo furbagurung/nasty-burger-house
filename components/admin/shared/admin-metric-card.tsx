@@ -14,6 +14,7 @@ export function AdminMetricCard({
   icon,
   hint,
   trend,
+  comparisonLabel = "vs prior 30d",
   tone = "neutral",
   index = 0,
 }: {
@@ -23,6 +24,7 @@ export function AdminMetricCard({
   hint?: string;
   /** Percentage change compared with the previous period; null means no baseline. */
   trend?: number | null;
+  comparisonLabel?: string;
   tone?: AdminMetricTone;
   index?: number;
 }) {
@@ -84,7 +86,7 @@ export function AdminMetricCard({
                   {trendText}
                 </Badge>
                 {trendState !== "unknown" && (
-                  <span className="admin-kpi-comparison">vs prior 30d</span>
+                  <span className="admin-kpi-comparison">{comparisonLabel}</span>
                 )}
               </div>
             )}

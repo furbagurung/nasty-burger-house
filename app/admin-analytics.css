@@ -1738,3 +1738,135 @@
   background: var(--nb-dark-raised);
   color: var(--nb-dark-text-secondary);
 }
+
+
+/* Sales date filtering — shared shadcn Select, Input, Label and Button. */
+.admin-sales-date-filter {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+}
+
+.admin-sales-date-select {
+  display: flex;
+  min-height: 2.55rem;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--card);
+  padding-left: 0.65rem;
+  color: var(--foreground);
+}
+
+.admin-sales-date-select > svg {
+  flex: 0 0 auto;
+  color: var(--admin-sales-accent);
+}
+
+.admin-sales-date-trigger[data-slot="select-trigger"] {
+  height: 2.45rem;
+  min-width: 9.5rem;
+  border: 0;
+  background: transparent;
+  padding-inline: 0.35rem 0.65rem;
+  color: var(--foreground);
+  font-size: 0.73rem;
+  font-weight: 650;
+}
+
+.admin-sales-custom-range {
+  display: flex;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.admin-sales-date-field {
+  display: grid;
+  min-width: 0;
+  gap: 0.3rem;
+}
+
+.admin-sales-date-field [data-slot="label"] {
+  color: var(--foreground);
+  font-size: 0.69rem;
+  font-weight: 650;
+}
+
+.admin-sales-date-field [data-slot="input"] {
+  width: 9.5rem;
+  min-height: 2.4rem;
+  border-color: var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 0.72rem;
+}
+
+.admin-sales-custom-range > [data-slot="button"] {
+  min-height: 2.4rem;
+  border-radius: 0.55rem;
+  background: var(--admin-sales-accent);
+  color: var(--card);
+  font-size: 0.73rem;
+}
+
+.admin-sales-custom-range > [data-slot="button"]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--admin-sales-accent) 86%, var(--foreground));
+}
+
+.admin-sales-date-error {
+  flex: 1 0 100%;
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.7rem;
+  text-align: end;
+}
+
+.dark .admin-sales-date-select {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-surface);
+}
+
+.dark .admin-sales-date-field [data-slot="input"] {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-raised);
+  color: var(--nb-dark-text-primary);
+}
+
+.dark .admin-sales-custom-range > [data-slot="button"] {
+  color: var(--nb-dark-accent-ink);
+}
+
+@media (max-width: 700px) {
+  .admin-sales-main .admin-analytics-intro {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-sales-date-filter {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .admin-sales-custom-range {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .admin-sales-date-field {
+    flex: 1 1 9rem;
+  }
+
+  .admin-sales-date-field [data-slot="input"] {
+    width: 100%;
+  }
+
+  .admin-sales-date-error {
+    text-align: start;
+  }
+}

@@ -2,9 +2,8 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 import { getSquareConfig, squareRequest } from "./square/api";
+import { addSalesDays, sydneyMidnightUtc, sydneyToday, type SalesRange } from "./admin-sales-range";
 
-const PERIOD_DAYS = 30;
-const DAY_MS = 24 * 60 * 60 * 1000;
 const STORE_TIME_ZONE = "Australia/Sydney";
 
 type SquareMoney = {
@@ -43,6 +42,7 @@ export type AdminAnalyticsData =
       available: true;
       currency: string;
       periodLabel: string;
+      periodDays: number;
       metrics: {
         revenue: number;
         orders: number;
@@ -75,13 +75,6 @@ export type AdminAnalyticsData =
       available: false;
       error: string;
     };
-
-const storeDateKeyFormatter = new Intl.DateTimeFormat("en-CA", {
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-  timeZone: STORE_TIME_ZONE,
-});
 
 const storeDateLabelFormatter = new Intl.DateTimeFormat("en-AU", {
   day: "numeric",
@@ -186,19 +179,27 @@ async function searchCompletedOrders(startAt: Date, endAt: Date) {
     pages += 1;
   } while (cursor && pages < 20);
 
+  if (cursor) throw new Error("Square returned more order pages than the reporting limit.");
   return orders;
 }
 
-async function buildAdminAnalytics(): Promise<AdminAnalyticsData> {
+async function buildAdminAnalytics(
+  from: string,
+  to: string,
+  periodLabel: string,
+  periodDays: number,
+): Promise<AdminAnalyticsData> {
   const now = new Date();
-  const currentStart = new Date(now.getTime() - PERIOD_DAYS * DAY_MS);
-  const previousStart = new Date(currentStart.getTime() - PERIOD_DAYS * DAY_MS);
+  const currentStart = sydneyMidnightUtc(from);
+  const endExclusive = sydneyMidnightUtc(addSalesDays(to, 1));
+  const currentEnd = new Date(Math.min(now.getTime(), endExclusive.getTime()));
+  const previousStart = sydneyMidnightUtc(addSalesDays(from, -periodDays));
 
-  const orders = await searchCompletedOrders(previousStart, now);
+  const orders = await searchCompletedOrders(previousStart, currentEnd);
 
   const currentOrders = orders.filter((order) => {
     const timestamp = Date.parse(orderClosedAt(order));
-    return Number.isFinite(timestamp) && timestamp >= currentStart.getTime();
+    return Number.isFinite(timestamp) && timestamp >= currentStart.getTime() && timestamp < currentEnd.getTime();
   });
 
   const previousOrders = orders.filter((order) => {
@@ -227,12 +228,12 @@ async function buildAdminAnalytics(): Promise<AdminAnalyticsData> {
     { date: string; label: string; revenue: number; orders: number }
   >();
 
-  for (let index = PERIOD_DAYS - 1; index >= 0; index -= 1) {
-    const point = new Date(now.getTime() - index * DAY_MS);
-    const key = storeDateKeyFormatter.format(point);
+  for (let index = 0; index < periodDays; index += 1) {
+    const key = addSalesDays(from, index);
+    const point = sydneyMidnightUtc(key);
     dailyMap.set(key, {
       date: key,
-      label: storeDateLabelFormatter.format(point),
+      label: storeDateLabelFormatter.format(point.getTime() + 12 * 60 * 60 * 1000),
       revenue: 0,
       orders: 0,
     });
@@ -241,7 +242,7 @@ async function buildAdminAnalytics(): Promise<AdminAnalyticsData> {
   for (const order of currentOrders) {
     const timestamp = orderClosedAt(order);
     if (!timestamp) continue;
-    const key = storeDateKeyFormatter.format(new Date(timestamp));
+    const key = sydneyToday(new Date(timestamp));
     const day = dailyMap.get(key);
     if (!day) continue;
     day.revenue += orderRevenue(order);
@@ -285,7 +286,8 @@ async function buildAdminAnalytics(): Promise<AdminAnalyticsData> {
   return {
     available: true,
     currency,
-    periodLabel: "Last 30 days",
+    periodLabel,
+    periodDays,
     metrics: {
       revenue: current.revenue,
       orders: current.orders,
@@ -315,16 +317,16 @@ async function buildAdminAnalytics(): Promise<AdminAnalyticsData> {
 
 const loadCachedAdminAnalytics = unstable_cache(
   buildAdminAnalytics,
-  ["nbh-admin-analytics-square-v1"],
+  ["nbh-admin-analytics-square-v2"],
   {
     revalidate: 300,
     tags: ["nbh-admin-analytics-square"],
   },
 );
 
-export async function loadAdminAnalytics(): Promise<AdminAnalyticsData> {
+export async function loadAdminAnalytics(range: SalesRange): Promise<AdminAnalyticsData> {
   try {
-    return await loadCachedAdminAnalytics();
+    return await loadCachedAdminAnalytics(range.from, range.to, range.label, range.days);
   } catch (error) {
     console.error("[NBH admin analytics Square load failed]", error);
     return {

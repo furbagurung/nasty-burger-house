@@ -58,25 +58,24 @@ export default function AdminLoginPage() {
 
   return (
     <main className="admin-access-page admin-login-page">
-      <Card className="admin-login-card">
-        <div className="admin-login-brand">
+      <Card className="admin-login-card" size="sm">
+        <header className="admin-login-brand">
           <Image
             src="/logo.webp"
             alt="Nasty Burger House"
-            width={150}
-            height={150}
+            width={56}
+            height={56}
             priority
           />
           <div>
             <p>Nasty Burger House</p>
             <h1>Order Control</h1>
-            <span>Staff sign in</span>
           </div>
-        </div>
+        </header>
 
         <form className="admin-login-form" onSubmit={submit}>
-          <Label className="admin-login-email-field" htmlFor="admin-login-email">
-            Admin email
+          <div className="admin-login-field">
+            <Label htmlFor="admin-login-email">Email address</Label>
             <Input
               id="admin-login-email"
               type="email"
@@ -87,9 +86,12 @@ export default function AdminLoginPage() {
               required
               autoFocus
             />
-          </Label>
-          <div className="admin-login-password-field">
-            <Label htmlFor="admin-login-password">Password</Label>
+          </div>
+          <div className="admin-login-field">
+            <div className="admin-login-field-heading">
+              <Label htmlFor="admin-login-password">Password</Label>
+              <Link href="/account/forgot-password">Forgot password?</Link>
+            </div>
             <div className="admin-login-password-wrap">
               <Input
                 id="admin-login-password"
@@ -126,20 +128,13 @@ export default function AdminLoginPage() {
             </p>
           )}
 
-          <Button type="submit" disabled={submitting}>
-            {submitting ? "Checking access…" : "Sign in to Order Control"}
+          <Button className="admin-login-submit" type="submit" disabled={submitting}>
+            {submitting ? "Signing in…" : "Sign in"}
           </Button>
-
-          <div className="admin-login-links">
-            <Link href="/account/forgot-password">Forgot password?</Link>
-            <Link href="/">Back to website</Link>
-          </div>
         </form>
-
-        <p className="admin-login-note">
-          Customer accounts cannot access Order Control unless they have been added
-          to the admin list.
-        </p>
+        <div className="admin-login-footer">
+          <Link href="/">Back to website</Link>
+        </div>
       </Card>
     </main>
   );

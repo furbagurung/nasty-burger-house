@@ -1,0 +1,251 @@
+/*
+ * Admin sign-in only. Uses the shared shadcn primitives and theme tokens
+ * from docs/DARK_THEME.md. Keep customer auth and admin workspace untouched.
+ */
+.admin-login-page {
+  --admin-login-accent: #ac3342;
+  --admin-login-button-ink: #fff;
+  --admin-login-text: var(--card-foreground);
+  --admin-login-input-bg: color-mix(in srgb, var(--card) 92%, var(--muted));
+  --admin-login-input-border: color-mix(in srgb, var(--foreground) 45%, var(--card));
+  width: 100%;
+  min-height: 100svh;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem max(1rem, env(safe-area-inset-bottom));
+  background: var(--nb-dark-canvas);
+  color: var(--admin-login-text);
+}
+
+.admin-login-page .admin-login-card {
+  display: flex;
+  width: min(100%, 26rem);
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  flex-direction: column;
+  align-self: center;
+  justify-self: center;
+  gap: 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 1.15rem;
+  padding: clamp(1.25rem, 4vw, 1.75rem);
+  background: var(--card);
+  color: var(--admin-login-text);
+  box-shadow: none;
+}
+
+.admin-login-page .admin-login-brand {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.admin-login-page .admin-login-brand img {
+  width: 3.25rem;
+  height: 3.25rem;
+  flex: 0 0 3.25rem;
+  object-fit: contain;
+}
+
+.admin-login-page .admin-login-brand > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.15rem;
+}
+
+.admin-login-page .admin-login-brand p {
+  margin: 0;
+  color: var(--admin-login-accent);
+  font-size: 0.65rem;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.admin-login-page .admin-login-brand h1 {
+  margin: 0;
+  color: var(--admin-login-text);
+  font-size: clamp(1.4rem, 5vw, 1.7rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.admin-login-page .admin-login-form {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: 0.95rem;
+}
+
+.admin-login-page .admin-login-field {
+  display: grid;
+  min-width: 0;
+  gap: 0.4rem;
+}
+
+.admin-login-page .admin-login-field-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.admin-login-page .admin-login-field [data-slot="label"] {
+  display: inline-flex;
+  width: max-content;
+  margin: 0;
+  color: var(--admin-login-text);
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.admin-login-page .admin-login-field [data-slot="input"] {
+  width: 100%;
+  height: 2.75rem;
+  min-height: 2.75rem;
+  border: 1px solid var(--admin-login-input-border);
+  border-radius: 0.65rem;
+  padding: 0 0.8rem;
+  outline: none;
+  background: var(--admin-login-input-bg);
+  color: var(--admin-login-text);
+  font-size: 0.85rem;
+  box-shadow: none;
+}
+
+.admin-login-page .admin-login-field [data-slot="input"]:focus-visible {
+  border-color: var(--admin-login-accent);
+  outline: 2px solid var(--admin-login-accent);
+  outline-offset: 1px;
+  box-shadow: none;
+}
+
+/* Browser autocomplete must not replace the inputs with a pale-blue surface. */
+.admin-login-page .admin-login-field [data-slot="input"]:is(:-webkit-autofill, :-webkit-autofill:hover, :-webkit-autofill:focus) {
+  -webkit-box-shadow: 0 0 0 1000px var(--admin-login-input-bg) inset;
+  -webkit-text-fill-color: var(--admin-login-text);
+  caret-color: var(--admin-login-text);
+}
+
+.admin-login-page .admin-login-password-wrap {
+  position: relative;
+  min-width: 0;
+}
+
+.admin-login-page .admin-login-password-wrap [data-slot="input"] {
+  padding-right: 3.2rem;
+}
+
+.admin-login-page .admin-login-password-toggle[data-slot="button"] {
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  display: grid;
+  width: 2.1rem;
+  height: 2.1rem;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0;
+  background: transparent;
+  color: var(--admin-login-text);
+}
+
+.admin-login-page .admin-login-password-toggle[data-slot="button"]:hover:not(:disabled) {
+  background: var(--muted);
+}
+
+.admin-login-page .admin-login-password-toggle[data-slot="button"]:focus-visible,
+.admin-login-page a:focus-visible {
+  outline: 2px solid var(--admin-login-accent);
+  outline-offset: 3px;
+}
+
+.admin-login-page .admin-login-submit[data-slot="button"] {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 0.65rem;
+  background: var(--admin-login-accent);
+  color: var(--admin-login-button-ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.admin-login-page .admin-login-submit[data-slot="button"]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--admin-login-accent) 89%, var(--foreground));
+}
+
+.admin-login-page .admin-login-submit[data-slot="button"]:focus-visible {
+  outline: 2px solid var(--admin-login-accent);
+  outline-offset: 3px;
+}
+
+.admin-login-page .admin-login-error {
+  margin: 0;
+  border: 1px solid color-mix(in srgb, var(--destructive) 45%, var(--border));
+  border-radius: 0.55rem;
+  padding: 0.7rem 0.8rem;
+  background: color-mix(in srgb, var(--destructive) 10%, var(--card));
+  color: var(--admin-login-text);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.admin-login-page a {
+  width: auto;
+  border-radius: 0.25rem;
+  padding: 0;
+  background: transparent;
+  color: var(--admin-login-accent);
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.admin-login-page a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
+.admin-login-page .admin-login-footer {
+  border-top: 1px solid var(--border);
+  padding-top: 0.85rem;
+  text-align: center;
+}
+
+.admin-login-page .admin-login-footer a {
+  color: var(--muted-foreground);
+  font-size: 0.76rem;
+}
+
+.dark .admin-login-page {
+  --admin-login-accent: var(--nb-dark-accent);
+  --admin-login-button-ink: var(--nb-dark-accent-ink);
+  --admin-login-text: var(--nb-dark-text-primary);
+  --admin-login-input-bg: var(--nb-dark-raised);
+  --admin-login-input-border: var(--nb-dark-text-secondary);
+}
+
+.dark .admin-login-page .admin-login-card {
+  border-color: var(--nb-dark-border);
+  background: var(--nb-dark-surface);
+  color: var(--nb-dark-text-primary);
+}
+
+@media (max-width: 480px) {
+  .admin-login-page .admin-login-card {
+    width: 100%;
+    padding: 1.25rem;
+  }
+
+  .admin-login-page .admin-login-brand img {
+    width: 2.9rem;
+    height: 2.9rem;
+    flex-basis: 2.9rem;
+  }
+}

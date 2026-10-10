@@ -98,6 +98,7 @@ import "./admin-workspace-footer.css";
 import "./admin-navigation.css";
 import "./admin-typography.css";
 import "./admin-kpi.css";
+import "./admin-login.css";
 import "./theme-dark.css";
 
 const dmSans = DM_Sans({

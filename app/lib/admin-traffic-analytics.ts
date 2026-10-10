@@ -2,7 +2,7 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 import type { ReportPeriod } from "./admin-report-period";
-import { addSalesDays, sydneyMidnightUtc, type SalesRange } from "./admin-sales-range";
+import { addSalesDays, resolveSalesRange, sydneyMidnightUtc, sydneyToday, type SalesRange } from "./admin-sales-range";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const VERCEL_ANALYTICS_BASE =
@@ -34,6 +34,8 @@ export type AdminTrafficAnalyticsData =
   | {
       available: true;
       periodLabel: string;
+      trendDescription: string;
+      notice?: string;
       metrics: {
         visitors: number;
         pageviews: number;
@@ -152,7 +154,21 @@ async function vercelAnalyticsRequest<T>(
   });
 
   if (!response.ok) {
-    throw new Error("VERCEL_ANALYTICS_REQUEST_" + response.status);
+    const responseBody = await response.text();
+    let apiMessage = "";
+    try {
+      const parsed = JSON.parse(responseBody) as {
+        error?: { message?: string };
+        message?: string;
+      };
+      apiMessage = parsed.error?.message ?? parsed.message ?? "";
+    } catch {
+      apiMessage = responseBody.slice(0, 300);
+    }
+    throw new Error(
+      "VERCEL_ANALYTICS_REQUEST_" + response.status +
+      (apiMessage ? ": " + apiMessage : ""),
+    );
   }
 
   const payload = (await response.json()) as VercelAnalyticsResponse<T>;
@@ -275,6 +291,13 @@ async function buildAdminTrafficAnalytics(
   return {
     available: true,
     periodLabel,
+    trendDescription: hourly
+      ? "Hourly views and visitors"
+      : period === "1y"
+        ? "Monthly views and visitors"
+        : period === "3m"
+          ? "Weekly views and visitors"
+          : "Daily views and visitors",
     metrics: {
       visitors,
       pageviews,
@@ -328,7 +351,7 @@ async function buildAdminTrafficAnalytics(
 
 const loadCachedAdminTrafficAnalytics = unstable_cache(
   buildAdminTrafficAnalytics,
-  ["nbh-admin-traffic-vercel-v2"],
+  ["nbh-admin-traffic-vercel-v3"],
   {
     revalidate: 300,
     tags: ["nbh-admin-traffic-vercel"],
@@ -344,6 +367,39 @@ export async function loadAdminTrafficAnalytics(range: SalesRange): Promise<Admi
       detail === "VERCEL_ANALYTICS_TOKEN_MISSING" ||
       detail.includes("REQUEST_401") ||
       detail.includes("REQUEST_403");
+    const historicalRange = range.mode === "1y" || range.mode === "3m";
+    const hobbyRetentionLimit =
+      historicalRange &&
+      detail.includes("REQUEST_400") &&
+      /hobby plan.*latest 31 days|latest 31 days of data/i.test(detail);
+
+    if (hobbyRetentionLimit) {
+      try {
+        const now = new Date();
+        const today = sydneyToday(now);
+        const fallbackRange = resolveSalesRange("30d", now);
+        const recentTraffic = await loadCachedAdminTrafficAnalytics(
+          "30d",
+          fallbackRange.from,
+          today,
+          "Last 30 Days",
+        );
+
+        if (recentTraffic.available) {
+          return {
+            ...recentTraffic,
+            periodLabel: "Last 30 Days",
+            notice:
+              "Vercel Analytics on the Hobby plan only provides the latest 31 days of data. Website traffic is showing the latest 30 days; your selected reporting period and sales analytics are unchanged.",
+          };
+        }
+      } catch (fallbackError) {
+        console.error(
+          "[NBH admin Vercel traffic analytics fallback failed]",
+          fallbackError,
+        );
+      }
+    }
 
     console.error("[NBH admin Vercel traffic analytics load failed]", error);
 
@@ -352,9 +408,11 @@ export async function loadAdminTrafficAnalytics(range: SalesRange): Promise<Admi
       needsToken,
       error: needsToken
         ? "Cannot read Vercel Analytics. Check API token access."
-        : range.mode === "1y" || range.mode === "3m"
-          ? "Historical website traffic is unavailable for this period. Check your Vercel Analytics data retention or try a shorter range."
-          : "Could not load website traffic.",
+        : hobbyRetentionLimit
+          ? "Vercel Analytics cannot provide the selected historical range, and the latest 30 days could not be loaded. Try again shortly."
+          : historicalRange
+            ? "Historical website traffic is unavailable for this period. Check your Vercel Analytics data retention or try a shorter range."
+            : "Could not load website traffic.",
     };
   }
 }

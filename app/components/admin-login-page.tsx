@@ -69,7 +69,7 @@ export default function AdminLoginPage() {
           />
           <div>
             <p>Nasty Burger House</p>
-            <h1>Order Control</h1>
+            <h1>Admin Login</h1>
           </div>
         </header>
 

@@ -50,7 +50,7 @@ export function AdminMetricCard({
 
   const trendText =
     trendState === "unknown"
-      ? "No prior period"
+      ? "No baseline"
       : trend === undefined
         ? ""
         : `${trend > 0.05 ? "+" : trend < -0.05 ? "−" : ""}${Math.abs(trend) < 0.05 ? "0.0" : Math.abs(trend).toFixed(1)}%`;

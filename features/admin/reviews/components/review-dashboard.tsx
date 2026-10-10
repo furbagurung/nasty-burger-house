@@ -110,7 +110,7 @@ export default function AdminReviewDashboard({
         <Card className="admin-review-guidance">
           <div>
             <p>Moderation</p>
-            <strong>Check before publishing.</strong>
+            <strong>Publish genuine reviews only.</strong>
           </div>
           <span>
             Reviews are linked to completed orders. Check for spam, abuse, or

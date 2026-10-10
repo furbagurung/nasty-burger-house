@@ -53,7 +53,9 @@ export function AdminMetricCard({
       ? "No baseline"
       : trend === undefined
         ? ""
-        : `${trend > 0.05 ? "+" : trend < -0.05 ? "−" : ""}${Math.abs(trend) < 0.05 ? "0.0" : Math.abs(trend).toFixed(1)}%`;
+        : typeof trend !== "number" || !Number.isFinite(trend)
+          ? "No baseline"
+          : `${trend > 0.05 ? "+" : trend < -0.05 ? "−" : ""}${Math.abs(trend) < 0.05 ? "0.0" : Math.abs(trend).toFixed(1)}%`;
 
   return (
     <motion.div

@@ -251,25 +251,38 @@ export async function POST(request: Request) {
           requestId: validation.order.requestId,
           squareStatus:
             error instanceof SquareApiError ? error.status : undefined,
+          squareEndpoint:
+            error instanceof SquareApiError ? error.endpoint : undefined,
+          squareRequestId:
+            error instanceof SquareApiError ? error.requestId : undefined,
         },
       }),
     );
 
+    const squareLimited = error instanceof SquareApiError && error.status === 429;
     const status =
-      error instanceof SquareApiError && error.status >= 400 && error.status < 500
+      error instanceof SquareApiError && error.status >= 400 && error.status < 500 && !squareLimited
         ? 502
         : 503;
+    const retryAfter = squareLimited
+      ? Math.max(1, Math.ceil((error.retryAfterMs ?? 3000) / 1000))
+      : undefined;
 
     return Response.json(
       {
         ok: false,
         errors: [
-          "We could not start the secure Square checkout. Please try again.",
+          squareLimited
+            ? "Square checkout is temporarily busy. Your cart is saved; please try again shortly."
+            : "We could not start the secure Square checkout. Please try again.",
         ],
       },
       {
         status,
-        headers: { "Cache-Control": "no-store" },
+        headers: {
+          "Cache-Control": "no-store",
+          ...(retryAfter ? { "Retry-After": String(retryAfter) } : {}),
+        },
       },
     );
   }

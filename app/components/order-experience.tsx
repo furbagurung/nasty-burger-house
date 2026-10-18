@@ -5,7 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { drawerMotion, useMobileCart } from "../lib/drawer-motion";
 import { FooterUtilityLinks } from "./footer-legal-links";
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   adultDrinkChoices,
   comboUpgradePrice,
@@ -21,6 +21,7 @@ import {
 } from "../lib/order";
 import { getServiceStatus, type ServiceStatus } from "../lib/service";
 import { mergeIdenticalCartLines } from "../lib/cart-lines";
+import { clearCheckoutRequestId, getCheckoutRequestId, type CheckoutAttempt } from "../lib/checkout-attempt";
 import MobileBottomNav from "./mobile-bottom-nav";
 import MobileAccountAvatar from "./mobile-account-avatar";
 import HomepageTestimonials from "./homepage-testimonials";
@@ -249,7 +250,8 @@ export default function OrderExperience({
   const [checkoutResult, setCheckoutResult] = useState<CheckoutResult | null>(
     null,
   );
-  const [checkoutRequestId, setCheckoutRequestId] = useState("");
+  const checkoutAttemptRef = useRef<CheckoutAttempt | null>(null);
+  const checkoutSubmittingRef = useRef(false);
   const [isLoyaltyOpen, setIsLoyaltyOpen] = useState(false);
   const [loyaltyComplete, setLoyaltyComplete] = useState(false);
   const [isMonthlyOpen, setIsMonthlyOpen] = useState(false);
@@ -744,32 +746,36 @@ export default function OrderExperience({
     setCheckoutState("idle");
     setCheckoutErrors([]);
     setCheckoutResult(null);
-    setCheckoutRequestId(crypto.randomUUID());
     setIsCartOpen(false);
     setIsCheckoutOpen(true);
   }
 
   async function submitOrder(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (checkoutState === "submitting" || cart.length === 0) return;
+    if (checkoutSubmittingRef.current || checkoutState === "submitting" || cart.length === 0) return;
 
     const form = event.currentTarget;
     const data = new FormData(form);
+    const customer = {
+      name: String(data.get("name") ?? ""),
+      email: String(data.get("email") ?? ""),
+      phone: String(data.get("phone") ?? ""),
+    };
+    const notes = String(data.get("notes") ?? "");
+    const signature = JSON.stringify({ customer, notes, cart, subtotal: cartSubtotal });
+    checkoutSubmittingRef.current = true;
     setCheckoutState("submitting");
     setCheckoutErrors([]);
 
     try {
+      checkoutAttemptRef.current = getCheckoutRequestId(signature, checkoutAttemptRef.current);
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          requestId: checkoutRequestId || crypto.randomUUID(),
-          customer: {
-            name: data.get("name"),
-            email: data.get("email"),
-            phone: data.get("phone"),
-          },
-          notes: data.get("notes"),
+          requestId: checkoutAttemptRef.current.requestId,
+          customer,
+          notes,
           pickupMethod: "asap",
           cart,
           clientSubtotal: cartSubtotal,
@@ -810,6 +816,7 @@ export default function OrderExperience({
           );
         }
 
+        clearCheckoutRequestId();
         window.location.assign(result.checkoutUrl);
         return;
       }
@@ -826,6 +833,8 @@ export default function OrderExperience({
         "We could not reach the order service. Check your connection and try again.",
       ]);
       setCheckoutState("error");
+    } finally {
+      checkoutSubmittingRef.current = false;
     }
   }
 

@@ -48,6 +48,20 @@ function splitName(name: string) {
     familyName: parts.slice(1).join(" ") || undefined,
   };
 }
+function needsCustomerUpdate(
+  customer: SquareCustomer,
+  input: SquareCustomerInput,
+  phone: string,
+): boolean {
+  const { givenName, familyName } = splitName(input.name);
+  return (
+    customer.given_name !== givenName ||
+    (customer.family_name ?? "") !== (familyName ?? "") ||
+    (customer.email_address ?? "").trim().toLowerCase() !== input.email.trim().toLowerCase() ||
+    (phone !== "" && normalizeAustralianPhone(customer.phone_number ?? "") !== phone)
+  );
+}
+
 async function updateSquareCustomer(
   customerId: string,
   input: SquareCustomerInput,
@@ -118,13 +132,17 @@ export async function findOrCreateSquareCustomer(input: SquareCustomerInput) {
 
   const byEmail = await searchCustomerByEmail(email);
   if (byEmail?.id) {
-    await updateSquareCustomer(byEmail.id, input, phone);
+    if (needsCustomerUpdate(byEmail, input, phone)) {
+      await updateSquareCustomer(byEmail.id, input, phone);
+    }
     return { id: byEmail.id, created: false, phone };
   }
 
   const byPhone = await searchCustomerByPhone(phone);
   if (byPhone?.id) {
-    await updateSquareCustomer(byPhone.id, input, phone);
+    if (needsCustomerUpdate(byPhone, input, phone)) {
+      await updateSquareCustomer(byPhone.id, input, phone);
+    }
     return { id: byPhone.id, created: false, phone };
   }
   const { givenName, familyName } = splitName(input.name);

@@ -12,6 +12,7 @@ import {
 } from "../lib/order";
 import { getServiceStatus, type ServiceStatus } from "../lib/service";
 import { mergeIdenticalCartLines } from "../lib/cart-lines";
+import { clearCheckoutRequestId, getCheckoutRequestId, type CheckoutAttempt } from "../lib/checkout-attempt";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 import MobilePageHeader from "./mobile-page-header";
 import { Badge } from "@/components/ui/badge";
@@ -129,7 +130,8 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   const phoneInputRef = useRef<HTMLInputElement>(null);
   // Reuse the Square idempotency key on a retry of the same exact checkout
   // payload. This avoids duplicate Square payment links after a lost response.
-  const checkoutAttemptRef = useRef<{ signature: string; requestId: string } | null>(null);
+  const checkoutAttemptRef = useRef<CheckoutAttempt | null>(null);
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     const syncServiceStatus = () => setServiceStatus(getServiceStatus());
@@ -219,7 +221,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (submitting || cart.length === 0 || activeStep !== 2) return;
+    if (submittingRef.current || submitting || cart.length === 0 || activeStep !== 2) return;
     setErrors([]);
     setFieldErrors({});
 
@@ -236,14 +238,13 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
       return;
     }
 
+    submittingRef.current = true;
     setSubmitting(true);
     const customer = { name: name.trim(), email: email.trim(), phone: phone.trim() };
     const signature = JSON.stringify({ customer, notes, cart, subtotal });
-    if (checkoutAttemptRef.current?.signature !== signature) {
-      checkoutAttemptRef.current = { signature, requestId: crypto.randomUUID() };
-    }
-    const requestId = checkoutAttemptRef.current.requestId;
     try {
+      checkoutAttemptRef.current = getCheckoutRequestId(signature, checkoutAttemptRef.current);
+      const requestId = checkoutAttemptRef.current.requestId;
       try {
         window.localStorage.setItem(CHECKOUT_CONTACT_KEY, JSON.stringify(customer));
       } catch {
@@ -314,12 +315,14 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
         setErrors(["We couldn't save your checkout details in this browser. Please allow site storage and try again. No payment has been made on this page."]);
         return;
       }
+      clearCheckoutRequestId();
       window.location.assign(result.checkoutUrl);
     } catch {
       setErrors([
         "We couldn't connect to Square checkout. Check your internet connection and try again. Your cart is still saved.",
       ]);
     } finally {
+      submittingRef.current = false;
       setSubmitting(false);
     }
   }

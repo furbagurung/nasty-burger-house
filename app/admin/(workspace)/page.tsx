@@ -23,5 +23,12 @@ export default async function AdminPage({
     typeof value === "string" ? value : undefined;
   const selection = resolveSalesRange(resolveReportPeriod(first(params.range)), new Date(), resolveCustomDays(first(params.days)));
   const sales = await loadAdminAnalytics(selection);
-  return <><AdminShopControl /><SalesOverview data={sales} selection={selection} /></>;
+  return (
+    <>
+      <div className="admin-main admin-shop-control-container">
+        <AdminShopControl />
+      </div>
+      <SalesOverview data={sales} selection={selection} />
+    </>
+  );
 }

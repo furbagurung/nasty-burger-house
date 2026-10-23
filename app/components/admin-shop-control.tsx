@@ -16,7 +16,7 @@ const choices: { mode: ShopControlMode; label: string; help: string }[] = [
 export default function AdminShopControl() {
   const [saved, setSaved] = useState<Snapshot | null>(null);
   const [selected, setSelected] = useState<ShopControlMode>("auto");
-  const [hours, setHours] = useState<ShopHours>({ opensAt: "11:00", closesAt: "21:45" });
+  const [hours, setHours] = useState<ShopHours>({ opensAt: "11:30", closesAt: "21:45" });
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

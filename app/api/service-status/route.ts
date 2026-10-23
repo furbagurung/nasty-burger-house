@@ -1,7 +1,6 @@
-import { getServiceStatus } from "../../lib/service";
+import { readShopStatus } from "../../lib/shop-status";
 
+export const dynamic = "force-dynamic";
 export async function GET() {
-  return Response.json(getServiceStatus(), {
-    headers: { "Cache-Control": "no-store" },
-  });
+  return Response.json(await readShopStatus(), { headers: { "Cache-Control": "no-store" } });
 }

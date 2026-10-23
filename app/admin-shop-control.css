@@ -1,0 +1,26 @@
+.admin-shop-control { margin: 20px clamp(16px, 3vw, 36px) 0; padding: clamp(16px, 3vw, 24px); background: var(--card, white); color: var(--card-foreground, #171717); border: 1px solid var(--border, #ddd); border-radius: 16px; }
+.admin-shop-control__heading { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.admin-shop-control h2 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 20px; font-weight: 700; }
+.admin-shop-control p { margin: 8px 0; line-height: 1.5; }
+.admin-shop-control__status { border: 1px solid currentColor; border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 600; }
+.admin-shop-control__status[data-open="true"] { color: #137441; }
+.dark .admin-shop-control__status[data-open="true"] { color: #74e0a5; }
+.admin-shop-control fieldset { margin: 20px 0 0; padding: 0; border: 0; min-width: 0; }
+.admin-shop-control legend { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+.admin-shop-control__choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.admin-shop-control__choices label { display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--border, #ddd); border-radius: 10px; padding: 14px; min-height: 76px; cursor: pointer; }
+.admin-shop-control__choices label[data-selected="true"] { border: 2px solid currentColor; padding: 13px; }
+.admin-shop-control__choices input { margin-top: 4px; width: 18px; height: 18px; flex-shrink: 0; accent-color: currentColor; }
+.admin-shop-control__choices strong, .admin-shop-control__choices small { display: block; line-height: 1.5; }
+.admin-shop-control__choices small { font-size: 14px; margin-top: 3px; }
+.admin-shop-control__hint { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; }
+.admin-shop-control__hint svg { flex-shrink: 0; margin-top: 3px; }
+.admin-shop-control__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.admin-shop-control button { min-height: 44px; padding: 10px 18px; border: 1px solid transparent; border-radius: 8px; background: var(--foreground, #171717); color: var(--background, white); cursor: pointer; font-weight: 600; }
+.admin-shop-control button:disabled { opacity: .5; cursor: default; }
+.admin-shop-control button:focus-visible, .admin-shop-control input:focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
+.admin-shop-control__actions span { font-size: 13px; }
+.admin-shop-control__error { color: #b42318; }
+.dark .admin-shop-control__error { color: #fda29b; }
+.admin-shop-control__feedback { min-height: 24px; font-size: 14px; }
+@media (max-width: 700px) { .admin-shop-control__choices { grid-template-columns: 1fr; } .admin-shop-control__actions > button:first-child { width: 100%; } }

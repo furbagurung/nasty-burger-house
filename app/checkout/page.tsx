@@ -1,6 +1,7 @@
+export const dynamic = "force-dynamic";
 import CheckoutPage from "../components/checkout-page";
-import { getServiceStatus } from "../lib/service";
+import { readShopStatus } from "../lib/shop-status";
 
-export default function Page() {
-  return <CheckoutPage serviceStatus={getServiceStatus()} />;
+export default async function Page() {
+  return <CheckoutPage serviceStatus={await readShopStatus()} />;
 }

@@ -7,7 +7,7 @@ import {
   createOrderDispatchPayload,
   createOrderId,
 } from "../../lib/order-dispatch";
-import { getServiceStatus } from "../../lib/service";
+import { readShopStatus } from "../../lib/shop-status";
 import { SquareApiError, squareConfigurationState } from "../../lib/square/api";
 import { createSquareCheckout } from "../../lib/square/checkout";
 import { findOrCreateSquareCustomer } from "../../lib/square/customers";
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const serviceStatus = getServiceStatus();
+  const serviceStatus = await readShopStatus();
   if (!serviceStatus.acceptingOrders) {
     return Response.json(
       { ok: false, errors: [serviceStatus.notice] },

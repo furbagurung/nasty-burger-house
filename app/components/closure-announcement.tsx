@@ -1,6 +1,7 @@
 "use client";
 
 import { useServiceStatus } from "./use-service-status";
+import ShopStatusNotice from "./shop-status-notice";
 import Announcement4 from "@/components/ui/announcement-4";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -132,7 +133,7 @@ export default function ClosureAnnouncement() {
           "closure-announcement",
           desktopHeaderHidden ? "is-header-hidden" : "",
           isMenuRoute ? "is-menu-route" : "",
-          "is-open",
+          serviceStatus.acceptingOrders ? "is-open" : "is-closed",
         ]
           .filter(Boolean)
           .join(" ")}
@@ -140,12 +141,17 @@ export default function ClosureAnnouncement() {
         aria-label="Opening hours announcement"
       >
         <Announcement4
-          title={serviceStatus.acceptingOrders ? "OPEN FOR ONLINE ORDERS" : serviceStatus.statusLabel}
+          title={serviceStatus.acceptingOrders ? "OPEN FOR ONLINE ORDERS" : "ONLINE ORDERING PAUSED"}
           detail={serviceStatus.acceptingOrders ? "Pickup available" : "Menu browsing available"}
           onDismiss={serviceStatus.acceptingOrders ? dismissAnnouncement : undefined}
         />
       </aside>
       <div className="closure-announcement-spacer" aria-hidden="true" />
+      {!serviceStatus.acceptingOrders && (
+        <div className="shop-status-notice-container">
+          <ShopStatusNotice status={serviceStatus} />
+        </div>
+      )}
     </>
   );
 }

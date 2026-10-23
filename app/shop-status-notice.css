@@ -1,0 +1,21 @@
+.shop-status-notice[data-slot="card"] {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: none;
+  margin: 0;
+  padding: 20px;
+}
+.shop-status-notice .shop-status-notice__content { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 16px; padding: 0; }
+.shop-status-notice__icon { display: grid; place-items: center; width: 48px; height: 48px; flex: 0 0 auto; border: 1px solid var(--border); border-radius: 12px; color: var(--foreground); }
+.shop-status-notice__copy { flex: 1 1 220px; min-width: 0; }
+.shop-status-notice .shop-status-notice__copy h2 { margin: 0 0 8px; font: inherit; font-size: 20px; font-weight: 700; line-height: 1.35; text-transform: none; color: inherit; }
+.shop-status-notice .shop-status-notice__copy p { margin: 0; font-size: 16px; line-height: 1.5; color: inherit; }
+.shop-status-notice .shop-status-notice__copy .shop-status-notice__hint { margin-top: 8px; font-size: 14px; }
+.shop-status-notice a.shop-status-notice__link { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 10px 16px; border-radius: 8px; background: var(--primary); color: var(--primary-foreground); font-size: 14px; font-weight: 700; text-decoration: none; }
+.shop-status-notice__link:focus-visible { outline: 3px solid var(--ring); outline-offset: 4px; }
+.shop-status-notice__link:hover { text-decoration: underline; }
+.shop-status-notice-container { max-width: 1180px; margin: 24px auto; padding-inline: 16px; }
+@media (max-width: 600px) { .shop-status-notice[data-slot="card"] { padding: 16px; } .shop-status-notice a.shop-status-notice__link { width: 100%; } }
+.dark .shop-status-notice[data-slot="card"] { background: var(--nb-dark-surface); color: var(--nb-dark-text-primary); }

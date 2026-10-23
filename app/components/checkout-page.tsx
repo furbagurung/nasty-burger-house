@@ -1,5 +1,6 @@
 "use client";
 
+import ShopStatusNotice from "./shop-status-notice";
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
@@ -594,15 +595,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                 <span>Total</span>
                 <strong>{money.format(subtotal)}</strong>
               </div>
-              {!serviceStatus.acceptingOrders && (
-                <div className="checkout-service-notice is-closed" role="status">
-                  <AlertCircle size={17} aria-hidden="true" />
-                  <div>
-                    <strong>Ordering unavailable</strong>
-                    <p>{serviceStatus.notice}</p>
-                  </div>
-                </div>
-              )}
+              <ShopStatusNotice status={serviceStatus} checkout />
               <ButtonWithIcon
                 tone="red"
                 fullWidth

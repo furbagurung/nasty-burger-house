@@ -1,5 +1,7 @@
 import "server-only";
 
+import { browserNoiseReason } from "./error-alert-policy";
+
 type ErrorSource = "server" | "client" | "react" | "checkout";
 
 export type AdminErrorContext = {
@@ -17,7 +19,7 @@ type ErrorEmailResult =
   | { ok: true }
   | {
       ok: false;
-      reason: "not-configured" | "not-production" | "delivery-failed";
+      reason: "not-configured" | "not-production" | "delivery-failed" | "browser-noise";
     };
 
 const DEDUPE_WINDOW_MS = 10 * 60 * 1000;
@@ -114,6 +116,15 @@ export async function reportAdminError(
     return { ok: false, reason: "not-production" };
   }
 
+  const details = errorDetails(error);
+  const noiseReason = browserNoiseReason({ ...context, ...details });
+  if (noiseReason) {
+    // Covers older clients that still submit these reports. Keep a diagnostic
+    // record without emailing recipients or exposing browser metadata in logs.
+    console.info("[NBH browser noise suppressed]", { reason: noiseReason, path: context.path });
+    return { ok: false, reason: "browser-noise" };
+  }
+
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const to = notificationRecipients(
     process.env.ERROR_NOTIFICATION_EMAIL ||
@@ -127,7 +138,6 @@ export async function reportAdminError(
     return { ok: false, reason: "not-configured" };
   }
 
-  const details = errorDetails(error);
   const cleanPath = truncate(context.path ?? "", 500);
   const routePath = truncate(context.routePath ?? "", 500);
   const method = truncate(context.method ?? "", 20);

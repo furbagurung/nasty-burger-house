@@ -1,5 +1,7 @@
 "use client";
 
+import { browserNoiseReason } from "./error-alert-policy";
+
 type ClientErrorPayload = {
   source: "client" | "react";
   name?: string;
@@ -25,6 +27,7 @@ function fingerprint(payload: ClientErrorPayload) {
 
 export function reportClientError(payload: ClientErrorPayload) {
   if (process.env.NODE_ENV !== "production") return;
+  if (browserNoiseReason(payload)) return;
 
   const key = fingerprint(payload);
   if (reportedFingerprints.has(key)) return;

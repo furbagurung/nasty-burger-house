@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { registerHooks } from 'node:module';
 import { pathToFileURL } from 'node:url';
 
-let mode = 'auto'; let opensAt = '11:00'; let closesAt = '21:45';
+let mode = 'auto'; let opensAt = '11:30'; let closesAt = '21:45';
 let databaseFails = false; let authOk = true; let writes = 0;
 const client = { from() {
   let updated;
@@ -69,8 +69,8 @@ test('admin authorization, validation, saved schedule and safe failure', async (
 });
 test('scheduled hours respect Sydney daylight saving and boundary cutoffs', () => {
   // Sydney is AEDT (UTC+11) on 23 October 2026.
-  assert.equal(getServiceStatus(undefined, new Date('2026-10-22T23:59:00Z')).acceptingOrders, false);
-  assert.equal(getServiceStatus(undefined, new Date('2026-10-23T00:00:00Z')).acceptingOrders, true);
+  assert.equal(getServiceStatus(undefined, new Date('2026-10-23T00:29:00Z')).acceptingOrders, false);
+  assert.equal(getServiceStatus(undefined, new Date('2026-10-23T00:30:00Z')).acceptingOrders, true);
   assert.equal(getServiceStatus(undefined, new Date('2026-10-23T10:44:00Z')).acceptingOrders, true);
   assert.equal(getServiceStatus(undefined, new Date('2026-10-23T10:45:00Z')).acceptingOrders, false);
 });

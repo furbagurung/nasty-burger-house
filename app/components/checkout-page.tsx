@@ -46,7 +46,7 @@ function validateContact(name: string, email: string, phone: string): ContactErr
     errors.name = "Enter your name (2–80 characters).";
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail) || trimmedEmail.length > 160) {
-    errors.email = "Enter a valid email address.";
+    errors.email = trimmedEmail ? "Enter a valid email address." : "Email address is required to place an order.";
   }
   if (!/^[+()\d\s-]{8,24}$/.test(trimmedPhone)) {
     errors.phone = "Enter a valid phone number (8–24 characters).";
@@ -453,7 +453,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                     {fieldErrors.name && <span id="checkout-name-error" className="checkout-field-error">{fieldErrors.name}</span>}
                   </div>
                   <div className="checkout-field">
-                    <Label htmlFor="checkout-email">Email address</Label>
+                    <Label htmlFor="checkout-email">Email address <span className="ml-1 text-xs font-medium text-muted-foreground">(required)</span></Label>
                     <Input
                       id="checkout-email"
                       ref={emailInputRef}
@@ -465,10 +465,11 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                       autoComplete="email"
                       placeholder="you@example.com"
                       aria-invalid={Boolean(fieldErrors.email)}
-                      aria-describedby={fieldErrors.email ? "checkout-email-error" : undefined}
+                      aria-describedby={fieldErrors.email ? "checkout-email-help checkout-email-error" : "checkout-email-help"}
                       disabled={submitting}
                       required
                     />
+                    <p id="checkout-email-help" className="text-sm text-muted-foreground">Required for guest checkout and your order details.</p>
                     {fieldErrors.email && <span id="checkout-email-error" className="checkout-field-error">{fieldErrors.email}</span>}
                   </div>
                   <div className="checkout-field">

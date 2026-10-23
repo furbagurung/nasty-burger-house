@@ -1,13 +1,15 @@
 # Admin shop control
 
-On `/admin`, select an ordering mode and choose **Save shop status**.
+On `/admin`, choose Scheduled hours, Open manually, or Close manually. Edit the daily opening and closing times using the clock inputs and choose **Save shop settings**.
 
-- **Scheduled hours** uses the existing daily 11:00 AM–9:45 PM Australia/Sydney ordering window.
-- **Open manually** accepts new online orders even outside scheduled hours.
-- **Close manually** blocks new checkout creation. Menu browsing, existing orders, and previously issued Square payment links remain available.
+- **Scheduled hours** automatically accepts new orders between the saved opening and closing times every day, using `Australia/Sydney` (including daylight saving). Default: 11:00 AM–9:45 PM.
+- **Open manually** accepts orders even outside those hours. Changing the saved hours does not cancel the manual override.
+- **Close manually** blocks new online checkout creation. Customers can browse the menu; existing orders and previously issued Square payment links are not changed.
 
-Manual choices persist until changed. Reloading the dashboard reads the saved setting. The storefront announcement and checkout refresh every 15 seconds and when returning to the tab. `/api/orders` reads the setting on each new checkout request. Database-read failures pause new checkout creation rather than falling back to scheduled-open hours.
+Opening time must be earlier than closing time on the same day (overnight operating windows are not supported). The admin API validates and persists edits to `shop_control.opens_at` and `shop_control.closes_at`, alongside mode and update metadata. The secure audit trigger records time as well as mode changes.
 
-`shop_control` stores one row; mode changes are recorded atomically by a trigger in `shop_control_audit`. Browser/database roles have no direct access. The server API checks admin membership and same-origin mutation requests. The migration defaults to `auto`, preserving current business behavior before deployment.
+The server reads the saved schedule for storefront status, banners, checkout, and `/api/orders` on each new order request. Customer interfaces refresh every 15 seconds and on return to the tab. A database-read failure blocks new checkout rather than permitting unsafely stale schedule data.
 
-Validation: `node --test tests/*.test.mjs`; `npx next typegen`; `npx tsc --noEmit`.
+**Database rollout:** Apply `supabase/migrations/20261023132000_editable_shop_hours.sql` to the same Supabase project as the existing shop control migration **before deploying the application code**. Otherwise shop status will fail closed because the new columns are not present. Existing hours are preserved by column defaults.
+
+**Verification:** Run `node --test tests/*.test.mjs`, `npx next typegen`, `npx tsc --noEmit`, and `npm run build`. Check Sydney opening/closing boundary times, manual overrides, both themes, and mobile widths 320–430 px in a browser. No production deployment without explicit approval.

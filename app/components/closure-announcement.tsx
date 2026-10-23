@@ -1,5 +1,7 @@
 "use client";
 
+import { useServiceStatus } from "./use-service-status";
+import ShopStatusNotice from "./shop-status-notice";
 import Announcement4 from "@/components/ui/announcement-4";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,6 +22,7 @@ function readDismissedUntil(): number {
 
 export default function ClosureAnnouncement() {
   const pathname = usePathname();
+  const [serviceStatus] = useServiceStatus();
   const [desktopHeaderHidden, setDesktopHeaderHidden] = useState(false);
   const [dismissal, setDismissal] = useState({
     checked: false,
@@ -37,7 +40,7 @@ export default function ClosureAnnouncement() {
   // site-wide hours promotion could imply ordering is open when it is not.
   const isVisible =
     dismissal.checked &&
-    dismissal.until <= Date.now() &&
+    (dismissal.until === 0 || !serviceStatus.acceptingOrders) &&
     !pathname.startsWith("/admin") &&
     !isAuthRoute &&
     pathname !== "/checkout";
@@ -130,16 +133,25 @@ export default function ClosureAnnouncement() {
           "closure-announcement",
           desktopHeaderHidden ? "is-header-hidden" : "",
           isMenuRoute ? "is-menu-route" : "",
-          "is-open",
+          serviceStatus.acceptingOrders ? "is-open" : "is-closed",
         ]
           .filter(Boolean)
           .join(" ")}
         role="status"
         aria-label="Opening hours announcement"
       >
-        <Announcement4 onDismiss={dismissAnnouncement} />
+        <Announcement4
+          title={serviceStatus.acceptingOrders ? "OPEN FOR ONLINE ORDERS" : "ONLINE ORDERING PAUSED"}
+          detail={serviceStatus.acceptingOrders ? "Pickup available" : "Menu browsing available"}
+          onDismiss={serviceStatus.acceptingOrders ? dismissAnnouncement : undefined}
+        />
       </aside>
       <div className="closure-announcement-spacer" aria-hidden="true" />
+      {!serviceStatus.acceptingOrders && (
+        <div className="shop-status-notice-container">
+          <ShopStatusNotice status={serviceStatus} />
+        </div>
+      )}
     </>
   );
 }

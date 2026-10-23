@@ -18,10 +18,8 @@ export type ServiceConfiguration = {
   closedMessage: string;
 };
 
-// Phase 4 keeps every operational value in one place. Change `mode` to
-// "open" after the client confirms these details, or "closed" to pause
-// checkout immediately. A future admin/POS integration can replace this
-// object without changing the customer-facing components.
+// Scheduled defaults. The admin shop control can override ordering status;
+// all ordering entry points must use readShopStatus() on the server.
 export const serviceConfiguration: ServiceConfiguration = {
   mode: "preview",
   locationName: "Belconnen",

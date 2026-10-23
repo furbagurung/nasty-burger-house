@@ -1,5 +1,6 @@
 "use client";
 
+import ShopStatusNotice from "./shop-status-notice";
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
@@ -10,7 +11,8 @@ import {
   calculateLineUnitPrice,
   type CartLine,
 } from "../lib/order";
-import { getServiceStatus, type ServiceStatus } from "../lib/service";
+import { type ServiceStatus } from "../lib/service";
+import { useServiceStatus, fetchServiceStatus } from "./use-service-status";
 import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import { clearCheckoutRequestId, getCheckoutRequestId, type CheckoutAttempt } from "../lib/checkout-attempt";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
@@ -112,7 +114,7 @@ type CheckoutPageProps = {
 };
 
 export default function CheckoutPage({ serviceStatus: initialServiceStatus }: CheckoutPageProps) {
-  const [serviceStatus, setServiceStatus] = useState(initialServiceStatus);
+  const [serviceStatus, setServiceStatus] = useServiceStatus(initialServiceStatus);
   const [cart, setCart] = useState<CartLine[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -133,14 +135,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   const checkoutAttemptRef = useRef<CheckoutAttempt | null>(null);
   const submittingRef = useRef(false);
 
-  useEffect(() => {
-    const syncServiceStatus = () => setServiceStatus(getServiceStatus());
 
-    syncServiceStatus();
-    const interval = window.setInterval(syncServiceStatus, 30_000);
-
-    return () => window.clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     try {
@@ -296,7 +291,9 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
         const rejectedFields = serverContactErrors(messages);
         setFieldErrors(rejectedFields);
         if (Object.keys(rejectedFields).length > 0) setActiveStep(1);
-        if (response.status === 409) setServiceStatus(getServiceStatus());
+        if (response.status === 409) {
+          try { setServiceStatus(await fetchServiceStatus()); } catch { /* Keep the server error visible. */ }
+        }
         return;
       }
 
@@ -598,15 +595,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                 <span>Total</span>
                 <strong>{money.format(subtotal)}</strong>
               </div>
-              {!serviceStatus.acceptingOrders && (
-                <div className="checkout-service-notice is-closed" role="status">
-                  <AlertCircle size={17} aria-hidden="true" />
-                  <div>
-                    <strong>Ordering unavailable</strong>
-                    <p>{serviceStatus.notice}</p>
-                  </div>
-                </div>
-              )}
+              <ShopStatusNotice status={serviceStatus} checkout />
               <ButtonWithIcon
                 tone="red"
                 fullWidth

@@ -5,7 +5,7 @@ import HomeMenuCategoriesEnhancer from "./components/home-menu-categories-enhanc
 import HomeMenuComingSoonGuard from "./components/home-menu-coming-soon-guard";
 import OrderExperience from "./components/order-experience";
 import { menuItems } from "./data/menu";
-import { getServiceStatus } from "./lib/service";
+import { readShopStatus } from "./lib/shop-status";
 import { readMenuAvailability } from "./lib/menu-availability";
 
 // Availability must reflect fresh admin Sold Out changes, not a build-time snapshot.
@@ -19,7 +19,7 @@ export default async function Home() {
     <>
       <OrderExperience
         items={items}
-        initialServiceStatus={getServiceStatus()}
+        initialServiceStatus={await readShopStatus()}
       />
       <FindUsSection />
       <HomeBeastMonthEnhancer />

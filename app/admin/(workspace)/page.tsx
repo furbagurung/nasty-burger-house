@@ -1,3 +1,4 @@
+import AdminShopControl from "@/app/components/admin-shop-control";
 import { redirect } from "next/navigation";
 import SalesOverview from "@/features/admin/dashboard/components/sales-overview";
 import { verifyAdmin } from "@/app/lib/admin-auth";
@@ -22,5 +23,5 @@ export default async function AdminPage({
     typeof value === "string" ? value : undefined;
   const selection = resolveSalesRange(resolveReportPeriod(first(params.range)), new Date(), resolveCustomDays(first(params.days)));
   const sales = await loadAdminAnalytics(selection);
-  return <SalesOverview data={sales} selection={selection} />;
+  return <><AdminShopControl /><SalesOverview data={sales} selection={selection} /></>;
 }

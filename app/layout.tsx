@@ -22,6 +22,7 @@ import "./menu-browse.css";
 import "./mobile-app.css";
 import "./home-top-header.css";
 import "./closure-announcement.css";
+import "./shop-status-notice.css";
 import "./account-dropdown-polish.css";
 import "./nav-marker.css";
 import "./shared-header-pages.css";

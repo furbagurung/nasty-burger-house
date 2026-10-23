@@ -10,6 +10,7 @@ export async function fetchServiceStatus(signal?: AbortSignal): Promise<ServiceS
 }
 export function useServiceStatus(initial?: ServiceStatus) {
   const [status, setStatus] = useState(() => initial ?? unavailableShopStatus(getServiceStatus()));
+  const [ready, setReady] = useState(initial !== undefined);
   useEffect(() => {
     let active = true;
     let pending = false;
@@ -21,7 +22,7 @@ export function useServiceStatus(initial?: ServiceStatus) {
         const next = await fetchServiceStatus(controller.signal);
         if (active) setStatus(next);
       } catch { if (active) setStatus((current) => unavailableShopStatus(current)); }
-      finally { pending = false; }
+      finally { pending = false; if (active) setReady(true); }
     };
     void refresh();
     const interval = window.setInterval(() => { if (!document.hidden) void refresh(); }, 15_000);
@@ -34,5 +35,5 @@ export function useServiceStatus(initial?: ServiceStatus) {
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);
-  return [status, setStatus] as const;
+  return [status, setStatus, ready] as const;
 }

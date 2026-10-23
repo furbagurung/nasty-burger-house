@@ -1,7 +1,7 @@
 "use client";
 
 import { useServiceStatus } from "./use-service-status";
-import ShopStatusNotice from "./shop-status-notice";
+import ShopStatusDetails from "./shop-status-details";
 import Announcement4 from "@/components/ui/announcement-4";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,7 +22,7 @@ function readDismissedUntil(): number {
 
 export default function ClosureAnnouncement() {
   const pathname = usePathname();
-  const [serviceStatus] = useServiceStatus();
+  const [serviceStatus, , statusReady] = useServiceStatus();
   const [desktopHeaderHidden, setDesktopHeaderHidden] = useState(false);
   const [dismissal, setDismissal] = useState({
     checked: false,
@@ -39,11 +39,13 @@ export default function ClosureAnnouncement() {
   // Checkout shows its own authoritative pickup-ordering status; the generic
   // site-wide hours promotion could imply ordering is open when it is not.
   const isVisible =
+    statusReady &&
     dismissal.checked &&
     (dismissal.until === 0 || !serviceStatus.acceptingOrders) &&
     !pathname.startsWith("/admin") &&
     !isAuthRoute &&
-    pathname !== "/checkout";
+    pathname !== "/checkout" &&
+    pathname !== "/cart";
 
   // Check storage after mount to avoid a flash of the announcement on reload
   // for visitors who have already closed it. Also sync between open tabs.
@@ -112,6 +114,10 @@ export default function ClosureAnnouncement() {
       isVisible,
     );
     document.documentElement.classList.toggle(
+      "nasty-closure-closed",
+      isVisible && !serviceStatus.acceptingOrders,
+    );
+    document.documentElement.classList.toggle(
       "nasty-closure-menu",
       isMenuRoute && isVisible,
     );
@@ -120,9 +126,10 @@ export default function ClosureAnnouncement() {
       document.documentElement.classList.remove(
         "nasty-closure-visible",
         "nasty-closure-menu",
+        "nasty-closure-closed",
       );
     };
-  }, [isMenuRoute, isVisible]);
+  }, [isMenuRoute, isVisible, serviceStatus.acceptingOrders]);
 
   if (!isVisible) return null;
 
@@ -140,18 +147,13 @@ export default function ClosureAnnouncement() {
         role="status"
         aria-label="Opening hours announcement"
       >
-        <Announcement4
-          title={serviceStatus.acceptingOrders ? "OPEN FOR ONLINE ORDERS" : "ONLINE ORDERING PAUSED"}
-          detail={serviceStatus.acceptingOrders ? "Pickup available" : "Menu browsing available"}
-          onDismiss={serviceStatus.acceptingOrders ? dismissAnnouncement : undefined}
-        />
+        {serviceStatus.acceptingOrders ? (
+          <Announcement4 title="OPEN FOR ONLINE ORDERS" detail="Pickup available" onDismiss={dismissAnnouncement} />
+        ) : (
+          <ShopStatusDetails status={serviceStatus} />
+        )}
       </aside>
       <div className="closure-announcement-spacer" aria-hidden="true" />
-      {!serviceStatus.acceptingOrders && (
-        <div className="shop-status-notice-container">
-          <ShopStatusNotice status={serviceStatus} />
-        </div>
-      )}
     </>
   );
 }

@@ -256,7 +256,9 @@ export function validateOrderPayload(payload: unknown): OrderValidationResult {
   if (name.length < 2 || name.length > 80) {
     errors.push("Enter a valid pickup name.");
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 160) {
+  if (!email) {
+    errors.push("Email address is required to place an order.");
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 160) {
     errors.push("Enter a valid email address.");
   }
   if (!/^[+()\d\s-]{8,24}$/.test(phone)) {

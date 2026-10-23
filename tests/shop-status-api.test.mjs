@@ -73,8 +73,6 @@ test('scheduled hours respect Sydney daylight saving and boundary cutoffs', () =
   assert.equal(getServiceStatus(undefined, new Date('2026-10-23T00:00:00Z')).acceptingOrders, true);
   assert.equal(getServiceStatus(undefined, new Date('2026-10-23T10:44:00Z')).acceptingOrders, true);
   assert.equal(getServiceStatus(undefined, new Date('2026-10-23T10:45:00Z')).acceptingOrders, false);
-  const edited = { ...getServiceStatus, __unused: true };
-  void edited;
 });
 test('updated schedule changes open/closed labels and cutoff times', () => {
   const settings = {

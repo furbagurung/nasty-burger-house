@@ -26,9 +26,9 @@ export const serviceConfiguration: ServiceConfiguration = {
   address: "Belconnen ACT 2617",
   mapUrl:
     "https://www.google.com/maps/place/35%C2%B014%2714.5%22S+149%C2%B003%2753.4%22E/@-35.2373611,149.0648333,17z/data=!3m1!4b1!4m4!3m3!8m2!3d-35.2373611!4d149.0648333!18m1!1e1?entry=ttu",
-  tradingHours: "Online orders 11:00 AM–9:45 PM daily",
+  tradingHours: "Online orders 11:30 AM–9:45 PM daily",
   orderHours: {
-    opensAt: "11:00",
+    opensAt: "11:30",
     closesAt: "21:45",
   },
   prepTimeMinutes: {

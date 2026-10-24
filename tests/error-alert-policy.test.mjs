@@ -11,6 +11,26 @@ test('both reported paths suppress the exact Instagram instrumentation failure',
     assert.equal(browserNoiseReason({ source: 'client', message, stack: trace, metadata: { filename: logger, path } }), 'instagram-navigation-instrumentation');
   }
 });
+test('Hooked product page Instagram unload errors are ignored without masking app failures', () => {
+  const hookedTrace = `Error: ${message}\n    at sendDataToNative (${logger}:1:11722)\n    at sendBeforeUnloadMessage (${logger}:1:15376)\n    at ${logger}:1:20806`;
+  assert.equal(browserNoiseReason({
+    source: 'client',
+    message,
+    stack: hookedTrace,
+    metadata: { filename: logger, line: 1, column: 11722 },
+  }), 'instagram-navigation-instrumentation');
+  assert.equal(browserNoiseReason({
+    source: 'react',
+    message,
+    stack: hookedTrace,
+  }), undefined);
+  assert.equal(browserNoiseReason({
+    source: 'client',
+    message: 'Checkout failed',
+    stack: hookedTrace,
+  }), undefined);
+});
+
 test('filename-only and rejection stack-only reports are recognized', () => {
   assert.ok(browserNoiseReason({ source: 'client', message, metadata: { filename: logger } }));
   assert.ok(browserNoiseReason({ source: 'client', message, stack: trace }));

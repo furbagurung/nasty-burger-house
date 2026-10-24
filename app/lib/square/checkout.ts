@@ -120,10 +120,6 @@ export async function createSquareCheckout(
           ...(redirectUrl ? { redirect_url: redirectUrl } : {}),
           ...(supportEmail ? { merchant_support_email: supportEmail } : {}),
         },
-        pre_populated_data: {
-          buyer_email: payload.customer.email,
-          buyer_phone_number: customer.phone,
-        },
         payment_note: `NBH web order ${payload.orderId}`.slice(0, 500),
       }),
     },

@@ -29,6 +29,10 @@ const PAPER_BOTTOM_URL = `${BRAND_ORIGIN}/images/email/receipt-torn-bottom.webp`
 // Static PNG artwork: email clients frequently substitute custom display fonts.
 const RECEIPT_SOURCE_LOGO_URL = `${BRAND_ORIGIN}/images/email/receipt-source-logo.png`;
 const RECEIPT_SOURCE_HEADING_URL = `${BRAND_ORIGIN}/images/email/receipt-source-heading.png`;
+// Photo-derived slices of the supplied torn receipt, maintained independently of dynamic order height.
+const RECEIPT_PHOTO_TOP_URL = `${BRAND_ORIGIN}/images/email/receipt-photo-top.png`;
+const RECEIPT_PHOTO_BOTTOM_URL = `${BRAND_ORIGIN}/images/email/receipt-photo-bottom.png`;
+const RECEIPT_PHOTO_TEXTURE_URL = `${BRAND_ORIGIN}/images/email/receipt-photo-texture.jpg`;
 
 function escapeHtml(value: string | number) {
   return String(value)
@@ -245,14 +249,14 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
   const itemsSubtotal = payload.lines.reduce((sum, line) => sum + line.lineTotal, 0);
   const rows = payload.lines.map((line) => {
     const details = line.details.filter(Boolean).map(detail =>
-      `<div style="margin-top:4px;font:400 12px/18px 'Courier New',Courier,monospace;color:${palette.muted};overflow-wrap:anywhere;">${detailLine(detail)}</div>`
+      `<div style="margin-top:4px;font:700 12px/18px 'Courier New',Courier,monospace;color:${palette.ink};overflow-wrap:anywhere;">${detailLine(detail)}</div>`
     ).join("");
     return `<tr>
-      <td style="vertical-align:top;padding:12px 5px 11px 0;border-bottom:1px dotted ${palette.line};">
-        <div style="color:${palette.ink};font:700 14px/20px Arial,Helvetica,sans-serif;overflow-wrap:anywhere;">${escapeHtml(line.name)}</div>${details}
+      <td style="vertical-align:top;padding:12px 5px 11px 0;border-bottom:1px dashed #8E857E;">
+        <div style="color:${palette.ink};font:700 14px/20px 'Courier New',Courier,monospace;overflow-wrap:anywhere;">${escapeHtml(line.name)}</div>${details}
       </td>
-      <td align="center" style="vertical-align:top;padding:12px 2px 11px;border-bottom:1px dotted ${palette.line};white-space:nowrap;color:${palette.ink};font:700 13px/19px 'Courier New',Courier,monospace;">${escapeHtml(line.quantity)}</td>
-      <td align="right" style="vertical-align:top;padding:12px 0 11px 4px;border-bottom:1px dotted ${palette.line};white-space:nowrap;color:${palette.ink};font:700 13px/19px 'Courier New',Courier,monospace;">${escapeHtml(money(line.lineTotal))}</td>
+      <td align="center" style="vertical-align:top;padding:12px 2px 11px;border-bottom:1px dashed #8E857E;white-space:nowrap;color:${palette.ink};font:700 13px/19px 'Courier New',Courier,monospace;">${escapeHtml(line.quantity)}</td>
+      <td align="right" style="vertical-align:top;padding:12px 0 11px 4px;border-bottom:1px dashed #8E857E;white-space:nowrap;color:${palette.ink};font:700 13px/19px 'Courier New',Courier,monospace;">${escapeHtml(money(line.lineTotal))}</td>
     </tr>`;
   }).join("");
   const notes = payload.notes.trim() ? `
@@ -288,16 +292,16 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
   </div>` : "";
 
   const html = `<!doctype html>
-<html lang="en">
+<html lang="en" style="background-color:#121212;">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only">
 <title>Nasty Burger House order receipt — ${orderId}</title>
 <style>
 :root{color-scheme:light only;}
-body,.receipt-background{background-color:#AC3342!important;}
+html,body,.receipt-background,.receipt-outer{background-color:#121212!important;}
 .receipt-paper,.receipt-padding{background-color:#FFFCF7!important;color:#282326!important;}
-.receipt-padding{background-image:linear-gradient(156deg,rgba(115,96,74,.065),transparent 20%,rgba(115,96,74,.035) 58%,transparent 80%),url('${PAPER_TEXTURE_URL}')!important;background-size:100% 100%,192px 320px!important;}
+.receipt-padding{background-image:url('${RECEIPT_PHOTO_TEXTURE_URL}')!important;background-size:344px 332px!important;}
 .receipt-padding a{color:#282326!important;}
 @media (prefers-color-scheme:dark){
 .receipt-paper,.receipt-padding{background-color:#FFFCF7!important;color:#282326!important;}
@@ -310,23 +314,23 @@ body,.receipt-background{background-color:#AC3342!important;}
 .receipt-logo{width:118px!important;height:auto!important;}
 }
 @media print{
-body,.receipt-background,.receipt-outer{background:#FFFFFF!important;padding:0!important;}
+html,body,.receipt-background,.receipt-outer{background:#FFFFFF!important;padding:0!important;}
 .receipt-paper{max-width:80mm!important;width:80mm!important;box-shadow:none!important;}
-.receipt-cut-top,.receipt-cut-bottom{display:none!important;}
+.receipt-paper{background:#FFFFFF!important;} .receipt-padding{background-color:#FFFFFF!important;}
 }
 </style>
 </head>
-<body bgcolor="#AC3342" style="margin:0;padding:0;background:#AC3342;color:#282326;-webkit-text-size-adjust:100%;font-family:Arial,Helvetica,sans-serif;">
+<body bgcolor="#121212" style="margin:0;padding:0;background:#121212;color:#282326;-webkit-text-size-adjust:100%;font-family:Arial,Helvetica,sans-serif;">
 <div style="display:none!important;opacity:0;visibility:hidden;mso-hide:all;max-height:0;max-width:0;overflow:hidden;">Order ${orderId} paid ${total}. Pickup at ${location}.</div>
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#AC3342" class="receipt-background" style="width:100%;background-color:#AC3342;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#121212" class="receipt-background" style="width:100%;background-color:#121212;">
 <tr><td class="receipt-outer" align="center" style="padding:26px 0;">
 <!--[if mso]><table role="presentation" width="360"><tr><td><![endif]-->
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="receipt-background" bgcolor="#AC3342" style="max-width:360px;width:100%;background-color:#AC3342;border-collapse:collapse;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="receipt-background" bgcolor="#121212" style="max-width:360px;width:100%;background-color:#121212;border-collapse:collapse;">
 <tr><td align="center" style="padding:0 7px;">
 <!--[if mso]><table role="presentation" width="344"><tr><td><![endif]-->
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#FFFCF7" class="receipt-paper" style="width:100%;max-width:344px;background-color:#FFFCF7;box-shadow:7px 19px 28px rgba(35,10,12,.35);border-collapse:separate;border-spacing:0;">
-<tr><td height="12" bgcolor="#AC3342" class="receipt-cut-top" style="height:12px;font-size:1px;line-height:1px;background-color:#AC3342;background-image:linear-gradient(135deg,transparent 50%,#FFFCF7 50%),linear-gradient(225deg,transparent 50%,#FFFCF7 50%);background-size:18px 18px;background-position:0 0,9px 0;background-repeat:repeat-x;">&nbsp;</td></tr>
-<tr><td align="center" class="receipt-padding" bgcolor="#FFFCF7" background="${PAPER_TEXTURE_URL}" style="padding:15px 18px 26px;background-color:#FFFCF7;background-image:linear-gradient(156deg,rgba(115,96,74,.065),transparent 20%,rgba(115,96,74,.035) 58%,transparent 80%),url('${PAPER_TEXTURE_URL}');background-size:100% 100%,192px 320px;color:#282326;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#121212" class="receipt-paper" style="width:100%;max-width:344px;background-color:#121212;box-shadow:7px 19px 28px rgba(0,0,0,.42);border-collapse:separate;border-spacing:0;">
+<tr><td height="30" bgcolor="#121212" class="receipt-cut-top" style="height:30px;font-size:0;line-height:0;background-color:#121212;"><img src="${RECEIPT_PHOTO_TOP_URL}" width="344" height="30" alt="" style="display:block;width:100%;height:auto;max-height:30px;border:0;"></td></tr>
+<tr><td align="center" class="receipt-padding" bgcolor="#FFFCF7" background="${RECEIPT_PHOTO_TEXTURE_URL}" style="padding:15px 18px 26px;background-color:#FFFCF7;background-image:url('${RECEIPT_PHOTO_TEXTURE_URL}');background-size:344px 332px;color:#282326;">
 <img class="receipt-logo" src="${RECEIPT_SOURCE_LOGO_URL}" width="128" height="115" alt="Nasty Burger House logo" style="display:block;width:128px;height:115px;max-width:100%;border:0;margin:0 auto 9px;">
 <img class="receipt-title" src="${RECEIPT_SOURCE_HEADING_URL}" width="286" height="40" alt="NASTY BURGER HOUSE" style="display:block;width:286px;height:40px;max-width:100%;border:0;margin:0 auto 3px;">
 <div style="font:900 12px/19px 'Courier New',Courier,monospace;color:#AC3342;">BURGERS &bull; BEAST BOXES &bull; DRINKS</div>
@@ -362,7 +366,7 @@ ${notes}
 ${barcode}
 <div style="font:700 12px/18px 'Courier New',Courier,monospace;letter-spacing:.06em;color:#282326;overflow-wrap:anywhere;">${orderId}</div>
 </td></tr>
-<tr><td height="12" bgcolor="#AC3342" class="receipt-cut-bottom" style="height:12px;font-size:1px;line-height:1px;background-color:#AC3342;background-image:linear-gradient(45deg,transparent 50%,#FFFCF7 50%),linear-gradient(315deg,transparent 50%,#FFFCF7 50%);background-size:18px 18px;background-position:0 0,9px 0;background-repeat:repeat-x;">&nbsp;</td></tr>
+<tr><td height="34" bgcolor="#121212" class="receipt-cut-bottom" style="height:34px;font-size:0;line-height:0;background-color:#121212;"><img src="${RECEIPT_PHOTO_BOTTOM_URL}" width="344" height="34" alt="" style="display:block;width:100%;height:auto;max-height:34px;border:0;"></td></tr>
 </table>
 <!--[if mso]></td></tr></table><![endif]-->
 </td></tr>

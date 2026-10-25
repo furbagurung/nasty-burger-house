@@ -26,6 +26,9 @@ const CUSTOMER_LOGO_URL = `${BRAND_ORIGIN}/images/email/receipt-logo-cutout.webp
 const PAPER_TEXTURE_URL = `${BRAND_ORIGIN}/images/email/receipt-paper-texture.webp`;
 const PAPER_TOP_URL = `${BRAND_ORIGIN}/images/email/receipt-torn-top.webp`;
 const PAPER_BOTTOM_URL = `${BRAND_ORIGIN}/images/email/receipt-torn-bottom.webp`;
+// Static PNG artwork: email clients frequently substitute custom display fonts.
+const RECEIPT_SOURCE_LOGO_URL = `${BRAND_ORIGIN}/images/email/receipt-source-logo.png`;
+const RECEIPT_SOURCE_HEADING_URL = `${BRAND_ORIGIN}/images/email/receipt-source-heading.png`;
 
 function escapeHtml(value: string | number) {
   return String(value)
@@ -287,102 +290,88 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
   const html = `<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only">
-  <title>Order confirmed and paid — ${orderId}</title>
-  <style>
-    :root { color-scheme:light only; }
-    .receipt-paper,.receipt-padding { background-color:#FFFCF7!important;color:#282326!important; }
-    .receipt-padding a { color:#282326!important; }
-    /* Faint paper fibres, plain off-white fallback when gradients are unsupported. */
-    .receipt-paper,.receipt-padding { background-image:url('${PAPER_TEXTURE_URL}')!important;background-size:192px 320px!important; }
-    @media (prefers-color-scheme: dark) {
-      .receipt-paper,.receipt-padding { background-color:#FFFCF7!important;color:#282326!important; }
-    .receipt-padding a { color:#282326!important; }
-      .receipt-paper .receipt-ink { color:#282326!important; }
-      .receipt-paper .receipt-muted { color:#655B60!important; }
-      .receipt-paper .receipt-red { color:#AC3342!important; }
-    }
-    @media only screen and (max-width:620px) {
-      .email-outer{padding:14px 0!important}
-      .receipt-padding{padding:21px 13px 24px!important}
-      .brand-logo{width:112px!important;height:auto!important}
-    }
-    @media print {
-      body,.email-outer{background:#FFFFFF!important;padding:0!important}
-      .receipt-paper{border:0!important;box-shadow:none!important;-webkit-box-shadow:none!important;max-width:80mm!important}
-      .receipt-cut-top,.receipt-cut-bottom{display:none!important}
-    }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only">
+<title>Nasty Burger House order receipt — ${orderId}</title>
+<style>
+:root{color-scheme:light only;}
+body,.receipt-background{background-color:#AC3342!important;}
+.receipt-paper,.receipt-padding{background-color:#FFFCF7!important;color:#282326!important;}
+.receipt-padding{background-image:linear-gradient(156deg,rgba(115,96,74,.065),transparent 20%,rgba(115,96,74,.035) 58%,transparent 80%),url('${PAPER_TEXTURE_URL}')!important;background-size:100% 100%,192px 320px!important;}
+.receipt-padding a{color:#282326!important;}
+@media (prefers-color-scheme:dark){
+.receipt-paper,.receipt-padding{background-color:#FFFCF7!important;color:#282326!important;}
+.receipt-padding a{color:#282326!important;}
+}
+@media only screen and (max-width:385px){
+.receipt-outer{padding:18px 0!important;}
+.receipt-padding{padding:13px 13px 23px!important;}
+.receipt-title{max-width:100%!important;height:auto!important;}
+.receipt-logo{width:118px!important;height:auto!important;}
+}
+@media print{
+body,.receipt-background,.receipt-outer{background:#FFFFFF!important;padding:0!important;}
+.receipt-paper{max-width:80mm!important;width:80mm!important;box-shadow:none!important;}
+.receipt-cut-top,.receipt-cut-bottom{display:none!important;}
+}
+</style>
 </head>
-<body bgcolor="#AC3342" style="margin:0;padding:0;background:${palette.red};color:${palette.ink};font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
-<div style="display:none!important;opacity:0;visibility:hidden;mso-hide:all;max-height:0;max-width:0;overflow:hidden;">
-  Order ${orderId} is confirmed and paid (${total}). Pickup ASAP at ${location}.
-</div>
-<table role="presentation" bgcolor="#AC3342" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${palette.red};">
-  <tr><td align="center" class="email-outer" style="padding:26px 0;">
-    <!--[if mso]><table role="presentation" width="460"><tr><td><![endif]-->
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:460px;border-collapse:separate;border-spacing:0;background:${palette.red};">
-      <tr><td align="center" style="padding:0 5px;">
-        <!--[if mso]><table role="presentation" width="344"><tr><td><![endif]-->
-        <table role="presentation" class="receipt-paper" bgcolor="#FFFCF7" width="100%" cellpadding="0" cellspacing="0" border="0"
-          style="width:100%;max-width:344px;background-color:${palette.paper};background-image:url('${PAPER_TEXTURE_URL}');background-size:192px 320px;color-scheme:light only;border:0;border-collapse:separate;border-spacing:0;box-shadow:10px 20px 28px rgba(18,18,18,.34);-webkit-box-shadow:10px 20px 28px rgba(18,18,18,.34);">
-          <tr><td class="receipt-cut-top" bgcolor="#AC3342" height="22" style="height:22px;font-size:0;line-height:0;background:${palette.red};"><img src="${PAPER_TOP_URL}" alt="" width="344" height="22" style="display:block;width:100%;height:22px;border:0;"></td></tr>
-          <tr><td align="center" class="receipt-padding" bgcolor="#FFFCF7" background="${PAPER_TEXTURE_URL}" style="padding:22px 17px 25px;background-color:${palette.paper};background-image:linear-gradient(162deg,rgba(99,73,45,.045),transparent 24%,rgba(112,85,57,.035) 45%,transparent 70%),url('${PAPER_TEXTURE_URL}');background-size:100% 100%,192px 320px;color:${palette.ink};color-scheme:light only;">
-            <img class="brand-logo" src="${LOGO_URL}" width="115" height="115" alt="Nasty Burger House logo" style="display:block;width:115px;height:115px;max-width:100%;border:0;margin:0 auto 9px;">
-            <div style="font-family:Impact,'Arial Narrow','Roboto Condensed','Arial Black',Arial,sans-serif;font-size:30px;font-weight:900;font-stretch:condensed;line-height:34px;letter-spacing:-.055em;color:${palette.ink};">NASTY BURGER HOUSE</div>
-            <div style="margin-top:3px;font:700 12px/19px 'Courier New',Courier,monospace;color:${palette.red};">BURGERS &bull; BEAST BOXES &bull; DRINKS</div>
-            <div style="margin-top:11px;font:600 15px/22px 'Courier New',Courier,monospace;color:${palette.ink};">${location}</div>
-            <div style="margin-top:2px;color:${palette.ink};font:700 14px/21px 'Courier New',Courier,monospace;"><a href="${BRAND_ORIGIN}" style="color:${palette.ink}!important;font:700 14px/21px 'Courier New',Courier,monospace;text-decoration:underline;">nastyburgerhouse.com.au</a></div>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:17px 0 13px;border-top:2px dashed ${palette.ink};"><tr><td height="1" style="height:1px;line-height:1px;font-size:1px;">&nbsp;</td></tr></table>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font:600 15px/23px 'Courier New',Courier,monospace;color:${palette.ink};">
-              <tr><td width="36%" style="vertical-align:top;">Order No:</td><td style="font-weight:700;overflow-wrap:anywhere;">${orderId}</td></tr>
-              <tr><td style="vertical-align:top;">Date:</td><td>${date}</td></tr>
-              <tr><td style="vertical-align:top;">Time:</td><td>${time}</td></tr>
-              <tr><td style="vertical-align:top;">Pickup:</td><td>ASAP</td></tr>
-              <tr><td style="vertical-align:top;">Payment:</td><td style="font-weight:700;color:${palette.red};">PAID</td></tr>
-            </table>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:15px 0 4px;border-top:2px dashed ${palette.ink};"><tr><td height="1" style="height:1px;line-height:1px;font-size:1px;">&nbsp;</td></tr></table>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;border-collapse:collapse;font-family:'Courier New',Courier,monospace;">
-              <tr>
-                <th align="left" width="55%" style="padding:0 5px 6px 0;font-family:Impact,'Arial Narrow','Roboto Condensed','Arial Black',Arial,sans-serif;font-size:17px;font-weight:900;line-height:22px;font-stretch:condensed;color:${palette.ink};">ITEM</th>
-                <th align="center" width="13%" style="padding:0 2px 6px;font-family:Impact,'Arial Narrow','Roboto Condensed','Arial Black',Arial,sans-serif;font-size:17px;font-weight:900;line-height:22px;font-stretch:condensed;color:${palette.ink};">QTY</th>
-                <th align="right" width="32%" style="padding:0 0 6px 2px;font-family:Impact,'Arial Narrow','Roboto Condensed','Arial Black',Arial,sans-serif;font-size:17px;font-weight:900;line-height:22px;font-stretch:condensed;color:${palette.ink};">AMT</th>
-              </tr>
-              ${rows}
-              ${notes}
-            </table>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:15px;border-top:2px dashed ${palette.ink};">
-              <tr><td height="1" style="height:1px;line-height:1px;font-size:1px;">&nbsp;</td></tr>
-            </table>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font:400 13px/22px 'Courier New',Courier,monospace;color:${palette.ink};">
-              <tr><td style="padding:4px 0;">Subtotal</td><td align="right" style="white-space:nowrap;">${escapeHtml(money(itemsSubtotal))}</td></tr>
-              <tr>
-                <td style="padding:9px 0 0;font-family:Impact,'Arial Narrow','Roboto Condensed','Arial Black',Arial,sans-serif;font-size:29px;font-weight:900;line-height:34px;font-stretch:condensed;color:${palette.red};">TOTAL</td>
-                <td align="right" style="padding:9px 0 0;white-space:nowrap;font-family:Impact,'Arial Narrow','Roboto Condensed','Arial Black',Arial,sans-serif;font-size:29px;font-weight:900;line-height:34px;font-stretch:condensed;color:${palette.red};">${total}</td>
-              </tr>
-            </table>
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0 15px;border-top:2px dashed ${palette.ink};">
-              <tr><td height="1" style="height:1px;line-height:1px;font-size:1px;">&nbsp;</td></tr>
-            </table>
-            <div style="font:700 15px/23px 'Courier New',Courier,monospace;color:${palette.ink};">THANK YOU FOR EATING WITH US!</div>
-            <div style="margin-top:4px;font:400 14px/21px 'Courier New',Courier,monospace;color:${palette.ink};">
-              Please show this receipt at pickup.
-            </div>
-            ${barcode}
-            <div style="font:700 12px/18px 'Courier New',Courier,monospace;letter-spacing:.10em;color:${palette.ink};overflow-wrap:anywhere;">${orderId}</div>
-          </td></tr>
-          <tr><td class="receipt-cut-bottom" bgcolor="#AC3342" height="22" style="height:22px;font-size:0;line-height:0;background:${palette.red};"><img src="${PAPER_BOTTOM_URL}" alt="" width="344" height="22" style="display:block;width:100%;height:22px;border:0;"></td></tr>
-        </table>
-        <!--[if mso]></td></tr></table><![endif]-->
-      </td></tr>
-    </table>
-    <!--[if mso]></td></tr></table><![endif]-->
-  </td></tr>
+<body bgcolor="#AC3342" style="margin:0;padding:0;background:#AC3342;color:#282326;-webkit-text-size-adjust:100%;font-family:Arial,Helvetica,sans-serif;">
+<div style="display:none!important;opacity:0;visibility:hidden;mso-hide:all;max-height:0;max-width:0;overflow:hidden;">Order ${orderId} paid ${total}. Pickup at ${location}.</div>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#AC3342" class="receipt-background" style="width:100%;background-color:#AC3342;">
+<tr><td class="receipt-outer" align="center" style="padding:26px 0;">
+<!--[if mso]><table role="presentation" width="360"><tr><td><![endif]-->
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="receipt-background" bgcolor="#AC3342" style="max-width:360px;width:100%;background-color:#AC3342;border-collapse:collapse;">
+<tr><td align="center" style="padding:0 7px;">
+<!--[if mso]><table role="presentation" width="344"><tr><td><![endif]-->
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#FFFCF7" class="receipt-paper" style="width:100%;max-width:344px;background-color:#FFFCF7;box-shadow:7px 19px 28px rgba(35,10,12,.35);border-collapse:separate;border-spacing:0;">
+<tr><td height="12" bgcolor="#AC3342" class="receipt-cut-top" style="height:12px;font-size:1px;line-height:1px;background-color:#AC3342;background-image:linear-gradient(135deg,transparent 50%,#FFFCF7 50%),linear-gradient(225deg,transparent 50%,#FFFCF7 50%);background-size:18px 18px;background-position:0 0,9px 0;background-repeat:repeat-x;">&nbsp;</td></tr>
+<tr><td align="center" class="receipt-padding" bgcolor="#FFFCF7" background="${PAPER_TEXTURE_URL}" style="padding:15px 18px 26px;background-color:#FFFCF7;background-image:linear-gradient(156deg,rgba(115,96,74,.065),transparent 20%,rgba(115,96,74,.035) 58%,transparent 80%),url('${PAPER_TEXTURE_URL}');background-size:100% 100%,192px 320px;color:#282326;">
+<img class="receipt-logo" src="${RECEIPT_SOURCE_LOGO_URL}" width="128" height="115" alt="Nasty Burger House logo" style="display:block;width:128px;height:115px;max-width:100%;border:0;margin:0 auto 9px;">
+<img class="receipt-title" src="${RECEIPT_SOURCE_HEADING_URL}" width="286" height="40" alt="NASTY BURGER HOUSE" style="display:block;width:286px;height:40px;max-width:100%;border:0;margin:0 auto 3px;">
+<div style="font:900 12px/19px 'Courier New',Courier,monospace;color:#AC3342;">BURGERS &bull; BEAST BOXES &bull; DRINKS</div>
+<div style="margin-top:12px;color:#282326;font:700 14px/21px 'Courier New',Courier,monospace;">${location}, ACT</div>
+<div style="margin-top:1px;color:#282326;font:700 13px/20px 'Courier New',Courier,monospace;"><a href="${BRAND_ORIGIN}" style="color:#282326!important;text-decoration:underline;font-weight:700;">nastyburgerhouse.com.au</a></div>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:18px 0 13px;border-top:2px dashed #282326;"><tr><td height="1" style="font-size:1px;line-height:1px;">&nbsp;</td></tr></table>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="color:#282326;font:700 14px/22px 'Courier New',Courier,monospace;">
+<tr><td width="41%" style="vertical-align:top;">Order No:</td><td style="font-weight:900;overflow-wrap:anywhere;">${orderId}</td></tr>
+<tr><td style="vertical-align:top;">Date:</td><td>${date}</td></tr>
+<tr><td style="vertical-align:top;">Time:</td><td>${time}</td></tr>
+<tr><td style="vertical-align:top;">Pickup:</td><td>ASAP</td></tr>
+<tr><td style="vertical-align:top;">Payment:</td><td style="font-weight:900;color:#AC3342;">PAID</td></tr>
 </table>
-</body>
-</html>`;
-  const textLines = payload.lines.flatMap((line) => [
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:15px 0 9px;border-top:2px dashed #282326;"><tr><td height="1" style="font-size:1px;line-height:1px;">&nbsp;</td></tr></table>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="table-layout:fixed;border-collapse:collapse;font-family:'Courier New',Courier,monospace;">
+<tr>
+<th scope="col" align="left" width="54%" style="color:#282326;text-align:left;padding:0 4px 8px 0;font:900 18px/23px Impact,'Arial Narrow','Arial Black',Arial,sans-serif;">ITEM</th>
+<th scope="col" align="center" width="13%" style="color:#282326;text-align:center;padding:0 2px 8px;font:900 18px/23px Impact,'Arial Narrow','Arial Black',Arial,sans-serif;">QTY</th>
+<th scope="col" align="right" width="33%" style="color:#282326;text-align:right;padding:0 0 8px 2px;font:900 18px/23px Impact,'Arial Narrow','Arial Black',Arial,sans-serif;">AMT</th>
+</tr>
+${rows}
+${notes}
+</table>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:15px;border-top:2px dashed #282326;"><tr><td height="1" style="font-size:1px;line-height:1px;">&nbsp;</td></tr></table>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="color:#282326;font:700 14px/22px 'Courier New',Courier,monospace;">
+<tr><td>Subtotal</td><td align="right" style="white-space:nowrap;">${escapeHtml(money(itemsSubtotal))}</td></tr>
+<tr><td style="padding:7px 0 0;color:#AC3342;font:900 30px/36px Impact,'Arial Narrow','Arial Black',Arial,sans-serif;">TOTAL</td>
+<td align="right" style="padding:7px 0 0;color:#AC3342;white-space:nowrap;font:900 30px/36px Impact,'Arial Narrow','Arial Black',Arial,sans-serif;">${total}</td></tr>
+</table>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:17px 0 15px;border-top:2px dashed #282326;"><tr><td height="1" style="font-size:1px;line-height:1px;">&nbsp;</td></tr></table>
+<div style="color:#282326;font:900 13px/20px 'Courier New',Courier,monospace;">THANK YOU FOR EATING WITH US!</div>
+<div style="margin-top:4px;color:#282326;font:700 12px/19px 'Courier New',Courier,monospace;">Please show this receipt at pickup.</div>
+${barcode}
+<div style="font:700 12px/18px 'Courier New',Courier,monospace;letter-spacing:.06em;color:#282326;overflow-wrap:anywhere;">${orderId}</div>
+</td></tr>
+<tr><td height="12" bgcolor="#AC3342" class="receipt-cut-bottom" style="height:12px;font-size:1px;line-height:1px;background-color:#AC3342;background-image:linear-gradient(45deg,transparent 50%,#FFFCF7 50%),linear-gradient(315deg,transparent 50%,#FFFCF7 50%);background-size:18px 18px;background-position:0 0,9px 0;background-repeat:repeat-x;">&nbsp;</td></tr>
+</table>
+<!--[if mso]></td></tr></table><![endif]-->
+</td></tr>
+</table>
+<!--[if mso]></td></tr></table><![endif]-->
+</td></tr>
+</table>
+</body></html>`;
+    const textLines = payload.lines.flatMap((line) => [
     `${line.quantity} x ${line.name} - ${money(line.lineTotal)}`,
     ...line.details.filter(Boolean).map(detail => `  ${detail}`),
   ]);

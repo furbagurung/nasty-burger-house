@@ -114,6 +114,12 @@ export async function createSquareCheckout(
             },
           ],
         },
+        // Square shows the same contact details the buyer entered on our site.
+        // Buyers may still correct them before completing payment.
+        pre_populated_data: {
+          buyer_email: payload.customer.email,
+          ...(customer.phone ? { buyer_phone_number: customer.phone } : {}),
+        },
         checkout_options: {
           allow_tipping: false,
           ask_for_shipping_address: false,

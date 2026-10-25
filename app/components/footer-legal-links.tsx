@@ -10,9 +10,12 @@ export function FooterUtilityLinks() {
   };
 
   return (
-    <nav className="footer-legal-links" aria-label="Support, social and legal links">
-      <Link href="/help-support">Help &amp; Support</Link>
-      <Link href="/reviews">Customer Reviews</Link>
+    <nav className="footer-legal-links" aria-label="Legal and social links">
+      <Link href="/privacy-policy">Privacy</Link>
+      <Link href="/terms-and-conditions">Terms</Link>
+      <button type="button" onClick={openCookieSettings}>
+        Cookie settings
+      </button>
 
       <span className="footer-social-links" aria-label="Nasty Burger House social media">
         <a
@@ -44,11 +47,6 @@ export function FooterUtilityLinks() {
         </a>
       </span>
 
-      <Link href="/privacy-policy">Privacy Policy</Link>
-      <Link href="/terms-and-conditions">Terms and Conditions</Link>
-      <button type="button" onClick={openCookieSettings}>
-        Cookie Settings
-      </button>
     </nav>
   );
 }
@@ -75,7 +73,7 @@ export default function FooterLegalLinks() {
   return (
     <footer className="utility-footer">
       <span>© 2026 Nasty Burger House</span>
-      <span className="footer-credit">Made with love by Furba Gurung</span>
+      <span className="footer-credit">Developed by Furba Gurung</span>
       <FooterUtilityLinks />
     </footer>
   );

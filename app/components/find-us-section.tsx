@@ -67,16 +67,6 @@ export default function FindUsSection() {
         <div className="find-us-section__copy">
           <p className="eyebrow">Location</p>
           <h2 id="find-us-title">Find the truck.</h2>
-          <div className="find-us-section__location">
-            <small>Pickup spot</small>
-            <strong>{serviceConfiguration.locationName}</strong>
-            <span>Check our latest pin.</span>
-          </div>
-          {GOOGLE_MAPS_URL && (
-            <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer">
-              Directions <span aria-hidden="true">↗</span>
-            </a>
-          )}
         </div>
 
         <div className="find-us-section__map">
@@ -101,7 +91,7 @@ export default function FindUsSection() {
                   <span>
                     {mapState === "loading"
                       ? "Finding our pickup pin."
-                      : "Use Directions for the exact pin."}
+                      : "Use Open map for the exact pin."}
                   </span>
                 </div>
               )}

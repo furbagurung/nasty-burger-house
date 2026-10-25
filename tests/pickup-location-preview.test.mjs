@@ -57,14 +57,16 @@ test("admin ordering and service hours are left untouched", () => {
   assert.match(service, /timezone: "Australia\/Sydney"/);
 });
 
-test("minimal pickup map copy keeps a clear action and accessible map", () => {
+test("Find Us has one visible CTA and no redundant pickup location block", () => {
   const findUs = source("app/components/find-us-section.tsx");
+  const css = source("app/find-us-section.css");
   assert.match(findUs, /Find the truck\./);
-  assert.match(findUs, /Pickup spot/);
-  assert.match(findUs, /Check our latest pin\./);
-  assert.match(findUs, /Directions <span aria-hidden="true">↗<\/span>/);
   assert.match(findUs, /Open map <span aria-hidden="true">↗<\/span>/);
   assert.match(findUs, /title="Google Maps showing the current Nasty Burger House pickup location"/);
   assert.match(findUs, /aria-label="Open the exact Nasty Burger House pickup location in Google Maps \(new tab\)"/);
-  assert.doesNotMatch(findUs, /See the latest pin for our exact location\.|Come get Nasty\./);
+  assert.equal((findUs.match(/href=\{GOOGLE_MAPS_URL\}/g) ?? []).length, 1);
+  assert.doesNotMatch(findUs, /Pickup spot|Check our latest pin\.|Directions <span|find-us-section__location/);
+  assert.doesNotMatch(css, /find-us-section__copy > a|find-us-section__location/);
+  assert.match(css, /grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(css, /max-width: 920px/);
 });

@@ -1,5 +1,6 @@
 import { squareRequest, getSquareConfig } from "../../../lib/square/api";
 import { sendAdminPaidOrderEmail } from "../../../lib/admin-notifications";
+import { sendCustomerPaidOrderEmail } from "../../../lib/customer-notifications";
 import { dispatchOrder } from "../../../lib/order-dispatch";
 import {
   createPaidSquareOrderNotifications,
@@ -127,24 +128,27 @@ async function notifyPaidWebsiteOrder(event: SquareWebhookEvent) {
   );
   if (!notification) return; // POS orders, unpaid/partial payments, wrong location
 
-  const [email, webhook] = await Promise.all([
+  const [adminEmail, customerEmail, webhook] = await Promise.all([
     sendAdminPaidOrderEmail(notification.email),
+    sendCustomerPaidOrderEmail(notification.email),
     dispatchOrder(notification.webhook),
   ]);
 
   // Square retries failed delivery (with the same stable Resend idempotency
   // key derived from the Square order ID). Unconfigured optional channels
   // do not block payment handling.
-  const emailFailed = !email.ok && email.reason === "delivery-failed";
+  const adminEmailFailed = !adminEmail.ok && adminEmail.reason === "delivery-failed";
+  const customerEmailFailed = !customerEmail.ok && customerEmail.reason === "delivery-failed";
   const webhookFailed = !webhook.ok && webhook.reason === "delivery-failed";
-  if (emailFailed || webhookFailed) {
+  if (adminEmailFailed || customerEmailFailed || webhookFailed) {
     throw new Error("Paid order notification delivery failed; retry webhook.");
   }
 
   console.info("[NBH paid order alert]", {
     squareOrderId: notification.email.squareOrderId,
     squarePaymentId: notification.email.paymentId,
-    email: email.ok ? "sent" : "not-configured",
+    adminEmail: adminEmail.ok ? "sent" : adminEmail.reason,
+    customerEmail: customerEmail.ok ? "sent" : customerEmail.reason,
     webhook: webhook.ok ? "sent" : "not-configured",
   });
 }

@@ -58,6 +58,15 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /TOTAL PAID/);
   assert.match(html, /THANK YOU FOR EATING WITH US!/);
   assert.match(html, /@media print/);
+  // Gmail's 2026 "light only" option prevents its forced dark inversion.
+  assert.match(html, /name="color-scheme" content="light only"/);
+  assert.match(html, /name="supported-color-schemes" content="light only"/);
+  assert.match(html, /color-scheme:light only/);
+  assert.match(html, /class="receipt-paper" bgcolor="#FFFCF7"/);
+  assert.match(html, /class="receipt-padding" bgcolor="#FFFCF7"/);
+  assert.match(html, /background-image:radial-gradient/);
+  assert.match(html, /font:900 22px\\/27px Impact/);
+  assert.match(html, /font:700 14px\\/20px Arial/);
   assert.match(html, /height:40px/, "sample order should show a real Code 39 barcode");
   assert.match(html, /NBH-ABCD1234/);
   assert.match(html, /\$59\.99/);
@@ -70,6 +79,17 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(text, /Order No: NBH-ABCD1234/);
   assert.match(text, /\$59\.99/);
   assert.doesNotMatch(text, /Admin Orders/);
+});
+
+
+test("restaurant-only email retains independent existing theme metadata", () => {
+  const source = read("app/lib/email/paid-order-template.ts");
+  const marker = "export function renderCustomerPaidOrderEmail(";
+  assert.equal(source.split(marker).length, 2);
+  const adminSource = source.split(marker)[0];
+  assert.match(adminSource, /export function renderPaidOrderEmail/);
+  assert.match(adminSource, /Open Admin Orders/);
+  assert.doesNotMatch(adminSource, /name="color-scheme" content="light only"/);
 });
 
 test("very long order numbers retain visible text without overflowing barcode", () => {

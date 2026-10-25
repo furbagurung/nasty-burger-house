@@ -46,7 +46,20 @@ test("customer confirmation is separate from the admin alert and after verified 
 
 test("customer email contains receipt details and escapes untrusted content", () => {
   const { html, text } = getCustomerRenderer()(example);
-  assert.match(html, /Order confirmed &amp; paid/);
+  assert.match(html, /ORDER CONFIRMED &amp; PAID/);
+  assert.match(html, /Your order confirmation/);
+  assert.match(html, /class="receipt-paper"/);
+  assert.match(html, /class="receipt-inset"/);
+  assert.match(html, /@media print/);
+  assert.match(html, /border-top:2px dashed/);
+  assert.match(html, /scope="col"[^>]*>ITEM/);
+  assert.match(html, /scope="col"[^>]*>QTY/);
+  assert.match(html, /scope="col"[^>]*>AMT/);
+  assert.match(html, /TOTAL PAID/);
+  assert.match(html, /Subtotal/);
+  assert.match(html, /THANK YOU!/);
+  assert.match(html, /aria-hidden="true"/);
+  assert.match(html, /This does not mean the order is ready/);
   assert.match(html, /NBH-ABCD1234/);
   assert.match(html, /\$59\.99/);
   assert.match(html, /Belconnen/);
@@ -54,10 +67,33 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /&lt;script&gt;/);
   assert.match(html, /No &lt;pickles&gt;/);
   assert.doesNotMatch(html, /<script>/);
+  assert.match(html, /No &lt;onion&gt;/);
   assert.doesNotMatch(html, /Open Admin Orders|\/admin\/orders|RESTAURANT ORDER ALERT/);
   assert.match(text, /Order: NBH-ABCD1234/);
   assert.match(text, /\$59\.99/);
   assert.doesNotMatch(text, /Admin Orders/);
+});
+
+
+test("receipt subtotal only appears when verified line amounts equal paid total", () => {
+  const render = getCustomerRenderer();
+  const payload = {
+    ...example,
+    total: 65.99,
+    lines: [{ ...example.lines[0], lineTotal: 59.99 }],
+  };
+  const { html, text } = render(payload);
+  assert.doesNotMatch(html, />Subtotal</);
+  assert.doesNotMatch(text, /Subtotal:/);
+  assert.match(html, /\\$65\\.99/);
+  assert.match(text, /TOTAL PAID:/);
+});
+
+test("staff-only paid order alert template stays intact", () => {
+  const source = read("app/lib/email/paid-order-template.ts");
+  assert.match(source, /export function renderPaidOrderEmail/);
+  assert.match(source, /RESTAURANT ORDER ALERT/);
+  assert.match(source, /Open Admin Orders/);
 });
 
 test("customer receives confirmation with hidden, unique admin copies", async () => {

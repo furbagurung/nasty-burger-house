@@ -8,6 +8,8 @@ const GOOGLE_MAPS_URL = serviceConfiguration.mapUrl;
 
 export default function FindUsSection() {
   const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+  const [embedUrl, setEmbedUrl] = useState<string | null>(null);
+  const [mapState, setMapState] = useState<"loading" | "ready" | "unavailable">("loading");
 
   useEffect(() => {
     const footer = document.querySelector<HTMLElement>(".site-shell > .site-footer");
@@ -27,6 +29,34 @@ export default function FindUsSection() {
     return () => {
       host.remove();
     };
+  }, []);
+
+  useEffect(() => {
+    if (!GOOGLE_MAPS_URL) return;
+
+    const controller = new AbortController();
+    async function loadMap() {
+      try {
+        const response = await fetch("/api/pickup-map", {
+          signal: controller.signal,
+          cache: "default",
+        });
+        if (!response.ok) throw new Error("Pickup map unavailable");
+        const data: { embedUrl?: unknown } = await response.json();
+        const nextUrl = typeof data.embedUrl === "string" ? data.embedUrl : null;
+        if (controller.signal.aborted) return;
+        if (nextUrl && /^https:\/\/www\.google\.com\/maps\?/.test(nextUrl)) {
+          setEmbedUrl(nextUrl);
+          setMapState("ready");
+        } else {
+          setMapState("unavailable");
+        }
+      } catch {
+        if (!controller.signal.aborted) setMapState("unavailable");
+      }
+    }
+    void loadMap();
+    return () => controller.abort();
   }, []);
 
   if (!portalTarget) return null;
@@ -51,43 +81,40 @@ export default function FindUsSection() {
 
         <div className="find-us-section__map">
           {GOOGLE_MAPS_URL ? (
-            <a
-              className="find-us-section__map-preview"
-              href={GOOGLE_MAPS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Open the current Nasty Burger House pickup location in Google Maps (new tab)"
-            >
-              <svg
-                className="find-us-section__map-art"
-                viewBox="0 0 700 460"
-                preserveAspectRatio="xMidYMid slice"
-                aria-hidden="true"
-                focusable="false"
+            <>
+              {embedUrl ? (
+                <iframe
+                  className="find-us-section__map-iframe"
+                  title="Google Maps showing the current Nasty Burger House pickup location"
+                  src={embedUrl}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              ) : (
+                <div className="find-us-section__map-status" role="status" aria-live="polite">
+                  <strong>
+                    {mapState === "loading"
+                      ? "Loading Google Maps…"
+                      : "Map preview is unavailable"}
+                  </strong>
+                  <span>
+                    {mapState === "loading"
+                      ? "Fetching the latest pickup pin."
+                      : "Open Google Maps to see the exact pickup pin."}
+                  </span>
+                </div>
+              )}
+              <a
+                className="find-us-section__map-link"
+                href={GOOGLE_MAPS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open the exact Nasty Burger House pickup location in Google Maps (new tab)"
               >
-                <rect width="700" height="460" fill="var(--nb-dark-surface)" />
-                <g fill="none" stroke="var(--nb-dark-hover)" strokeWidth="78" strokeLinecap="round">
-                  <path d="M-55 340 C185 270 280 440 750 310" />
-                  <path d="M170 -80 C275 90 350 205 315 540" />
-                  <path d="M-50 65 C225 155 410 15 755 100" />
-                </g>
-                <g fill="none" stroke="var(--nb-dark-border)" strokeWidth="12" strokeLinecap="round">
-                  <path d="M-55 340 C185 270 280 440 750 310" />
-                  <path d="M170 -80 C275 90 350 205 315 540" />
-                  <path d="M-50 65 C225 155 410 15 755 100" />
-                </g>
-              </svg>
-              <span className="find-us-section__map-card">
-                <span className="find-us-section__map-eyebrow">Pickup location</span>
-                <span className="find-us-section__map-title">Nasty Burger House</span>
-                <span className="find-us-section__map-open">
-                  View Google Maps <span aria-hidden="true">↗</span>
-                </span>
-              </span>
-              <span className="find-us-section__map-note">
-                Illustrated preview · Open Maps for the exact pin
-              </span>
-            </a>
+                Open in Google Maps <span aria-hidden="true">↗</span>
+              </a>
+            </>
           ) : (
             <p className="find-us-section__map-fallback">Map location unavailable.</p>
           )}

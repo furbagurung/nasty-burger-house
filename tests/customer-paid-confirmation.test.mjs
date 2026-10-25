@@ -22,6 +22,9 @@ function getCustomerRenderer() {
     .replace('import "server-only";', "")
     .replace(/import type \{ PaidOrderNotification \} from ".*";/, "")
     .replace("} as const;", "};")
+    .replaceAll("value: string | number", "value")
+    .replaceAll("value: string", "value")
+    .replaceAll("value: number", "value")
     .replaceAll("payload: PaidOrderNotification", "payload")
     .replaceAll("export function", "function");
   return vm.runInNewContext(source + "\nrenderCustomerPaidOrderEmail");
@@ -46,7 +49,16 @@ test("customer confirmation is separate from the admin alert and after verified 
 
 test("customer email contains receipt details and escapes untrusted content", () => {
   const { html, text } = getCustomerRenderer()(example);
-  assert.match(html, /Order confirmed &amp; paid/);
+  assert.match(html, /ORDER CONFIRMED &amp; PAID/);
+  assert.match(html, /receipt-paper/);
+  assert.match(html, /border-top:7px dotted/);
+  assert.match(html, /ITEM/);
+  assert.match(html, /QTY/);
+  assert.match(html, /AMT/);
+  assert.match(html, /TOTAL PAID/);
+  assert.match(html, /THANK YOU FOR EATING WITH US!/);
+  assert.match(html, /@media print/);
+  assert.match(html, /height:40px/, "sample order should show a real Code 39 barcode");
   assert.match(html, /NBH-ABCD1234/);
   assert.match(html, /\$59\.99/);
   assert.match(html, /Belconnen/);
@@ -55,9 +67,17 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /No &lt;pickles&gt;/);
   assert.doesNotMatch(html, /<script>/);
   assert.doesNotMatch(html, /Open Admin Orders|\/admin\/orders|RESTAURANT ORDER ALERT/);
-  assert.match(text, /Order: NBH-ABCD1234/);
+  assert.match(text, /Order No: NBH-ABCD1234/);
   assert.match(text, /\$59\.99/);
   assert.doesNotMatch(text, /Admin Orders/);
+});
+
+test("very long order numbers retain visible text without overflowing barcode", () => {
+  const longRef = "NBH-" + "ABC12345".repeat(4);
+  const { html, text } = getCustomerRenderer()({ ...example, orderId: longRef });
+  assert.match(html, new RegExp(longRef));
+  assert.doesNotMatch(html, /height:40px/);
+  assert.match(text, new RegExp(longRef));
 });
 
 test("customer receives confirmation with hidden, unique admin copies", async () => {

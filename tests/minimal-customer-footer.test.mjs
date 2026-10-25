@@ -40,6 +40,8 @@ test("shared customer footer links include only legal, consent settings and soci
   assert.match(links, /href="\/privacy-policy"/);
   assert.match(links, /href="\/terms-and-conditions"/);
   assert.match(links, /nasty:open-cookie-settings/);
+  assert.match(links, /role="group" aria-label="Nasty Burger House social media"/);
+  assert.equal((links.match(/rel="noopener noreferrer"/g) ?? []).length, 3);
   for (const social of ["instagram.com/nastyburgerhouse", "tiktok.com/@nastyburgerhouse", "facebook.com/profile.php"]) {
     assert.ok(links.includes(social), `missing ${social}`);
   }

@@ -17,11 +17,11 @@ export function FooterUtilityLinks() {
         Cookie settings
       </button>
 
-      <span className="footer-social-links" aria-label="Nasty Burger House social media">
+      <span className="footer-social-links" role="group" aria-label="Nasty Burger House social media">
         <a
           href="https://www.instagram.com/nastyburgerhouse/"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           aria-label="Nasty Burger House on Instagram"
           title="Instagram"
         >
@@ -30,7 +30,7 @@ export function FooterUtilityLinks() {
         <a
           href="https://www.tiktok.com/@nastyburgerhouse"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           aria-label="Nasty Burger House on TikTok"
           title="TikTok"
         >
@@ -39,7 +39,7 @@ export function FooterUtilityLinks() {
         <a
           href="https://www.facebook.com/profile.php?id=61590139712227"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           aria-label="Nasty Burger House on Facebook"
           title="Facebook"
         >

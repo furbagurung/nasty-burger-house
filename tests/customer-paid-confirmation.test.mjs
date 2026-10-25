@@ -37,12 +37,12 @@ function getCustomerRenderer() {
       timeZone: "Australia/Sydney", day: "numeric", month: "short",
       year: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short",
     }).format(new Date(value)),
-    detailLine: (value) => escapeHtml(value).replaceAll("\\n", "<br>"),
+    detailLine: (value) => escapeHtml(value).replaceAll("\n", "<br>"),
     LOGO_URL: "https://www.nastyburgerhouse.com.au/logo.webp",
     BANNER_URL: "https://www.nastyburgerhouse.com.au/images/hero-slider/beast-burgers.jpg",
     BRAND_ORIGIN: "https://www.nastyburgerhouse.com.au",
   };
-  return vm.runInNewContext(source + "\\nrenderCustomerPaidOrderEmail", sandbox);
+  return vm.runInNewContext(source + "\nrenderCustomerPaidOrderEmail", sandbox);
 }
 
 test("Square payment link prepopulates validated buyer contact information", () => {

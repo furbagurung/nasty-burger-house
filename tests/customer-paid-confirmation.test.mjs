@@ -13,7 +13,7 @@ const example = {
   customer: { name: "Omer <script>", email: "customer@example.com", phone: "+61400000000" },
   locationName: "Belconnen",
   notes: "No <onion>",
-  lines: [{ name: "Beast & Fries", quantity: 2, lineTotal: 59.99, details: ["No <pickles>"] }],
+  lines: [{ name: "Beast & Fries <script>", quantity: 2, lineTotal: 59.99, details: ["No <pickles>"] }],
   total: 59.99,
 };
 

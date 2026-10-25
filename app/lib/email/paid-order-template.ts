@@ -222,123 +222,96 @@ export function renderPaidOrderEmail(payload: PaidOrderNotification) {
 
 // Separate buyer-only confirmation, using the admin template's shared brand, escaping and date helpers.
 export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
-  const safeOrderId = escapeHtml(payload.orderId);
-  const safeName = escapeHtml(payload.customer.name.trim().split(/\s+/)[0] || "there");
-  const safeLocation = escapeHtml(payload.locationName);
-  const safePaidTime = escapeHtml(paidTime(payload.paidAt));
+  const id = escapeHtml(payload.orderId);
+  const customer = escapeHtml(payload.customer.name.trim().split(/\s+/)[0] || "there");
+  const location = escapeHtml(payload.locationName);
+  const date = escapeHtml(paidTime(payload.paidAt));
   const total = escapeHtml(money(payload.total));
-  const rows = payload.lines.map((line) => {
-    const details = line.details.filter(Boolean).map((detail) =>
-      `<div style="margin-top:5px;font:400 13px/20px Arial,Helvetica,sans-serif;color:${palette.muted};overflow-wrap:break-word;">${detailLine(detail)}</div>`
-    ).join("");
-    return `<tr>
-      <td style="padding:15px 0;border-bottom:1px solid ${palette.line};vertical-align:top;">
-        <div style="font:700 15px/22px Arial,Helvetica,sans-serif;color:${palette.ink};">${escapeHtml(line.quantity)} &times; ${escapeHtml(line.name)}</div>${details}
+  const itemTotal = payload.lines.reduce((n, item) => n + item.lineTotal, 0);
+  const subtotalRow = Math.abs(itemTotal - payload.total) < .01
+    ? `<tr><td style="padding:16px 0 5px;color:${palette.ink};font:400 14px/21px Arial,sans-serif;">Subtotal</td><td align="right" style="padding:16px 0 5px;color:${palette.ink};font:700 14px/21px Arial,sans-serif;">${total}</td></tr>` : "";
+  const items = payload.lines.map((line) => `
+    <tr>
+      <td style="padding:14px 4px 14px 0;border-bottom:1px dashed ${palette.line};vertical-align:top;color:${palette.ink};font:700 14px/20px Arial,sans-serif;overflow-wrap:break-word;">
+        ${escapeHtml(line.name)}
+        ${line.details.filter(Boolean).map(d=>`<div style="margin-top:4px;color:${palette.muted};font:400 12px/18px Arial,sans-serif;">${detailLine(d)}</div>`).join("")}
       </td>
-      <td align="right" style="padding:15px 0 15px 12px;border-bottom:1px solid ${palette.line};vertical-align:top;white-space:nowrap;font:700 15px/22px Arial,Helvetica,sans-serif;color:${palette.ink};">${escapeHtml(money(line.lineTotal))}</td>
-    </tr>`;
+      <td width="40" align="center" style="padding:14px 3px;border-bottom:1px dashed ${palette.line};width:40px;vertical-align:top;color:${palette.ink};font:700 14px/20px Arial,sans-serif;">${escapeHtml(line.quantity)}</td>
+      <td width="90" align="right" style="padding:14px 0 14px 3px;border-bottom:1px dashed ${palette.line};width:90px;white-space:nowrap;vertical-align:top;color:${palette.ink};font:700 14px/20px Arial,sans-serif;">${escapeHtml(money(line.lineTotal))}</td>
+    </tr>`).join("");
+  const notes = payload.notes.trim() ? `<div style="padding-top:18px;margin-top:15px;border-top:1px dashed ${palette.muted};font:400 13px/20px Arial,sans-serif;color:${palette.ink};"><strong>Pickup note:</strong> ${detailLine(payload.notes)}</div>` : "";
+  // Decorative thermal-receipt stripes, not a scannable payment barcode.
+  const stripes = [...payload.orderId.slice(0,18)].map((c,i)=> {
+    const n=c.charCodeAt(0)+i*7;
+    return `<span style="display:inline-block;width:${1+n%3}px;height:40px;background:${palette.ink};vertical-align:top;"></span><span style="display:inline-block;width:${1+(n>>2)%3}px;height:40px;background:${palette.surface};vertical-align:top;"></span><span style="display:inline-block;width:${1+(n>>4)%3}px;height:40px;background:${palette.ink};vertical-align:top;"></span><span style="display:inline-block;width:2px;height:40px;background:${palette.surface};vertical-align:top;"></span>`;
   }).join("");
-  const notes = payload.notes.trim()
-    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:25px;background:${palette.canvas};border:1px solid ${palette.line};border-radius:8px;"><tr><td style="padding:16px 18px;">
-      <div style="font:700 14px/21px Arial,Helvetica,sans-serif;color:${palette.ink};">Your pickup note</div>
-      <div style="margin-top:5px;font:400 14px/22px Arial,Helvetica,sans-serif;color:${palette.muted};overflow-wrap:break-word;">${detailLine(payload.notes)}</div>
-    </td></tr></table>`
-    : "";
   const html = `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light">
-  <title>Order confirmed &amp; paid — ${safeOrderId}</title>
-  <style>@media only screen and (max-width:620px) {
-    .email-outer{padding:12px 8px!important}
-    .email-inset{padding:22px 19px!important}
-    .email-title{font-size:25px!important;line-height:31px!important}
-    .email-logo{width:48px!important;height:48px!important}
-  }</style>
-</head>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>Nasty Burger House receipt · ${id}</title>
+<style>
+@media only screen and (max-width:620px){.email-outer{padding:10px 6px!important}.email-body{padding:22px 10px!important}.receipt-inset{padding:22px 16px!important}.brand-logo{width:47px!important;height:47px!important}.brand-title{font-size:15px!important}.receipt-heading{font-size:21px!important;line-height:27px!important}.receipt-total{font-size:26px!important}}
+@media print{body,.email-outer,.email-body{margin:0!important;padding:0!important;background:#FFFFFF!important}.email-hero,.email-intro,.email-footer{display:none!important}.receipt-paper{max-width:80mm!important;width:80mm!important;border:0!important;box-shadow:none!important}.receipt-inset{padding:12px!important}}
+</style></head>
 <body style="margin:0;padding:0;background:${palette.canvas};color:${palette.ink};font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
-<div style="display:none!important;opacity:0;visibility:hidden;mso-hide:all;max-height:0;max-width:0;overflow:hidden;">
-  Your order ${safeOrderId} is confirmed and paid (${total}). Pickup: ASAP at ${safeLocation}.
+<div style="display:none!important;opacity:0;visibility:hidden;max-height:0;max-width:0;overflow:hidden;mso-hide:all;">Order ${id} confirmed and paid: ${total}. Pickup at ${location}.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${palette.canvas};"><tr><td class="email-outer" align="center" style="padding:28px 12px;">
+<!--[if mso]><table role="presentation" width="600"><tr><td><![endif]-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:${palette.canvas};border-collapse:separate;border-spacing:0;">
+<tr><td class="email-hero" style="padding:19px 22px;background:${palette.charcoal};">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
+<td width="64" style="width:64px;vertical-align:middle;"><img class="brand-logo" src="${LOGO_URL}" width="56" height="56" alt="Nasty Burger House logo" style="display:block;width:56px;height:56px;border:0;"></td>
+<td style="padding-left:10px;vertical-align:middle;"><div class="brand-title" style="color:#FFFFFF;font:700 19px/25px Arial,sans-serif;">NASTY BURGER HOUSE</div><div style="margin-top:4px;color:#E39B8E;font:700 11px/17px Arial,sans-serif;">BURGERS &bull; BEAST BOXES &bull; DRINKS</div></td>
+</tr></table></td></tr>
+<tr><td class="email-hero" style="background:${palette.charcoal};"><img src="${BANNER_URL}" width="600" alt="Nasty Burger House burgers" style="display:block;width:100%;height:auto;max-width:600px;border:0;"></td></tr>
+<tr><td class="email-hero" height="4" style="background:${palette.red};height:4px;font-size:1px;line-height:4px;">&nbsp;</td></tr>
+<tr><td class="email-body" style="padding:31px 24px 34px;background:${palette.canvas};">
+<div class="email-intro" style="margin:0 0 26px;text-align:center;">
+<h1 style="margin:0;color:${palette.ink};font:700 27px/34px Arial,sans-serif;">Your order confirmation</h1>
+<p style="margin:10px 0 0;color:${palette.muted};font:400 15px/23px Arial,sans-serif;">Thanks, ${customer}! We've received your paid order and will get it ready for pickup.</p>
 </div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${palette.canvas};">
-  <tr><td align="center" class="email-outer" style="padding:30px 15px;">
-    <!--[if mso]><table role="presentation" width="600"><tr><td><![endif]-->
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:${palette.surface};border:1px solid ${palette.line};border-collapse:separate;border-spacing:0;">
-      <tr><td class="email-inset" style="padding:22px 28px;background:${palette.charcoal};">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr><td width="64" style="width:64px;vertical-align:middle;">
-            <img class="email-logo" src="${LOGO_URL}" width="56" height="56" alt="Nasty Burger House logo" style="display:block;width:56px;height:56px;border:0;border-radius:8px;">
-          </td><td style="padding-left:8px;vertical-align:middle;">
-            <div style="font:700 17px/23px Arial,Helvetica,sans-serif;color:#FFFFFF;">NASTY BURGER HOUSE</div>
-            <div style="margin-top:4px;font:700 12px/18px Arial,Helvetica,sans-serif;color:#D88B7D;">Your order confirmation</div>
-          </td></tr>
-        </table>
-      </td></tr>
-      <tr><td style="background:${palette.charcoal};">
-        <img src="${BANNER_URL}" width="600" alt="Nasty Burger House signature burgers" style="display:block;width:100%;height:auto;max-width:600px;border:0;">
-      </td></tr>
-      <tr><td height="4" style="height:4px;background:${palette.red};font-size:1px;line-height:4px;">&nbsp;</td></tr>
-      <tr><td class="email-inset" style="padding:30px 32px 32px;">
-        <h1 class="email-title" style="margin:0 0 12px;font:700 29px/36px Arial,Helvetica,sans-serif;color:${palette.ink};">Order confirmed &amp; paid.</h1>
-        <p style="margin:0 0 20px;font:400 15px/24px Arial,Helvetica,sans-serif;color:${palette.ink};">
-          Thanks, ${safeName}! We've received your paid order and will get it ready for pickup.
-        </p>
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:22px;background:${palette.greenBg};border-radius:7px;">
-          <tr><td style="padding:8px 12px;color:${palette.green};font:700 12px/18px Arial,Helvetica,sans-serif;">PAID VIA SQUARE</td></tr>
-        </table>
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${palette.canvas};border:1px solid ${palette.line};border-radius:10px;">
-          <tr><td style="padding:20px;">
-            <div style="font:700 12px/18px Arial,Helvetica,sans-serif;color:${palette.muted};">TOTAL PAID</div>
-            <div style="margin:5px 0 14px;font:700 32px/39px Arial,Helvetica,sans-serif;color:${palette.ink};">${total}</div>
-            <div style="font:400 14px/23px Arial,Helvetica,sans-serif;color:${palette.ink};overflow-wrap:break-word;">
-              <strong>Order:</strong> ${safeOrderId}<br>
-              <strong>Paid:</strong> ${safePaidTime}<br>
-              <strong>Pickup:</strong> ${safeLocation} &middot; ASAP
-            </div>
-          </td></tr>
-        </table>
-        <h2 style="margin:28px 0 8px;font:700 18px/25px Arial,Helvetica,sans-serif;color:${palette.ink};">Your order</h2>
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">${rows}</table>
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr><td style="padding:18px 0;font:700 16px/24px Arial,Helvetica,sans-serif;color:${palette.ink};">Total paid</td>
-          <td align="right" style="padding:18px 0;white-space:nowrap;font:700 18px/24px Arial,Helvetica,sans-serif;color:${palette.ink};">${total}</td></tr>
-        </table>
-        ${notes}
-        <p style="margin:24px 0 0;font:400 14px/22px Arial,Helvetica,sans-serif;color:${palette.muted};">
-          Please keep your order number for pickup. This confirms payment, not that your order is ready for collection.
-        </p>
-      </td></tr>
-      <tr><td class="email-inset" style="padding:22px 32px;background:${palette.canvas};border-top:1px solid ${palette.line};">
-        <div style="font:400 12px/20px Arial,Helvetica,sans-serif;color:${palette.muted};">This is your Nasty Burger House order confirmation. Square may email a separate payment receipt.</div>
-        <div style="margin-top:6px;font:700 12px/20px Arial,Helvetica,sans-serif;color:${palette.ink};">Nasty Burger House &middot; ${safeLocation}</div>
-        <a href="${BRAND_ORIGIN}" style="display:inline-block;margin-top:8px;font:700 13px/20px Arial,Helvetica,sans-serif;color:${palette.red};text-decoration:underline;">Visit our website</a>
-      </td></tr>
-    </table>
-    <!--[if mso]></td></tr></table><![endif]-->
-  </td></tr>
+<table class="receipt-paper" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:442px;background:${palette.surface};border:1px solid ${palette.line};border-collapse:separate;border-spacing:0;">
+<tr><td style="height:8px;border-top:5px dashed ${palette.canvas};font-size:1px;line-height:1px;">&nbsp;</td></tr>
+<tr><td class="receipt-inset" style="padding:24px 29px 26px;background:${palette.surface};">
+<div style="text-align:center;">
+<img src="${LOGO_URL}" width="76" height="76" alt="Nasty Burger House" style="display:block;width:76px;height:76px;margin:0 auto 10px;border:0;">
+<div style="color:${palette.ink};font:900 20px/27px Arial,sans-serif;">NASTY BURGER HOUSE</div>
+<div style="margin:5px 0 10px;color:${palette.red};font:700 12px/18px Arial,sans-serif;">BURGERS &bull; BEAST BOXES &bull; DRINKS</div>
+<div style="color:${palette.ink};font:400 13px/20px 'Courier New',monospace;">${location}, ACT</div>
+<div style="color:${palette.ink};font:400 12px/19px Arial,sans-serif;">nastyburgerhouse.com.au</div>
+</div>
+<div style="margin:19px 0 17px;border-top:2px dashed ${palette.muted};font-size:1px;line-height:1px;">&nbsp;</div>
+<h2 class="receipt-heading" style="margin:0 0 15px;text-align:center;color:${palette.red};font:900 23px/29px Arial,sans-serif;">ORDER CONFIRMED &amp; PAID</h2>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="color:${palette.ink};font:400 13px/22px 'Courier New',monospace;">
+<tr><td style="width:88px;padding:2px 5px 2px 0;vertical-align:top;">ORDER NO.</td><td style="padding:2px 0;font-weight:700;overflow-wrap:anywhere;">${id}</td></tr>
+<tr><td style="padding:2px 5px 2px 0;vertical-align:top;">PAID AT</td><td style="padding:2px 0;">${date}</td></tr>
+<tr><td style="padding:2px 5px 2px 0;vertical-align:top;">PICKUP</td><td style="padding:2px 0;">${location} &middot; ASAP</td></tr>
+<tr><td style="padding:2px 5px 2px 0;vertical-align:top;">PAYMENT</td><td style="padding:2px 0;color:${palette.red};font-weight:700;">PAID VIA SQUARE</td></tr>
 </table>
-</body>
-</html>`;
-  const itemLines = payload.lines.flatMap((line) => [
-    `${line.quantity}x ${line.name} — ${money(line.lineTotal)}`,
-    ...line.details.map((detail) => `  ${detail}`),
-  ]);
-  const text = [
-    "NASTY BURGER HOUSE — ORDER CONFIRMED & PAID",
-    `Thanks, ${payload.customer.name.trim().split(/\s+/)[0] || "there"}! Your payment is confirmed.`,
-    `Order: ${payload.orderId}`,
-    `Paid: ${paidTime(payload.paidAt)}`,
-    `Pickup: ${payload.locationName} — ASAP`,
-    "",
-    "YOUR ORDER",
-    ...itemLines,
-    "",
-    `Total paid: ${money(payload.total)}`,
-    payload.notes.trim() ? `Your pickup note: ${payload.notes}` : "",
-    "Please keep your order number for pickup. This is not a ready-for-pickup message.",
-    "Square may send a separate payment receipt.",
-    BRAND_ORIGIN,
-  ].filter(Boolean).join("\n");
-  return { html, text };
+<div style="margin:20px 0 14px;border-top:2px dashed ${palette.muted};font-size:1px;line-height:1px;">&nbsp;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;border-collapse:collapse;">
+<tr><th scope="col" align="left" style="padding:0 4px 8px 0;text-align:left;color:${palette.ink};font:900 13px/19px Arial,sans-serif;">ITEM</th><th scope="col" width="40" align="center" style="padding:0 3px 8px;text-align:center;color:${palette.ink};font:900 13px/19px Arial,sans-serif;">QTY</th><th scope="col" width="90" align="right" style="padding:0 0 8px 3px;text-align:right;color:${palette.ink};font:900 13px/19px Arial,sans-serif;">AMT</th></tr>
+${items}
+</table>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+${subtotalRow}
+<tr><td style="padding-top:7px;color:${palette.red};font:900 20px/32px Arial,sans-serif;">TOTAL PAID</td><td align="right" class="receipt-total" style="padding-top:7px;white-space:nowrap;color:${palette.red};font:900 29px/34px Arial,sans-serif;">${total}</td></tr>
+</table>
+${notes}
+<div style="margin:20px 0 18px;border-top:2px dashed ${palette.muted};font-size:1px;line-height:1px;">&nbsp;</div>
+<div style="text-align:center;color:${palette.ink};font:900 16px/24px Arial,sans-serif;">THANK YOU!</div>
+<div style="margin-top:6px;text-align:center;color:${palette.muted};font:400 13px/20px Arial,sans-serif;">Thank you for eating with us!<br>Keep this receipt for pickup.</div>
+<div role="presentation" aria-hidden="true" style="margin:17px 0 8px;text-align:center;white-space:nowrap;font-size:0;line-height:0;overflow:hidden;">${stripes}</div>
+<div style="text-align:center;color:${palette.ink};font:700 12px/19px 'Courier New',monospace;letter-spacing:.08em;overflow-wrap:anywhere;">${id}</div>
+<div style="margin-top:13px;text-align:center;color:${palette.muted};font:400 11px/18px Arial,sans-serif;">Payment confirmed. This does not mean the order is ready for collection.</div>
+</td></tr>
+<tr><td style="height:8px;border-bottom:5px dashed ${palette.canvas};font-size:1px;line-height:1px;">&nbsp;</td></tr>
+</table>
+<div class="email-footer" style="padding:22px 4px 0;text-align:center;color:${palette.muted};font:400 12px/19px Arial,sans-serif;">Square may email a separate payment receipt.<br><a href="${BRAND_ORIGIN}" style="display:inline-block;margin-top:9px;color:${palette.red};font:700 13px/20px Arial,sans-serif;text-decoration:underline;">Visit Nasty Burger House</a></div>
+</td></tr>
+</table>
+<!--[if mso]></td></tr></table><![endif]-->
+</td></tr></table>
+</body></html>`;
+  const plainItems = payload.lines.flatMap(line=>[`${line.quantity}x ${line.name} — ${money(line.lineTotal)}`,...line.details.filter(Boolean).map(d=>`  ${d}`)]);
+  const text = ["NASTY BURGER HOUSE — ORDER CONFIRMED & PAID",`Thanks, ${payload.customer.name.trim().split(/\s+/)[0] || "there"}!`,`Order: ${payload.orderId}`,`Paid: ${paidTime(payload.paidAt)}`,`Pickup: ${payload.locationName} — ASAP`,"Payment: PAID VIA SQUARE","","ITEMS",...plainItems,"",...(subtotalRow?[`Subtotal: ${money(payload.total)}`]:[]),`TOTAL PAID: ${money(payload.total)}`,payload.notes.trim()?`Pickup note: ${payload.notes}`:"","Thank you for eating with us!","Keep this receipt for pickup; this does not mean your order is ready.","Square may send a separate payment receipt.",BRAND_ORIGIN].filter(Boolean).join("\n");
+  return {html,text};
 }

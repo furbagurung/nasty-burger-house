@@ -1175,39 +1175,20 @@ export default function OrderExperience({
         <HomepageTestimonials />
       </main>
 
-      <footer className="site-footer">
+      <footer className="site-footer" aria-label="Nasty Burger House footer">
         <div className="footer-brand">
           <Image
             className="brand-logo brand-logo--footer"
             src="/logo.webp"
             alt="Nasty Burger House"
-            width={256}
-            height={256}
+            width={64}
+            height={64}
           />
-          <p>Big flavour. Zero apologies.</p>
         </div>
-        <div className="footer-links">
-          <nav aria-label="Ordering links">
-            <h2>Order</h2>
-            <ButtonWithIcon tone="red" onClick={openOrderType}>
-              Order now
-            </ButtonWithIcon>
-            <span>Pickup available</span>
-            <span>Uber Eats delivery — coming soon</span>
-          </nav>
-          <nav aria-label="Nasty Burger House links">
-            <h2>Nasty Burger House</h2>
-            <a href="#beast-month">Beast of the Month</a>
-            <button type="button" onClick={openLoyalty}>
-              {loyaltyComplete ? "Drip Points joined" : "Join Drip Points"}
-            </button>
-          </nav>
-        </div>
+        <FooterUtilityLinks />
         <div className="footer-bottom">
           <span>© 2026 Nasty Burger House</span>
-          <span>Pickup ordering only</span>
-          <span className="footer-credit">Made with love by Furba Gurung</span>
-          <FooterUtilityLinks />
+          <span className="footer-credit">Developed by Furba Gurung</span>
         </div>
       </footer>
 

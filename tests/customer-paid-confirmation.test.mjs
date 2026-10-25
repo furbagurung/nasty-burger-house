@@ -49,7 +49,8 @@ test("customer confirmation is separate from the admin alert and after verified 
 
 test("customer email contains receipt details and escapes untrusted content", () => {
   const { html, text } = getCustomerRenderer()(example);
-  assert.match(html, /ORDER CONFIRMED &amp; PAID/);
+  assert.doesNotMatch(html, /ORDER CONFIRMED &amp; PAID/);
+  assert.match(text, /ORDER CONFIRMED & PAID/);
   assert.match(html, /receipt-paper/);
   assert.match(html, /background:#AC3342/);
   assert.match(html, /receipt-cut-top/);
@@ -59,13 +60,18 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.doesNotMatch(html, /Signature Nasty Burger House burgers/);
   assert.doesNotMatch(html, /class="email-brand"/);
   assert.doesNotMatch(html, /class="email-intro"/);
-  assert.match(html, /border-top:7px dotted/);
+  assert.match(html, /receipt-torn-top\.webp/);
+  assert.match(html, /receipt-torn-bottom\.webp/);
+  assert.doesNotMatch(html, /border-top:7px dotted/);
   assert.match(html, /ITEM/);
   assert.match(html, /QTY/);
   assert.match(html, /AMT/);
-  assert.match(html, /TOTAL PAID/);
+  assert.match(html, />TOTAL<\/td>/);
+  assert.match(text, /TOTAL PAID/);
   assert.match(html, /THANK YOU FOR EATING WITH US!/);
   assert.match(html, /@media print/);
+  assert.match(html, /bgcolor="#AC3342"/);
+  assert.match(html, /PAID<\/td>/);
   // Gmail's 2026 "light only" option prevents its forced dark inversion.
   assert.match(html, /name="color-scheme" content="light only"/);
   assert.match(html, /name="supported-color-schemes" content="light only"/);
@@ -73,13 +79,20 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /class="receipt-paper" bgcolor="#FFFCF7"/);
   assert.match(html, /class="receipt-padding" bgcolor="#FFFCF7"/);
   assert.match(html, /@media print[\\s\\S]*?box-shadow:none!important/);
-  assert.match(html, /background-image:radial-gradient/);
-  assert.match(html, /font:900 22px\\/27px Impact/);
+  assert.match(html, /receipt-paper-texture\.webp/);
+  assert.match(html, /background="https:\/\/www\.nastyburgerhouse\.com\.au\/images\/email\/receipt-paper-texture\.webp"/);
+  assert.match(html, /font:900 28px\\/33px Impact/);
   assert.match(html, /font:700 14px\\/20px Arial/);
+  assert.match(html, /font:900 18px\\/24px Impact/);
   assert.match(html, /height:40px/, "sample order should show a real Code 39 barcode");
   assert.match(html, /NBH-ABCD1234/);
   assert.match(html, /\$59\.99/);
   assert.match(html, /Belconnen/);
+  assert.match(html, /receipt-logo-cutout\.webp/);
+  assert.match(html, /href="https:\/\/www\.nastyburgerhouse\.com\.au"/);
+  assert.match(html, /color:#282326!important/);
+  assert.match(html, /box-shadow:10px 20px 28px/);
+  assert.doesNotMatch(html, /Signature Nasty Burger House burgers/);
   assert.match(html, /Beast &amp; Fries/);
   assert.match(html, /&lt;script&gt;/);
   assert.match(html, /No &lt;pickles&gt;/);

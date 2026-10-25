@@ -22,10 +22,11 @@ export type ServiceConfiguration = {
 // all ordering entry points must use readShopStatus() on the server.
 export const serviceConfiguration: ServiceConfiguration = {
   mode: "preview",
-  locationName: "Belconnen",
-  address: "Belconnen ACT 2617",
-  mapUrl:
-    "https://www.google.com/maps/place/35%C2%B014%2714.5%22S+149%C2%B003%2753.4%22E/@-35.2373611,149.0648333,17z/data=!3m1!4b1!4m4!3m3!8m2!3d-35.2373611!4d149.0648333!18m1!1e1?entry=ttu",
+  // The owner-supplied Google Maps pin is authoritative. Do not reuse the old
+  // Belconnen coordinates or claim a street address until the pin is resolved.
+  locationName: "Nasty Burger House",
+  address: "See Google Maps for the exact pickup location",
+  mapUrl: "https://maps.app.goo.gl/PMtpCoAYnScYeiy28",
   tradingHours: "Online orders 11:30 AM–9:45 PM daily",
   orderHours: {
     opensAt: "11:30",

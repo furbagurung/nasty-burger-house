@@ -14,7 +14,7 @@ export default function MobileHomeLocation() {
     <a
       className={`mobile-home-location ${isHome ? "is-home-route" : "is-catalogue-route"}`}
       href={isHome ? "#find-us" : "/#find-us"}
-      aria-label="Pickup location: Belconnen ACT 2617. Jump to Find Us."
+      aria-label="View the latest pickup location. Jump to Find Us."
     >
       <span className="mobile-home-location__icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">
@@ -36,7 +36,7 @@ export default function MobileHomeLocation() {
       </span>
       <span className="mobile-home-location__copy">
         <small>Pickup at</small>
-        <strong>Belconnen</strong>
+        <strong>View location</strong>
       </span>
     </a>
   );

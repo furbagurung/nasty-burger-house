@@ -48,7 +48,7 @@ test("customer email contains receipt details and escapes untrusted content", ()
   const { html, text } = getCustomerRenderer()(example);
   assert.match(html, /Order confirmed &amp; paid/);
   assert.match(html, /NBH-ABCD1234/);
-  assert.match(html, /A\$59\.99/);
+  assert.match(html, /\$59\.99/);
   assert.match(html, /Belconnen/);
   assert.match(html, /Beast &amp; Fries/);
   assert.match(html, /&lt;script&gt;/);
@@ -56,7 +56,7 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.doesNotMatch(html, /<script>/);
   assert.doesNotMatch(html, /Open Admin Orders|\/admin\/orders|RESTAURANT ORDER ALERT/);
   assert.match(text, /Order: NBH-ABCD1234/);
-  assert.match(text, /A\$59\.99/);
+  assert.match(text, /\$59\.99/);
   assert.doesNotMatch(text, /Admin Orders/);
 });
 

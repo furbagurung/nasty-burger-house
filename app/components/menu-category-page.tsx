@@ -9,6 +9,7 @@ import {
   menuNavigationCategories,
   type MenuPageCategory,
 } from "../data/menu-pages";
+import { FooterUtilityLinks } from "./footer-legal-links";
 import MenuItemMedia from "./menu-item-media";
 import MobileBottomNav from "./mobile-bottom-nav";
 
@@ -138,12 +139,15 @@ export default function MenuCategoryPage({
         </section>
       </main>
 
-      <footer className="catalogue-footer">
-        <div>
-          <Image src="/logo.webp" alt="Nasty Burger House" width={256} height={256} />
-          <p>Order online and collect from Nasty Burger House.</p>
+      <footer className="catalogue-footer" aria-label="Nasty Burger House footer">
+        <div className="footer-brand">
+          <Image src="/logo.webp" alt="Nasty Burger House" width={64} height={64} />
         </div>
-        <span className="footer-credit">Made with love by Furba Gurung</span>
+        <FooterUtilityLinks />
+        <div className="footer-bottom">
+          <span>© 2026 Nasty Burger House</span>
+          <span className="footer-credit">Developed by Furba Gurung</span>
+        </div>
       </footer>
 
       <MobileBottomNav active="menu" />

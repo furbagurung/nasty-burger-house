@@ -57,8 +57,12 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /receipt-source-logo\.png/);
   assert.match(html, /receipt-source-heading\.png/);
   assert.match(html, /padding:26px 0/);
-  assert.match(html, /background:#AC3342/);
+  assert.match(html, /bgcolor="#121212"/);
+  assert.match(html, /html,body,\.receipt-background,\.receipt-outer\{background-color:#121212!important/);
+  assert.doesNotMatch(html, /bgcolor="#AC3342"|background:#AC3342/);
   assert.match(html, /receipt-cut-top/);
+  assert.match(html, /class="receipt-cut-top".*?<img src="https:\/\/www\.nastyburgerhouse\.com\.au\/images\/email\/receipt-photo-top\.png"/s);
+  assert.match(html, /class="receipt-cut-bottom".*?<img src="https:\/\/www\.nastyburgerhouse\.com\.au\/images\/email\/receipt-photo-bottom\.png"/s);
   assert.match(html, /receipt-cut-bottom/);
   assert.match(html, /box-shadow:7px 19px 28px/);
   assert.match(html, /receipt-cut-top/);
@@ -75,7 +79,7 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(text, /TOTAL PAID/);
   assert.match(html, /THANK YOU FOR EATING WITH US!/);
   assert.match(html, /@media print/);
-  assert.match(html, /bgcolor="#AC3342"/);
+  assert.match(html, /bgcolor="#121212"/);
   assert.match(html, /PAID<\/td>/);
   // Gmail's 2026 "light only" option prevents its forced dark inversion.
   assert.match(html, /name="color-scheme" content="light only"/);
@@ -85,10 +89,12 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /bgcolor="#FFFCF7"/);
   assert.match(html, /class="receipt-padding" bgcolor="#FFFCF7"/);
   assert.match(html, /@media print[\s\S]*?box-shadow:none!important/);
-  assert.match(html, /receipt-paper-texture\.webp/);
-  assert.match(html, /background="https:\/\/www\.nastyburgerhouse\.com\.au\/images\/email\/receipt-paper-texture\.webp"/);
+  assert.match(html, /receipt-photo-texture\.jpg/);
+  assert.match(html, /receipt-photo-top\.png/);
+  assert.match(html, /receipt-photo-bottom\.png/);
+  assert.match(html, /background="https:\/\/www\.nastyburgerhouse\.com\.au\/images\/email\/receipt-photo-texture\.jpg"/);
   assert.match(html, /alt="NASTY BURGER HOUSE"/);
-  assert.match(html, /font:700 14px\/20px Arial/);
+  assert.match(html, /font:700 14px\/20px 'Courier New'/);
   assert.match(html, /font:900 18px\/23px Impact/);
   assert.match(html, /aria-hidden="true" style="font-size:0;line-height:0;white-space:nowrap/, "sample order should show a real Code 39 barcode");
   assert.match(html, /NBH-ABCD1234/);

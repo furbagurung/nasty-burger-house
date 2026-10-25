@@ -333,9 +333,6 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
           </tr>
         </table>
       </td></tr>
-      <tr class="email-brand"><td style="background:${palette.charcoal};">
-        <img src="${BANNER_URL}" width="600" alt="Signature Nasty Burger House burgers" style="display:block;width:100%;max-width:600px;height:auto;border:0;">
-      </td></tr>
       <tr class="email-brand"><td height="5" style="height:5px;background:${palette.red};font-size:1px;line-height:5px;">&nbsp;</td></tr>
       <tr class="email-intro"><td align="center" class="email-inset" style="padding:27px 28px 18px;">
         <h1 class="email-title" style="margin:0 0 9px;font:700 26px/33px Arial,Helvetica,sans-serif;color:${palette.ink};">Your order confirmation</h1>

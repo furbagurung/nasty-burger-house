@@ -224,7 +224,6 @@ export function renderPaidOrderEmail(payload: PaidOrderNotification) {
 // Separate buyer-only confirmation, using the admin template's shared brand, escaping and date helpers.
 export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
   const orderId = escapeHtml(payload.orderId);
-  const firstName = escapeHtml(payload.customer.name.trim().split(/\s+/)[0] || "there");
   const location = escapeHtml(payload.locationName);
   const total = escapeHtml(money(payload.total));
   const when = new Date(payload.paidAt);

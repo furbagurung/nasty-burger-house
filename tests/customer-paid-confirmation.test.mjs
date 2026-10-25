@@ -55,8 +55,8 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /background:#AC3342/);
   assert.match(html, /receipt-cut-top/);
   assert.match(html, /receipt-cut-bottom/);
-  assert.match(html, /box-shadow:0 18px 34px/);
-  assert.match(html, /linear-gradient\\(135deg/);
+  assert.match(html, /box-shadow:10px 20px 28px/);
+  assert.match(html, /receipt-torn-top\\.webp/);
   assert.doesNotMatch(html, /Signature Nasty Burger House burgers/);
   assert.doesNotMatch(html, /class="email-brand"/);
   assert.doesNotMatch(html, /class="email-intro"/);

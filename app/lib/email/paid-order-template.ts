@@ -300,11 +300,13 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
 <style>
 :root{color-scheme:light only;}
 html,body,.receipt-background,.receipt-outer{background-color:#121212!important;}
-.receipt-paper,.receipt-padding{background-color:#FFFCF7!important;color:#282326!important;}
+.receipt-paper{background-color:#121212!important;color:#282326!important;}
+.receipt-padding{background-color:#FFFCF7!important;color:#282326!important;}
 .receipt-padding{background-image:url('${RECEIPT_PHOTO_TEXTURE_URL}')!important;background-size:344px 332px!important;}
 .receipt-padding a{color:#282326!important;}
 @media (prefers-color-scheme:dark){
-.receipt-paper,.receipt-padding{background-color:#FFFCF7!important;color:#282326!important;}
+.receipt-paper{background-color:#121212!important;color:#282326!important;}
+.receipt-padding{background-color:#FFFCF7!important;color:#282326!important;}
 .receipt-padding a{color:#282326!important;}
 }
 @media only screen and (max-width:385px){

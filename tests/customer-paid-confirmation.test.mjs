@@ -81,7 +81,8 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /name="color-scheme" content="light only"/);
   assert.match(html, /name="supported-color-schemes" content="light only"/);
   assert.match(html, /color-scheme:light only/);
-  assert.match(html, /class="receipt-paper" bgcolor="#FFFCF7"/);
+  assert.match(html, /class="receipt-paper"/);
+  assert.match(html, /bgcolor="#FFFCF7"/);
   assert.match(html, /class="receipt-padding" bgcolor="#FFFCF7"/);
   assert.match(html, /@media print[\s\S]*?box-shadow:none!important/);
   assert.match(html, /receipt-paper-texture\.webp/);
@@ -89,7 +90,7 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /alt="NASTY BURGER HOUSE"/);
   assert.match(html, /font:700 14px\/20px Arial/);
   assert.match(html, /font:900 18px\/23px Impact/);
-  assert.match(html, /height:40px/, "sample order should show a real Code 39 barcode");
+  assert.match(html, /aria-hidden="true" style="font-size:0;line-height:0;white-space:nowrap/, "sample order should show a real Code 39 barcode");
   assert.match(html, /NBH-ABCD1234/);
   assert.match(html, /\$59\.99/);
   assert.match(html, /Belconnen/);
@@ -123,7 +124,7 @@ test("very long order numbers retain visible text without overflowing barcode", 
   const longRef = "NBH-" + "ABC12345".repeat(4);
   const { html, text } = getCustomerRenderer()({ ...example, orderId: longRef });
   assert.match(html, new RegExp(longRef));
-  assert.doesNotMatch(html, /height:40px/);
+  assert.doesNotMatch(html, /aria-hidden="true" style="font-size:0;line-height:0;white-space:nowrap/);
   assert.match(text, new RegExp(longRef));
 });
 

@@ -243,7 +243,7 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
     ).join("");
     return `<tr>
       <td style="vertical-align:top;padding:12px 5px 11px 0;border-bottom:1px dotted ${palette.line};">
-        <div style="color:${palette.ink};font:700 13px/19px 'Courier New',Courier,monospace;overflow-wrap:anywhere;">${escapeHtml(line.name)}</div>${details}
+        <div style="color:${palette.ink};font:700 14px/20px Arial,Helvetica,sans-serif;overflow-wrap:anywhere;">${escapeHtml(line.name)}</div>${details}
       </td>
       <td align="center" style="vertical-align:top;padding:12px 2px 11px;border-bottom:1px dotted ${palette.line};white-space:nowrap;color:${palette.ink};font:700 13px/19px 'Courier New',Courier,monospace;">${escapeHtml(line.quantity)}</td>
       <td align="right" style="vertical-align:top;padding:12px 0 11px 4px;border-bottom:1px dotted ${palette.line};white-space:nowrap;color:${palette.ink};font:700 13px/19px 'Courier New',Courier,monospace;">${escapeHtml(money(line.lineTotal))}</td>
@@ -285,9 +285,19 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light">
+  <meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only">
   <title>Order confirmed and paid — ${orderId}</title>
   <style>
+    :root { color-scheme:light only; }
+    .receipt-paper,.receipt-padding { background-color:#FFFCF7!important;color:#282326!important; }
+    /* Faint paper fibres, plain off-white fallback when gradients are unsupported. */
+    .receipt-paper { background-image:radial-gradient(circle at 1px 1px,rgba(98,77,52,.055) .5px,transparent .9px),radial-gradient(circle at 5px 8px,rgba(98,77,52,.037) .7px,transparent 1.1px)!important;background-size:13px 13px,19px 19px!important; }
+    @media (prefers-color-scheme: dark) {
+      .receipt-paper,.receipt-padding { background-color:#FFFCF7!important;color:#282326!important; }
+      .receipt-paper .receipt-ink { color:#282326!important; }
+      .receipt-paper .receipt-muted { color:#655B60!important; }
+      .receipt-paper .receipt-red { color:#AC3342!important; }
+    }
     @media only screen and (max-width:620px) {
       .email-outer{padding:10px 6px!important}
       .email-inset{padding:22px 17px!important}
@@ -335,16 +345,16 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
       </td></tr>
       <tr><td align="center" style="padding:9px 13px 30px;">
         <!--[if mso]><table role="presentation" width="415"><tr><td><![endif]-->
-        <table role="presentation" class="receipt-paper" width="100%" cellpadding="0" cellspacing="0" border="0"
-          style="width:100%;max-width:415px;background:${palette.paper};border:1px solid ${palette.line};border-top:7px dotted ${palette.canvas};border-bottom:7px dotted ${palette.canvas};border-collapse:separate;border-spacing:0;">
-          <tr><td align="center" class="receipt-padding" style="padding:25px 22px 25px;">
+        <table role="presentation" class="receipt-paper" bgcolor="#FFFCF7" width="100%" cellpadding="0" cellspacing="0" border="0"
+          style="width:100%;max-width:415px;background-color:${palette.paper};background-image:radial-gradient(circle at 1px 1px,rgba(98,77,52,.055) .5px,transparent .9px),radial-gradient(circle at 5px 8px,rgba(98,77,52,.037) .7px,transparent 1.1px);background-size:13px 13px,19px 19px;color-scheme:light only;border:1px solid ${palette.line};border-top:7px dotted ${palette.canvas};border-bottom:7px dotted ${palette.canvas};border-collapse:separate;border-spacing:0;">
+          <tr><td align="center" class="receipt-padding" bgcolor="#FFFCF7" style="padding:25px 22px 25px;background-color:${palette.paper};background-image:radial-gradient(circle at 1px 1px,rgba(98,77,52,.055) .5px,transparent .9px),radial-gradient(circle at 5px 8px,rgba(98,77,52,.037) .7px,transparent 1.1px);background-size:13px 13px,19px 19px;color:${palette.ink};color-scheme:light only;">
             <img src="${LOGO_URL}" width="74" height="74" alt="Nasty Burger House logo" style="display:block;width:74px;height:74px;max-width:100%;border:0;margin:0 auto 8px;">
-            <div style="font:900 19px/25px Arial,Helvetica,sans-serif;letter-spacing:.03em;color:${palette.ink};">NASTY BURGER HOUSE</div>
+            <div style="font:900 22px/27px Impact,"Arial Narrow","Arial Black",Arial,sans-serif;letter-spacing:.01em;color:${palette.ink};">NASTY BURGER HOUSE</div>
             <div style="margin-top:3px;font:700 12px/18px 'Courier New',Courier,monospace;color:${palette.red};">BURGERS &bull; BEAST BOXES &bull; DRINKS</div>
             <div style="margin-top:9px;font:400 13px/19px 'Courier New',Courier,monospace;color:${palette.ink};">${location}</div>
             <div style="font:400 12px/18px 'Courier New',Courier,monospace;color:${palette.ink};">nastyburgerhouse.com.au</div>
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:17px 0 13px;border-top:2px dashed ${palette.ink};"><tr><td height="1" style="height:1px;line-height:1px;font-size:1px;">&nbsp;</td></tr></table>
-            <div style="margin:0 0 13px;font:900 17px/23px Arial,Helvetica,sans-serif;color:${palette.red};letter-spacing:.02em;">ORDER CONFIRMED &amp; PAID</div>
+            <div style="margin:0 0 13px;font:900 19px/25px Impact,"Arial Narrow","Arial Black",Arial,sans-serif;color:${palette.red};letter-spacing:.015em;">ORDER CONFIRMED &amp; PAID</div>
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font:400 13px/21px 'Courier New',Courier,monospace;color:${palette.ink};">
               <tr><td width="36%" style="vertical-align:top;">Order No:</td><td style="font-weight:700;overflow-wrap:anywhere;">${orderId}</td></tr>
               <tr><td style="vertical-align:top;">Date:</td><td>${date}</td></tr>
@@ -355,9 +365,9 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:15px 0 4px;border-top:2px dashed ${palette.ink};"><tr><td height="1" style="height:1px;line-height:1px;font-size:1px;">&nbsp;</td></tr></table>
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;border-collapse:collapse;font-family:'Courier New',Courier,monospace;">
               <tr>
-                <th align="left" width="55%" style="padding:0 5px 6px 0;font:700 13px/19px Arial,Helvetica,sans-serif;color:${palette.ink};">ITEM</th>
-                <th align="center" width="13%" style="padding:0 2px 6px;font:700 13px/19px Arial,Helvetica,sans-serif;color:${palette.ink};">QTY</th>
-                <th align="right" width="32%" style="padding:0 0 6px 2px;font:700 13px/19px Arial,Helvetica,sans-serif;color:${palette.ink};">AMT</th>
+                <th align="left" width="55%" style="padding:0 5px 6px 0;font:900 14px/19px Impact,"Arial Narrow","Arial Black",Arial,sans-serif;color:${palette.ink};">ITEM</th>
+                <th align="center" width="13%" style="padding:0 2px 6px;font:900 14px/19px Impact,"Arial Narrow","Arial Black",Arial,sans-serif;color:${palette.ink};">QTY</th>
+                <th align="right" width="32%" style="padding:0 0 6px 2px;font:900 14px/19px Impact,"Arial Narrow","Arial Black",Arial,sans-serif;color:${palette.ink};">AMT</th>
               </tr>
               ${rows}
               ${notes}
@@ -368,8 +378,8 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font:400 13px/22px 'Courier New',Courier,monospace;color:${palette.ink};">
               <tr><td style="padding:4px 0;">Items subtotal</td><td align="right" style="white-space:nowrap;">${escapeHtml(money(itemsSubtotal))}</td></tr>
               <tr>
-                <td style="padding:9px 0 0;font:900 21px/28px Arial,Helvetica,sans-serif;color:${palette.red};">TOTAL PAID</td>
-                <td align="right" style="padding:9px 0 0;white-space:nowrap;font:900 22px/28px Arial,Helvetica,sans-serif;color:${palette.red};">${total}</td>
+                <td style="padding:9px 0 0;font:900 23px/29px Impact,"Arial Narrow","Arial Black",Arial,sans-serif;color:${palette.red};">TOTAL PAID</td>
+                <td align="right" style="padding:9px 0 0;white-space:nowrap;font:900 24px/29px Impact,"Arial Narrow","Arial Black",Arial,sans-serif;color:${palette.red};">${total}</td>
               </tr>
             </table>
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0 15px;border-top:2px dashed ${palette.ink};">

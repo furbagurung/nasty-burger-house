@@ -2,6 +2,7 @@ import "server-only";
 
 import type { PaidOrderNotification } from "./square/paid-order-notifications";
 import { renderPaidOrderEmail } from "./email/paid-order-template";
+import { wasResendEmailAlreadyAccepted } from "./email/resend-idempotency";
 
 type OrderNotificationPayload = PaidOrderNotification;
 
@@ -68,7 +69,17 @@ export async function sendAdminPaidOrderEmail(
     });
 
     if (!response.ok) {
-      console.error("[NBH admin email failed]", response.status, await response.text());
+      const errorBody = await response.text();
+      if (wasResendEmailAlreadyAccepted(response.status, errorBody)) {
+        // This exact Resend 409 proves an earlier send with the order's key
+        // was accepted. Do not retry with a new key and send a duplicate.
+        console.info("[NBH admin email previously accepted]", {
+          squareOrderId: payload.squareOrderId,
+        });
+        return { ok: true };
+      }
+
+      console.error("[NBH admin email failed]", response.status, errorBody);
       return { ok: false, reason: "delivery-failed" };
     }
 

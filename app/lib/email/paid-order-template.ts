@@ -299,51 +299,30 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
       .receipt-paper .receipt-red { color:#AC3342!important; }
     }
     @media only screen and (max-width:620px) {
-      .email-outer{padding:10px 6px!important}
-      .email-inset{padding:22px 17px!important}
-      .email-title{font-size:23px!important;line-height:30px!important}
+      .email-outer{padding:22px 8px!important}
       .receipt-padding{padding:23px 15px 21px!important}
       .brand-logo{width:48px!important;height:48px!important}
     }
     @media print {
-      .email-outer{padding:0!important}
-      .email-intro,.email-brand,.email-footer{display:none!important}
-      .receipt-paper{border:0!important}
+      body,.email-outer{background:#FFFFFF!important;padding:0!important}
+      .receipt-paper{border:0!important;box-shadow:none!important;-webkit-box-shadow:none!important;max-width:80mm!important}
+      .receipt-cut-top,.receipt-cut-bottom{display:none!important}
     }
   </style>
 </head>
-<body style="margin:0;padding:0;background:${palette.canvas};color:${palette.ink};font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
+<body style="margin:0;padding:0;background:${palette.red};color:${palette.ink};font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
 <div style="display:none!important;opacity:0;visibility:hidden;mso-hide:all;max-height:0;max-width:0;overflow:hidden;">
   Order ${orderId} is confirmed and paid (${total}). Pickup ASAP at ${location}.
 </div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${palette.canvas};">
-  <tr><td align="center" class="email-outer" style="padding:26px 12px;">
+<table role="presentation" bgcolor="#AC3342" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${palette.red};">
+  <tr><td align="center" class="email-outer" style="padding:38px 14px;">
     <!--[if mso]><table role="presentation" width="600"><tr><td><![endif]-->
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;border-collapse:separate;border-spacing:0;background:${palette.surface};">
-      <tr class="email-brand"><td style="background:${palette.charcoal};padding:18px 23px;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td width="61" style="width:61px;vertical-align:middle;">
-              <img class="brand-logo" src="${LOGO_URL}" width="54" height="54" alt="Nasty Burger House" style="display:block;width:54px;height:54px;border:0;">
-            </td>
-            <td style="vertical-align:middle;">
-              <div style="font:700 19px/24px Arial,Helvetica,sans-serif;color:#FFFFFF;letter-spacing:.01em;">NASTY BURGER HOUSE</div>
-              <div style="padding-top:4px;font:700 10px/15px Arial,Helvetica,sans-serif;color:#D88B7D;letter-spacing:.10em;">BURGERS &bull; BEAST BOXES &bull; DRINKS</div>
-            </td>
-          </tr>
-        </table>
-      </td></tr>
-      <tr class="email-brand"><td height="5" style="height:5px;background:${palette.red};font-size:1px;line-height:5px;">&nbsp;</td></tr>
-      <tr class="email-intro"><td align="center" class="email-inset" style="padding:27px 28px 18px;">
-        <h1 class="email-title" style="margin:0 0 9px;font:700 26px/33px Arial,Helvetica,sans-serif;color:${palette.ink};">Your order confirmation</h1>
-        <p style="margin:0;font:400 14px/23px Arial,Helvetica,sans-serif;color:${palette.muted};">
-          Thanks, ${firstName}! We&rsquo;ve received your paid order and will get it ready for pickup.
-        </p>
-      </td></tr>
-      <tr><td align="center" style="padding:9px 13px 30px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;border-collapse:separate;border-spacing:0;background:${palette.red};">
+      <tr><td align="center" style="padding:0 12px 0;">
         <!--[if mso]><table role="presentation" width="415"><tr><td><![endif]-->
         <table role="presentation" class="receipt-paper" bgcolor="#FFFCF7" width="100%" cellpadding="0" cellspacing="0" border="0"
-          style="width:100%;max-width:415px;background-color:${palette.paper};background-image:radial-gradient(circle at 1px 1px,rgba(98,77,52,.055) .5px,transparent .9px),radial-gradient(circle at 5px 8px,rgba(98,77,52,.037) .7px,transparent 1.1px);background-size:13px 13px,19px 19px;color-scheme:light only;border:1px solid ${palette.line};border-top:7px dotted ${palette.canvas};border-bottom:7px dotted ${palette.canvas};border-collapse:separate;border-spacing:0;">
+          style="width:100%;max-width:415px;background-color:${palette.paper};background-image:radial-gradient(circle at 1px 1px,rgba(98,77,52,.055) .5px,transparent .9px),radial-gradient(circle at 5px 8px,rgba(98,77,52,.037) .7px,transparent 1.1px);background-size:13px 13px,19px 19px;color-scheme:light only;border:1px solid ${palette.line};border-top:7px dotted ${palette.red};border-bottom:7px dotted ${palette.red};border-collapse:separate;border-spacing:0;box-shadow:0 18px 34px rgba(18,18,18,.28);-webkit-box-shadow:0 18px 34px rgba(18,18,18,.28);">
+          <tr><td class="receipt-cut-top" bgcolor="#AC3342" height="10" style="height:10px;line-height:10px;font-size:1px;background-color:${palette.red};background-image:linear-gradient(135deg,transparent 50%,${palette.paper} 50%),linear-gradient(225deg,transparent 50%,${palette.paper} 50%);background-size:18px 18px;background-position:0 0,9px 0;background-repeat:repeat-x;">&nbsp;</td></tr>
           <tr><td align="center" class="receipt-padding" bgcolor="#FFFCF7" style="padding:25px 22px 25px;background-color:${palette.paper};background-image:radial-gradient(circle at 1px 1px,rgba(98,77,52,.055) .5px,transparent .9px),radial-gradient(circle at 5px 8px,rgba(98,77,52,.037) .7px,transparent 1.1px);background-size:13px 13px,19px 19px;color:${palette.ink};color-scheme:light only;">
             <img src="${LOGO_URL}" width="74" height="74" alt="Nasty Burger House logo" style="display:block;width:74px;height:74px;max-width:100%;border:0;margin:0 auto 8px;">
             <div style="font:900 22px/27px Impact,'Arial Narrow','Arial Black',Arial,sans-serif;letter-spacing:.01em;color:${palette.ink};">NASTY BURGER HOUSE</div>
@@ -389,16 +368,9 @@ export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification) {
             ${barcode}
             <div style="font:700 12px/18px 'Courier New',Courier,monospace;letter-spacing:.10em;color:${palette.ink};overflow-wrap:anywhere;">${orderId}</div>
           </td></tr>
+          <tr><td class="receipt-cut-bottom" bgcolor="#AC3342" height="10" style="height:10px;line-height:10px;font-size:1px;background-color:${palette.red};background-image:linear-gradient(45deg,transparent 50%,${palette.paper} 50%),linear-gradient(315deg,transparent 50%,${palette.paper} 50%);background-size:18px 18px;background-position:0 0,9px 0;background-repeat:repeat-x;">&nbsp;</td></tr>
         </table>
         <!--[if mso]></td></tr></table><![endif]-->
-      </td></tr>
-      <tr class="email-footer"><td align="center" style="background:${palette.charcoal};padding:24px 22px;">
-        <div style="font:700 12px/20px Arial,Helvetica,sans-serif;color:#FFFFFF;">NASTY BURGER HOUSE</div>
-        <a href="${BRAND_ORIGIN}" style="display:inline-block;margin-top:7px;font:400 12px/19px Arial,Helvetica,sans-serif;color:#D88B7D;text-decoration:underline;">nastyburgerhouse.com.au</a>
-        <div style="margin-top:10px;font:400 11px/17px Arial,Helvetica,sans-serif;color:#C4C4C4;">
-          This confirms payment, not that your order is ready to collect.<br>
-          Square may send a separate payment receipt.
-        </div>
       </td></tr>
     </table>
     <!--[if mso]></td></tr></table><![endif]-->

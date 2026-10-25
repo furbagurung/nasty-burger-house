@@ -60,21 +60,23 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.doesNotMatch(text, /Admin Orders/);
 });
 
-test("customer recipient and idempotency key are independent of admin addresses", async () => {
+test("customer receives confirmation with hidden, unique admin copies", async () => {
   const source = read("app/lib/customer-notifications.ts")
     .replace('import "server-only";', "")
     .replace(/import type .*;\n/g, "")
     .replace(/import \{ .* \} from ".*";\n/g, "")
     .replace(/type CustomerEmailResult =[\s\S]*?;\n\n/, "")
     .replace("payload: PaidOrderNotification): Promise<CustomerEmailResult>", "payload)")
+    .replace("function adminBccRecipients(value: string | undefined, buyerEmail: string): string[] {", "function adminBccRecipients(value, buyerEmail) {")
     .replace("export async function", "async function");
   const requests = [];
+  const env = {
+    RESEND_API_KEY: "test-key",
+    ORDER_NOTIFICATION_FROM: "Nasty Burger House <alerts@example.com>",
+    ORDER_NOTIFICATION_EMAIL: " Admin@example.com, office@example.com, ADMIN@example.com, CUSTOMER@example.com, invalid-address, office@example.com ",
+  };
   const send = vm.runInNewContext(source + "\nsendCustomerPaidOrderEmail", {
-    process: { env: {
-      RESEND_API_KEY: "test-key",
-      ORDER_NOTIFICATION_FROM: "Nasty Burger House <alerts@example.com>",
-      ORDER_NOTIFICATION_EMAIL: "admin@example.com",
-    } },
+    process: { env },
     renderCustomerPaidOrderEmail: () => ({ html: "<b>Paid</b>", text: "Paid" }),
     wasResendEmailAlreadyAccepted: () => false,
     fetch: async (url, init) => {
@@ -88,11 +90,24 @@ test("customer recipient and idempotency key are independent of admin addresses"
   assert.equal(requests.length, 1);
   const message = JSON.parse(requests[0].init.body);
   assert.deepEqual(message.to, ["customer@example.com"]);
+  assert.deepEqual(message.bcc, ["Admin@example.com", "office@example.com"]);
   assert.ok(!message.to.includes("admin@example.com"));
+  assert.ok(!message.to.includes("office@example.com"));
+  assert.equal(message.cc, undefined);
   assert.equal(message.reply_to, undefined);
   assert.equal(message.subject, "Order confirmed & paid · NBH-ABCD1234");
   assert.equal(requests[0].init.headers["Idempotency-Key"], "nasty-customer-paid-SQORDER1234");
   assert.notEqual(requests[0].init.headers["Idempotency-Key"], "nasty-paid-square-SQORDER1234");
+  env.ORDER_NOTIFICATION_EMAIL = "CUSTOMER@example.com, customer@example.com";
+  await send({ ...example, squareOrderId: "SQORDER1235" });
+  const selfCopy = JSON.parse(requests[1].init.body);
+  assert.equal(selfCopy.bcc, undefined, "buyer who is an admin must not get a duplicate copy");
+
+  env.ORDER_NOTIFICATION_EMAIL = "";
+  await send({ ...example, squareOrderId: "SQORDER1236" });
+  const noAdmins = JSON.parse(requests[2].init.body);
+  assert.equal(noAdmins.bcc, undefined, "missing admin list should not break buyer email");
+
   await send({ ...example, customer: { ...example.customer, email: "" } });
-  assert.equal(requests.length, 1, "empty customer email must not send a message");
+  assert.equal(requests.length, 3, "empty customer email must not send a message");
 });

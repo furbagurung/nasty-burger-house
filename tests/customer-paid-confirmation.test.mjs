@@ -78,12 +78,12 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /color-scheme:light only/);
   assert.match(html, /class="receipt-paper" bgcolor="#FFFCF7"/);
   assert.match(html, /class="receipt-padding" bgcolor="#FFFCF7"/);
-  assert.match(html, /@media print[\\s\\S]*?box-shadow:none!important/);
+  assert.match(html, /@media print[\s\S]*?box-shadow:none!important/);
   assert.match(html, /receipt-paper-texture\.webp/);
   assert.match(html, /background="https:\/\/www\.nastyburgerhouse\.com\.au\/images\/email\/receipt-paper-texture\.webp"/);
-  assert.match(html, /font:900 28px\\/33px Impact/);
-  assert.match(html, /font:700 14px\\/20px Arial/);
-  assert.match(html, /font:900 18px\\/24px Impact/);
+  assert.match(html, /font:900 28px\/33px Impact/);
+  assert.match(html, /font:700 14px\/20px Arial/);
+  assert.match(html, /font:900 18px\/24px Impact/);
   assert.match(html, /height:40px/, "sample order should show a real Code 39 barcode");
   assert.match(html, /NBH-ABCD1234/);
   assert.match(html, /\$59\.99/);

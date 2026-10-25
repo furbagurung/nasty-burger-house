@@ -103,7 +103,7 @@ test("receipt subtotal only appears when verified line amounts equal paid total"
   const { html, text } = render(payload);
   assert.doesNotMatch(html, />Subtotal</);
   assert.doesNotMatch(text, /Subtotal:/);
-  assert.match(html, /\\$65\\.99/);
+  assert.match(html, /\$65\.99/);
   assert.match(text, /TOTAL PAID:/);
 });
 

@@ -65,16 +65,16 @@ export default function FindUsSection() {
     <section className="find-us-section" aria-labelledby="find-us-title">
       <div className="find-us-section__inner">
         <div className="find-us-section__copy">
-          <p className="eyebrow">Find us</p>
-          <h2 id="find-us-title">Come get Nasty.</h2>
+          <p className="eyebrow">Location</p>
+          <h2 id="find-us-title">Find the truck.</h2>
           <div className="find-us-section__location">
-            <small>Pickup location</small>
+            <small>Pickup spot</small>
             <strong>{serviceConfiguration.locationName}</strong>
-            <span>See the latest pin for our exact location.</span>
+            <span>Check our latest pin.</span>
           </div>
           {GOOGLE_MAPS_URL && (
             <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer">
-              Get directions <span aria-hidden="true">↗</span>
+              Directions <span aria-hidden="true">↗</span>
             </a>
           )}
         </div>
@@ -95,13 +95,13 @@ export default function FindUsSection() {
                 <div className="find-us-section__map-status" role="status" aria-live="polite">
                   <strong>
                     {mapState === "loading"
-                      ? "Loading Google Maps…"
-                      : "Map preview is unavailable"}
+                      ? "Loading map…"
+                      : "Map unavailable"}
                   </strong>
                   <span>
                     {mapState === "loading"
-                      ? "Fetching the latest pickup pin."
-                      : "Open Google Maps to see the exact pickup pin."}
+                      ? "Finding our pickup pin."
+                      : "Use Directions for the exact pin."}
                   </span>
                 </div>
               )}
@@ -112,11 +112,11 @@ export default function FindUsSection() {
                 rel="noopener noreferrer"
                 aria-label="Open the exact Nasty Burger House pickup location in Google Maps (new tab)"
               >
-                Open in Google Maps <span aria-hidden="true">↗</span>
+                Open map <span aria-hidden="true">↗</span>
               </a>
             </>
           ) : (
-            <p className="find-us-section__map-fallback">Map location unavailable.</p>
+            <p className="find-us-section__map-fallback">Location unavailable.</p>
           )}
         </div>
       </div>

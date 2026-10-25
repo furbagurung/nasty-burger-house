@@ -1,7 +1,8 @@
-import { LayoutDashboard, BarChart3, Users, MessageSquareText, ShoppingBag, UtensilsCrossed, Coins, Megaphone, FileText, Settings, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, BarChart3, Users, MessageSquareText, ShoppingBag, UtensilsCrossed, Coins, Megaphone, FileText, Settings, ShieldCheck, Store } from "lucide-react";
 
 export type AdminSection =
   | "dashboard"
+  | "shop"
   | "analytics"
   | "customers"
   | "reviews"
@@ -36,6 +37,7 @@ const configuredNavigationGroups = [
     label: "Business",
     items: [
       { id: "orders", label: "Orders", href: "/admin/orders", icon: ShoppingBag },
+      { id: "shop", label: "Shop", href: "/admin/shop", icon: Store },
       { id: "menu", label: "Menu", href: "/admin/menu", icon: UtensilsCrossed },
       { id: "drip-points", label: "Drip Points", href: "/admin/drip-points", icon: Coins },
       { id: "promotions", label: "Promotions", href: "/admin/promotions", icon: Megaphone },

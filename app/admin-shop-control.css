@@ -1,9 +1,4 @@
-/* Reuse the dashboard inset, including collapsed-sidebar and mobile rules.
-   Only the sales content should grow to fill the space above the footer. */
-.admin-shell.admin-modern > .admin-main.admin-shop-control-container {
-  flex-grow: 0;
-  padding-bottom: 0;
-}
+/* Shop controls use the shared admin-main inset and its responsive breakpoints. */
 .admin-shop-control { margin: 0; padding: clamp(16px, 3vw, 24px); background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: 16px; min-width: 0; }
 .admin-shop-control__heading { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
 .admin-shop-control h2 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: var(--admin-type-section, 18px); line-height: 1.3; font-weight: 600; }

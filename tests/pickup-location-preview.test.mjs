@@ -23,13 +23,31 @@ test("the previous Belconnen location does not appear in customer pickup UI", ()
   assert.doesNotMatch(mobile, /Belconnen ACT 2617/);
 });
 
-test("map preview is clearly illustrative and opens the exact link", () => {
+test("Google Maps iframe replaces illustration and preserves the exact directions link", () => {
   const findUs = source("app/components/find-us-section.tsx");
-  assert.match(findUs, /Illustrated preview/);
-  assert.match(findUs, /Open Maps for the exact pin/);
+  const css = source("app/find-us-section.css");
+  assert.match(findUs, /<iframe/);
+  assert.match(findUs, /src=\{embedUrl\}/);
+  assert.match(findUs, /loading="lazy"/);
+  assert.match(findUs, /title="Google Maps showing the current Nasty Burger House pickup location"/);
+  assert.match(findUs, /href=\{GOOGLE_MAPS_URL\}/);
   assert.match(findUs, /rel="noopener noreferrer"/);
-  assert.match(findUs, /className="find-us-section__map-preview"/);
-  assert.doesNotMatch(findUs, /<iframe/);
+  assert.match(findUs, /className="find-us-section__map-link"/);
+  assert.match(css, /--nb-dark-border/);
+  assert.match(css, /--nb-dark-focus/);
+  assert.doesNotMatch(findUs, /Illustrated preview|find-us-section__map-art/);
+});
+
+test("iframe URL resolves only from the owner Maps link, not an old hardcoded pin", () => {
+  const mapResolver = source("app/lib/google-maps-embed.ts");
+  const apiRoute = source("app/api/pickup-map/route.ts");
+  assert.match(mapResolver, /serviceConfiguration\.mapUrl/);
+  assert.match(mapResolver, /maps\.app\.goo\.gl/);
+  assert.match(mapResolver, /embedUrlFromGoogleMapsLink/);
+  assert.match(mapResolver, /redirect: "manual"/);
+  assert.match(mapResolver, /embed.searchParams.set\("output", "embed"\)/);
+  assert.match(apiRoute, /resolveOwnerPickupEmbed/);
+  assert.doesNotMatch(mapResolver, /-35\.2373611|149\.0648333/);
 });
 
 test("admin ordering and service hours are left untouched", () => {

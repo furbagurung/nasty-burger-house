@@ -10,12 +10,12 @@ function isGoogleMapsUrl(url: URL) {
   return (
     url.protocol === "https:" &&
     (url.hostname === "maps.app.goo.gl" ||
-      /^(?:www\\.|maps\\.)?google\\.com(?:\\.au)?$/.test(url.hostname))
+      /^(?:www\.|maps\.)?google\.com(?:\.au)?$/.test(url.hostname))
   );
 }
 
 function validCoordinates(value: string): string | null {
-  const match = /^(-?\\d{1,3}(?:\\.\\d+)?),\\s*(-?\\d{1,3}(?:\\.\\d+)?)$/.exec(value.trim());
+  const match = /^(-?\d{1,3}(?:\.\d+)?),\s*(-?\d{1,3}(?:\.\d+)?)$/.exec(value.trim());
   if (!match) return null;
   const lat = Number(match[1]);
   const lng = Number(match[2]);
@@ -37,12 +37,12 @@ export function embedUrlFromGoogleMapsLink(value: string): string | null {
   // Actual place coordinates in the Maps data string take priority over the
   // viewport centre (@lat,lng), which may be far away from the marker.
   const data = decodeURIComponent(resolved.pathname + resolved.search);
-  const placeCoordinates = /!3d(-?\\d{1,3}(?:\\.\\d+)?)!4d(-?\\d{1,3}(?:\\.\\d+)?)/.exec(data);
+  const placeCoordinates = /!3d(-?\d{1,3}(?:\.\d+)?)!4d(-?\d{1,3}(?:\.\d+)?)/.exec(data);
   const dest = resolved.searchParams.get("destination");
   const query = resolved.searchParams.get("q") ?? resolved.searchParams.get("query");
-  const placeSlug = /\\/maps\\/place\\/([^/]+)/.exec(resolved.pathname);
+  const placeSlug = /\/maps\/place\/([^/]+)/.exec(resolved.pathname);
   const placeName = placeSlug
-    ? decodeURIComponent(placeSlug[1]).replace(/\\+/g, " ").trim()
+    ? decodeURIComponent(placeSlug[1]).replace(/\+/g, " ").trim()
     : null;
 
   const target =

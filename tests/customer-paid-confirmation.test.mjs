@@ -51,6 +51,14 @@ test("customer email contains receipt details and escapes untrusted content", ()
   const { html, text } = getCustomerRenderer()(example);
   assert.match(html, /ORDER CONFIRMED &amp; PAID/);
   assert.match(html, /receipt-paper/);
+  assert.match(html, /background:#AC3342/);
+  assert.match(html, /receipt-cut-top/);
+  assert.match(html, /receipt-cut-bottom/);
+  assert.match(html, /box-shadow:0 18px 34px/);
+  assert.match(html, /linear-gradient\\(135deg/);
+  assert.doesNotMatch(html, /Signature Nasty Burger House burgers/);
+  assert.doesNotMatch(html, /class="email-brand"/);
+  assert.doesNotMatch(html, /class="email-intro"/);
   assert.match(html, /border-top:7px dotted/);
   assert.match(html, /ITEM/);
   assert.match(html, /QTY/);
@@ -64,6 +72,7 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /color-scheme:light only/);
   assert.match(html, /class="receipt-paper" bgcolor="#FFFCF7"/);
   assert.match(html, /class="receipt-padding" bgcolor="#FFFCF7"/);
+  assert.match(html, /@media print[\\s\\S]*?box-shadow:none!important/);
   assert.match(html, /background-image:radial-gradient/);
   assert.match(html, /font:900 22px\\/27px Impact/);
   assert.match(html, /font:700 14px\\/20px Arial/);

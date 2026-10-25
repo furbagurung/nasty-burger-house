@@ -8,6 +8,29 @@ type CustomerEmailResult =
   | { ok: true }
   | { ok: false; reason: "missing-email" | "not-configured" | "delivery-failed" };
 
+/**
+ * Copy the customer-facing confirmation to the restaurant inboxes without
+ * exposing staff addresses to the buyer. Keep the buyer out of BCC to avoid
+ * a second copy when an admin address is also used at checkout.
+ */
+function adminBccRecipients(value: string | undefined, buyerEmail: string): string[] {
+  const seen = new Set([buyerEmail.toLowerCase()]);
+  return (value ?? "")
+    .split(",")
+    .map((address) => address.trim())
+    .filter((address) => {
+      const normalized = address.toLowerCase();
+      if (
+        !address ||
+        address.length > 160 ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address) ||
+        seen.has(normalized)
+      ) return false;
+      seen.add(normalized);
+      return true;
+    });
+}
+
 export async function sendCustomerPaidOrderEmail(payload: PaidOrderNotification): Promise<CustomerEmailResult> {
   const email = payload.customer.email.trim();
   // Square checkout lets buyers edit their email; use its final, verified
@@ -20,6 +43,7 @@ export async function sendCustomerPaidOrderEmail(payload: PaidOrderNotification)
   if (!apiKey || !from) {
     return { ok: false, reason: "not-configured" };
   }
+  const adminBcc = adminBccRecipients(process.env.ORDER_NOTIFICATION_EMAIL, email);
   const { html, text } = renderCustomerPaidOrderEmail(payload);
   const supportEmail = process.env.SQUARE_MERCHANT_SUPPORT_EMAIL?.trim();
   const replyTo = supportEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(supportEmail)
@@ -38,6 +62,7 @@ export async function sendCustomerPaidOrderEmail(payload: PaidOrderNotification)
       body: JSON.stringify({
         from,
         to: [email],
+        ...(adminBcc.length ? { bcc: adminBcc } : {}),
         subject: `Order confirmed & paid · ${payload.orderId}`,
         html,
         text,

@@ -18,13 +18,31 @@ const example = {
 };
 
 function getCustomerRenderer() {
-  const source = read("app/lib/email/paid-order-template.ts")
-    .replace('import "server-only";', "")
-    .replace(/import type \{ PaidOrderNotification \} from ".*";/, "")
-    .replace("} as const;", "};")
-    .replaceAll("payload: PaidOrderNotification", "payload")
-    .replaceAll("export function", "function");
-  return vm.runInNewContext(source + "\nrenderCustomerPaidOrderEmail");
+  const file = read("app/lib/email/paid-order-template.ts");
+  const start = file.indexOf("export function renderCustomerPaidOrderEmail(");
+  assert.ok(start > 0, "Customer renderer must exist");
+  const source = file.slice(start)
+    .replace("export function renderCustomerPaidOrderEmail(payload: PaidOrderNotification)", "function renderCustomerPaidOrderEmail(payload)");
+  const palette = {
+    canvas: "#F4F2F0", surface: "#FFFFFF", charcoal: "#1E1E1E",
+    ink: "#282326", muted: "#655B60", line: "#EFE2E3", red: "#AC3342",
+  };
+  const escapeHtml = (value) => String(value)
+    .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+  const sandbox = {
+    palette, escapeHtml,
+    money: (value) => new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" }).format(value),
+    paidTime: (value) => new Intl.DateTimeFormat("en-AU", {
+      timeZone: "Australia/Sydney", day: "numeric", month: "short",
+      year: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short",
+    }).format(new Date(value)),
+    detailLine: (value) => escapeHtml(value).replaceAll("\\n", "<br>"),
+    LOGO_URL: "https://www.nastyburgerhouse.com.au/logo.webp",
+    BANNER_URL: "https://www.nastyburgerhouse.com.au/images/hero-slider/beast-burgers.jpg",
+    BRAND_ORIGIN: "https://www.nastyburgerhouse.com.au",
+  };
+  return vm.runInNewContext(source + "\\nrenderCustomerPaidOrderEmail", sandbox);
 }
 
 test("Square payment link prepopulates validated buyer contact information", () => {

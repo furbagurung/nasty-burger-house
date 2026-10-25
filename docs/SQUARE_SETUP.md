@@ -7,10 +7,11 @@ The custom Next.js frontend stays on Vercel. Square becomes the commerce backend
 1. Customer builds the cart on nastyburgerhouse.com.au.
 2. The website validates prices and menu choices server-side.
 3. The backend searches the Square Customer Directory by email/phone and creates a customer only when needed.
-4. The backend creates a Square Order + Square-hosted payment link for ASAP pickup.
+4. The backend creates a Square Order + Square-hosted payment link for ASAP pickup, pre-filling the buyer's email and phone from the validated checkout form.
 5. The customer completes payment on Square.
 6. Square redirects back to `/checkout/complete`.
 7. Square webhook events are accepted at `/api/square/webhooks` after HMAC signature validation.
+8. After Square verifies a completed, fully paid website pickup order, the restaurant receives its admin alert and the buyer receives a separate branded **Order confirmed & paid** email.
 
 Square is the commerce source of truth. The website never receives raw card details.
 
@@ -67,6 +68,7 @@ Use the website normally:
 6. Complete the test payment using Square Sandbox test payment data.
 7. Square should return to `/checkout/complete`.
 8. Confirm the order appears in the Square Sandbox order flow and the customer appears in Customer Directory.
+9. Check that Square pre-fills the email (and phone), while allowing the buyer to correct either. The customer confirmation must use the final email Square reports for the paid order.
 
 Do not switch to Production until this whole flow works reliably.
 
@@ -104,17 +106,17 @@ The URL in `SQUARE_WEBHOOK_NOTIFICATION_URL` must exactly match Square's configu
 
 Subscribe this exact webhook URL to **`payment.created`**, **`payment.updated`**, and **`order.updated`** in the Square Developer Console. The first two events are required for paid-order email alerts; `order.updated` is retained for existing Square Loyalty accrual. The application needs **`PAYMENTS_READ`** and **`ORDERS_READ`** permissions.
 
-**Restaurant notifications are sent only after Square confirms payment.** Checkout creation no longer sends a restaurant email or external order webhook. When a `payment.created` or `payment.updated` event reports `COMPLETED`, the server retrieves the payment and its order directly from Square, verifies a fully paid, website-created NBH pickup order at the configured location, then sends the Resend email and any configured `ORDER_WEBHOOK_URL` alert.
+**Restaurant and customer order emails are sent only after Square confirms payment.** Checkout creation no longer sends a restaurant email or external order webhook. When a `payment.created` or `payment.updated` event reports `COMPLETED`, the server retrieves the payment and its order directly from Square, verifies a fully paid, website-created NBH pickup order at the configured location, then sends separate Resend messages to the configured admin addresses and to the buyer email in Square's verified pickup fulfillment, plus any configured `ORDER_WEBHOOK_URL` alert. The customer email never includes an admin link.
 
-Resend email requests use a stable Square order-based idempotency key to avoid duplicate sends during normal webhook retries. **Resend retains idempotency keys for 24 hours**; longer-term deduplication would require a persistent delivery log. If Square fails to deliver a webhook, the email will not arrive: check the Square webhook delivery log and Vercel function logs. Ensure `RESEND_API_KEY`, `ORDER_NOTIFICATION_EMAIL` and `ORDER_NOTIFICATION_FROM` remain configured in Vercel.
+Resend uses **distinct**, stable Square order-based idempotency keys for the restaurant alert and buyer confirmation, so a retry of either channel cannot duplicate the other during normal webhook retries. **Resend retains idempotency keys for 24 hours**; longer-term deduplication would require a persistent delivery log. If Square fails to deliver a webhook, the email will not arrive: check the Square webhook delivery log and Vercel function logs. Ensure `RESEND_API_KEY`, `ORDER_NOTIFICATION_EMAIL` and `ORDER_NOTIFICATION_FROM` remain configured in Vercel. The buyer email uses the same verified sender (`ORDER_NOTIFICATION_FROM`) but is sent only to the buyer email returned by Square, not to `ORDER_NOTIFICATION_EMAIL`. Set `SQUARE_MERCHANT_SUPPORT_EMAIL` to a monitored restaurant inbox if buyers should reply there (otherwise replies go to the configured sender). No additional API key is required.
 
 **After the next approved deployment, test in Sandbox first:**
 1. Start checkout without paying: no restaurant order email should be sent.
-2. Complete a test payment: expect one **Paid Nasty order** email with the correct buyer, items and total.
-3. Retry/replay the same payment event: no second email should arrive within the 24-hour idempotency window.
-4. Send a failed, canceled, or partially paid event: no restaurant order alert.
+2. Complete a test payment **using an email you own**: expect one **Paid Nasty order** admin alert and one customer **Order confirmed & paid** email with the correct buyer, items and total.
+3. Retry/replay the same payment event: no second admin **or** customer email should arrive within the 24-hour idempotency window.
+4. Send a failed, canceled, or partially paid event: no restaurant or customer confirmation should be sent.
 5. Confirm existing `order.updated` loyalty handling still works.
-6. Check Square's webhook delivery logs for 2xx responses and verify recipients in Resend.
+6. Check Square's webhook delivery logs for 2xx responses and verify recipients in Resend. Never replay real customer payments when testing; Resend's 24-hour key retention does not prevent duplicates after the window.
 
 ## 6. Supabase retirement
 

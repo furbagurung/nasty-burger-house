@@ -52,6 +52,9 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.doesNotMatch(html, /ORDER CONFIRMED &amp; PAID/);
   assert.match(text, /ORDER CONFIRMED & PAID/);
   assert.match(html, /receipt-paper/);
+  assert.match(html, /max-width:344px/);
+  assert.match(html, /class="brand-logo"/);
+  assert.match(html, /padding:26px 0/);
   assert.match(html, /background:#AC3342/);
   assert.match(html, /receipt-cut-top/);
   assert.match(html, /receipt-cut-bottom/);
@@ -81,14 +84,14 @@ test("customer email contains receipt details and escapes untrusted content", ()
   assert.match(html, /@media print[\s\S]*?box-shadow:none!important/);
   assert.match(html, /receipt-paper-texture\.webp/);
   assert.match(html, /background="https:\/\/www\.nastyburgerhouse\.com\.au\/images\/email\/receipt-paper-texture\.webp"/);
-  assert.match(html, /font:900 28px\/33px Impact/);
+  assert.match(html, /font-size:30px;font-weight:900;font-stretch:condensed/);
   assert.match(html, /font:700 14px\/20px Arial/);
-  assert.match(html, /font:900 18px\/24px Impact/);
+  assert.match(html, /font-size:17px;font-weight:900;line-height:22px;font-stretch:condensed/);
   assert.match(html, /height:40px/, "sample order should show a real Code 39 barcode");
   assert.match(html, /NBH-ABCD1234/);
   assert.match(html, /\$59\.99/);
   assert.match(html, /Belconnen/);
-  assert.match(html, /receipt-logo-cutout\.webp/);
+  assert.match(html, /src="https:\/\/www\.nastyburgerhouse\.com\.au\/logo\.webp"/);
   assert.match(html, /href="https:\/\/www\.nastyburgerhouse\.com\.au"/);
   assert.match(html, /color:#282326!important/);
   assert.match(html, /box-shadow:10px 20px 28px/);

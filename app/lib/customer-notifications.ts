@@ -56,7 +56,7 @@ export async function sendCustomerPaidOrderEmail(payload: PaidOrderNotification)
         return { ok: true };
       }
       // Never log customer email or the message body.
-      console.error("[NBH customer confirmation failed]", response.status, errorBody);
+      console.error("[NBH customer confirmation failed]", { status: response.status });
       return { ok: false, reason: "delivery-failed" };
     }
     return { ok: true };

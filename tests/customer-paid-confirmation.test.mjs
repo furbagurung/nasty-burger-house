@@ -30,11 +30,17 @@ function getCustomerRenderer() {
   return vm.runInNewContext(source + "\nrenderCustomerPaidOrderEmail");
 }
 
-test("Square payment link prepopulates validated buyer contact information", () => {
+test("Square pickup checkout provides buyer contact only through pickup recipient", () => {
   const code = read("app/lib/square/checkout.ts");
-  assert.match(code, /pre_populated_data:\s*\{/);
-  assert.match(code, /buyer_email:\s*payload\.customer\.email/);
-  assert.match(code, /buyer_phone_number:\s*customer\.phone/);
+  assert.match(code, /fulfillments:\s*\[/);
+  assert.match(code, /type:\s*"PICKUP"/);
+  assert.match(code, /pickup_details:\s*\{/);
+  assert.match(code, /recipient:\s*\{/);
+  assert.match(code, /customer_id:\s*customer\.id/);
+  assert.match(code, /display_name:\s*payload\.customer\.name/);
+  assert.match(code, /email_address:\s*payload\.customer\.email/);
+  assert.match(code, /phone_number:\s*customer\.phone/);
+  assert.doesNotMatch(code, /pre_populated_data\s*:/);
 });
 
 test("customer confirmation is separate from the admin alert and after verified Square payment", () => {

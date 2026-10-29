@@ -90,7 +90,6 @@ export async function GET(request: Request) {
         if (inspected >= MAX_REWARDS_TO_CHECK) break;
         if (reward.status !== "ISSUED" || !reward.id || !reward.order_id ||
             !reward.created_at || Date.parse(reward.created_at) >= cutoff) continue;
-        inspected++;
         try {
           const order = await getSquareOrder(reward.order_id);
           if (order.location_id !== locationId ||
@@ -98,6 +97,7 @@ export async function GET(request: Request) {
             skipped++;
             continue; // Never touch in-store/POS or unrelated reservations.
           }
+          inspected++;
           if (order.state === "COMPLETED") { skipped++; continue; }
           if (order.state !== "OPEN" && order.state !== "CANCELED") {
             skipped++; continue;

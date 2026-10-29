@@ -4,6 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, MessageSquareText, Pencil, Phone, ReceiptText } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
@@ -73,7 +76,14 @@ export default function AccountProfilePage() {
           setName(current.name);
           setEmail(current.email);
           setPhone(current.phone);
-          setPhoneModalOpen(backendMode === "supabase" && !current.phone);
+          // Optional non-modal offer; a dismissal lasts for this browser session.
+          let dismissed = false;
+          try {
+            dismissed = window.sessionStorage.getItem("nbh-loyalty-link-dismissed:" + current.email.toLowerCase()) === "1";
+          } catch {
+            // Session storage may be unavailable in an embedded browser.
+          }
+          setPhoneModalOpen(backendMode === "supabase" && !current.phone && !dismissed);
         }
         setOrderCount(orders.length);
         setReviewCount(reviews.length);
@@ -243,6 +253,77 @@ export default function AccountProfilePage() {
         </Link>
       </section>
 
+      {backendMode === "supabase" && !profile.phone && phoneModalOpen && (
+        <Card className="account-loyalty-inline" aria-labelledby="account-loyalty-inline-title">
+          <CardContent className="account-loyalty-inline__content">
+            <div className="account-loyalty-inline__top">
+              <span className="account-loyalty-inline__kicker">Square Loyalty</span>
+              <span className="account-loyalty-inline__optional">Optional for now</span>
+            </div>
+            <div className="account-loyalty-inline__hero">
+              <div className="account-loyalty-inline__copy">
+                <h2 id="account-loyalty-inline-title">Claim your 500 Drip Points</h2>
+                <p>Link your mobile for the same rewards in-store.</p>
+              </div>
+              <Image
+                className="account-loyalty-inline__burger"
+                src="/images/signature-beast.webp"
+                alt=""
+                width={155}
+                height={155}
+                sizes="(max-width: 480px) 100px, 155px"
+              />
+            </div>
+            <div className="account-loyalty-inline__benefit">
+              <Image src="/images/drip-points/drip-coin.png" alt="" width={64} height={64} />
+              <div>
+                <strong>500</strong>
+                <span>Welcome points for new members</span>
+              </div>
+            </div>
+            <form className="account-loyalty-inline__form" onSubmit={submitPhoneModal}>
+              <Label htmlFor="account-loyalty-phone">Australian mobile number</Label>
+              <Input
+                id="account-loyalty-phone"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                placeholder="0491 570 006"
+                required
+                disabled={saving}
+              />
+              {modalError && <p className="account-form-error" role="alert">{modalError}</p>}
+              <div className="account-loyalty-inline__actions">
+                <Button type="submit" disabled={saving}>
+                  {saving ? "Linking…" : "Link number"}
+                  <ChevronRight size={17} aria-hidden="true" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => {
+                    setPhoneModalOpen(false);
+                    setModalError("");
+                    try {
+                      window.sessionStorage.setItem("nbh-loyalty-link-dismissed:" + profile.email.toLowerCase(), "1");
+                    } catch {
+                      // Dismissal still works without session storage.
+                    }
+                  }}
+                >
+                  Maybe later
+                </Button>
+              </div>
+            </form>
+            <p className="account-loyalty-inline__note">
+              New Square members only. Existing members keep their points. No SMS needed.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="account-settings-list" role="group" aria-label="Account settings">
       <section id="profile" className="account-card account-security-card account-manage-card" aria-labelledby="account-profile-title">
         <div className="account-security__header">
@@ -291,7 +372,7 @@ export default function AccountProfilePage() {
               <label>
                 Mobile number
                 <input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="0491 570 006" required />
-                {backendMode === "supabase" && !profile.phone && <small>Required to activate Square POS Loyalty.</small>}
+                {backendMode === "supabase" && !profile.phone && <small>Optional — link your number to use the same Square Loyalty profile in store.</small>}
               </label>
             </div>
 
@@ -339,31 +420,7 @@ export default function AccountProfilePage() {
       <AccountChangePassword />
       </div>
 
-      {backendMode === "supabase" && !profile.phone && phoneModalOpen && (
-        <div className="account-loyalty-modal-backdrop" role="presentation">
-          <section className="account-loyalty-modal" role="dialog" aria-modal="true" aria-labelledby="account-loyalty-modal-title">
-            <button className="account-loyalty-modal-close" type="button" aria-label="Close" onClick={() => setPhoneModalOpen(false)}>×</button>
-            <div className="account-loyalty-modal-coin">
-              <Image src="/images/drip-points/drip-coin.png" alt="" width={88} height={88} />
-            </div>
-            <span className="account-loyalty-modal-kicker">Square POS Loyalty</span>
-            <h2 id="account-loyalty-modal-title">Activate your 500 Drip Points</h2>
-            <p>Add your Australian mobile number to link this website account with Nasty Burger House Square POS. Your 500 signup points will be added to the same loyalty profile you use in store.</p>
-            <div className="account-loyalty-modal-benefit">
-              <strong>500</strong><span>signup Drip Points</span><small>Synced to Square Loyalty</small>
-            </div>
-            <form onSubmit={submitPhoneModal}>
-              <label>
-                Australian mobile number
-                <input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="0491 570 006" autoComplete="tel" autoFocus required />
-              </label>
-              {modalError && <p className="account-form-error" role="alert">{modalError}</p>}
-              <button type="submit" disabled={saving}>{saving ? "Connecting to Square…" : "Activate 500 points"}</button>
-              <button className="account-loyalty-modal-later" type="button" onClick={() => setPhoneModalOpen(false)}>I’ll do this later</button>
-            </form>
-          </section>
-        </div>
-      )}
+
     </>
   );
 }

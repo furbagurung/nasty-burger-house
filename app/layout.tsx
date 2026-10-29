@@ -102,6 +102,7 @@ import "./admin-kpi.css";
 import "./admin-order-history.css";
 import "./admin-table-pagination.css";
 import "./admin-login.css";
+import "./loyalty-ui.css";
 import "./theme-dark.css";
 
 const dmSans = DM_Sans({

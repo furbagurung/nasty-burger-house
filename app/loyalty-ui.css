@@ -1,0 +1,458 @@
+/* Drip Points: compact account linking + Square-backed checkout card.
+ * Scoped to customer pages; shared semantic tokens follow DARK_THEME.md.
+ * Redemption logic and checkout payment controls are untouched. */
+.account-loyalty-inline,
+.checkout-page [data-slot="card"].checkout-loyalty {
+  --loyalty-surface: color-mix(in srgb, var(--card) 94%, var(--primary) 6%);
+  --loyalty-soft: color-mix(in srgb, var(--card) 88%, var(--primary) 12%);
+  --loyalty-line: color-mix(in srgb, var(--border) 85%, var(--primary) 15%);
+  min-width: 0;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--loyalty-line);
+  border-radius: 1.25rem;
+  background: var(--loyalty-surface);
+  color: var(--foreground);
+  box-shadow: none;
+}
+.account-loyalty-inline [data-slot="card-content"],
+.checkout-page .checkout-loyalty [data-slot="card-content"] {
+  min-width: 0;
+  padding: clamp(1rem, 3vw, 1.6rem);
+}
+
+/* Account: optional inline offer, not a modal, so page navigation stays usable. */
+.account-loyalty-inline {
+  margin-block: 0 1.25rem;
+}
+.account-loyalty-inline__content {
+  display: grid;
+  gap: 0.9rem;
+}
+.account-loyalty-inline__top,
+.account-loyalty-inline__hero,
+.account-loyalty-inline__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+}
+.account-loyalty-inline__kicker,
+.checkout-loyalty__eyebrow {
+  color: var(--primary);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.105em;
+  text-transform: uppercase;
+}
+.account-loyalty-inline__optional {
+  flex: 0 0 auto;
+  padding: 0.36rem 0.64rem;
+  border-radius: 99px;
+  background: var(--loyalty-soft);
+  color: var(--foreground);
+  font-size: 0.68rem;
+  font-weight: 730;
+}
+.account-loyalty-inline__hero {
+  align-items: center;
+}
+.account-loyalty-inline__copy {
+  min-width: 0;
+  flex: 1;
+}
+.account-loyalty-inline__copy h2 {
+  max-width: 21ch;
+  margin: 0;
+  color: var(--foreground);
+  font-family: var(--font-bowlby-one-sc), "Bowlby One SC", sans-serif !important;
+  font-size: clamp(1.15rem, 3.5vw, 1.6rem) !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.3 !important;
+  text-transform: uppercase;
+}
+.account-loyalty-inline__copy p {
+  max-width: 35ch;
+  margin: 0.42rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.account-loyalty-inline__burger {
+  flex: 0 0 auto;
+  width: clamp(5.6rem, 24vw, 9.5rem);
+  height: auto;
+  max-height: 9.5rem;
+  object-fit: contain;
+  border-radius: 0.9rem;
+}
+.account-loyalty-inline__benefit {
+  display: flex;
+  align-items: center;
+  gap: 0.72rem;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--loyalty-line);
+  border-radius: 0.95rem;
+  background: var(--card);
+}
+.account-loyalty-inline__benefit img {
+  width: 3.25rem;
+  height: 3.25rem;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+.account-loyalty-inline__benefit > div {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.7rem;
+  row-gap: 0.05rem;
+}
+.account-loyalty-inline__benefit strong {
+  color: var(--foreground);
+  font-size: 1.65rem;
+  font-weight: 850;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.account-loyalty-inline__benefit span {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+.account-loyalty-inline__form {
+  display: grid;
+  gap: 0.54rem;
+}
+.account-loyalty-inline__form label {
+  color: var(--foreground);
+  font-size: 0.77rem;
+  font-weight: 750;
+}
+.account-loyalty-inline__form [data-slot="input"] {
+  min-height: 2.85rem;
+  border-color: var(--input);
+  border-radius: 0.75rem;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 0.94rem;
+}
+.account-loyalty-inline__form [data-slot="input"]:focus-visible,
+.checkout-loyalty__option:focus-visible,
+.checkout-loyalty__link:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.account-loyalty-inline__actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.account-loyalty-inline__actions > button:first-child {
+  min-height: 2.75rem;
+  flex: 1 1 10rem;
+  border-radius: 0.75rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 800;
+}
+.account-loyalty-inline__actions > button:last-child {
+  min-height: 2.75rem;
+  color: var(--foreground);
+}
+.account-loyalty-inline__note {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+/* Checkout loyalty card: never show invented balances or fabricated tiers. */
+.checkout-page [data-slot="card"].checkout-loyalty {
+  width: 100%;
+  background: var(--loyalty-surface);
+}
+.checkout-loyalty__content {
+  display: grid;
+  gap: 0.9rem;
+}
+.checkout-loyalty__hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+.checkout-loyalty__hero > div {
+  min-width: 0;
+  flex: 1;
+}
+.checkout-loyalty__hero h3 {
+  margin: 0.3rem 0 0;
+  color: var(--foreground);
+  font-family: var(--font-bowlby-one-sc), "Bowlby One SC", sans-serif !important;
+  font-size: clamp(1.18rem, 3.6vw, 1.75rem) !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.28 !important;
+  text-transform: uppercase;
+}
+.checkout-loyalty__hero p {
+  margin: 0.3rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.78rem;
+}
+.checkout-loyalty__coin {
+  width: clamp(4.35rem, 22vw, 6.2rem);
+  height: auto;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+.checkout-loyalty__balance-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+.checkout-loyalty__label {
+  color: var(--muted-foreground);
+  font-size: 0.74rem;
+  font-weight: 650;
+}
+.checkout-loyalty__balance {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+}
+.checkout-loyalty__balance strong {
+  font-size: clamp(1.75rem, 7vw, 2.6rem);
+  font-weight: 880;
+  letter-spacing: -0.055em;
+  line-height: 1.17;
+}
+.checkout-loyalty__balance span {
+  color: var(--muted-foreground);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.checkout-loyalty__synced,
+.checkout-loyalty__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  border: 1px solid var(--loyalty-line);
+  border-radius: 99px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 0.71rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+.checkout-loyalty__synced {
+  padding: 0.4rem 0.62rem;
+}
+.checkout-loyalty__synced svg {
+  color: var(--primary);
+}
+.checkout-loyalty__goal {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 0;
+  padding: 0.65rem;
+  border: 1px solid var(--loyalty-line);
+  border-radius: 1rem;
+  background: var(--card);
+}
+.checkout-loyalty__reward-image {
+  width: clamp(3.8rem, 18vw, 5.1rem);
+  height: clamp(3.8rem, 18vw, 5.1rem);
+  flex: 0 0 auto;
+  border-radius: 0.75rem;
+  object-fit: cover;
+}
+.checkout-loyalty__goal-copy {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 0.42rem;
+}
+.checkout-loyalty__goal-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.15rem 0.5rem;
+}
+.checkout-loyalty__goal-heading strong {
+  color: var(--foreground);
+  font-size: 0.78rem;
+  font-weight: 820;
+  line-height: 1.35;
+}
+.checkout-loyalty__goal-heading span,
+.checkout-loyalty__goal-copy small {
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
+.checkout-loyalty__track {
+  height: 0.4rem;
+  overflow: hidden;
+  border-radius: 99px;
+  background: var(--loyalty-soft);
+}
+.checkout-loyalty__track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+  transition: width 180ms ease-out;
+}
+.checkout-loyalty__earn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  border: 1px solid var(--loyalty-line);
+  border-radius: 0.95rem;
+  background: var(--card);
+}
+.checkout-loyalty__earn-icon {
+  display: grid;
+  width: 2.6rem;
+  height: 2.6rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 99px;
+  background: var(--loyalty-soft);
+  color: var(--primary);
+}
+.checkout-loyalty__earn strong {
+  color: var(--foreground);
+  font-size: 0.81rem;
+  font-weight: 790;
+}
+.checkout-loyalty__earn p {
+  margin: 0.1rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+}
+.checkout-loyalty__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--loyalty-line);
+}
+.checkout-loyalty__status {
+  background: var(--loyalty-soft);
+  padding: 0.45rem 0.6rem;
+}
+.checkout-loyalty__status svg {
+  color: var(--primary);
+  flex: 0 0 auto;
+}
+.checkout-loyalty__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.65rem;
+  gap: 0.4rem;
+  padding-inline: 0.75rem;
+  border: 1px solid var(--loyalty-line);
+  border-radius: 99px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+.checkout-loyalty__link:hover {
+  background: var(--loyalty-soft);
+}
+.checkout-loyalty__options {
+  display: grid;
+  gap: 0.45rem;
+}
+.checkout-loyalty__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 2.8rem;
+  padding: 0.65rem 0.78rem;
+  border: 1px solid var(--loyalty-line);
+  border-radius: 0.7rem;
+  background: var(--card);
+  color: var(--foreground);
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+.checkout-loyalty__option[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: var(--loyalty-soft);
+}
+.checkout-loyalty__option:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+.checkout-loyalty__option small {
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  text-align: right;
+}
+.checkout-loyalty__notice,
+.checkout-loyalty__sign-in {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+.checkout-loyalty__sign-in {
+  color: var(--foreground);
+  text-decoration: underline;
+}
+.dark .account-loyalty-inline,
+.dark .checkout-page [data-slot="card"].checkout-loyalty {
+  --loyalty-surface: var(--nb-dark-surface);
+  --loyalty-soft: var(--nb-dark-raised);
+  --loyalty-line: var(--nb-dark-border);
+  border-color: var(--nb-dark-border);
+  background: var(--loyalty-surface);
+  box-shadow: none;
+}
+.dark .account-loyalty-inline__benefit,
+.dark .checkout-loyalty__goal,
+.dark .checkout-loyalty__earn,
+.dark .checkout-loyalty__synced,
+.dark .checkout-loyalty__link,
+.dark .checkout-loyalty__option {
+  background: var(--nb-dark-raised);
+}
+.dark .account-loyalty-inline__optional,
+.dark .checkout-loyalty__status {
+  background: var(--nb-dark-hover);
+  color: var(--nb-dark-text-primary);
+}
+@media (max-width: 380px) {
+  .checkout-loyalty__footer {
+    align-items: stretch;
+  }
+  .checkout-loyalty__link {
+    width: 100%;
+  }
+  .account-loyalty-inline__burger {
+    width: 5.3rem;
+  }
+  .account-loyalty-inline__top {
+    align-items: flex-start;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .checkout-loyalty__track > span { transition: none; }
+}

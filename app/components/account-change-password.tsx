@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, EyeOff, KeyRound, ShieldCheck } from "lucide-react";
+import { ChevronRight, Eye, EyeOff, KeyRound, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
@@ -165,6 +165,7 @@ export default function AccountChangePassword() {
             className="account-security__toggle"
             aria-expanded={open}
             aria-controls="account-security-form"
+            aria-label={open ? "Cancel password change" : "Change password"}
             disabled={saving}
             onClick={() => {
               if (open) {
@@ -175,7 +176,8 @@ export default function AccountChangePassword() {
               }
             }}
           >
-            {open ? "Cancel" : "Change"}
+            <span className="account-security__toggle-text">{open ? "Cancel" : "Change"}</span>
+            <ChevronRight className="account-security__mobile-chevron" size={20} aria-hidden="true" />
           </Button>
         )}
       </div>

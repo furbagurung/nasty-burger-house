@@ -243,6 +243,58 @@ export default function AccountProfilePage() {
         </div>
       </header>
 
+      <Link
+        className="account-profile-mobile-card"
+        href="/account/drip-points"
+        aria-label={"View Drip Points: " + (loyaltyReady ? balance.toLocaleString() + " available points" : "loading")}
+      >
+        <div className="account-profile-mobile-card__member">
+          <Avatar size="lg" className="account-profile-mobile-card__avatar">
+            {profilePhoto && (
+              <AvatarImage src={profilePhoto} alt="" referrerPolicy="no-referrer" />
+            )}
+            <AvatarFallback>{initials || "NB"}</AvatarFallback>
+          </Avatar>
+          <div className="account-profile-mobile-card__identity">
+            <strong>{fullName}</strong>
+            <span>{mobileNumber || "Mobile number not linked"}</span>
+          </div>
+          <Image
+            className="account-profile-mobile-card__coin"
+            src="/images/drip-points/drip-coin.png"
+            alt=""
+            width={60}
+            height={60}
+          />
+        </div>
+        <div className="account-profile-mobile-card__points">
+          <div className="account-profile-mobile-card__points-top">
+            <span>Available Drip Points</span>
+            <strong>{loyaltyReady ? balance.toLocaleString() : "…"}</strong>
+          </div>
+          <div
+            className="account-profile-mobile-card__track"
+            role="progressbar"
+            aria-label="Progress toward the 2,000-point goal"
+            aria-valuemin={0}
+            aria-valuemax={DRIP_REWARD_TARGET}
+            aria-valuenow={loyaltyReady ? Math.min(DRIP_REWARD_TARGET, Math.max(0, balance)) : 0}
+            aria-valuetext={loyaltyReady ? balance.toLocaleString() + " points" : "Loading"}
+          >
+            <span style={{ width: (loyaltyReady ? progress : 0) + "%" }} />
+          </div>
+          <small>{loyaltyReady
+            ? balance >= DRIP_REWARD_TARGET
+              ? "2,000-point goal reached"
+              : (DRIP_REWARD_TARGET - balance).toLocaleString() + " points to your goal"
+            : "Loading your points…"}</small>
+        </div>
+        <div className="account-profile-mobile-card__footer">
+          <span>View Drip Points</span>
+          <ChevronRight size={18} aria-hidden="true" />
+        </div>
+      </Link>
+
       <section className="account-overview-grid account-saas-stats" aria-label="Account overview">
         <Link className="account-overview-card account-overview-card--drip" href="/account/drip-points">
           <Image src="/images/drip-points/drip-coin.png" alt="" width={72} height={72} />
@@ -325,6 +377,7 @@ export default function AccountProfilePage() {
       )}
 
       <div className="account-settings-list" role="group" aria-label="Account settings">
+      <div className="account-profile-mobile-section-label" aria-hidden="true">Account &amp; security</div>
       <section id="profile" className="account-card account-security-card account-manage-card" aria-labelledby="account-profile-title">
         <div className="account-security__header">
           <span className="account-security__icon" aria-hidden="true">
@@ -341,6 +394,7 @@ export default function AccountProfilePage() {
             aria-expanded={profileOpen}
             aria-controls="account-profile-form"
             disabled={saving}
+            aria-label={profileOpen ? "Cancel editing profile" : "Edit profile"}
             onClick={() => {
               if (profileOpen) {
                 setName(profile.name);
@@ -353,7 +407,8 @@ export default function AccountProfilePage() {
               }
             }}
           >
-            {profileOpen ? "Cancel" : "Edit"}
+            <span className="account-security__toggle-text">{profileOpen ? "Cancel" : "Edit"}</span>
+            <ChevronRight className="account-security__mobile-chevron" size={20} aria-hidden="true" />
           </Button>
         </div>
         {saved && <p className="account-security__success" role="status">Profile updated successfully.</p>}
@@ -387,6 +442,7 @@ export default function AccountProfilePage() {
         )}
       </section>
 
+      <div className="account-profile-mobile-section-label" aria-hidden="true">Your activity</div>
       <section className="account-card account-security-card account-manage-card" aria-labelledby="account-orders-title">
         <div className="account-security__header">
           <span className="account-security__icon" aria-hidden="true">
@@ -397,7 +453,7 @@ export default function AccountProfilePage() {
             <p>{orderCount} order{orderCount === 1 ? "" : "s"} · Track orders and view receipts.</p>
           </div>
           <Link className="account-security__toggle account-manage-card__link" href="/account/orders">
-            View <ChevronRight size={16} aria-hidden="true" />
+            <span className="account-security__toggle-text">View</span> <ChevronRight size={18} aria-hidden="true" />
           </Link>
         </div>
       </section>
@@ -417,6 +473,7 @@ export default function AccountProfilePage() {
         </div>
       </section>
 
+      <div className="account-profile-mobile-section-label" aria-hidden="true">Security</div>
       <AccountChangePassword />
       </div>
 

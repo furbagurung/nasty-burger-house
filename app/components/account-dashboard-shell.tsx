@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { LogOut } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import {
@@ -84,7 +85,7 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
   if (!ready) {
     return (
       <div className={`account-page account-saas-page account-saas-layout-page${pathname === "/account" ? " account-saas-layout-page--profile" : pathname === "/account/orders" ? " account-saas-layout-page--orders" : pathname.startsWith("/account/orders/") ? " account-saas-layout-page--order-detail" : ""}`}>
-        {pathname === "/account" && <MobilePageHeader title="Profile" backHref="/" backLabel="Back to home" />}
+        {pathname === "/account" && <MobilePageHeader title="Account & Settings" backHref="/" backLabel="Back to home" />}
         {pathname === "/account/orders" && <MobilePageHeader title="Order History" backHref="/account" backLabel="Back to profile" />}
         {pathname.startsWith("/account/orders/") && <MobilePageHeader title="Order Details" backHref="/account/orders" backLabel="Back to order history" />}
         <main className="account-saas-shell account-saas-shell--persistent">
@@ -129,7 +130,7 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
   if (!profile) {
     return (
       <div className={`account-page account-saas-page account-saas-layout-page${pathname === "/account" ? " account-saas-layout-page--profile" : pathname === "/account/orders" ? " account-saas-layout-page--orders" : pathname.startsWith("/account/orders/") ? " account-saas-layout-page--order-detail" : ""}`}>
-        {pathname === "/account" && <MobilePageHeader title="Profile" backHref="/" backLabel="Back to home" />}
+        {pathname === "/account" && <MobilePageHeader title="Account & Settings" backHref="/" backLabel="Back to home" />}
         {pathname === "/account/orders" && <MobilePageHeader title="Order History" backHref="/account" backLabel="Back to profile" />}
         {pathname.startsWith("/account/orders/") && <MobilePageHeader title="Order Details" backHref="/account/orders" backLabel="Back to order history" />}
         {children}
@@ -141,7 +142,7 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
 
   return (
     <div className={`account-page account-saas-page account-saas-layout-page${pathname === "/account" ? " account-saas-layout-page--profile" : pathname === "/account/orders" ? " account-saas-layout-page--orders" : pathname.startsWith("/account/orders/") ? " account-saas-layout-page--order-detail" : ""}`}>
-      {pathname === "/account" && <MobilePageHeader title="Profile" backHref="/" backLabel="Back to home" />}
+      {pathname === "/account" && <MobilePageHeader title="Account & Settings" backHref="/" backLabel="Back to home" />}
         {pathname === "/account/orders" && <MobilePageHeader title="Order History" backHref="/account" backLabel="Back to profile" />}
         {pathname.startsWith("/account/orders/") && <MobilePageHeader title="Order Details" backHref="/account/orders" backLabel="Back to order history" />}
       <main className="account-saas-shell account-saas-shell--persistent">
@@ -199,6 +200,14 @@ export default function AccountDashboardShell({ children }: { children: ReactNod
 
         <section className="account-saas-content account-saas-route-content">
           {children}
+          {pathname === "/account" && (
+            <div className="account-profile-mobile-logout">
+              <button type="button" onClick={() => void signOut()}>
+                <LogOut size={22} strokeWidth={1.8} aria-hidden="true" />
+                <span>Log out</span>
+              </button>
+            </div>
+          )}
         </section>
       </main>
     </div>

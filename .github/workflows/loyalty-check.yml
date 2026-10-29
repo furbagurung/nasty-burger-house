@@ -10,6 +10,12 @@ on:
       - "app/api/cron/expire-square-rewards/**"
       - "app/components/checkout-page.tsx"
       - "app/components/checkout-reward-picker.tsx"
+      - "app/components/account-profile-page.tsx"
+      - "app/components/account-dashboard-shell.tsx"
+      - "app/components/account-change-password.tsx"
+      - "app/account-profile-mobile.css"
+      - "app/layout.tsx"
+      - "tests/profile-mobile-ui.test.mjs"
       - "vercel.json"
       - ".github/workflows/loyalty-check.yml"
   workflow_dispatch:
@@ -27,7 +33,7 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
-      - run: npx eslint app/components/checkout-reward-picker.tsx app/lib/square/rewards.ts app/lib/square/reward-identity.ts app/lib/square/loyalty.ts app/lib/square/checkout.ts app/api/account/rewards/route.ts app/api/orders/route.ts app/api/cron/expire-square-rewards/route.ts
+      - run: npx eslint app/components/checkout-reward-picker.tsx app/lib/square/rewards.ts app/lib/square/reward-identity.ts app/lib/square/loyalty.ts app/lib/square/checkout.ts app/api/account/rewards/route.ts app/api/orders/route.ts app/api/cron/expire-square-rewards/route.ts app/components/account-profile-page.tsx app/components/account-dashboard-shell.tsx app/components/account-change-password.tsx
       - run: npx next typegen && npx tsc --noEmit
       - run: node --test tests/*.test.mjs
       - run: npm run build

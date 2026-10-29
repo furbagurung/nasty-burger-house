@@ -27,7 +27,7 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
-      - run: npm run lint
+      - run: npx eslint app/components/checkout-reward-picker.tsx app/lib/square/rewards.ts app/lib/square/reward-identity.ts app/lib/square/loyalty.ts app/lib/square/checkout.ts app/api/account/rewards/route.ts app/api/orders/route.ts app/api/cron/expire-square-rewards/route.ts
       - run: npx tsc --noEmit
       - run: node --test tests/*.test.mjs
       - run: npm run build

@@ -65,13 +65,14 @@ export default function AccountChangePassword() {
 
   useEffect(() => {
     const supabase = getBrowserClientOrNull();
-    if (!supabase) {
-      setSignInMethod("unavailable");
-      return;
-    }
-
     let active = true;
     void (async () => {
+      // Resolve the unavailable state after the effect's synchronous phase.
+      if (!supabase) {
+        await Promise.resolve();
+        if (active) setSignInMethod("unavailable");
+        return;
+      }
       try {
         const { data, error: authError } = await supabase.auth.getUser();
         const user = data.user as User | null;

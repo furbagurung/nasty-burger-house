@@ -72,7 +72,12 @@ function VerifyMobile({ phone, onVerified }: { phone: string; onVerified: () => 
       if (error) throw error;
       onVerified();
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not verify your mobile number.");
+      const message = error instanceof Error ? error.message : "";
+      if (/expired|invalid|token/i.test(message)) {
+        setNotice("That code is incorrect or expired. Please check it and try again.");
+      } else {
+        setNotice("We couldn't verify your mobile number right now. You can continue without a reward or redeem in-store.");
+      }
     } finally { setBusy(false); }
   }
 

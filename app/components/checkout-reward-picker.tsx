@@ -47,7 +47,15 @@ function VerifyMobile({ phone, onVerified }: { phone: string; onVerified: () => 
       setRequested(true);
       setNotice("A verification code was sent by SMS.");
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : "Could not send verification code.");
+      // Never expose internal Supabase provider configuration errors to buyers.
+      const message = error instanceof Error ? error.message : "";
+      if (/sms provider|phone provider|phone_provider_disabled|provider.*disabled/i.test(message)) {
+        setNotice("SMS verification is unavailable right now. Please continue without a reward or redeem in-store.");
+      } else if (/rate limit|too many requests|over_email_send_rate_limit/i.test(message)) {
+        setNotice("Too many verification attempts. Please try again later.");
+      } else {
+        setNotice("We couldn't send a verification code. Please try again later or continue without a reward.");
+      }
     } finally { setBusy(false); }
   }
 

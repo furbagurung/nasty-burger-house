@@ -43,8 +43,20 @@ Online reward issuance is OFF unless:
 
     SQUARE_ONLINE_REDEMPTION_ENABLED=true
 
-Leave this unset in production until ALL checks below pass. The reward picker
-will show read-only, real Square tiers while disabled.
+Leave this unset in production until ALL checks below pass. While disabled,
+checkout shows a brief in-store redemption notice and never prompts for SMS.
+The disabled rewards API avoids unnecessary Supabase and Square requests.
+
+Only after an SMS provider has been configured and an Australian test number
+has successfully completed phone_change verification, enable this separate
+server-only gate:
+
+    SUPABASE_SMS_VERIFICATION_ENABLED=true
+
+Without this flag the phone verification form stays hidden even when the
+online redemption flag is enabled. Existing SMS-verified members may still be
+eligible based on their stored verified phone numbers. Never bypass phone
+verification by trusting checkout input or editable user metadata.
 
 1. Configure an ACTIVE Square Loyalty program with the intended reward tiers
    and the participating NBH location. The website cannot create Square tiers.
@@ -54,7 +66,12 @@ will show read-only, real Square tiers while disabled.
    catalog-item-scoped, first map website order items to the Square Catalog;
    this implementation intentionally restricts online redemption to
    whole-purchase tiers.
-3. Configure the Supabase Auth SMS provider to support phone_change OTP.
+3. Configure and test a real Supabase Auth SMS provider to support phone_change OTP.
+   In Supabase Dashboard > Authentication > Providers > Phone, enable phone
+   authentication, select and configure an SMS provider (such as Twilio),
+   and verify actual Australian-number delivery and phone confirmation. Do
+   not use fake provider credentials or pretend SMS verification succeeds.
+   Once verified, set SUPABASE_SMS_VERIFICATION_ENABLED=true.
    Verify that a returning member can link the same verified number without
    creating a duplicate Square customer.
 4. Set CRON_SECRET in Vercel and verify unauthorized cron requests return 401.

@@ -1,6 +1,7 @@
 "use client";
 
 import ShopStatusNotice from "./shop-status-notice";
+import CheckoutRewardPicker from "./checkout-reward-picker";
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
@@ -120,6 +121,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
+  const [selectedRewardTierId, setSelectedRewardTierId] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [fieldErrors, setFieldErrors] = useState<ContactErrors>({});
@@ -236,7 +238,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
     submittingRef.current = true;
     setSubmitting(true);
     const customer = { name: name.trim(), email: email.trim(), phone: phone.trim() };
-    const signature = JSON.stringify({ customer, notes, cart, subtotal });
+    const signature = JSON.stringify({ customer, notes, cart, subtotal, rewardTierId: selectedRewardTierId });
     try {
       checkoutAttemptRef.current = getCheckoutRequestId(signature, checkoutAttemptRef.current);
       const requestId = checkoutAttemptRef.current.requestId;
@@ -257,6 +259,7 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
           paymentMethod: "square_checkout",
           cart,
           clientSubtotal: subtotal,
+          ...(selectedRewardTierId ? { rewardTierId: selectedRewardTierId } : {}),
         }),
       });
       const result = (await response.json().catch(() => null)) as {
@@ -514,6 +517,14 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
               </CardContent>
             </Card>
 
+            {activeStep === 2 && (
+              <CheckoutRewardPicker
+                selectedId={selectedRewardTierId}
+                onSelect={setSelectedRewardTierId}
+                phone={phone}
+                disabled={submitting}
+              />
+            )}
             <Card className="checkout-panel ring-0" hidden={activeStep !== 2}>
               <CardHeader className="checkout-panel__heading">
                 <div>
@@ -596,6 +607,12 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                 <span>Total</span>
                 <strong>{money.format(subtotal)}</strong>
               </div>
+              {selectedRewardTierId && (
+                <p className="text-sm text-muted-foreground" role="status">
+                  Square will validate and apply your selected reward before payment.
+                  The final discounted amount will appear on the Square checkout page.
+                </p>
+              )}
               <ShopStatusNotice status={serviceStatus} checkout />
               <ButtonWithIcon
                 tone="red"

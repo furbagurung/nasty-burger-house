@@ -10,6 +10,12 @@ import {
 import { readShopStatus } from "../../lib/shop-status";
 import { SquareApiError, squareConfigurationState } from "../../lib/square/api";
 import { createSquareCheckout } from "../../lib/square/checkout";
+import { verifiedSquareRewardMember } from "../../lib/square/reward-identity";
+import {
+  listOnlineSquareRewardTiers, issueSquareOrderReward,
+  getSquareOrder, verifiedDiscountedOrderTotal,
+  releaseSquareReward, cancelSquarePaymentLink, findSquareRewardForOrder, getSquareReward,
+} from "../../lib/square/rewards";
 import { findOrCreateSquareCustomer } from "../../lib/square/customers";
 import {
   ensureSquareSignupBonus,
@@ -147,6 +153,13 @@ export async function POST(request: Request) {
     );
   }
 
+  const requestedTierId = payload && typeof payload === "object" && !Array.isArray(payload)
+    ? (payload as Record<string, unknown>).rewardTierId : undefined;
+  if (requestedTierId !== undefined &&
+      (typeof requestedTierId !== "string" || !/^[a-zA-Z0-9_-]{1,100}$/.test(requestedTierId))) {
+    return Response.json({ ok: false, errors: ["The selected reward is invalid."] }, { status: 422 });
+  }
+  const rewardTierId = typeof requestedTierId === "string" ? requestedTierId : "";
   const validation = validateOrderPayload(payload);
   if (!validation.ok) {
     return Response.json(validation, {
@@ -185,34 +198,99 @@ export async function POST(request: Request) {
   );
 
   try {
-    const customer = await findOrCreateSquareCustomer({
-      ...validation.order.customer,
-      requestId: validation.order.requestId,
-    });
+    if (rewardTierId && process.env.SQUARE_ONLINE_REDEMPTION_ENABLED !== "true") {
+      return Response.json({ ok: false, errors: ["Online redemption is not yet available."] }, { status: 409 });
+    }
 
-    const { account: loyaltyAccount, created: loyaltyCreated } =
-      await findOrCreateSquareLoyaltyAccount({
-        customerId: customer.id,
-        phone: customer.phone,
-        requestId: `nbh-checkout-loyalty-${validation.order.requestId}`,
+    // Guests can earn points but may never redeem based on an arbitrary checkout phone.
+    // Redemption requires independently verified Supabase email + SMS phone and
+    // an existing Square customer + Loyalty account with matching contacts.
+    const verifiedMember = rewardTierId
+      ? await verifiedSquareRewardMember(validation.order.customer)
+      : null;
+    if (verifiedMember && !verifiedMember.ok) {
+      return Response.json({ ok: false, errors: [verifiedMember.reason] }, { status: 403 });
+    }
+    let customer: { id: string; phone: string };
+    let loyaltyAccountId: string;
+    if (verifiedMember?.ok) {
+      const tiers = await listOnlineSquareRewardTiers();
+      const selected = tiers.find((tier) => tier.id === rewardTierId);
+      if (!selected || verifiedMember.balance < selected.points) {
+        return Response.json({
+          ok: false, errors: ["This Square reward is unavailable or you do not have enough points."],
+        }, { status: 409 });
+      }
+      customer = { id: verifiedMember.squareCustomerId, phone: verifiedMember.verifiedPhone };
+      loyaltyAccountId = verifiedMember.accountId;
+    } else {
+      customer = await findOrCreateSquareCustomer({
+        ...validation.order.customer, requestId: validation.order.requestId,
       });
-
-    // Existing Square loyalty members already have their welcome balance.
-    // Never award another 500 points when they place a website order.
-    await ensureSquareSignupBonus(loyaltyAccount.id, {
-      newlyCreated: loyaltyCreated,
-    });
+      const { account: loyaltyAccount, created: loyaltyCreated } =
+        await findOrCreateSquareLoyaltyAccount({
+          customerId: customer.id,
+          phone: customer.phone,
+          requestId: "nbh-checkout-loyalty-" + validation.order.requestId,
+        });
+      await ensureSquareSignupBonus(loyaltyAccount.id, { newlyCreated: loyaltyCreated });
+      loyaltyAccountId = loyaltyAccount.id;
+    }
 
     const checkout = await createSquareCheckout(
-      orderPayload,
-      customer,
-      loyaltyAccount.id,
-      resolveCheckoutOrigin(request),
+      orderPayload, customer, loyaltyAccountId, resolveCheckoutOrigin(request),
+      rewardTierId || undefined,
     );
+    let discountedTotal: number | null = null;
+    let rewardId: string | null = null;
+
+    if (rewardTierId) {
+      try {
+        const reward = await issueSquareOrderReward({
+          accountId: loyaltyAccountId, tierId: rewardTierId,
+          orderId: checkout.squareOrderId, requestId: validation.order.requestId,
+        });
+        rewardId = reward.id;
+        const squareOrder = await getSquareOrder(checkout.squareOrderId);
+        discountedTotal = verifiedDiscountedOrderTotal(
+          squareOrder, Math.round(validation.order.subtotal * 100),
+        );
+      } catch (rewardError) {
+        // An API timeout may happen AFTER Square reserved the points. Search by
+        // the server-created order before cleanup; never leave a known issued reward.
+        let safeToCancel = false;
+        try {
+          const issued = rewardId ?? (await findSquareRewardForOrder(
+            loyaltyAccountId, checkout.squareOrderId,
+          ))?.id;
+          if (!issued) {
+            safeToCancel = true;
+          } else {
+            const state = await getSquareReward(issued);
+            // Never delete a link for a reward already redeemed by a paid order.
+            if (state.status === "ISSUED") {
+              await releaseSquareReward(issued);
+              safeToCancel = true;
+            } else if (state.status === "DELETED") {
+              safeToCancel = true;
+            }
+          }
+        } catch (cleanupError) {
+          console.error("[NBH reward cleanup requires attention]", cleanupError);
+        }
+        if (safeToCancel) {
+          try {
+            await cancelSquarePaymentLink(checkout.paymentLinkId);
+          } catch (cleanupError) {
+            console.error("[NBH payment link cleanup requires attention]", cleanupError);
+          }
+        }
+        throw rewardError;
+      }
+    }
 
     // Do not notify the restaurant yet. Paid-order notifications are triggered
     // only by Square payment webhooks after verifying payment completion.
-
     return Response.json(
       {
         ok: true,
@@ -220,7 +298,10 @@ export async function POST(request: Request) {
         orderId,
         squareOrderId: checkout.squareOrderId,
         squareCustomerId: customer.id,
-        loyaltyAccountId: loyaltyAccount.id,
+        loyaltyAccountId,
+        rewardId,
+        rewardTierId: rewardTierId || null,
+        discountedTotal,
         paymentLinkId: checkout.paymentLinkId,
         checkoutUrl: checkout.checkoutUrl,
         subtotal: validation.order.subtotal,

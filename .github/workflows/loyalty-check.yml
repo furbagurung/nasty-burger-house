@@ -1,0 +1,33 @@
+name: Validate Nasty Burger loyalty checkout
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/lib/square/**"
+      - "app/api/orders/route.ts"
+      - "app/api/account/rewards/**"
+      - "app/api/cron/expire-square-rewards/**"
+      - "app/components/checkout-page.tsx"
+      - "app/components/checkout-reward-picker.tsx"
+      - "vercel.json"
+      - ".github/workflows/loyalty-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: node --test tests/*.test.mjs
+      - run: npm run build

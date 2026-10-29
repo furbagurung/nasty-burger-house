@@ -64,6 +64,7 @@ export async function createSquareCheckout(
   customer: { id: string; phone: string },
   loyaltyAccountId: string,
   requestOrigin?: string,
+  rewardTierId?: string,
 ) {
   const config = getSquareConfig();
   if (!config.locationId) {
@@ -86,6 +87,7 @@ export async function createSquareCheckout(
           metadata: {
             nbh_customer_id: customer.id,
             nbh_loyalty_id: loyaltyAccountId,
+            ...(rewardTierId ? { nbh_reward_tier_id: rewardTierId, nbh_reward_checkout: "yes" } : {}),
           },
           line_items: payload.lines.map((line) => ({
             name: line.name,

@@ -32,6 +32,7 @@ type SquareLoyaltyProgram = {
     id: string;
     points: number;
     name?: string;
+    pricing_rule_reference?: { object_id?: string; catalog_version?: string | number };
   }>;
 };
 

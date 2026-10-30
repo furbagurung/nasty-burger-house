@@ -53,3 +53,33 @@ test('only exact routine ResizeObserver warnings skip email', () => {
   }
   assert.equal(browserNoiseReason({ source: 'client', message: 'ResizeObserver is not defined' }), undefined);
 });
+
+const braveIOS = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1 Brave';
+const walletMessage = "undefined is not an object (evaluating 'window.ethereum.selectedAddress = undefined')";
+const walletError = {
+  source: 'client', name: 'TypeError', message: walletMessage,
+  path: '/menu/burgers', userAgent: braveIOS,
+  metadata: { filename: 'https://www.nastyburgerhouse.com.au/menu/burgers', line: 1, column: 16 },
+};
+test('suppress exact reported Brave iOS wallet injection, on both canonical domains', () => {
+  assert.equal(browserNoiseReason(walletError), 'brave-ios-wallet-instrumentation');
+  assert.equal(browserNoiseReason({ ...walletError, metadata: { ...walletError.metadata, filename: 'https://nastyburgerhouse.com.au/menu/burgers' } }), 'brave-ios-wallet-instrumentation');
+});
+test('suppress only opaque Brave iOS window script errors', () => {
+  assert.equal(browserNoiseReason({ source: 'client', name: 'WindowError', message: 'Script error.', userAgent: braveIOS, path: '/menu/burgers', metadata: {} }), 'brave-ios-opaque-script-error');
+  assert.equal(browserNoiseReason({ source: 'client', name: 'WindowError', message: 'Script error.', userAgent: braveIOS, metadata: { filename: '', line: undefined } }), 'brave-ios-opaque-script-error');
+});
+test('keep real website errors, other browsers, and imprecise wallet matches alertable', () => {
+  assert.equal(browserNoiseReason({ ...walletError, userAgent: 'Mozilla/5.0 Chrome' }), undefined);
+  assert.equal(browserNoiseReason({ ...walletError, metadata: { filename: 'https://evil.example/a.js', line: 1, column: 16 } }), undefined);
+  assert.equal(browserNoiseReason({ ...walletError, metadata: { ...walletError.metadata, column: 99 } }), undefined);
+  assert.equal(browserNoiseReason({ ...walletError, message: 'Checkout failed' }), undefined);
+  assert.equal(browserNoiseReason({ ...walletError, message: 'Cannot read properties of undefined' }), undefined);
+  for (const source of ['react', 'server', 'checkout']) {
+    assert.equal(browserNoiseReason({ ...walletError, source }), undefined);
+    assert.equal(browserNoiseReason({ source, name: 'WindowError', message: 'Script error.', userAgent: braveIOS, metadata: {} }), undefined);
+  }
+  assert.equal(browserNoiseReason({ source: 'client', name: 'WindowError', message: 'Script error.', userAgent: braveIOS, metadata: { filename: 'https://www.nastyburgerhouse.com.au/app.js', line: 1 } }), undefined);
+  assert.equal(browserNoiseReason({ source: 'client', name: 'TypeError', message: 'Script error.', userAgent: braveIOS, metadata: {} }), undefined);
+  assert.equal(browserNoiseReason({ source: 'client', name: 'WindowError', message: 'Script error.', userAgent: 'Firefox on Android', metadata: {} }), undefined);
+});

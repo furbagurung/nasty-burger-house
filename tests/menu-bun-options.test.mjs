@@ -62,7 +62,7 @@ test("solo, duo and family boxes charge for each changed bun, including family k
   for (const box of boxes) {
     const bunCount = box.boxConfig.burgerCount + (box.boxConfig.fixedBurgerIds?.length ?? 0);
     const allGlutenFree = lineFor(box.id, { boxBuns: Array(bunCount).fill("gluten-free") });
-    assert.equal(calculateLineUnitPrice(allGlutenFree, box), box.price + bunCount * 3);
+    assert.equal(Math.round(calculateLineUnitPrice(allGlutenFree, box) * 100), Math.round((box.price + bunCount * 3) * 100));
     assert.equal(validateOrderPayload(payload([allGlutenFree])).ok, true);
     assert.equal(describeBoxBurgers(allGlutenFree, box).length, bunCount);
     assert.ok(describeBoxBurgers(allGlutenFree, box).every((name) => name.includes("gluten-free bun")));

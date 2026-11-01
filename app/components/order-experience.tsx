@@ -35,6 +35,7 @@ import DripPointsBanner from "./drip-points-banner";
 import LandingPromoModal from "./landing-promo-modal";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
+import BunChoiceSelector from "./bun-choice-selector";
 
 type OrderExperienceProps = {
   items: MenuItem[];
@@ -1333,19 +1334,12 @@ export default function OrderExperience({
             </p>
 
             {(selectedItem.category === "burgers" || selectedItem.id === "monster-cheese") && (
-              <fieldset className="product-bun-section">
-                <legend>Choose your bun</legend>
-                <div className="product-bun-options">
-                  {(["regular", "gluten-free"] as BunChoice[]).map((choice) => (
-                    <label key={choice} className={`product-bun-option${bun === choice ? " is-selected" : ""}`}>
-                      <input type="radio" name="home-product-bun" checked={bun === choice} onChange={() => setBun(choice)} />
-                      <span>{choice === "regular" ? "Regular bun" : "Gluten-Free Bun"}</span>
-                      <small>{choice === "regular" ? "Included" : `+${formatPrice(glutenFreeBunPrice)}`}</small>
-                    </label>
-                  ))}
-                </div>
-                <p className="product-bun-note">Bun only. Shared preparation and other ingredients may contain gluten.</p>
-              </fieldset>
+              <BunChoiceSelector
+                name="home-product-bun"
+                value={bun}
+                upgradePriceLabel={`+${formatPrice(glutenFreeBunPrice)}`}
+                onChange={setBun}
+              />
             )}
 
             {selectedItem.boxConfig && (
@@ -1410,7 +1404,6 @@ export default function OrderExperience({
                       </label>
                     ))}
                   </div>
-                  <p className="product-bun-note">Each gluten-free bun adds +{formatPrice(glutenFreeBunPrice)}. Other ingredients or shared preparation may contain gluten.</p>
                 </fieldset>
 
                 <fieldset>

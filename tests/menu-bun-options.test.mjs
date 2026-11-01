@@ -123,3 +123,28 @@ test("Square checkout uses server calculated unit prices and includes bun prepar
   const paid = readFileSync(new URL("../app/lib/square/paid-order-notifications.ts", import.meta.url), "utf8");
   assert.match(paid, /bun: null/);
 });
+
+test("shared bun selector is accessible, compact on mobile, and avoids lengthy footer copy", () => {
+  const component = readFileSync(new URL("../app/components/bun-choice-selector.tsx", import.meta.url), "utf8");
+  const product = readFileSync(new URL("../app/components/product-detail-page.tsx", import.meta.url), "utf8");
+  const homepage = readFileSync(new URL("../app/components/order-experience.tsx", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../app/product-customization-groups.css", import.meta.url), "utf8");
+
+  assert.match(component, /<fieldset className="product-bun-section">/);
+  assert.match(component, /<legend>Choose your bun<\/legend>/);
+  assert.match(component, /type="radio"/);
+  assert.match(component, /checked=\{selected\}/);
+  assert.match(component, /onChange=\{\(\) => onChange\(choice\)\}/);
+  assert.match(component, /Gluten-free bun/);
+  assert.doesNotMatch(component, /Bun option only|shared preparation/i);
+  assert.match(product, /<BunChoiceSelector/);
+  assert.match(homepage, /<BunChoiceSelector/);
+  assert.doesNotMatch(product, /Other ingredients or shared preparation may contain gluten/);
+  assert.doesNotMatch(homepage, /Other ingredients or shared preparation may contain gluten/);
+  assert.match(css, /grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(max-width: 680px\)/);
+  assert.match(css, /\.product-bun-options \{ grid-template-columns: minmax\(0, 1fr\)/);
+  for (const token of ["--foreground", "--card", "--hot", "--ring"]) {
+    assert.ok(css.includes(`var(${token})`), `Missing theme token ${token}`);
+  }
+});

@@ -29,6 +29,7 @@ import CatalogueMobileMenu from "./catalogue-mobile-menu";
 import MenuItemMedia from "./menu-item-media";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
+import BunChoiceSelector from "./bun-choice-selector";
 
 type ProductDetailPageProps = {
   item: MenuItem;
@@ -492,20 +493,12 @@ export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPag
             </div>
 
             {(item.category === "burgers" || item.id === "monster-cheese") && (
-              <fieldset className="product-custom-section product-bun-section">
-                <legend>Choose your bun</legend>
-                <div className="product-bun-options">
-                  {(["regular", "gluten-free"] as BunChoice[]).map((choice) => (
-                    <label key={choice} className={`product-bun-option${bun === choice ? " is-selected" : ""}`}>
-                      <input type="radio" name="product-bun" value={choice} checked={bun === choice}
-                        onChange={() => { setBun(choice); setAddedToCart(false); }} />
-                      <span>{choice === "regular" ? "Regular bun" : "Gluten-Free Bun"}</span>
-                      <small>{choice === "regular" ? "Included" : `+${money.format(glutenFreeBunPrice)}`}</small>
-                    </label>
-                  ))}
-                </div>
-                <p className="product-bun-note">Bun option only. Other ingredients or shared preparation may contain gluten.</p>
-              </fieldset>
+              <BunChoiceSelector
+                name="product-bun"
+                value={bun}
+                upgradePriceLabel={`+${money.format(glutenFreeBunPrice)}`}
+                onChange={(choice) => { setBun(choice); setAddedToCart(false); }}
+              />
             )}
 
             {item.canUpgrade && (
@@ -865,7 +858,6 @@ export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPag
                         </label>
                       ))}
                     </div>
-                    <p className="product-bun-note">Bun option only. Other ingredients or shared preparation may contain gluten.</p>
                   </section>
                 )}
 

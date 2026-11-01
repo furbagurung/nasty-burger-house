@@ -1,9 +1,11 @@
 import {
   adultDrinkChoices,
   comboUpgradePrice,
+  glutenFreeBunPrice,
   kidsDrinkChoices,
   menuItems,
   modifierChoices,
+  type BunChoice,
   type MenuItem,
 } from "../data/menu";
 
@@ -22,6 +24,10 @@ export type CartLine = {
   removedIngredients: string[];
   boxBurgers: string[];
   boxDrinks: string[];
+  /** Missing on legacy cart lines; regular is the default. */
+  bun?: BunChoice;
+  /** Positionally aligned with chosen box burgers, then any fixed burgers. */
+  boxBuns?: BunChoice[];
 };
 
 export type CheckoutCustomer = {
@@ -56,6 +62,27 @@ function roundCurrency(value: number) {
   return Math.round((value + Number.EPSILON) * 100) / 100;
 }
 
+export function calculateBunUpgradePrice(
+  bun: BunChoice | undefined,
+  boxBuns: BunChoice[] | undefined,
+) {
+  const count = Number(bun === "gluten-free") +
+    (boxBuns ?? []).filter((choice) => choice === "gluten-free").length;
+  return count * glutenFreeBunPrice;
+}
+
+/** Keep the bun choice attached to each burger (including the Family Box kid burger). */
+export function describeBoxBurgers(line: CartLine, item: MenuItem): string[] {
+  const burgerIds = [...line.boxBurgers, ...(item.boxConfig?.fixedBurgerIds ?? [])];
+  return burgerIds.map((burgerId, index) => {
+    const name = menuItems.find((entry) => entry.id === burgerId)?.name ?? burgerId;
+    const bun = line.boxBuns?.[index] === "gluten-free"
+      ? "gluten-free bun (+A$3)"
+      : "regular bun";
+    return `${name} (${bun})`;
+  });
+}
+
 export function calculateLineUnitPrice(line: CartLine, item: MenuItem) {
   const modifiersTotal = line.modifiers.reduce((total, selection) => {
     const modifier = modifierChoices.find(
@@ -65,7 +92,11 @@ export function calculateLineUnitPrice(line: CartLine, item: MenuItem) {
   }, 0);
 
   return roundCurrency(
-    item.price + modifiersTotal + (line.combo ? comboUpgradePrice : 0),
+    item.price + modifiersTotal + (line.combo ? comboUpgradePrice : 0) +
+      calculateBunUpgradePrice(
+        item.category === "burgers" || item.id === "monster-cheese" ? line.bun : undefined,
+        item.boxConfig ? line.boxBuns : undefined,
+      ),
   );
 }
 
@@ -174,7 +205,15 @@ function parseCartLine(value: unknown, index: number, errors: string[]) {
     return null;
   }
 
-  if (!Array.isArray(value.boxBurgers) || !Array.isArray(value.boxDrinks)) {
+  const bun = value.bun === undefined ? "regular" : value.bun;
+  if ((bun !== "regular" && bun !== "gluten-free") ||
+      (bun === "gluten-free" && item.category !== "burgers" && item.id !== "monster-cheese")) {
+    errors.push(`${item.name} has an unavailable bun choice.`);
+    return null;
+  }
+
+  if (!Array.isArray(value.boxBurgers) || !Array.isArray(value.boxDrinks) ||
+      (value.boxBuns !== undefined && !Array.isArray(value.boxBuns))) {
     errors.push(`${item.name} has invalid Beast Box choices.`);
     return null;
   }
@@ -185,12 +224,28 @@ function parseCartLine(value: unknown, index: number, errors: string[]) {
     (boxDrink): boxDrink is string => typeof boxDrink === "string",
   );
 
+  const rawBoxBuns: unknown[] = Array.isArray(value.boxBuns) ? value.boxBuns : [];
+  const expectedBoxBuns = item.boxConfig
+    ? item.boxConfig.burgerCount + (item.boxConfig.fixedBurgerIds?.length ?? 0)
+    : 0;
+  // Saved carts from before this feature always use the standard bun.
+  const boxBuns: BunChoice[] = rawBoxBuns.length === 0 && item.boxConfig
+    ? Array.from({ length: expectedBoxBuns }, () => "regular" as const)
+    : rawBoxBuns.filter((choice): choice is BunChoice =>
+        choice === "regular" || choice === "gluten-free",
+      );
+  if (boxBuns.length !== rawBoxBuns.length && rawBoxBuns.length > 0) {
+    errors.push(`${item.name} has an invalid bun choice.`);
+    return null;
+  }
+
   if (item.boxConfig) {
     const validBurgerIds = menuItems
       .filter((entry) => entry.category === "burgers")
       .map((entry) => entry.id);
     if (
       boxBurgers.length !== item.boxConfig.burgerCount ||
+      boxBuns.length !== expectedBoxBuns ||
       boxBurgers.some((burger) => !validBurgerIds.includes(burger)) ||
       boxDrinks.length !== item.boxConfig.drinkCount ||
       boxDrinks.some((boxDrink) => !adultDrinkChoices.includes(boxDrink)) ||
@@ -201,7 +256,7 @@ function parseCartLine(value: unknown, index: number, errors: string[]) {
       errors.push(`${item.name} needs all required burger and drink choices.`);
       return null;
     }
-  } else if (boxBurgers.length > 0 || boxDrinks.length > 0) {
+  } else if (boxBurgers.length > 0 || boxDrinks.length > 0 || boxBuns.length > 0) {
     errors.push(`${item.name} cannot contain Beast Box choices.`);
     return null;
   }
@@ -216,6 +271,8 @@ function parseCartLine(value: unknown, index: number, errors: string[]) {
     removedIngredients,
     boxBurgers,
     boxDrinks,
+    bun,
+    boxBuns,
   } satisfies CartLine;
 }
 

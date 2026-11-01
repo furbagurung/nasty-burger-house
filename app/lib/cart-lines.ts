@@ -23,6 +23,8 @@ export function cartConfigurationKey(line: CartLine): string {
     sorted(line.removedIngredients),
     sorted(line.boxBurgers),
     sorted(line.boxDrinks),
+    line.bun ?? "regular",
+    line.boxBuns ?? [],
   ]);
 }
 

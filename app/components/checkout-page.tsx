@@ -6,10 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2, ShieldCheck } from "lucide-react";
-import { menuItems } from "../data/menu";
+import { menuItems, modifierChoices, type BunChoice } from "../data/menu";
 import {
   calculateCartSubtotal,
   calculateLineUnitPrice,
+  describeBoxBurgers,
   type CartLine,
 } from "../lib/order";
 import { type ServiceStatus } from "../lib/service";
@@ -89,7 +90,14 @@ function normaliseCart(value: unknown): CartLine[] {
         quantity: Math.max(1, Math.min(20, Math.floor(line.quantity))),
         combo: Boolean(line.combo),
         drink: typeof line.drink === "string" ? line.drink : undefined,
-        modifiers: Array.isArray(line.modifiers) ? line.modifiers : [],
+        modifiers: Array.isArray(line.modifiers)
+          ? line.modifiers.filter((selection): selection is CartLine["modifiers"][number] =>
+              Boolean(selection) && typeof selection === "object" &&
+              typeof selection.id === "string" &&
+              modifierChoices.some((choice) => choice.id === selection.id) &&
+              typeof selection.quantity === "number",
+            )
+          : [],
         removedIngredients: Array.isArray(line.removedIngredients)
           ? line.removedIngredients.filter(
               (value): value is string => typeof value === "string",
@@ -103,6 +111,12 @@ function normaliseCart(value: unknown): CartLine[] {
         boxDrinks: Array.isArray(line.boxDrinks)
           ? line.boxDrinks.filter(
               (value): value is string => typeof value === "string",
+            )
+          : [],
+        bun: line.bun === "gluten-free" ? "gluten-free" : "regular",
+        boxBuns: Array.isArray(line.boxBuns)
+          ? line.boxBuns.filter(
+              (choice): choice is BunChoice => choice === "regular" || choice === "gluten-free",
             )
           : [],
       },
@@ -596,7 +610,16 @@ export default function CheckoutPage({ serviceStatus: initialServiceStatus }: Ch
                   if (!item) return null;
                   return (
                     <div key={line.lineId}>
-                      <span>{line.quantity}× {item.name}</span>
+                      <span>
+                         {line.quantity}× {item.name}
+                         {(item.boxConfig || item.category === "burgers" || item.id === "monster-cheese") && (
+                           <small className="block text-xs text-muted-foreground">
+                             {item.boxConfig
+                               ? describeBoxBurgers(line, item).join(", ")
+                               : `Bun: ${line.bun === "gluten-free" ? "Gluten-Free Bun (+A$3)" : "Regular bun"}`}
+                           </small>
+                         )}
+                       </span>
                       <strong>{money.format(calculateLineUnitPrice(line, item) * line.quantity)}</strong>
                     </div>
                   );

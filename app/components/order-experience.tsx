@@ -9,14 +9,18 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   adultDrinkChoices,
   comboUpgradePrice,
+  glutenFreeBunPrice,
   kidsDrinkChoices,
   modifierChoices,
   pricingNotice,
+  type BunChoice,
   type MenuItem,
 } from "../data/menu";
 import {
+  calculateBunUpgradePrice,
   calculateCartSubtotal,
   calculateLineUnitPrice,
+  describeBoxBurgers,
   type CartLine,
 } from "../lib/order";
 import { type ServiceStatus } from "../lib/service";
@@ -61,7 +65,6 @@ const MONTHLY_SEEN_KEY = "nasty-burger-monthly-seen";
 const modifierThumbnails: Record<string, string> = {
   "beef-patty": "/images/extras/buff-patty.webp",
   "chicken-patty": "/images/extras/chicken-patty.webp",
-  bacon: "/images/extras/bacon.webp",
   cheese: "/images/extras/american-cheese.webp",
   "house-sauce": "/images/extras/sauce.webp",
   "signature-sauce": "/images/extras/sauce.webp",
@@ -102,7 +105,7 @@ const heroSlides: HeroSlide[] = [
     title: "Beast of the Month",
     description: "New Beast coming soon.",
     image: "/images/bbq-beast-hero.webp",
-    imageAlt: "BBQ burger with beef patties, bacon, cheese and smoky sauce",
+    imageAlt: "BBQ burger with beef patties, cheese and smoky BBQ Sauce",
     ctaLabel: "Coming Soon",
     action: "monthly",
   },
@@ -184,7 +187,9 @@ function normaliseCart(value: unknown): CartLine[] {
             typeof modifier.id === "string" &&
             typeof modifier.quantity === "number"
           ) {
-            return [{ id: modifier.id, quantity: modifier.quantity }];
+            return modifierChoices.some((choice) => choice.id === modifier.id)
+              ? [{ id: modifier.id, quantity: modifier.quantity }]
+              : [];
           }
           return [];
         })
@@ -214,6 +219,12 @@ function normaliseCart(value: unknown): CartLine[] {
               (drink): drink is string => typeof drink === "string",
             )
           : [],
+        bun: line.bun === "gluten-free" ? "gluten-free" : "regular",
+        boxBuns: Array.isArray(line.boxBuns)
+          ? line.boxBuns.filter(
+              (choice): choice is BunChoice => choice === "regular" || choice === "gluten-free",
+            )
+          : [],
       },
     ];
   });
@@ -237,6 +248,9 @@ export default function OrderExperience({
   const [selectedDrink, setSelectedDrink] = useState("");
   const [boxBurgers, setBoxBurgers] = useState<string[]>([]);
   const [boxDrinks, setBoxDrinks] = useState<string[]>([]);
+  const [bun, setBun] = useState<BunChoice>("regular");
+  const [boxBuns, setBoxBuns] = useState<BunChoice[]>([]);
+  const [fixedBoxBuns, setFixedBoxBuns] = useState<BunChoice[]>([]);
   const [productQuantity, setProductQuantity] = useState(1);
   const [editingLineId, setEditingLineId] = useState<string | null>(null);
   const [cart, setCart] = useState<CartLine[]>([]);
@@ -305,9 +319,13 @@ export default function OrderExperience({
       0,
     );
     return (
-      selectedItem.price + modifiersTotal + (isCombo ? comboUpgradePrice : 0)
+      selectedItem.price + modifiersTotal + (isCombo ? comboUpgradePrice : 0) +
+      calculateBunUpgradePrice(
+        selectedItem.category === "burgers" || selectedItem.id === "monster-cheese" ? bun : undefined,
+        selectedItem.boxConfig ? [...boxBuns, ...fixedBoxBuns] : undefined,
+      )
     );
-  }, [isCombo, modifierQuantities, selectedItem, selectedModifiers]);
+  }, [isCombo, modifierQuantities, selectedItem, selectedModifiers, bun, boxBuns, fixedBoxBuns]);
 
   const cartCount = cart.reduce((total, line) => total + line.quantity, 0);
   const cartSubtotal = calculateCartSubtotal(cart);
@@ -480,6 +498,9 @@ export default function OrderExperience({
     setSelectedDrink("");
     setBoxBurgers([]);
     setBoxDrinks([]);
+    setBun("regular");
+    setBoxBuns([]);
+    setFixedBoxBuns([]);
     setProductQuantity(1);
     setSelectionError("");
   }
@@ -535,14 +556,24 @@ export default function OrderExperience({
         ? selectedItem.boxConfig.burgerCount
         : selectedItem.boxConfig.drinkCount;
     const next = [...values];
+    const nextBuns = [...boxBuns];
 
-    if (amount > 0 && next.length < maximum) next.push(value);
+    if (amount > 0 && next.length < maximum) {
+      next.push(value);
+      if (type === "burger") nextBuns.push("regular");
+    }
     if (amount < 0) {
       const index = next.lastIndexOf(value);
-      if (index >= 0) next.splice(index, 1);
+      if (index >= 0) {
+        next.splice(index, 1);
+        if (type === "burger") nextBuns.splice(index, 1);
+      }
     }
 
-    if (type === "burger") setBoxBurgers(next);
+    if (type === "burger") {
+      setBoxBurgers(next);
+      setBoxBuns(nextBuns);
+    }
     else setBoxDrinks(next);
     setSelectionError("");
   }
@@ -606,6 +637,8 @@ export default function OrderExperience({
       removedIngredients,
       boxBurgers,
       boxDrinks,
+      bun,
+      boxBuns: selectedItem.boxConfig ? [...boxBuns, ...fixedBoxBuns] : [],
     };
 
     setCart((current) =>
@@ -641,6 +674,11 @@ export default function OrderExperience({
     setSelectedDrink(line.drink ?? "");
     setBoxBurgers(line.boxBurgers);
     setBoxDrinks(line.boxDrinks);
+    setBun(line.bun ?? "regular");
+    setBoxBuns(line.boxBurgers.map((_, index) => line.boxBuns?.[index] ?? "regular"));
+    setFixedBoxBuns((item.boxConfig?.fixedBurgerIds ?? []).map(
+      (_, index) => line.boxBuns?.[line.boxBurgers.length + index] ?? "regular",
+    ));
     setProductQuantity(line.quantity);
     setSelectionError("");
     setSelectedItem(item);
@@ -666,12 +704,12 @@ export default function OrderExperience({
   function lineDetails(line: CartLine) {
     const details: string[] = [];
     if (line.combo) details.push(`Combo · ${line.drink}`);
-    if (line.boxBurgers.length > 0) {
-      details.push(
-        `Burgers: ${line.boxBurgers
-          .map((id) => items.find((item) => item.id === id)?.name ?? id)
-          .join(", ")}`,
-      );
+    const item = items.find((entry) => entry.id === line.itemId);
+    if (item && (item.category === "burgers" || item.id === "monster-cheese")) {
+      details.push(`Bun: ${line.bun === "gluten-free" ? "Gluten-Free Bun (+A$3)" : "Regular bun"}`);
+    }
+    if (item?.boxConfig && line.boxBurgers.length > 0) {
+      details.push(`Burgers: ${describeBoxBurgers(line, item).join(", ")}`);
     }
     if (line.boxDrinks.length > 0) {
       details.push(`Drinks: ${line.boxDrinks.join(", ")}`);
@@ -1294,6 +1332,22 @@ export default function OrderExperience({
               )}
             </p>
 
+            {(selectedItem.category === "burgers" || selectedItem.id === "monster-cheese") && (
+              <fieldset className="product-bun-section">
+                <legend>Choose your bun</legend>
+                <div className="product-bun-options">
+                  {(["regular", "gluten-free"] as BunChoice[]).map((choice) => (
+                    <label key={choice} className={`product-bun-option${bun === choice ? " is-selected" : ""}`}>
+                      <input type="radio" name="home-product-bun" checked={bun === choice} onChange={() => setBun(choice)} />
+                      <span>{choice === "regular" ? "Regular bun" : "Gluten-Free Bun"}</span>
+                      <small>{choice === "regular" ? "Included" : `+${formatPrice(glutenFreeBunPrice)}`}</small>
+                    </label>
+                  ))}
+                </div>
+                <p className="product-bun-note">Bun only. Shared preparation and other ingredients may contain gluten.</p>
+              </fieldset>
+            )}
+
             {selectedItem.boxConfig && (
               <>
                 <fieldset>
@@ -1324,6 +1378,39 @@ export default function OrderExperience({
                       );
                     })}
                   </div>
+                </fieldset>
+
+                <fieldset className="product-bun-section">
+                  <legend>Choose a bun for each burger</legend>
+                  <div className="product-bun-rows">
+                    {boxBurgers.map((burgerId, index) => (
+                      <label className="product-bun-row" key={`home-bun-${index}`}>
+                        <span>Burger {index + 1}: {items.find((entry) => entry.id === burgerId)?.name ?? burgerId}</span>
+                        <select value={boxBuns[index] ?? "regular"} onChange={(event) => {
+                          const next = [...boxBuns];
+                          next[index] = event.target.value as BunChoice;
+                          setBoxBuns(next);
+                        }}>
+                          <option value="regular">Regular bun · Included</option>
+                          <option value="gluten-free">Gluten-Free Bun · +{formatPrice(glutenFreeBunPrice)}</option>
+                        </select>
+                      </label>
+                    ))}
+                    {(selectedItem?.boxConfig?.fixedBurgerIds ?? []).map((burgerId, index) => (
+                      <label className="product-bun-row" key={`home-fixed-bun-${index}`}>
+                        <span>{items.find((entry) => entry.id === burgerId)?.name ?? burgerId} (included)</span>
+                        <select value={fixedBoxBuns[index] ?? "regular"} onChange={(event) => {
+                          const next = [...fixedBoxBuns];
+                          next[index] = event.target.value as BunChoice;
+                          setFixedBoxBuns(next);
+                        }}>
+                          <option value="regular">Regular bun · Included</option>
+                          <option value="gluten-free">Gluten-Free Bun · +{formatPrice(glutenFreeBunPrice)}</option>
+                        </select>
+                      </label>
+                    ))}
+                  </div>
+                  <p className="product-bun-note">Each gluten-free bun adds +{formatPrice(glutenFreeBunPrice)}. Other ingredients or shared preparation may contain gluten.</p>
                 </fieldset>
 
                 <fieldset>

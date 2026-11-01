@@ -317,3 +317,51 @@
     height: 2.7rem;
   }
 }
+
+/* Per-burger bun options use the same semantic tokens in Light and Dark. */
+.product-bun-section {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: var(--card);
+  color: var(--card-foreground);
+}
+.product-bun-section legend { padding-inline: 0.3rem; color: var(--foreground); font-weight: 800; font-size: 1rem; }
+.product-bun-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; }
+.product-bun-option {
+  display: flex;
+  min-height: 3.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  padding: 0.65rem;
+  background: var(--background);
+  color: var(--foreground);
+  cursor: pointer;
+}
+.product-bun-option.is-selected { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+.product-bun-option input { accent-color: var(--primary); width: 1rem; height: 1rem; flex-shrink: 0; }
+.product-bun-option span { min-width: 0; font-weight: 700; font-size: 0.875rem; }
+.product-bun-option small { margin-left: auto; white-space: nowrap; font-size: 0.75rem; }
+.product-bun-note { margin: 0; font-size: 0.8rem; line-height: 1.45; color: var(--muted-foreground); }
+.product-bun-rows { display: grid; gap: 0.7rem; }
+.product-bun-row { display: grid; gap: 0.4rem; min-width: 0; font-size: 0.875rem; font-weight: 700; color: var(--foreground); }
+.product-bun-row select {
+  min-height: 44px;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  background: var(--card);
+  color: var(--card-foreground);
+  font: inherit;
+}
+.product-bun-row select:focus-visible, .product-bun-option:focus-within { outline: 2px solid var(--ring); outline-offset: 2px; }
+@media (max-width: 420px) {
+  .product-bun-options { grid-template-columns: 1fr; }
+  .product-bun-option { min-height: 48px; }
+}

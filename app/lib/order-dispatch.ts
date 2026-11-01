@@ -2,6 +2,7 @@ import { menuItems, modifierChoices } from "../data/menu";
 import { calculateEarnedDripPoints } from "./loyalty";
 import {
   calculateLineUnitPrice,
+  describeBoxBurgers,
   type ValidatedOrder,
 } from "./order";
 import type { ServiceStatus } from "./service";
@@ -87,13 +88,10 @@ export function createOrderDispatchPayload(
           };
         }),
         removedIngredients: line.removedIngredients,
+        bun: item.category === "burgers" || item.id === "monster-cheese" ? (line.bun ?? "regular") : null,
         beastBox: item.boxConfig
           ? {
-              burgers: line.boxBurgers.map(
-                (burgerId) =>
-                  menuItems.find((entry) => entry.id === burgerId)?.name ??
-                  burgerId,
-              ),
+              burgers: describeBoxBurgers(line, item),
               drinks: line.boxDrinks,
             }
           : null,

@@ -6,10 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { menuItems, modifierChoices } from "../data/menu";
+import { menuItems, modifierChoices, type BunChoice } from "../data/menu";
 import {
   calculateCartSubtotal,
   calculateLineUnitPrice,
+  describeBoxBurgers,
   type CartLine,
 } from "../lib/order";
 import { mergeIdenticalCartLines } from "../lib/cart-lines";
@@ -51,6 +52,7 @@ function normaliseCart(value: unknown): CartLine[] {
                 Boolean(selection) &&
                 typeof selection === "object" &&
                 typeof selection.id === "string" &&
+                modifierChoices.some((choice) => choice.id === selection.id) &&
                 typeof selection.quantity === "number",
             )
           : [],
@@ -69,6 +71,12 @@ function normaliseCart(value: unknown): CartLine[] {
               (drink): drink is string => typeof drink === "string",
             )
           : [],
+        bun: line.bun === "gluten-free" ? "gluten-free" : "regular",
+        boxBuns: Array.isArray(line.boxBuns)
+          ? line.boxBuns.filter(
+              (choice): choice is BunChoice => choice === "regular" || choice === "gluten-free",
+            )
+          : [],
       },
     ];
   });
@@ -76,6 +84,10 @@ function normaliseCart(value: unknown): CartLine[] {
 
 function lineDetails(line: CartLine) {
   const details: string[] = [];
+  const item = menuItems.find((entry) => entry.id === line.itemId);
+  if (item && (item.category === "burgers" || item.id === "monster-cheese")) {
+    details.push(`Bun: ${line.bun === "gluten-free" ? "Gluten-Free Bun (+A$3)" : "Regular bun"}`);
+  }
 
   if (line.combo) {
     details.push(`Beast Combo${line.drink ? ` · ${line.drink}` : ""}`);
@@ -96,12 +108,8 @@ function lineDetails(line: CartLine) {
     details.push(`Without ${line.removedIngredients.join(", ")}`);
   }
 
-  if (line.boxBurgers.length > 0) {
-    details.push(
-      `Burgers: ${line.boxBurgers
-        .map((id) => menuItems.find((entry) => entry.id === id)?.name ?? id)
-        .join(", ")}`,
-    );
+  if (item?.boxConfig && line.boxBurgers.length > 0) {
+    details.push(`Burgers: ${describeBoxBurgers(line, item).join(", ")}`);
   }
 
   if (line.boxDrinks.length > 0) {

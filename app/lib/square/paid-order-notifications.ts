@@ -183,6 +183,7 @@ export function createPaidSquareOrderNotifications(
       combo: { selected: false },
       extras: [],
       removedIngredients: [],
+      bun: null,
       beastBox: null,
     })),
     totals: { subtotal: total, total, currency: "AUD" },

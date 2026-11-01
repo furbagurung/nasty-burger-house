@@ -14,14 +14,16 @@ import { useEffect, useState } from "react";
 import {
   adultDrinkChoices,
   comboUpgradePrice,
+  glutenFreeBunPrice,
   kidsDrinkChoices,
   menuItems,
   modifierChoices,
   sauceModifierIds,
+  type BunChoice,
   type MenuItem,
 } from "../data/menu";
 import { findMenuPageCategory } from "../data/menu-pages";
-import type { CartLine } from "../lib/order";
+import { calculateBunUpgradePrice, type CartLine } from "../lib/order";
 import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import CatalogueMobileMenu from "./catalogue-mobile-menu";
 import MenuItemMedia from "./menu-item-media";
@@ -45,7 +47,6 @@ const money = new Intl.NumberFormat("en-US", {
 const modifierThumbnails: Record<string, string> = {
   "beef-patty": "/images/extras/buff-patty.webp",
   "chicken-patty": "/images/extras/chicken-patty.webp",
-  bacon: "/images/extras/bacon.webp",
   cheese: "/images/extras/american-cheese.webp",
   "house-sauce": "/images/extras/sauce.webp",
   "signature-sauce": "/images/extras/sauce.webp",
@@ -57,7 +58,6 @@ const modifierThumbnails: Record<string, string> = {
 
 const ingredientThumbnails: Record<string, string> = {
   "American cheese": "/images/extras/american-cheese.webp",
-  "Crispy bacon": "/images/extras/bacon.webp",
   "Cabbage slaw": "/images/extras/cabbage-slaw.webp",
   "Creamy mayo": "/images/extras/mayo.webp",
   "Jalapeño mint mayo": "/images/extras/Jalapeño mint mayo.webp",
@@ -68,7 +68,7 @@ const ingredientThumbnails: Record<string, string> = {
   "Pickled onion": "/images/extras/pickled-onions.webp",
   "Fresh coriander": "/images/extras/fresh-corriander.webp",
   "Crispy fried onion": "/images/extras/fried-onions.webp",
-  "Bourbon BBQ sauce": "/images/extras/sauce.webp",
+  "BBQ Sauce": "/images/extras/sauce.webp",
   "Buffalo Fury sauce": "/images/extras/sauce.webp",
   "Blue cheese sauce": "/images/extras/sauce.webp",
   "Tomato sauce": "/images/extras/tomato sauce.webp",
@@ -76,7 +76,6 @@ const ingredientThumbnails: Record<string, string> = {
 };
 
 const modifierIngredientAliases: Record<string, string[]> = {
-  bacon: ["crispy bacon"],
   cheese: ["american cheese"],
   "house-sauce": ["nbh signature sauce", "house sauce"],
   "beef-patty": ["beef patty", "smashed beef patty"],
@@ -143,6 +142,11 @@ export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPag
   const [removedIngredients, setRemovedIngredients] = useState<string[]>([]);
   const [boxBurgers, setBoxBurgers] = useState<string[]>([]);
   const [boxDrinks, setBoxDrinks] = useState<string[]>([]);
+  const [bun, setBun] = useState<BunChoice>("regular");
+  const [boxBuns, setBoxBuns] = useState<BunChoice[]>([]);
+  const [fixedBoxBuns, setFixedBoxBuns] = useState<BunChoice[]>(
+    () => item.boxConfig?.fixedBurgerIds?.map(() => "regular") ?? [],
+  );
   const [selectionError, setSelectionError] = useState("");
   const [addedToCart, setAddedToCart] = useState(false);
   const [cartCount, setCartCount] = useState(0);
@@ -207,7 +211,12 @@ export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPag
     (total, modifier) => total + modifier.price * (modifierQuantities[modifier.id] ?? 0),
     0,
   );
-  const unitPrice = item.price + extrasPrice + (isCombo ? comboUpgradePrice : 0);
+  const boxBunChoices = [...boxBuns, ...fixedBoxBuns];
+  const bunSurcharge = calculateBunUpgradePrice(
+    item.category === "burgers" || item.id === "monster-cheese" ? bun : undefined,
+    item.boxConfig ? boxBunChoices : undefined,
+  );
+  const unitPrice = item.price + extrasPrice + (isCombo ? comboUpgradePrice : 0) + bunSurcharge;
 
   const totalPrice = unitPrice * quantity;
   const selectedExtrasCount = addOnModifiers.reduce(
@@ -243,15 +252,25 @@ export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPag
     const source = type === "burger" ? boxBurgers : boxDrinks;
     const maximum = type === "burger" ? item.boxConfig.burgerCount : item.boxConfig.drinkCount;
     const next = [...source];
+    const nextBuns = [...boxBuns];
 
     if (amount > 0 && (type === "burger" ? soldOutSet.has(value) : drinkSoldOut(value))) return;
-    if (amount > 0 && next.length < maximum) next.push(value);
+    if (amount > 0 && next.length < maximum) {
+      next.push(value);
+      if (type === "burger") nextBuns.push("regular");
+    }
     if (amount < 0) {
       const index = next.lastIndexOf(value);
-      if (index >= 0) next.splice(index, 1);
+      if (index >= 0) {
+        next.splice(index, 1);
+        if (type === "burger") nextBuns.splice(index, 1);
+      }
     }
 
-    if (type === "burger") setBoxBurgers(next);
+    if (type === "burger") {
+      setBoxBurgers(next);
+      setBoxBuns(nextBuns);
+    }
     else setBoxDrinks(next);
     setSelectionError("");
     setAddedToCart(false);
@@ -339,6 +358,8 @@ export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPag
       removedIngredients,
       boxBurgers,
       boxDrinks,
+      bun,
+      boxBuns: item.boxConfig ? boxBunChoices : [],
     };
 
     // Merge only when product, extras, removals, combo drink and box choices match.
@@ -469,6 +490,23 @@ export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPag
             <div className="product-mobile-description-card product-description--mobile">
               <p className="product-detail__description">{item.description}</p>
             </div>
+
+            {(item.category === "burgers" || item.id === "monster-cheese") && (
+              <fieldset className="product-custom-section product-bun-section">
+                <legend>Choose your bun</legend>
+                <div className="product-bun-options">
+                  {(["regular", "gluten-free"] as BunChoice[]).map((choice) => (
+                    <label key={choice} className={`product-bun-option${bun === choice ? " is-selected" : ""}`}>
+                      <input type="radio" name="product-bun" value={choice} checked={bun === choice}
+                        onChange={() => { setBun(choice); setAddedToCart(false); }} />
+                      <span>{choice === "regular" ? "Regular bun" : "Gluten-Free Bun"}</span>
+                      <small>{choice === "regular" ? "Included" : `+${money.format(glutenFreeBunPrice)}`}</small>
+                    </label>
+                  ))}
+                </div>
+                <p className="product-bun-note">Bun option only. Other ingredients or shared preparation may contain gluten.</p>
+              </fieldset>
+            )}
 
             {item.canUpgrade && (
               <section className="product-custom-section">
@@ -791,6 +829,46 @@ export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPag
                   </div>
                 </section>
 
+                {(boxBurgers.length > 0 || (item.boxConfig?.fixedBurgerIds?.length ?? 0) > 0) && (
+                  <section className="product-drawer-group" aria-labelledby="product-box-buns-title">
+                    <div className="product-drawer-group__heading">
+                      <h3 id="product-box-buns-title">Choose a bun for each burger</h3>
+                      <p>Gluten-Free Bun +{money.format(glutenFreeBunPrice)} per burger.</p>
+                    </div>
+                    <div className="product-bun-rows">
+                      {boxBurgers.map((burgerId, index) => (
+                        <label className="product-bun-row" key={`box-bun-${index}`}>
+                          <span>Burger {index + 1}: {menuItems.find((entry) => entry.id === burgerId)?.name ?? burgerId}</span>
+                          <select value={boxBuns[index] ?? "regular"} onChange={(event) => {
+                            const next = [...boxBuns];
+                            next[index] = event.target.value as BunChoice;
+                            setBoxBuns(next);
+                            setAddedToCart(false);
+                          }}>
+                            <option value="regular">Regular bun · Included</option>
+                            <option value="gluten-free">Gluten-Free Bun · +{money.format(glutenFreeBunPrice)}</option>
+                          </select>
+                        </label>
+                      ))}
+                      {(item.boxConfig?.fixedBurgerIds ?? []).map((burgerId, index) => (
+                        <label className="product-bun-row" key={`fixed-box-bun-${index}`}>
+                          <span>{menuItems.find((entry) => entry.id === burgerId)?.name ?? burgerId} (included)</span>
+                          <select value={fixedBoxBuns[index] ?? "regular"} onChange={(event) => {
+                            const next = [...fixedBoxBuns];
+                            next[index] = event.target.value as BunChoice;
+                            setFixedBoxBuns(next);
+                            setAddedToCart(false);
+                          }}>
+                            <option value="regular">Regular bun · Included</option>
+                            <option value="gluten-free">Gluten-Free Bun · +{money.format(glutenFreeBunPrice)}</option>
+                          </select>
+                        </label>
+                      ))}
+                    </div>
+                    <p className="product-bun-note">Bun option only. Other ingredients or shared preparation may contain gluten.</p>
+                  </section>
+                )}
+
                 <section className="product-drawer-group" aria-labelledby="product-box-drinks-title">
                   <div className="product-drawer-group__heading">
                     <h3 id="product-box-drinks-title">Choose your drinks</h3>
@@ -824,7 +902,7 @@ export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPag
               <div className="product-extras-drawer__footer">
                 <span>
                   <small>{boxBurgers.length}/{item.boxConfig!.burgerCount} burgers · {boxDrinks.length}/{item.boxConfig!.drinkCount} drinks</small>
-                  <strong>{money.format(item.price)}</strong>
+                  <strong>{money.format(unitPrice)}</strong>
                 </span>
                 <motion.button tabIndex={0} whileTap={press} type="button" onClick={() => setIsBoxDrawerOpen(false)}>Done</motion.button>
               </div>

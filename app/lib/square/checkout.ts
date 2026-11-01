@@ -33,6 +33,10 @@ function lineNote(line: OrderPayload["lines"][number]) {
     );
   }
 
+  if (line.bun) {
+    details.push(`Bun: ${line.bun === "gluten-free" ? "Gluten-free bun (+A$3)" : "Regular bun"}`);
+  }
+
   if (line.removedIngredients.length > 0) {
     details.push(`Without: ${line.removedIngredients.join(", ")}`);
   }

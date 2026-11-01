@@ -9,6 +9,8 @@ export type MenuCategoryId =
   | "drinks";
 
 export type DietaryTag = "Halal" | "Vegetarian";
+export type BunChoice = "regular" | "gluten-free";
+export const glutenFreeBunPrice = 3;
 
 export type ModifierChoice = {
   id: string;
@@ -19,6 +21,8 @@ export type ModifierChoice = {
 export type BeastBoxConfig = {
   burgerCount: number;
   drinkCount: number;
+  /** Fixed additional burgers, e.g. Monster Cheese in the Family box. */
+  fixedBurgerIds?: string[];
 };
 
 export type MenuItem = {
@@ -74,7 +78,6 @@ export const sauceModifierIds = [
 export const modifierChoices: ModifierChoice[] = [
   { id: "beef-patty", name: "Extra smashed beef patty", price: 4 },
   { id: "chicken-patty", name: "Extra chicken", price: 4 },
-  { id: "bacon", name: "Crispy bacon", price: 3 },
   { id: "cheese", name: "Extra American cheese", price: 2 },
   // Legacy modifier retained so existing saved carts still price correctly.
   { id: "house-sauce", name: "Extra house sauce", price: 1.5 },
@@ -86,7 +89,7 @@ export const modifierChoices: ModifierChoice[] = [
 ];
 
 const sauceAddOns = [...sauceModifierIds];
-const burgerModifierIds = ["beef-patty", "bacon", "cheese", ...sauceAddOns];
+const burgerModifierIds = ["beef-patty", "cheese", ...sauceAddOns];
 
 export const menuItems: MenuItem[] = [
   {
@@ -118,7 +121,7 @@ export const menuItems: MenuItem[] = [
     image: "/images/final-menu-photo/Peri-Beast-v2.jpg",
     canUpgrade: true,
     dietaryTags: ["Halal"],
-    modifierIds: ["chicken-patty", "bacon", ...sauceAddOns],
+    modifierIds: ["chicken-patty", ...sauceAddOns],
     removableIngredients: ["Tomato", "Cabbage slaw", "Creamy mayo"],
   },
   {
@@ -160,7 +163,7 @@ export const menuItems: MenuItem[] = [
     id: "bbq-beast",
     name: "BBQ Beast",
     description:
-      "Juicy flame-grilled beef patty with smoked pastrami, American cheese, house-made Bourbon BBQ sauce and creamy mayo on a toasted milk bun.",
+      "Juicy flame-grilled beef patty with smoked pastrami, American cheese, house-made BBQ Sauce and creamy mayo on a toasted milk bun.",
     category: "burgers",
     price: 19,
     image: "/images/final-menu-photo/bbq-beast-smoked.jpg",
@@ -171,7 +174,7 @@ export const menuItems: MenuItem[] = [
     removableIngredients: [
       "Smoked pastrami",
       "American cheese",
-      "Bourbon BBQ sauce",
+      "BBQ Sauce",
       "Creamy mayo",
     ],
   },
@@ -271,7 +274,7 @@ export const menuItems: MenuItem[] = [
     category: "beast-boxes",
     price: 79.99,
     image: "/images/final-menu-photo/family-beast-box-v2.jpeg",
-    boxConfig: { burgerCount: 2, drinkCount: 3 },
+    boxConfig: { burgerCount: 2, drinkCount: 3, fixedBurgerIds: ["monster-cheese"] },
   },
   {
     id: "mango-pudding",

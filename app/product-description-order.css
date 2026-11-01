@@ -1,5 +1,5 @@
-/* Product-page content order: keep product details compact and show the description
-   after combo/customization controls. */
+/* Explicit ordering for every direct child of the product details panel.
+   Without a bun slot, flex items default to order:0 and appear ABOVE the title. */
 .product-page-premium .product-detail__content--premium {
   display: flex !important;
   flex-direction: column;
@@ -13,29 +13,48 @@
   order: 2;
 }
 
-.product-page-premium .product-detail__content--premium > .product-custom-section {
+.product-page-premium .product-detail__content--premium > .product-detail__halal-note {
   order: 3;
+}
+
+.product-page-premium .product-detail__content--premium > .product-description--mobile {
+  order: 4;
 }
 
 .product-page-premium .product-detail__content--premium > .product-detail__description {
   order: 4;
+}
+
+.product-page-premium .product-detail__content--premium > .product-detail__description {
   margin-top: 1.25rem;
 }
 
-.product-page-premium .product-detail__content--premium > .product-purchase-panel {
+.product-page-premium .product-detail__content--premium > .product-bun-section {
   order: 5;
 }
 
-.product-page-premium .product-detail__content--premium > .product-selection-error {
+.product-page-premium .product-detail__content--premium > .product-custom-section {
   order: 6;
 }
 
-.product-page-premium .product-detail__content--premium > .product-added-actions {
+.product-page-premium .product-detail__content--premium > .product-purchase-panel {
   order: 7;
 }
 
-.product-page-premium .product-detail__content--premium > .product-detail__notice {
+.product-page-premium .product-detail__content--premium > [role="status"] {
+  order: 7;
+}
+
+.product-page-premium .product-detail__content--premium > .product-selection-error {
   order: 8;
+}
+
+.product-page-premium .product-detail__content--premium > .product-added-actions {
+  order: 9;
+}
+
+.product-page-premium .product-detail__content--premium > .product-detail__notice {
+  order: 10;
 }
 
 /* Remove the step number from product option headings. */
@@ -196,5 +215,51 @@
     margin-top: 0.8rem !important;
     border-radius: 1rem !important;
     padding: 0.6rem !important;
+  }
+}
+
+
+/* Keep the bun choice visually attached to the burger details, without
+   inheriting the Beast Combo card spacing or changing checkout functionality. */
+.product-page-premium .product-detail__content--premium > .product-bun-section {
+  flex: 0 0 auto;
+  align-self: stretch;
+  margin: 1.15rem 0 0;
+}
+
+.product-page-premium .product-detail__content--premium > .product-bun-section legend {
+  margin-bottom: 0.6rem;
+}
+
+.product-page-premium .product-detail__content--premium > .product-bun-section .product-bun-options {
+  gap: 0.65rem;
+}
+
+.product-page-premium .product-detail__content--premium
+  > .product-bun-section + .product-custom-section {
+  margin-top: 1rem !important;
+}
+
+@media (max-width: 680px) {
+  /* Shorter image well and consistent breathing room for the detail stack. */
+  .product-page-premium .product-detail__visual {
+    height: clamp(14rem, 58vw, 17rem);
+  }
+
+  .product-page-premium .product-detail__content--premium {
+    padding-top: 0.65rem;
+  }
+
+  .product-page-premium .product-detail__content--premium > .product-description--mobile {
+    margin: 0.75rem 0 0 !important;
+  }
+
+  .product-page-premium .product-detail__content--premium > .product-bun-section {
+    margin-top: 1rem;
+  }
+
+  .product-page-premium .product-detail__content--premium
+    > .product-bun-section + .product-custom-section {
+    margin-top: 0.9rem !important;
   }
 }

@@ -148,3 +148,25 @@ test("shared bun selector is accessible, compact on mobile, and avoids lengthy f
     assert.ok(css.includes(`var(${token})`), `Missing theme token ${token}`);
   }
 });
+
+test("product details show title and description before bun selector on mobile and desktop", () => {
+  const css = readFileSync(new URL("../app/product-description-order.css", import.meta.url), "utf8");
+  const component = readFileSync(new URL("../app/components/product-detail-page.tsx", import.meta.url), "utf8");
+  const bunCss = readFileSync(new URL("../app/product-customization-groups.css", import.meta.url), "utf8");
+  const directChildOrder = (className) => {
+    const escaped = className.replace(/[.*+?^$\{\}()|[\]\\]/g, "\\$&");
+    const rule = new RegExp("> \\." + escaped + " \\{\\s*order: (\\d+);");
+    const match = css.match(rule);
+    assert.ok(match, `Missing order for ${className}`);
+    return Number(match[1]);
+  };
+  assert.ok(directChildOrder("product-detail__heading-row") < directChildOrder("product-bun-section"));
+  assert.ok(directChildOrder("product-detail__halal-note") < directChildOrder("product-bun-section"));
+  assert.ok(directChildOrder("product-description--mobile") < directChildOrder("product-bun-section"));
+  assert.ok(directChildOrder("product-bun-section") < directChildOrder("product-custom-section"));
+  assert.ok(directChildOrder("product-custom-section") < directChildOrder("product-purchase-panel"));
+  assert.match(css, /\.product-bun-section \+ \.product-custom-section/);
+  assert.match(css, /height: clamp\(14rem, 58vw, 17rem\)/);
+  assert.match(bunCss, /\.product-bun-option:has\(\.product-bun-option__input:focus-visible\)/);
+  assert.ok(component.indexOf('<h1 id="product-title">') < component.indexOf('<BunChoiceSelector'));
+});

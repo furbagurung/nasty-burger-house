@@ -16,6 +16,7 @@ on:
       - "app/account-profile-mobile.css"
       - "app/layout.tsx"
       - "tests/profile-mobile-ui.test.mjs"
+      - "tests/menu-bun-options.test.mjs"
       - "vercel.json"
       - ".github/workflows/loyalty-check.yml"
   workflow_dispatch:

@@ -159,6 +159,7 @@ export default function OrderDetailPage() {
               <span>{order.pickupLabel}</span>
             </section>
 
+            {!order.squareOrderId && (
             <section className="account-card order-detail-points-card">
               <Image src="/images/drip-points/drip-coin.png" alt="" width={60} height={60} />
               <div>
@@ -174,7 +175,9 @@ export default function OrderDetailPage() {
               {order.dripPointsStatus === "pending" && <small>Points become available when the order is completed.</small>}
               {order.earnedDripPoints === 0 && <small>Sign in before checkout to earn Drip Points.</small>}
             </section>
+            )}
 
+            {!order.squareOrderId && (
             <section className="account-card order-detail-review-card">
               <p className="standalone-eyebrow">Your feedback</p>
               {review ? (
@@ -185,6 +188,7 @@ export default function OrderDetailPage() {
                 <><h2>Review after pickup.</h2><p>The review form unlocks when this order is marked completed.</p></>
               )}
             </section>
+            )}
           </aside>
         </div>
 

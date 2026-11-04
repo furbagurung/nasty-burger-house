@@ -20,6 +20,8 @@ export type SquarePaidOrder = {
   location_id?: string;
   reference_id?: string;
   state?: string;
+  created_at?: string;
+  updated_at?: string;
   metadata?: Record<string, string>;
   total_money?: SquareMoney;
   line_items?: Array<{
@@ -33,6 +35,7 @@ export type SquarePaidOrder = {
   }>;
   fulfillments?: Array<{
     type?: string;
+    state?: string;
     pickup_details?: {
       note?: string;
       recipient?: {

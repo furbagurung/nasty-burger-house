@@ -9,6 +9,7 @@ import {
 } from "../../../lib/square/paid-order-notifications";
 import { accumulateSquareLoyaltyPoints } from "../../../lib/square/loyalty";
 import { validateSquareWebhookSignature } from "../../../lib/square/webhooks";
+import { recordPaidSquareCustomerOrder, refreshSquareCustomerOrderStatus } from "../../../lib/square/customer-order-sync";
 
 type SquareWebhookEvent = {
   event_id?: string;
@@ -128,6 +129,10 @@ async function notifyPaidWebsiteOrder(event: SquareWebhookEvent) {
   );
   if (!notification) return; // POS orders, unpaid/partial payments, wrong location
 
+  // Persist the paid customer order before notification channels run. Repeated
+  // Square events and payment retries use an idempotent Square order key.
+  await recordPaidSquareCustomerOrder(payment, orderResponse.order);
+
   const [adminEmail, customerEmail, webhook] = await Promise.all([
     sendAdminPaidOrderEmail(notification.email),
     sendCustomerPaidOrderEmail(notification.email),
@@ -181,6 +186,10 @@ export async function POST(request: Request) {
   // must retain their current balance without receiving an extra 500.
 
   try {
+    if (event.type === "order.updated" || event.type === "order.fulfillment.updated") {
+      const orderId = event.data?.object?.order_updated?.order_id ?? event.data?.id;
+      if (orderId) await refreshSquareCustomerOrderStatus(orderId);
+    }
     await accrueCompletedOrder(event);
     await notifyPaidWebsiteOrder(event);
   } catch (error) {

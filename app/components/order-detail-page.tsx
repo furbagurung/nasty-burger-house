@@ -42,7 +42,7 @@ export default function OrderDetailPage() {
     async function load() {
       try {
         const [nextOrder, reviews] = await Promise.all([
-          loadCustomerOrder(orderId),
+          loadCustomerOrder(orderId, true),
           loadCustomerReviews(),
         ]);
         if (!active) return;
@@ -101,8 +101,8 @@ export default function OrderDetailPage() {
       <main className="standalone-main order-detail-main">
         {justPlaced && (
           <div className="order-success-banner">
-            <strong>Order received.</strong>
-            <span>Your pickup order is in the system. Pay when you collect.</span>
+            <strong>{order.paymentStatus === "paid" ? "Payment confirmed." : "Order received."}</strong>
+            <span>{order.paymentStatus === "paid" ? "We have your paid order. Track pickup progress below." : "Your pickup order has been received."}</span>
           </div>
         )}
 
@@ -110,14 +110,14 @@ export default function OrderDetailPage() {
           <div>
             <p className="standalone-eyebrow">Order receipt</p>
             <h1>{order.orderId}</h1>
-            <p>{formatDate(order.submittedAt)} · {order.pickupLabel}</p>
+            <p>{formatDate(order.submittedAt)} · {order.pickupLabel}{order.paymentStatus === "paid" ? " · Paid via Square" : ""}</p>
           </div>
           <span className={`order-status order-status--${order.status}`}>{order.status}</span>
         </header>
 
         {backendMode === "supabase" && order.status !== "completed" && order.status !== "cancelled" && (
           <div className="account-inline-notice">
-            <span>Live order status refreshes automatically while this page is open.</span>
+            <span>Order status refreshes automatically as the kitchen updates Square.</span>
           </div>
         )}
 

@@ -58,6 +58,14 @@ export default function OrderDetailPage() {
     }
 
     void load();
+    const checkSquare = () => {
+      if (document.visibilityState !== "visible" || backendMode !== "supabase") return;
+      void fetch("/api/account/orders/refresh", { method: "POST" })
+        .then(() => load())
+        .catch(() => { /* Retain the last verified order state. */ });
+    };
+    void checkSquare();
+    const recoveryTimer = window.setInterval(checkSquare, 60_000);
     const interval =
       backendMode === "supabase"
         ? window.setInterval(() => void load(), 12_000)
@@ -66,6 +74,7 @@ export default function OrderDetailPage() {
     return () => {
       active = false;
       if (interval) window.clearInterval(interval);
+      window.clearInterval(recoveryTimer);
     };
   }, [backendMode, params.orderId]);
 

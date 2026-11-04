@@ -4,6 +4,7 @@ import { menuItems } from "../../data/menu";
 import type { CustomerOrder } from "../customer-store";
 import { getAdminClientOrNull } from "../supabase/admin";
 import { getSquareConfig, squareRequest } from "./api";
+import { squarePickupStatus } from "./pickup-status";
 import {
   createPaidSquareOrderNotifications,
   type SquarePaidOrder,
@@ -11,17 +12,6 @@ import {
 } from "./paid-order-notifications";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-export type SquareOrderStatus = CustomerOrder["status"];
-
-export function squarePickupStatus(order: SquarePaidOrder): SquareOrderStatus {
-  const fulfillment = order.fulfillments?.find((entry) => entry.type === "PICKUP");
-  if (order.state === "CANCELED" || fulfillment?.state === "CANCELED" ||
-      fulfillment?.state === "FAILED") return "cancelled";
-  if (order.state === "COMPLETED" || fulfillment?.state === "COMPLETED") return "completed";
-  if (fulfillment?.state === "PREPARED") return "ready";
-  if (fulfillment?.state === "RESERVED") return "preparing";
-  return "received";
-}
 
 export async function recordPaidSquareCustomerOrder(
   payment: SquarePaidPayment,

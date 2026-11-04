@@ -92,6 +92,15 @@ type OrderRow = {
   order_lines: OrderLineRow[] | null;
 };
 
+type SquareCustomerOrderRow = {
+  square_order_id: string;
+  order_id: string;
+  customer_id: string;
+  status: CustomerOrder["status"];
+  submitted_at: string;
+  snapshot: CustomerOrder;
+};
+
 type LedgerRow = {
   id: string;
   order_id: string | null;
@@ -307,7 +316,7 @@ async function loadCustomerOrdersFresh(): Promise<CustomerOrder[]> {
   if (!supabase) return readCustomerOrders();
   if (!user) return [];
 
-  const [ordersResult, ledgerResult] = await Promise.all([
+  const [ordersResult, ledgerResult, squareResult] = await Promise.all([
     supabase
       .from("orders")
       .select(
@@ -323,18 +332,41 @@ async function loadCustomerOrdersFresh(): Promise<CustomerOrder[]> {
         "id,order_id,entry_type,points,points_status,description,created_at",
       )
       .eq("entry_type", "order"),
+    supabase
+      .from("customer_square_orders")
+      .select("square_order_id,order_id,customer_id,status,submitted_at,snapshot")
+      .eq("customer_id", user.id)
+      .order("submitted_at", { ascending: false }),
   ]);
 
   if (ordersResult.error) throw ordersResult.error;
   if (ledgerResult.error) throw ledgerResult.error;
+  // During a staged rollout the new table may not exist until the migration
+  // is applied. Keep legacy history working, but surface other DB failures.
+  if (squareResult.error && !["42P01", "PGRST205", "PGRST116"].includes(squareResult.error.code ?? "")) {
+    throw squareResult.error;
+  }
 
   const ledgers = (ledgerResult.data ?? []) as LedgerRow[];
-  return ((ordersResult.data ?? []) as OrderRow[]).map((order) =>
+  const legacyOrders = ((ordersResult.data ?? []) as OrderRow[]).map((order) =>
     mapOrder(order, ledgers),
+  );
+  const squareOrders = ((squareResult.data ?? []) as SquareCustomerOrderRow[]).map((row) => ({
+    ...row.snapshot,
+    orderId: row.order_id,
+    squareOrderId: row.square_order_id,
+    paymentStatus: "paid" as const,
+    status: row.status,
+    submittedAt: row.submitted_at,
+    earnedDripPoints: 0,
+  }));
+  return [...squareOrders, ...legacyOrders].sort((a, b) =>
+    new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
   );
 }
 
-export function loadCustomerOrders(): Promise<CustomerOrder[]> {
+export function loadCustomerOrders(forceRefresh = false): Promise<CustomerOrder[]> {
+  if (forceRefresh) customerOrdersCache = null;
   if (!isSupabaseBrowserConfigured()) return loadCustomerOrdersFresh();
 
   return cachedRequest(
@@ -346,8 +378,8 @@ export function loadCustomerOrders(): Promise<CustomerOrder[]> {
   );
 }
 
-export async function loadCustomerOrder(orderId: string) {
-  const orders = await loadCustomerOrders();
+export async function loadCustomerOrder(orderId: string, forceRefresh = false) {
+  const orders = await loadCustomerOrders(forceRefresh);
   const accountOrder = orders.find((order) => order.orderId === orderId);
   if (accountOrder) return accountOrder;
 

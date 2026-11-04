@@ -55,8 +55,17 @@ export default function OrderHistoryPage() {
       }
     }
     void load();
+    // Square webhook updates the database when staff change pickup status.
+    // Refresh while this page is visible instead of showing stale one-time data.
+    const timer = window.setInterval(() => {
+      if (document.visibilityState !== "visible") return;
+      void loadCustomerOrders(true).then((nextOrders) => {
+        if (active) setOrders(nextOrders);
+      }).catch(() => { /* Keep the last valid order list visible. */ });
+    }, 12_000);
     return () => {
       active = false;
+      window.clearInterval(timer);
     };
   }, []);
 
@@ -98,7 +107,7 @@ export default function OrderHistoryPage() {
                     <div>
                       <span className={`order-status order-status--${order.status}`}>{order.status}</span>
                       <h2>{order.orderId}</h2>
-                      <p>{formatDate(order.submittedAt)}</p>
+                      <p>{formatDate(order.submittedAt)}{order.paymentStatus === "paid" ? " · Paid online" : ""}</p>
                     </div>
                     <strong>{money.format(order.subtotal)}</strong>
                   </div>
@@ -133,6 +142,12 @@ export default function OrderHistoryPage() {
                         {order.status === "completed" ? "Complete" : order.status === "ready" ? "Ready for pickup" : order.status === "preparing" ? "Preparing" : order.status === "received" ? "Received" : "Cancelled"}
                       </dd>
                     </div>
+                    {order.paymentStatus === "paid" && (
+                      <div>
+                        <dt>Payment</dt>
+                        <dd>Paid via Square</dd>
+                      </div>
+                    )}
                     <div>
                       <dt>Order no.</dt>
                       <dd>{order.orderId}</dd>

@@ -32,6 +32,8 @@ export type CustomerOrderLine = {
 
 export type CustomerOrder = {
   orderId: string;
+  squareOrderId?: string;
+  paymentStatus?: "paid";
   submittedAt: string;
   status: "received" | "preparing" | "ready" | "completed" | "cancelled";
   subtotal: number;

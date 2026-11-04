@@ -17,6 +17,7 @@ import {
   releaseSquareReward, cancelSquarePaymentLink, findSquareRewardForOrder, getSquareReward,
 } from "../../lib/square/rewards";
 import { findOrCreateSquareCustomer } from "../../lib/square/customers";
+import { getServerClientOrNull } from "../../lib/supabase/server";
 import {
   ensureSquareSignupBonus,
   findOrCreateSquareLoyaltyAccount,
@@ -237,9 +238,26 @@ export async function POST(request: Request) {
       loyaltyAccountId = loyaltyAccount.id;
     }
 
+    // Only a verified Supabase account matching the checkout email may own
+    // this order in My Orders. Guest phone/email input is not identity proof.
+    let verifiedAccountUserId: string | undefined;
+    try {
+      const auth = await getServerClientOrNull();
+      if (auth) {
+        const { data: { user }, error: authError } = await auth.auth.getUser();
+        if (!authError && user?.email_confirmed_at &&
+            user.email?.trim().toLowerCase() === validation.order.customer.email.trim().toLowerCase()) {
+          verifiedAccountUserId = user.id;
+        }
+      }
+    } catch (authError) {
+      // Authentication lookup must not prevent guest checkout.
+      console.warn("[NBH checkout] Account association unavailable.", authError);
+    }
+
     const checkout = await createSquareCheckout(
       orderPayload, customer, loyaltyAccountId, resolveCheckoutOrigin(request),
-      rewardTierId || undefined,
+      rewardTierId || undefined, verifiedAccountUserId,
     );
     let discountedTotal: number | null = null;
     let rewardId: string | null = null;

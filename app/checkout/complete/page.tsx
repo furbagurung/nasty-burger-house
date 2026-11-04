@@ -44,6 +44,7 @@ export default function CheckoutCompletePage() {
   const [orderId, setOrderId] = useState("");
   const [verificationState, setVerificationState] =
     useState<VerificationState>("checking");
+  const [historyState, setHistoryState] = useState<"checking" | "saved" | "guest" | "delayed">("checking");
 
   useEffect(() => {
     let attempts = 0;
@@ -123,6 +124,21 @@ export default function CheckoutCompletePage() {
         window.dispatchEvent(new Event("nasty-cart-updated"));
 
         setVerificationState("paid");
+
+        // A payment redirect alone is not proof of ownership or payment.
+        // The authenticated server route re-checks both against Square before
+        // storing a cross-device My Orders entry. Webhooks provide a fallback.
+        void fetch("/api/account/orders/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ squareOrderId }),
+        }).then((syncResponse) => {
+          if (cancelled) return;
+          setHistoryState(syncResponse.ok ? "saved" : syncResponse.status === 401 ? "guest" : "delayed");
+        }).catch(() => {
+          if (!cancelled) setHistoryState("delayed");
+        });
       } catch {
         if (!cancelled) scheduleRetry();
       }
@@ -166,6 +182,9 @@ export default function CheckoutCompletePage() {
               </p>
 
               {orderId && <strong>Order reference: {orderId}</strong>}
+              {historyState === "saved" && <p>Your order is now available in My Orders.</p>}
+              {historyState === "guest" && <p>Sign in before your next checkout to track orders across devices.</p>}
+              {historyState === "delayed" && <p>Your payment is confirmed. My Orders may take a moment to update.</p>}
             </>
           )}
 
@@ -195,7 +214,10 @@ export default function CheckoutCompletePage() {
           <div className="standalone-actions">
             <Link href="/">Back to home</Link>
             {verificationState === "paid" && (
-              <Link href="/menu/burgers">Order more</Link>
+              <>
+                <Link href="/account/orders">My Orders</Link>
+                <Link href="/menu/burgers">Order more</Link>
+              </>
             )}
           </div>
         </section>

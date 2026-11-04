@@ -42,7 +42,7 @@ export default function OrderDetailPage() {
     async function load() {
       try {
         const [nextOrder, reviews] = await Promise.all([
-          loadCustomerOrder(orderId),
+          loadCustomerOrder(orderId, true),
           loadCustomerReviews(),
         ]);
         if (!active) return;
@@ -58,6 +58,14 @@ export default function OrderDetailPage() {
     }
 
     void load();
+    const checkSquare = () => {
+      if (document.visibilityState !== "visible" || backendMode !== "supabase") return;
+      void fetch("/api/account/orders/refresh", { method: "POST" })
+        .then(() => load())
+        .catch(() => { /* Retain the last verified order state. */ });
+    };
+    void checkSquare();
+    const recoveryTimer = window.setInterval(checkSquare, 60_000);
     const interval =
       backendMode === "supabase"
         ? window.setInterval(() => void load(), 12_000)
@@ -66,6 +74,7 @@ export default function OrderDetailPage() {
     return () => {
       active = false;
       if (interval) window.clearInterval(interval);
+      window.clearInterval(recoveryTimer);
     };
   }, [backendMode, params.orderId]);
 
@@ -101,8 +110,8 @@ export default function OrderDetailPage() {
       <main className="standalone-main order-detail-main">
         {justPlaced && (
           <div className="order-success-banner">
-            <strong>Order received.</strong>
-            <span>Your pickup order is in the system. Pay when you collect.</span>
+            <strong>{order.paymentStatus === "paid" ? "Payment confirmed." : "Order received."}</strong>
+            <span>{order.paymentStatus === "paid" ? "We have your paid order. Track pickup progress below." : "Your pickup order has been received."}</span>
           </div>
         )}
 
@@ -110,14 +119,14 @@ export default function OrderDetailPage() {
           <div>
             <p className="standalone-eyebrow">Order receipt</p>
             <h1>{order.orderId}</h1>
-            <p>{formatDate(order.submittedAt)} · {order.pickupLabel}</p>
+            <p>{formatDate(order.submittedAt)} · {order.pickupLabel}{order.paymentStatus === "paid" ? " · Paid via Square" : ""}</p>
           </div>
           <span className={`order-status order-status--${order.status}`}>{order.status}</span>
         </header>
 
         {backendMode === "supabase" && order.status !== "completed" && order.status !== "cancelled" && (
           <div className="account-inline-notice">
-            <span>Live order status refreshes automatically while this page is open.</span>
+            <span>Order status refreshes automatically as the kitchen updates Square.</span>
           </div>
         )}
 
@@ -150,6 +159,7 @@ export default function OrderDetailPage() {
               <span>{order.pickupLabel}</span>
             </section>
 
+            {!order.squareOrderId && (
             <section className="account-card order-detail-points-card">
               <Image src="/images/drip-points/drip-coin.png" alt="" width={60} height={60} />
               <div>
@@ -165,7 +175,9 @@ export default function OrderDetailPage() {
               {order.dripPointsStatus === "pending" && <small>Points become available when the order is completed.</small>}
               {order.earnedDripPoints === 0 && <small>Sign in before checkout to earn Drip Points.</small>}
             </section>
+            )}
 
+            {!order.squareOrderId && (
             <section className="account-card order-detail-review-card">
               <p className="standalone-eyebrow">Your feedback</p>
               {review ? (
@@ -176,6 +188,7 @@ export default function OrderDetailPage() {
                 <><h2>Review after pickup.</h2><p>The review form unlocks when this order is marked completed.</p></>
               )}
             </section>
+            )}
           </aside>
         </div>
 

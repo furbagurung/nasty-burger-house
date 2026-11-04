@@ -55,6 +55,15 @@ export default function OrderHistoryPage() {
       }
     }
     void load();
+    const checkSquare = () => {
+      if (document.visibilityState !== "visible") return;
+      void fetch("/api/account/orders/refresh", { method: "POST" })
+        .then(() => loadCustomerOrders(true))
+        .then((nextOrders) => { if (active) setOrders(nextOrders); })
+        .catch(() => { /* Webhook or next refresh will reconcile. */ });
+    };
+    void checkSquare();
+    const recoveryTimer = window.setInterval(checkSquare, 60_000);
     // Square webhook updates the database when staff change pickup status.
     // Refresh while this page is visible instead of showing stale one-time data.
     const timer = window.setInterval(() => {
@@ -66,6 +75,7 @@ export default function OrderHistoryPage() {
     return () => {
       active = false;
       window.clearInterval(timer);
+      window.clearInterval(recoveryTimer);
     };
   }, []);
 

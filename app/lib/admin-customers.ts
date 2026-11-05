@@ -148,14 +148,6 @@ function normaliseEmail(value: string | null | undefined) {
   return value?.trim().toLowerCase() ?? "";
 }
 
-function normalisePhone(value: string | null | undefined) {
-  if (!value) return "";
-  const digits = value.replace(/\D/g, "");
-  if (/^04\d{8}$/.test(digits)) return `61${digits.slice(1)}`;
-  if (/^614\d{8}$/.test(digits)) return digits;
-  return digits;
-}
-
 function squareCustomerName(customer: SquareCustomer | undefined) {
   if (!customer) return "Square customer";
   const personName = [customer.given_name, customer.family_name]
@@ -465,15 +457,11 @@ function mergeCustomers(
 ) {
   const merged = new Map<string, AdminCustomer>();
   const websiteByEmail = new Map<string, string>();
-  const websiteByPhone = new Map<string, string>();
 
   for (const customer of websiteCustomers) {
     const key = `website:${customer.id}`;
     const emailKey = normaliseEmail(customer.email);
-    const phoneKey = normalisePhone(customer.phone);
-
     if (emailKey) websiteByEmail.set(emailKey, key);
-    if (phoneKey) websiteByPhone.set(phoneKey, key);
 
     merged.set(key, {
       ...customer,
@@ -496,11 +484,10 @@ function mergeCustomers(
   }
 
   for (const square of squareCustomers) {
-    const phoneKey = normalisePhone(square.phone);
     const emailKey = normaliseEmail(square.email);
-    const websiteKey =
-      (phoneKey ? websiteByPhone.get(phoneKey) : undefined) ||
-      (emailKey ? websiteByEmail.get(emailKey) : undefined);
+    // Shared phone numbers alone are not proof of a common identity.
+    // Match the primary email or a secondary address verified by its owner.
+    const websiteKey = emailKey ? websiteByEmail.get(emailKey) : undefined;
 
     if (websiteKey) {
       const website = merged.get(websiteKey);

@@ -2,7 +2,7 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { DRIP_SIGNUP_BONUS } from "../loyalty";
-import { squareRequest } from "./api";
+import { SquareApiError, squareRequest } from "./api";
 import { normalizeAustralianPhone } from "./customers";
 
 export type SquareLoyaltyAccount = {
@@ -116,6 +116,31 @@ export async function findSquareLoyaltyAccountByCustomerId(customerId: string) {
   );
 
   return result.loyalty_accounts?.[0] ?? null;
+}
+
+export async function findSquareLoyaltyAccountByPhone(phone: string) {
+  const normalizedPhone = normalizeAustralianPhone(phone);
+  if (!normalizedPhone) return null;
+
+  const result = await squareRequest<SearchLoyaltyAccountsResponse>(
+    "/v2/loyalty/accounts/search",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        query: {
+          mappings: [{ phone_number: normalizedPhone }],
+        },
+        limit: 1,
+      }),
+    },
+  );
+
+  const account = result.loyalty_accounts?.[0];
+  // Only reuse a record that Square confirms belongs to this phone.
+  return account?.id &&
+    normalizeAustralianPhone(account.mapping?.phone_number ?? "") === normalizedPhone
+      ? account
+      : null;
 }
 
 export async function listAllSquareLoyaltyAccounts() {
@@ -313,9 +338,28 @@ export async function findOrCreateSquareLoyaltyAccount(input: {
   phone: string;
   requestId?: string;
 }) {
-  const existing = await findSquareLoyaltyAccountByCustomerId(input.customerId);
-  if (existing) return { account: existing, created: false };
+  // Phone is Square Loyalty's unique buyer mapping. A POS member may have a
+  // different Square customer ID from the one resolved by website checkout.
+  const existingByPhone = await findSquareLoyaltyAccountByPhone(input.phone);
+  if (existingByPhone) return { account: existingByPhone, created: false };
 
-  const account = await createSquareLoyaltyAccount(input);
-  return { account, created: true };
+  const existingByCustomer = await findSquareLoyaltyAccountByCustomerId(input.customerId);
+  if (existingByCustomer) return { account: existingByCustomer, created: false };
+
+  try {
+    const account = await createSquareLoyaltyAccount(input);
+    return { account, created: true };
+  } catch (error) {
+    // Another checkout or the POS may have enrolled this phone after our
+    // search. Re-read it instead of failing the payment attempt on a duplicate.
+    const duplicatePhone = error instanceof SquareApiError &&
+      error.status === 400 &&
+      (/phone number already associated to a loyalty account/i.test(error.message) ||
+        error.errors.some((item) => item.code === "ALREADY_EXISTS"));
+    if (duplicatePhone) {
+      const existingAfterRace = await findSquareLoyaltyAccountByPhone(input.phone);
+      if (existingAfterRace) return { account: existingAfterRace, created: false };
+    }
+    throw error;
+  }
 }

@@ -1,4 +1,5 @@
 import { after } from "next/server";
+import { emailBelongsToAuthenticatedAccount } from "../../lib/account-email-aliases";
 import { reportAdminError } from "../../lib/error-monitoring";
 import { consumeRateLimit, requestIp } from "../../lib/rate-limit";
 import { validateOrderPayload } from "../../lib/order";
@@ -245,8 +246,10 @@ export async function POST(request: Request) {
       const auth = await getServerClientOrNull();
       if (auth) {
         const { data: { user }, error: authError } = await auth.auth.getUser();
-        if (!authError && user?.email_confirmed_at &&
-            user.email?.trim().toLowerCase() === validation.order.customer.email.trim().toLowerCase()) {
+        if (!authError && user?.email_confirmed_at && user.email &&
+            await emailBelongsToAuthenticatedAccount(
+              user.id, user.email, validation.order.customer.email,
+            )) {
           verifiedAccountUserId = user.id;
         }
       }

@@ -436,6 +436,19 @@ const loadCachedWebsiteCustomers = unstable_cache(
   },
 );
 
+const loadVerifiedAdminEmailAliases = unstable_cache(
+  async (): Promise<Array<{ user_id: string; email: string }>> => {
+    const admin = getAdminClientOrNull();
+    if (!admin) return [];
+    const { data, error } = await admin.from("customer_email_aliases")
+      .select("user_id,email").not("verified_at", "is", null);
+    if (error) throw error;
+    return (data ?? []) as Array<{ user_id: string; email: string }>;
+  },
+  ["nbh-admin-customer-email-aliases-v1"],
+  { revalidate: 60, tags: ["nbh-admin-customers-website"] },
+);
+
 const loadCachedSquareCustomerSnapshot = unstable_cache(
   loadSquareCustomerSnapshot,
   ["nbh-admin-customers-square-v1"],
@@ -448,6 +461,7 @@ const loadCachedSquareCustomerSnapshot = unstable_cache(
 function mergeCustomers(
   websiteCustomers: WebsiteCustomer[],
   squareCustomers: SquareEnrolledCustomer[],
+  verifiedAliases: Array<{ user_id: string; email: string }>,
 ) {
   const merged = new Map<string, AdminCustomer>();
   const websiteByEmail = new Map<string, string>();
@@ -471,6 +485,14 @@ function mergeCustomers(
       squareLoyaltyAccountId: null,
       squareEnrolledAt: null,
     });
+  }
+
+  // Only an explicitly verified alias can map another email to a website user.
+  for (const alias of verifiedAliases) {
+    const aliasEmail = normaliseEmail(alias.email);
+    if (aliasEmail && merged.has(`website:${alias.user_id}`)) {
+      websiteByEmail.set(aliasEmail, `website:${alias.user_id}`);
+    }
   }
 
   for (const square of squareCustomers) {
@@ -546,9 +568,10 @@ export async function loadAdminCustomers(
     .then((snapshot) => ({ ok: true as const, snapshot }))
     .catch((error: unknown) => ({ ok: false as const, error }));
 
-  const [websiteCustomers, squareResult] = await Promise.all([
+  const [websiteCustomers, squareResult, verifiedAliases] = await Promise.all([
     websitePromise,
     squarePromise,
+    loadVerifiedAdminEmailAliases(),
   ]);
 
   if (squareResult.ok) {
@@ -556,6 +579,7 @@ export async function loadAdminCustomers(
       customers: mergeCustomers(
         websiteCustomers,
         squareResult.snapshot.customers,
+        verifiedAliases,
       ),
       square: squareResult.snapshot.status,
     };
@@ -563,7 +587,7 @@ export async function loadAdminCustomers(
 
   console.error("[NBH admin Square customer sync failed]", squareResult.error);
   return {
-    customers: mergeCustomers(websiteCustomers, []),
+    customers: mergeCustomers(websiteCustomers, [], verifiedAliases),
     square: {
       connected: false,
       loyaltyCount: 0,

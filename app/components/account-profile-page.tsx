@@ -22,6 +22,7 @@ import { getBrowserClientOrNull } from "../lib/supabase/client";
 import { googleProfilePhoto } from "../lib/google-profile-photo";
 import AccountDashboardSkeleton from "./account-dashboard-skeleton";
 import AccountChangePassword from "./account-change-password";
+import AccountEmailAddresses from "./account-email-addresses";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 
 type SquareLoyaltyStatus = {
@@ -474,6 +475,7 @@ export default function AccountProfilePage() {
       </section>
 
       <div className="account-profile-mobile-section-label" aria-hidden="true">Security</div>
+      {backendMode === "supabase" && <AccountEmailAddresses />}
       <AccountChangePassword />
       </div>
 

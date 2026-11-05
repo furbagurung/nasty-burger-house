@@ -70,7 +70,7 @@ export default function AccountSignInPage() {
       <main className="standalone-main nbh-auth-main">
         <Auth5
           heading="Welcome back."
-          subheading="Sign in to view orders and Drip Points."
+          subheading="Sign in with your primary or any verified additional email to view orders and Drip Points."
           identifierLabel={
             productionAuth ? "Email or mobile number" : "Email address"
           }

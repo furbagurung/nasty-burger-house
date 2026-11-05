@@ -1,3 +1,4 @@
+import { primaryEmailForVerifiedAlias } from "../../../lib/account-email-aliases";
 import { enforceAuthRateLimit } from "../../../lib/rate-limit";
 import { NO_STORE_HEADERS, validateJsonRequest } from "../../../lib/request-security";
 import { getAdminClientOrNull } from "../../../lib/supabase/admin";
@@ -102,6 +103,10 @@ export async function POST(request: Request) {
     }
 
     email = String(data[0].email).trim().toLowerCase();
+  } else {
+    // Resolve only email addresses the owner proved they control. Never return
+    // the account's primary email to the requester; still require its password.
+    email = (await primaryEmailForVerifiedAlias(email)) ?? email;
   }
 
   const supabase = await createClient();

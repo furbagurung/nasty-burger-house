@@ -140,8 +140,13 @@ export async function findOrCreateSquareCustomer(input: SquareCustomerInput) {
 
   const byPhone = await searchCustomerByPhone(phone);
   if (byPhone?.id) {
-    if (needsCustomerUpdate(byPhone, input, phone)) {
-      await updateSquareCustomer(byPhone.id, input, phone);
+    // Checkout may use a verified secondary email. Do not overwrite a POS
+    // customer's existing primary Square email with every checkout address.
+    const stableInput = byPhone.email_address?.trim()
+      ? { ...input, email: byPhone.email_address.trim() }
+      : input;
+    if (needsCustomerUpdate(byPhone, stableInput, phone)) {
+      await updateSquareCustomer(byPhone.id, stableInput, phone);
     }
     return { id: byPhone.id, created: false, phone };
   }

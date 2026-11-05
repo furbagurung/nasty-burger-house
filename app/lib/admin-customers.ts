@@ -377,7 +377,8 @@ async function loadWebsiteCustomers(admin: AdminClient): Promise<WebsiteCustomer
 
   const pointsByCustomer = new Map<string, number>();
   for (const entry of ledgerRows) {
-    if (entry.points_status === "void") continue;
+    // Available balance only: pending points are not spendable Drip Points.
+    if (entry.points_status !== "available") continue;
     pointsByCustomer.set(
       entry.customer_id,
       (pointsByCustomer.get(entry.customer_id) ?? 0) + entry.points,

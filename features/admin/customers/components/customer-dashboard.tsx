@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Search } from "lucide-react";
 import type { AdminCustomer } from "@/app/lib/admin-customers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,6 +62,13 @@ export default function AdminCustomerDashboard({
         <div className="admin-customer-toolbar__intro">
           <h2>Customer directory</h2>
           <p>Website and Square customer records.</p>
+        </div>
+        <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
+          <Button asChild variant="outline">
+            <Link href="/admin/customers/loyalty-audit">
+              Audit Drip Points <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+          </Button>
         </div>
         <Label className="admin-customer-search" htmlFor="admin-customer-search">
           <span className="sr-only">Search customers</span>

@@ -3,7 +3,7 @@ import { getAdminClientOrNull } from "./supabase/admin";
 
 export function normalizeAccountEmail(value: string) {
   const email = value.trim().toLowerCase();
-  return email.length <= 160 && /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) ? email : "";
+  return email.length <= 160 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : "";
 }
 
 /**

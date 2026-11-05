@@ -58,9 +58,9 @@ export default function LoyaltyReconciliationView({ audit }: { audit: LoyaltyAud
             Read-only comparison with Square Loyalty · Checked {new Date(audit.checkedAt).toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" })}
           </p>
         </div>
-        <Button variant="outline" asChild>
-          <Link href="/admin/customers/loyalty-audit"><RefreshCw className="size-4" aria-hidden="true" /> Refresh report</Link>
-        </Button>
+        <Link href="/admin/customers/loyalty-audit" className="inline-flex min-h-8 items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
+          <RefreshCw className="size-4" aria-hidden="true" /> Refresh report
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">

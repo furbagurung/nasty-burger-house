@@ -62,14 +62,33 @@ export async function POST(request: Request) {
   const { data: owned, error: ownedError } = await admin.from("customer_email_aliases")
     .select("email,verified_at").eq("user_id", user.id);
   if (ownedError) return Response.json({ ok: false, error: "Service unavailable." }, { status: 503, headers: NO_STORE_HEADERS });
-  if ((owned ?? []).filter((item) => Boolean(item.verified_at)).length >= MAX_ALIASES &&
+  // Expired pending links should not consume one of the customer's three slots.
+  const activeAliases = (owned ?? []).filter((item) =>
+    Boolean(item.verified_at) || item.email === email,
+  );
+  const { count: pendingCount, error: pendingError } = await admin.from("customer_email_aliases")
+    .select("email", { count: "exact", head: true })
+    .eq("user_id", user.id).is("verified_at", null)
+    .gt("expires_at", new Date().toISOString()).neq("email", email);
+  if (pendingError) return Response.json({ ok: false, error: "Service unavailable." }, { status: 503, headers: NO_STORE_HEADERS });
+  if (activeAliases.length + (pendingCount ?? 0) >= MAX_ALIASES &&
       !(owned ?? []).some((item) => item.email === email)) {
     return Response.json({ ok: false, error: "You can link up to three additional emails." }, { status: 409, headers: NO_STORE_HEADERS });
   }
 
-  const { data: existing, error: readError } = await admin.from("customer_email_aliases")
-    .select("user_id,verified_at").eq("email", email).maybeSingle();
+  const { data: current, error: readError } = await admin.from("customer_email_aliases")
+    .select("user_id,verified_at,expires_at").eq("email", email).maybeSingle();
   if (readError) return Response.json({ ok: false, error: "Service unavailable." }, { status: 503, headers: NO_STORE_HEADERS });
+  let existing = current;
+  // A stale unverified claim must not reserve somebody else's email forever.
+  if (existing && existing.user_id !== user.id && !existing.verified_at &&
+      existing.expires_at && new Date(existing.expires_at).getTime() <= Date.now()) {
+    const { error: expiredError } = await admin.from("customer_email_aliases")
+      .delete().eq("email", email).eq("user_id", existing.user_id)
+      .is("verified_at", null).lte("expires_at", new Date().toISOString());
+    if (expiredError) return Response.json({ ok: false, error: "Service unavailable." }, { status: 503, headers: NO_STORE_HEADERS });
+    existing = null;
+  }
   if (existing && existing.user_id !== user.id) {
     return Response.json({ ok: false, error: "This email cannot be linked to this account." }, { status: 409, headers: NO_STORE_HEADERS });
   }

@@ -64,11 +64,10 @@ export default function AdminCustomerDashboard({
           <p>Website and Square customer records.</p>
         </div>
         <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
-          <Button asChild variant="outline">
-            <Link href="/admin/customers/loyalty-audit">
-              Audit Drip Points <ArrowRight className="size-4" aria-hidden="true" />
-            </Link>
-          </Button>
+          <Link href="/admin/customers/loyalty-audit"
+            className="inline-flex min-h-8 items-center gap-2 rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
+            Audit Drip Points <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
         </div>
         <Label className="admin-customer-search" htmlFor="admin-customer-search">
           <span className="sr-only">Search customers</span>

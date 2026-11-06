@@ -12,14 +12,17 @@ import { readMenuAvailability } from "./lib/menu-availability";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const availability = await readMenuAvailability();
+  const [availability, shopStatus] = await Promise.all([
+    readMenuAvailability(),
+    readShopStatus(),
+  ]);
   const soldOut = new Set(availability.soldOutIds);
   const items = menuItems.map((item) => ({ ...item, soldOut: soldOut.has(item.id) }));
   return (
     <>
       <OrderExperience
         items={items}
-        initialServiceStatus={await readShopStatus()}
+        initialServiceStatus={shopStatus}
       />
       <FindUsSection />
       <HomeBeastMonthEnhancer />

@@ -240,7 +240,7 @@ export default function OrderExperience({
   const router = useRouter();
   const { soldOutIds, ready: availabilityReady } = useMenuAvailability();
   const soldOutSet = useMemo(() => new Set(soldOutIds), [soldOutIds]);
-  const items = useMemo(
+  const items = useMemo<MenuItem[]>(
     () => catalogueItems.map((item) => ({ ...item, soldOut: soldOutSet.has(item.id) })),
     [catalogueItems, soldOutSet],
   );

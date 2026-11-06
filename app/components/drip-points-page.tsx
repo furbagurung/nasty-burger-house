@@ -14,6 +14,9 @@ import {
 } from "../lib/loyalty";
 import MobileBottomNav from "./mobile-bottom-nav";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
+import { ArrowRight, ChevronDown, Clock3, Gift, ShoppingBag, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 type SquareBalance = { balance: number; lifetimePoints: number | null };
 
@@ -55,6 +58,7 @@ export default function DripPointsPage() {
   const [squareLifetimePoints, setSquareLifetimePoints] = useState<number | null>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
+  const [showAllActivity, setShowAllActivity] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -134,6 +138,8 @@ export default function DripPointsPage() {
       ),
     [ledger],
   );
+
+  const visibleLedger = showAllActivity ? ledger : ledger.slice(0, 3);
 
   return (
     <div className="standalone-page drip-page drip-page--dashboard-v2">
@@ -231,166 +237,212 @@ export default function DripPointsPage() {
         ) : (
           <>
             {error && (
-              <div className="account-inline-notice">
+              <div className="account-inline-notice" role="alert">
                 <span>{error}</span>
               </div>
             )}
 
-            <section className="drip-dashboard-balance" aria-label={`Drip Points balance for ${profile.name}`}>
-              <div className="drip-dashboard-balance__top">
-                <div className="drip-dashboard-balance__identity">
-                  <p>Available Drip Points</p>
-                  <strong>{balance.toLocaleString()}</strong>
-                  <span>{progress}% toward {DRIP_REWARD_TARGET.toLocaleString()} Drip Points</span>
-                </div>
-
-                <div className="drip-dashboard-balance__member">
-                  <Image
-                    src="/images/drip-points/drip-coin.png"
-                    alt=""
-                    width={36}
-                    height={36}
-                  />
-                  <span>Drip Member</span>
-                </div>
-              </div>
-
-              <div
-                className="drip-dashboard-balance__progress"
-                aria-label={`${progress}% toward the next reward`}
-              >
-                <span>
-                  <b style={{ width: `${progress}%` }} />
-                </span>
+            <section className="drip-wallet" aria-labelledby="drip-wallet-title">
+              <header className="drip-wallet__header">
                 <div>
-                  <small>
-                    {remaining === 0
-                      ? "Reward target reached"
-                      : `${remaining.toLocaleString()} points to go`}
-                  </small>
-                  {pendingPoints > 0 && (
-                    <strong>{pendingPoints.toLocaleString()} points pending</strong>
-                  )}
+                  <h1 id="drip-wallet-title">My Drip Points</h1>
+                  <p>Your rewards wallet</p>
                 </div>
-              </div>
-            </section>
-
-            <section className="drip-dashboard-history">
-              <div className="drip-dashboard-section-heading drip-dashboard-section-heading--row">
-                <div>
-                  <p className="standalone-eyebrow">Activity</p>
-                  <h2>Website points history</h2>
-                  {squareLifetimePoints !== null && (
-                    <p>Available balance and lifetime points come directly from Square Loyalty.</p>
-                  )}
-                </div>
-                <Link href="/account">Account</Link>
-              </div>
-
-              {ledger.length === 0 ? (
-                <p className="drip-dashboard-history__empty">
-                  No Drip Points activity yet.
-                </p>
-              ) : (
-                <div className="drip-dashboard-history__list">
-                  {ledger.map((entry) => (
-                    <article key={entry.id}>
-                      <div>
-                        <strong>{entry.description}</strong>
-                        <span>
-                          {formatDate(entry.createdAt)}
-                          {entry.orderId ? ` · ${entry.orderId}` : ""}
-                          {entry.status && entry.status !== "available"
-                            ? ` · ${entry.status}`
-                            : ""}
-                        </span>
-                      </div>
-                      <b className={entry.points >= 0 ? "is-positive" : "is-negative"}>
-                        {entry.points >= 0 ? "+" : ""}
-                        {entry.points.toLocaleString()}
-                      </b>
-                    </article>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <section className="drip-dashboard-stats" aria-label="Drip Points totals">
-              <article>
-                <strong>{earnedPoints.toLocaleString()}</strong>
-                <span>Earned points</span>
-              </article>
-              <span className="drip-dashboard-stats__divider" aria-hidden="true" />
-              <article>
-                <strong>{redeemedPoints.toLocaleString()}</strong>
-                <span>Redeemed points</span>
-              </article>
-            </section>
-
-            <section className="drip-dashboard-earn">
-              <div className="drip-dashboard-earn__copy">
-                <p className="standalone-eyebrow">Nasty Rewards</p>
-                <h2>Earn more Drip Points</h2>
-                <Link href="/menu/burgers">
-                  Explore menu <span aria-hidden="true">→</span>
+                <Link className="drip-wallet__account-link" href="/account">
+                  Account <ArrowRight size={17} aria-hidden="true" />
                 </Link>
-              </div>
-              <div className="drip-dashboard-earn__art" aria-hidden="true">
-                <Image
-                  src="/images/drip-points/drip-coin.png"
-                  alt=""
-                  width={150}
-                  height={150}
-                />
-              </div>
-            </section>
+              </header>
 
-            <section className="drip-dashboard-membership">
-              <div className="drip-dashboard-section-heading">
-                <p className="standalone-eyebrow">Membership info</p>
-                <h2>Your Drip membership</h2>
-              </div>
+              <div className="drip-wallet__grid">
+                <section className="drip-wallet__balance" aria-label={"Drip Points balance for " + profile.name}>
+                  <div className="drip-wallet__balance-top">
+                    <div>
+                      <p className="drip-wallet__balance-label">Available balance</p>
+                      <div className="drip-wallet__amount">
+                        <strong>{balance.toLocaleString()}</strong>
+                        <span>points</span>
+                      </div>
+                    </div>
+                    <Image
+                      className="drip-wallet__coin"
+                      src="/images/drip-points/drip-coin.png"
+                      alt="Nasty Burger House Drip Points gold coin"
+                      width={86}
+                      height={86}
+                      priority
+                    />
+                  </div>
 
-              <div className="drip-dashboard-membership__card">
-                <div className="drip-dashboard-membership__intro">
-                  <div className="drip-dashboard-membership__coin" aria-hidden="true">
+                  <div className="drip-wallet__balance-goal">
+                    <div className="drip-wallet__goal-heading">
+                      <span>Free Beast Burger Meal</span>
+                      <strong>{progress}%</strong>
+                    </div>
+                    <div
+                      className="drip-wallet__meter"
+                      role="progressbar"
+                      aria-label="Progress toward the 2,000 point reward goal"
+                      aria-valuemin={0}
+                      aria-valuemax={DRIP_REWARD_TARGET}
+                      aria-valuenow={Math.min(Math.max(0, balance), DRIP_REWARD_TARGET)}
+                    >
+                      <span style={{ width: progress + "%" }} />
+                    </div>
+                    <div className="drip-wallet__goal-footer">
+                      <p>
+                        {remaining === 0
+                          ? "Reward goal reached — ask our team about in-store redemption."
+                          : "Just " + remaining.toLocaleString() + " points to reach your reward goal."}
+                      </p>
+                      <a href="#drip-rewards">View reward <ArrowRight size={14} aria-hidden="true" /></a>
+                    </div>
+                  </div>
+
+                  <div className="drip-wallet__balance-meta">
+                    <span>{squareLifetimePoints !== null ? "Balance from Square Loyalty" : "Website points balance"}</span>
+                    {pendingPoints > 0 && <span><Clock3 size={14} aria-hidden="true" /> {pendingPoints.toLocaleString()} pending</span>}
+                  </div>
+                </section>
+
+                <Card className="drip-wallet__stats drip-wallet__card" aria-label="Drip Points totals">
+                  <CardContent className="drip-wallet__stats-content">
+                    <div className="drip-wallet__stat">
+                      <span className="drip-wallet__stat-label"><TrendingUp size={18} aria-hidden="true" /> Earned</span>
+                      <strong>{earnedPoints.toLocaleString()}</strong>
+                    </div>
+                    <div className="drip-wallet__stat">
+                      <span className="drip-wallet__stat-label"><Gift size={18} aria-hidden="true" /> Redeemed</span>
+                      <strong>{redeemedPoints.toLocaleString()}</strong>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="drip-wallet__history drip-wallet__card">
+                  <CardContent>
+                    <div className="drip-wallet__card-heading">
+                      <div>
+                        <h2>Points activity</h2>
+                        <p>Website orders and bonuses</p>
+                      </div>
+                      {ledger.length > 3 && (
+                        <Button
+                          className="drip-wallet__view-all"
+                          variant="ghost"
+                          type="button"
+                          aria-expanded={showAllActivity}
+                          onClick={() => setShowAllActivity((current) => !current)}
+                        >
+                          {showAllActivity ? "Show less" : "View all"}
+                        </Button>
+                      )}
+                    </div>
+                    {ledger.length === 0 ? (
+                      <div className="drip-wallet__empty">
+                        <Gift size={22} aria-hidden="true" />
+                        <p>No website points activity yet. Your eligible orders will appear here.</p>
+                      </div>
+                    ) : (
+                      <ul className="drip-wallet__activity-list">
+                        {visibleLedger.map((entry) => (
+                          <li className="drip-wallet__activity" key={entry.id}>
+                            <span className="drip-wallet__activity-icon" aria-hidden="true">
+                              {entry.type === "signup" || entry.type === "redeem"
+                                ? <Gift size={19} />
+                                : <ShoppingBag size={19} />}
+                            </span>
+                            <div className="drip-wallet__activity-copy">
+                              <strong>{entry.description}</strong>
+                              <span>
+                                {formatDate(entry.createdAt)}
+                                {entry.orderId ? " · " + entry.orderId : ""}
+                              </span>
+                              {entry.status && entry.status !== "available" && (
+                                <span className="drip-wallet__activity-status">{entry.status}</span>
+                              )}
+                            </div>
+                            <strong
+                              className={
+                                "drip-wallet__activity-points " +
+                                (entry.status === "void"
+                                  ? "is-void"
+                                  : entry.status === "pending"
+                                    ? "is-pending"
+                                    : entry.points >= 0
+                                      ? "is-positive"
+                                      : "is-negative")
+                              }
+                            >
+                              {entry.points >= 0 ? "+" : ""}{entry.points.toLocaleString()}
+                            </strong>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {squareLifetimePoints !== null && (
+                      <p className="drip-wallet__source-note">
+                        Your Square balance can also include in-store activity not listed here.
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card id="drip-rewards" className="drip-wallet__reward drip-wallet__card">
+                  <CardContent>
+                    <div className="drip-wallet__reward-top">
+                      <span className="drip-wallet__reward-icon"><Gift size={23} aria-hidden="true" /></span>
+                      <div>
+                        <p className="drip-wallet__reward-kicker">Your next reward</p>
+                        <h2>Free Beast Burger Meal</h2>
+                        <p>Reward goal: {DRIP_REWARD_TARGET.toLocaleString()} available points</p>
+                      </div>
+                    </div>
+                    <p className="drip-wallet__reward-summary">
+                      {remaining === 0
+                        ? "You've reached the points target. Ask the team to confirm in-store redemption."
+                        : "Earn " + remaining.toLocaleString() + " more points to reach the target."}
+                    </p>
+                    <p className="drip-wallet__reward-fineprint">
+                      Online redemption is not available yet. Reward eligibility is confirmed in-store.
+                    </p>
+                    <Link className="drip-wallet__reward-link" href="/menu/burgers">
+                      Explore menu <ArrowRight size={17} aria-hidden="true" />
+                    </Link>
+                  </CardContent>
+                </Card>
+
+                <Card className="drip-wallet__earn drip-wallet__card">
+                  <CardContent>
+                    <div className="drip-wallet__earn-copy">
+                      <h2>Earn more Drip Points</h2>
+                      <p>Get {DRIP_POINTS_PER_AUD} points for every A$1 of eligible order value.</p>
+                      <Link href="/menu/burgers">
+                        Order from the menu <ArrowRight size={17} aria-hidden="true" />
+                      </Link>
+                    </div>
                     <Image
                       src="/images/drip-points/drip-coin.png"
                       alt=""
-                      width={58}
-                      height={58}
+                      width={94}
+                      height={94}
+                      aria-hidden="true"
+                      loading="lazy"
                     />
-                  </div>
-                  <div>
-                    <strong>Drip Member</strong>
-                    <span>{balance.toLocaleString()} available points</span>
-                  </div>
-                </div>
-
-                <div className="drip-dashboard-membership__benefits">
-                  <h3>Membership benefits</h3>
-                  <ul>
-                    <li>
-                      Earn {DRIP_POINTS_PER_AUD} points for every A$1 of eligible
-                      order value.
-                    </li>
-                    <li>
-                      New Square Loyalty members receive {DRIP_SIGNUP_BONUS} welcome points once.
-                    </li>
-                    <li>
-                      Points become available after the pickup order is completed.
-                    </li>
-                    <li>
-                      {remaining === 0
-                        ? "You have reached the current reward target."
-                        : `${remaining.toLocaleString()} more available points unlocks the current reward target.`}
-                    </li>
-                  </ul>
-                </div>
+                  </CardContent>
+                </Card>
               </div>
+
+              <details className="drip-wallet__details" id="drip-how-it-works">
+                <summary>
+                  How Drip Points work <ChevronDown size={18} aria-hidden="true" />
+                </summary>
+                <ul>
+                  <li>New Square Loyalty members receive {DRIP_SIGNUP_BONUS} welcome points once.</li>
+                  <li>Earn {DRIP_POINTS_PER_AUD} points for every A$1 of eligible order value.</li>
+                  <li>Website order points become available after completed pickup.</li>
+                  <li>Reward redemption is confirmed in-store. Online redemption is not yet enabled.</li>
+                </ul>
+              </details>
             </section>
-
-
           </>
         )}
       </main>

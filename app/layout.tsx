@@ -106,6 +106,7 @@ import "./admin-login.css";
 import "./loyalty-ui.css";
 import "./account-profile-mobile.css";
 import "./navigation-progress.css";
+import "./drip-points-wallet.css";
 import "./theme-dark.css";
 
 const dmSans = DM_Sans({

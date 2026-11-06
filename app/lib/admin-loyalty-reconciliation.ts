@@ -305,7 +305,7 @@ export async function loadAdminLoyaltyAudit(admin: AdminClient): Promise<Loyalty
   }
 
   const statusOrder: Record<LoyaltyAuditRow["status"], number> = {
-    different: 0, review: 1, website-only: 2, square-only: 3, unavailable: 4, same: 5,
+    different: 0, review: 1, "website-only": 2, "square-only": 3, unavailable: 4, same: 5,
   };
   rows.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]
     || a.name.localeCompare(b.name));

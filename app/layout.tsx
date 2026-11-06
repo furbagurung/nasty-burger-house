@@ -15,6 +15,7 @@ import MobileHeroControls from "./components/mobile-hero-controls";
 import MobileHomeHeaderOverlay from "./components/mobile-home-header-overlay";
 import MobileHomeLocation from "./components/mobile-home-location";
 import ToastProvider from "./components/toast-provider";
+import NavigationProgress from "./components/navigation-progress";
 
 import "./globals.css";
 import "./catalogue-theme.css";
@@ -104,6 +105,7 @@ import "./admin-table-pagination.css";
 import "./admin-login.css";
 import "./loyalty-ui.css";
 import "./account-profile-mobile.css";
+import "./navigation-progress.css";
 import "./theme-dark.css";
 
 const dmSans = DM_Sans({
@@ -146,6 +148,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body>
         <AppearanceProvider>
+        <NavigationProgress />
         <HomeTopHeader />
         <ClosureAnnouncement />
         <MobileHomeLocation />

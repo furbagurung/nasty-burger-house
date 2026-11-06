@@ -12,6 +12,7 @@ import {
 import { FooterUtilityLinks } from "./footer-legal-links";
 import MenuItemMedia from "./menu-item-media";
 import MobileBottomNav from "./mobile-bottom-nav";
+import { useMenuAvailability } from "./use-menu-availability";
 
 type MenuCategoryPageProps = {
   category: MenuPageCategory;
@@ -23,6 +24,8 @@ export default function MenuCategoryPage({
   items,
 }: MenuCategoryPageProps) {
   const categoryRailRef = useRef<HTMLElement | null>(null);
+  const { soldOutIds } = useMenuAvailability();
+  const soldOutSet = new Set(soldOutIds);
 
   useLayoutEffect(() => {
     const rail = categoryRailRef.current;
@@ -132,7 +135,7 @@ export default function MenuCategoryPage({
                   />
                 </div>
                 <h2>{item.name}</h2>
-                {item.soldOut && <span className="inline-flex w-fit rounded-full bg-destructive/10 px-2 py-1 text-xs font-semibold text-destructive" aria-label={`${item.name} is sold out`}>Sold out</span>}
+                {soldOutSet.has(item.id) && <span className="inline-flex w-fit rounded-full bg-destructive/10 px-2 py-1 text-xs font-semibold text-destructive" aria-label={`${item.name} is sold out`}>Sold out</span>}
               </Link>
             ))}
           </div>

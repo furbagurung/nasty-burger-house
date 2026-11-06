@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { drawerMotion, useMobileCart } from "../lib/drawer-motion";
 import { FooterUtilityLinks } from "./footer-legal-links";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   adultDrinkChoices,
@@ -25,6 +26,7 @@ import {
 } from "../lib/order";
 import { type ServiceStatus } from "../lib/service";
 import { useServiceStatus } from "./use-service-status";
+import { useMenuAvailability } from "./use-menu-availability";
 import { mergeIdenticalCartLines } from "../lib/cart-lines";
 import { clearCheckoutRequestId, getCheckoutRequestId, type CheckoutAttempt } from "../lib/checkout-attempt";
 import MobileBottomNav from "./mobile-bottom-nav";
@@ -232,9 +234,16 @@ function normaliseCart(value: unknown): CartLine[] {
 }
 
 export default function OrderExperience({
-  items,
+  items: catalogueItems,
   initialServiceStatus,
 }: OrderExperienceProps) {
+  const router = useRouter();
+  const { soldOutIds, ready: availabilityReady } = useMenuAvailability();
+  const soldOutSet = useMemo(() => new Set(soldOutIds), [soldOutIds]);
+  const items = useMemo(
+    () => catalogueItems.map((item) => ({ ...item, soldOut: soldOutSet.has(item.id) })),
+    [catalogueItems, soldOutSet],
+  );
   const reducedMotion = useReducedMotion();
   const mobileCart = useMobileCart();
   const transitions = drawerMotion(reducedMotion !== false, mobileCart);
@@ -511,7 +520,7 @@ export default function OrderExperience({
     setIsOrderTypeOpen(false);
     setIsLoyaltyOpen(false);
     setIsCheckoutOpen(false);
-    window.location.assign(`/product/${item.id}`);
+    router.push(`/product/${item.id}`);
   }
 
   function continueAfterMonthly(item: MenuItem | null) {
@@ -581,7 +590,11 @@ export default function OrderExperience({
 
   function addSelectedItem() {
     if (!selectedItem) return;
-    if (selectedItem.soldOut) {
+    if (!availabilityReady) {
+      setSelectionError("We could not verify stock yet. Please try again shortly.");
+      return;
+    }
+    if (soldOutSet.has(selectedItem.id)) {
       setSelectionError("This item is sold out. Please select another product.");
       return;
     }
@@ -1594,7 +1607,11 @@ export default function OrderExperience({
                 {selectionError}
               </p>
             )}
-            {selectedItem.soldOut ? (
+            {!availabilityReady ? (
+              <p role="status" className="rounded-lg bg-muted p-3 text-sm font-medium text-foreground">
+                Checking current availability…
+              </p>
+            ) : soldOutSet.has(selectedItem.id) ? (
               <p role="status" className="rounded-lg bg-destructive/10 p-3 text-sm font-semibold text-destructive">
                 Sold out — this item cannot be ordered.
               </p>

@@ -30,10 +30,10 @@ import MenuItemMedia from "./menu-item-media";
 import ButtonWithIcon from "@/components/ui/button-witn-icon";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import BunChoiceSelector from "./bun-choice-selector";
+import { useMenuAvailability } from "./use-menu-availability";
 
 type ProductDetailPageProps = {
   item: MenuItem;
-  soldOutIds: string[];
 };
 
 const CART_STORAGE_KEY = "nasty-burger-cart-v2";
@@ -126,9 +126,11 @@ function readStoredCart(): CartLine[] {
   }
 }
 
-export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPageProps) {
-  const category = findMenuPageCategory(item.category);
+export default function ProductDetailPage({ item: catalogueItem }: ProductDetailPageProps) {
+  const { soldOutIds, ready: availabilityReady } = useMenuAvailability();
   const soldOutSet = new Set(soldOutIds);
+  const item = { ...catalogueItem, soldOut: soldOutSet.has(catalogueItem.id) };
+  const category = findMenuPageCategory(item.category);
   const drinkSoldOut = (name: string) => soldOutSet.has(name.toLowerCase().replaceAll(" ", "-"));
   const [quantity, setQuantity] = useState(1);
   const [isCombo, setIsCombo] = useState(false);
@@ -317,6 +319,10 @@ export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPag
   }
 
   function addToCart() {
+    if (!availabilityReady) {
+      setSelectionError("We could not verify stock yet. Please try again shortly.");
+      return;
+    }
     if (item.soldOut) {
       setSelectionError("This product is sold out.");
       return;
@@ -590,7 +596,11 @@ export default function ProductDetailPage({ item, soldOutIds }: ProductDetailPag
               </section>
             )}
 
-            {item.soldOut ? (
+            {!availabilityReady ? (
+              <p role="status" className="rounded-lg bg-muted p-4 text-sm font-medium text-foreground">
+                Checking current availability…
+              </p>
+            ) : item.soldOut ? (
               <p role="status" className="rounded-lg bg-destructive/10 p-4 text-sm font-semibold text-destructive">
                 Sold out — temporarily unavailable for ordering.
               </p>

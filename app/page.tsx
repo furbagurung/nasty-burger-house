@@ -1,3 +1,5 @@
+import { getServiceStatus } from "./lib/service";
+import { unavailableShopStatus } from "./lib/shop-control";
 import FindUsSection from "./components/find-us-section";
 import HomeBeastMonthEnhancer from "./components/home-beast-month-enhancer";
 import HomeHeroPhotographyEnhancer from "./components/home-hero-photography-enhancer";
@@ -5,24 +7,15 @@ import HomeMenuCategoriesEnhancer from "./components/home-menu-categories-enhanc
 import HomeMenuComingSoonGuard from "./components/home-menu-coming-soon-guard";
 import OrderExperience from "./components/order-experience";
 import { menuItems } from "./data/menu";
-import { readShopStatus } from "./lib/shop-status";
-import { readMenuAvailability } from "./lib/menu-availability";
 
-// Availability must reflect fresh admin Sold Out changes, not a build-time snapshot.
-export const dynamic = "force-dynamic";
-
-export default async function Home() {
-  const [availability, shopStatus] = await Promise.all([
-    readMenuAvailability(),
-    readShopStatus(),
-  ]);
-  const soldOut = new Set(availability.soldOutIds);
-  const items = menuItems.map((item) => ({ ...item, soldOut: soldOut.has(item.id) }));
+// Render the static catalogue immediately. Client components refresh live
+// stock and shop control separately; checkout still verifies server-side.
+export default function Home() {
   return (
     <>
       <OrderExperience
-        items={items}
-        initialServiceStatus={shopStatus}
+        items={menuItems}
+        initialServiceStatus={unavailableShopStatus(getServiceStatus())}
       />
       <FindUsSection />
       <HomeBeastMonthEnhancer />

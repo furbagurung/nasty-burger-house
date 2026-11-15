@@ -126,10 +126,10 @@ export async function reportAdminError(
   }
 
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  const to = notificationRecipients(
-    process.env.ERROR_NOTIFICATION_EMAIL ||
-      process.env.ORDER_NOTIFICATION_EMAIL,
-  );
+  // Technical alerts must have their own explicit recipients. Never fall back
+  // to order notification emails: restaurant owners need order notices, not
+  // browser telemetry and stack traces.
+  const to = notificationRecipients(process.env.ERROR_NOTIFICATION_EMAIL);
   const from =
     process.env.ERROR_NOTIFICATION_FROM?.trim() ||
     process.env.ORDER_NOTIFICATION_FROM?.trim();

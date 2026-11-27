@@ -1,15 +1,53 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CalendarDays, Clock3, Store, Plus, Pencil, CalendarCheck, ArrowRight, PauseCircle, Play, Settings2, ShieldCheck, CircleAlert } from "lucide-react";
+import { CalendarDays, Clock3, Store, Plus, Pencil, CalendarCheck, ChevronLeft, ChevronRight, PauseCircle, Play, Settings2, ShieldCheck, CircleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { formatShopClock, formatShopDate, closureReopeningDate, isValidShopHours, isValidShopClosures, type ShopControlMode, type ShopHours, type ShopClosure } from "../lib/shop-control";
 import type { ServiceStatus } from "../lib/service";
 
 type Snapshot = { mode: ShopControlMode; hours: ShopHours; closures: ShopClosure[]; today: string; updatedAt: string; status: ServiceStatus };
 type Panel = "closure" | "hours" | null;
+
+function ClosureCalendar({ today, closures, disabled, onSelect }: {
+  today: string; closures: ShopClosure[]; disabled: boolean; onSelect: (day: string) => void;
+}) {
+  const [offset, setOffset] = useState(0);
+  const [year, month] = today.split("-").map(Number);
+  const first = new Date(Date.UTC(year, month - 1 + offset, 1, 12));
+  const days = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0, 12)).getUTCDate();
+  const leading = (first.getUTCDay() + 6) % 7;
+  const monthLabel = new Intl.DateTimeFormat("en-AU", { month: "long", year: "numeric", timeZone: "UTC" }).format(first);
+  const prefix = first.toISOString().slice(0, 7);
+  return (
+    <div className="admin-shop-control__calendar">
+      <div className="admin-shop-control__calendar-heading">
+        <Button type="button" variant="ghost" size="icon" aria-label="Previous month" disabled={offset <= 0} onClick={() => setOffset(n => n - 1)}><ChevronLeft aria-hidden="true" /></Button>
+        <strong aria-live="polite">{monthLabel}</strong>
+        <Button type="button" variant="ghost" size="icon" aria-label="Next month" disabled={offset >= 120} onClick={() => setOffset(n => n + 1)}><ChevronRight aria-hidden="true" /></Button>
+      </div>
+      <div className="admin-shop-control__calendar-grid" role="group" aria-label={monthLabel + " closure dates"}>
+        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => <span className="admin-shop-control__calendar-weekday" key={day} aria-hidden="true">{day}</span>)}
+        {Array.from({ length: leading }, (_, i) => <span key={"blank-" + i} aria-hidden="true" />)}
+        {Array.from({ length: days }, (_, i) => {
+          const date = prefix + "-" + String(i + 1).padStart(2, "0");
+          const closure = closures.find(item => item.start <= date && item.end >= date);
+          const past = date < today;
+          return <Button type="button" variant="ghost" key={date} className="admin-shop-control__calendar-day"
+            data-closed={!!closure} data-today={date === today} aria-current={date === today ? "date" : undefined}
+            aria-label={formatShopDate(date) + (closure ? ", scheduled closure" : ", regular hours") + (past ? ", past" : "")}
+            disabled={disabled || past || !!closure} onClick={() => onSelect(date)}>{i + 1}</Button>;
+        })}
+      </div>
+      <div className="admin-shop-control__calendar-legend"><span><i data-kind="today" />Today</span><span><i data-kind="closed" />Closure</span></div>
+      <p>Select a date to schedule a closure.</p>
+    </div>
+  );
+}
 
 export default function AdminShopControl() {
   const [saved, setSaved] = useState<Snapshot | null>(null);
@@ -77,7 +115,7 @@ export default function AdminShopControl() {
         <Card className="admin-shop-control__tile admin-shop-control__tile--status">
           <div className="admin-shop-control__tile-heading"><span className="admin-shop-control__icon" data-tone={saved?.status.acceptingOrders ? "open" : "neutral"}><Store size={24} aria-hidden="true" /></span><h3>Current status</h3></div>
           <div className="admin-shop-control__metric" role="status">{loading ? "Checking…" : !saved || saved.status.statusLabel === "Ordering temporarily unavailable" ? "Unavailable" : saved.status.acceptingOrders ? "Open now" : "Closed now"}</div>
-          <span className="admin-shop-control__status" data-open={saved?.status.acceptingOrders ?? false}><span aria-hidden="true" />{manual ? "Manual override" : active ? "Scheduled break" : saved ? "Regular schedule" : "Checking status"}</span>
+          <Badge variant="outline" className="admin-shop-control__status" data-open={saved?.status.acceptingOrders ?? false}><span aria-hidden="true" />{manual ? "Manual override" : active ? "Scheduled break" : saved ? "Regular schedule" : "Checking status"}</Badge>
           <p>{saved?.status.notice ?? "Checking availability…"}</p>
           {manual && <p>Resume regular hours to end the manual override.</p>}
           <div className="admin-shop-control__actions">
@@ -94,28 +132,29 @@ export default function AdminShopControl() {
         </Card>
         <Card className="admin-shop-control__tile">
           <div className="admin-shop-control__tile-heading"><span className="admin-shop-control__icon"><Clock3 size={24} aria-hidden="true" /></span><h3>Regular trading hours</h3></div>
-          <div className="admin-shop-control__clock-strip"><div><small>Opens</small><strong>{saved ? formatShopClock(saved.hours.opensAt) : "—"}</strong></div><ArrowRight size={18} aria-hidden="true" /><div><small>Closes</small><strong>{saved ? formatShopClock(saved.hours.closesAt) : "—"}</strong></div></div>
-          <div className="admin-shop-control__week" aria-label="Open every day under the regular schedule">{["M", "T", "W", "T", "F", "S", "S"].map((day, i) => <span key={i} aria-hidden="true">{day}</span>)}</div>
+          <div className="admin-shop-control__hours-range">{saved ? formatShopClock(saved.hours.opensAt) + " – " + formatShopClock(saved.hours.closesAt) : "—"}</div>
+          <p>Every day</p>
           <div className="admin-shop-control__actions"><Button disabled={disabled} variant="outline" onClick={() => { setHours(saved!.hours); setPanel("hours"); setConfirm(null); }}><Pencil size={16} aria-hidden="true" />Edit hours</Button></div>
         </Card>
       </div>
       <Card className="admin-shop-control__block">
         <div className="admin-shop-control__heading"><div><h2><CalendarDays size={20} aria-hidden="true" />Closure calendar</h2><p>Regular hours resume automatically after each break.</p></div></div>
+        {saved && <ClosureCalendar key={saved.today.slice(0, 7)} today={saved.today} closures={saved.closures} disabled={disabled || panel === "closure" || !!confirm} onSelect={day => { startClosure(); setDraft(d => ({ ...d, start: day, end: day })); }} />}
         {panel === "closure" && saved && <fieldset disabled={saving}>
           <legend>{upcoming.some(item => item.id === draft.id) ? "Edit closure" : "Choose closure dates"}</legend>
           <div className="admin-shop-control__actions">
             <Button type="button" variant="outline" onClick={() => setDraft(d => ({ ...d, start: saved.today, end: saved.today }))}>Today only</Button>
           </div>
           <div className="admin-shop-control__time-grid">
-            <div><label htmlFor="closure-start">First closed day</label><Input id="closure-start" type="date" min={saved.today} value={draft.start} onChange={e => { const start = e.target.value; setDraft(d => ({ ...d, start, end: d.end < start ? start : d.end })); }} /></div>
-            <div><label htmlFor="closure-end">Last closed day (inclusive)</label><Input id="closure-end" type="date" min={draft.start} value={draft.end} onChange={e => setDraft(d => ({ ...d, end: e.target.value }))} /></div>
+            <div><Label htmlFor="closure-start">First closed day</Label><Input id="closure-start" type="date" min={saved.today} value={draft.start} onChange={e => { const start = e.target.value; setDraft(d => ({ ...d, start, end: d.end < start ? start : d.end })); }} /></div>
+            <div><Label htmlFor="closure-end">Last closed day (inclusive)</Label><Input id="closure-end" type="date" min={draft.start} value={draft.end} onChange={e => setDraft(d => ({ ...d, end: e.target.value }))} /></div>
           </div>
-          <div className="admin-shop-control__field"><label htmlFor="closure-reason">Reason (optional, internal)</label><Input id="closure-reason" maxLength={120} value={draft.reason} onChange={e => setDraft(d => ({ ...d, reason: e.target.value }))} /></div>
+          <div className="admin-shop-control__field"><Label htmlFor="closure-reason">Reason (optional, internal)</Label><Input id="closure-reason" maxLength={120} value={draft.reason} onChange={e => setDraft(d => ({ ...d, reason: e.target.value }))} /></div>
           {valid ? <div className="admin-shop-control__reopen"><CalendarCheck size={22} aria-hidden="true" /><div><small>Automatically reopens</small><strong>{formatShopDate(closureReopeningDate(draft, candidate))} · {formatShopClock(saved.hours.opensAt)}</strong></div></div> : <p role="alert">Choose valid dates that do not overlap another closure.</p>}
           {manual && <p>Saving will end the current manual override and restore regular trading outside the scheduled dates.</p>}
           <div className="admin-shop-control__actions"><Button disabled={!valid || saving} onClick={() => void save({ mode: "auto", closures: candidate }, "Closure saved.")}>Save closure</Button><Button variant="outline" onClick={() => setPanel(null)}>Cancel</Button></div>
         </fieldset>}
-        {upcoming.length === 0 ? <div className="admin-shop-control__empty"><span className="admin-shop-control__empty-icon"><CalendarCheck size={36} strokeWidth={1.5} aria-hidden="true" /></span><strong>{saved ? "No upcoming closures." : "Closure calendar unavailable"}</strong><p>{saved ? "Your regular schedule is ready to go." : "Load shop status to view closures."}</p><Button disabled={disabled} variant="outline" onClick={() => startClosure()}><Plus size={16} aria-hidden="true" />Add a closure</Button></div> : <ul className="admin-shop-control__list">{upcoming.map(item => <li key={item.id}>
+        {upcoming.length === 0 ? <div className="admin-shop-control__empty"><span className="admin-shop-control__empty-icon"><CalendarCheck size={36} strokeWidth={1.5} aria-hidden="true" /></span><strong>{saved ? "No upcoming closures." : "Closure calendar unavailable"}</strong><p>{saved ? "Regular hours apply." : "Load shop status to view closures."}</p><Button disabled={disabled} variant="outline" onClick={() => startClosure()}><Plus size={16} aria-hidden="true" />Add a closure</Button></div> : <ul className="admin-shop-control__list">{upcoming.map(item => <li key={item.id}>
           <div className="admin-shop-control__date" aria-hidden="true"><span>{new Intl.DateTimeFormat("en-AU", { month: "short", timeZone: "UTC" }).format(new Date(item.start + "T12:00:00Z"))}</span><strong>{item.start.slice(8, 10)}</strong></div>
           <div className="admin-shop-control__closure-copy"><strong>{item.reason || (item.start === item.end ? "Day off" : "Scheduled break")}</strong>{item === active && <span className="admin-shop-control__active">Active</span>}<p>{formatShopDate(item.start)}{item.start !== item.end && " – " + formatShopDate(item.end)}</p><p className="admin-shop-control__return"><CalendarCheck size={16} aria-hidden="true" />Reopens {formatShopDate(closureReopeningDate(item, upcoming))}{saved && " · " + formatShopClock(saved.hours.opensAt)}</p></div>
           <div className="admin-shop-control__actions">{item.start >= (saved?.today ?? "") && <Button disabled={disabled} variant="outline" onClick={() => startClosure(item)}><Pencil size={16} aria-hidden="true" />Edit</Button>}<Button disabled={disabled} variant="outline" onClick={() => { setPanel(null); setConfirm(item.id); }}>Cancel closure</Button></div>
@@ -123,8 +162,8 @@ export default function AdminShopControl() {
       </Card>
       {panel === "hours" && <Card className="admin-shop-control__block">
         <fieldset disabled={saving}><legend>Edit trading hours</legend><div className="admin-shop-control__time-grid">
-          <div><label htmlFor="shop-opens-at">Opens</label><Input id="shop-opens-at" type="time" value={hours.opensAt} onChange={e => setHours(h => ({ ...h, opensAt: e.target.value }))} /></div>
-          <div><label htmlFor="shop-closes-at">Closes</label><Input id="shop-closes-at" type="time" value={hours.closesAt} onChange={e => setHours(h => ({ ...h, closesAt: e.target.value }))} /></div>
+          <div><Label htmlFor="shop-opens-at">Opens</Label><Input id="shop-opens-at" type="time" value={hours.opensAt} onChange={e => setHours(h => ({ ...h, opensAt: e.target.value }))} /></div>
+          <div><Label htmlFor="shop-closes-at">Closes</Label><Input id="shop-closes-at" type="time" value={hours.closesAt} onChange={e => setHours(h => ({ ...h, closesAt: e.target.value }))} /></div>
         </div>{!isValidShopHours(hours) && <p role="alert">Closing time must be later than opening time.</p>}<div className="admin-shop-control__actions"><Button disabled={!isValidShopHours(hours) || saving} onClick={() => void save({ hours }, "Trading hours saved.")}>Save hours</Button><Button variant="outline" onClick={() => setPanel(null)}>Cancel</Button></div></fieldset>
       </Card>}
       {confirm && saved && <Card className="admin-shop-control__block" role="group" aria-label="Confirm change"><h2>{confirm === "resume" ? "Resume regular hours?" : confirm === "force-open" ? "Open outside trading hours?" : confirm === "force-closed" ? "Close until further notice?" : "Cancel this closure?"}</h2><p>{confirm.startsWith("force-") ? "This override stays active until you resume regular hours." : "Online orders will follow regular hours and any other scheduled closures."}</p><div className="admin-shop-control__actions"><Button disabled={saving} onClick={() => void save(confirm === "resume" ? { mode: "auto" } : confirm === "force-open" ? { mode: "open" } : confirm === "force-closed" ? { mode: "closed" } : { closures: upcoming.filter(item => item.id !== confirm) }, "Shop availability updated.")}>Confirm</Button><Button variant="outline" disabled={saving} onClick={() => setConfirm(null)}>Keep current settings</Button></div></Card>}

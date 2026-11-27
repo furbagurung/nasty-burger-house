@@ -19,13 +19,7 @@
 .admin-shop-control__status > span { width: 7px; height: 7px; background: currentColor; border-radius: 50%; flex-shrink: 0; }
 .admin-shop-control__status[data-open="true"], .admin-shop-control__return, .admin-shop-control__reopen > svg { color: #137441; }
 .dark .admin-shop-control__status[data-open="true"], .dark .admin-shop-control__return, .dark .admin-shop-control__reopen > svg { color: var(--nb-dark-success); }
-.admin-shop-control__clock-strip { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-.admin-shop-control__clock-strip div { display: grid; gap: 5px; min-width: 0; }
-.admin-shop-control__clock-strip small, .admin-shop-control__reopen small { color: var(--muted-foreground); font-size: 12px; }
-.admin-shop-control__clock-strip strong { font-size: clamp(17px, 2.1cqi, 21px); font-weight: 650; font-variant-numeric: tabular-nums; }
-.admin-shop-control__clock-strip > svg { color: var(--muted-foreground); flex-shrink: 0; }
-.admin-shop-control__week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
-.admin-shop-control__week span { display: grid; place-items: center; min-height: 30px; border-radius: 6px; background: var(--muted); color: var(--foreground); font-size: 12px; font-weight: 600; }
+.admin-shop-control__reopen small { color: var(--muted-foreground); font-size: 12px; }
 .admin-shop-control__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .admin-shop-control__tile > .admin-shop-control__actions { margin-top: auto; padding-top: 8px; }
 .admin-shop-control [data-slot="button"] { min-height: 44px; max-width: 100%; white-space: normal; }
@@ -69,3 +63,20 @@
 @container (min-width: 440px) { .admin-shop-control__time-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @container (min-width: 620px) { .admin-shop-control__overview { grid-template-columns: repeat(2, minmax(0, 1fr)); } .admin-shop-control__tile--status { grid-column: 1 / -1; } .admin-shop-control__list li { grid-template-columns: 64px minmax(0, 1fr) auto; } .admin-shop-control__list .admin-shop-control__actions { grid-column: auto; } }
 @container (min-width: 900px) { .admin-shop-control__overview { grid-template-columns: repeat(3, minmax(0, 1fr)); } .admin-shop-control__tile--status { grid-column: auto; } }
+
+.admin-shop-control__hours-range { font-size: clamp(18px, 2.4cqi, 23px); font-weight: 650; line-height: 1.35; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.admin-shop-control__status[data-slot="badge"] { height: auto; min-height: 26px; white-space: normal; }
+.admin-shop-control__calendar { width: 100%; max-width: 440px; min-width: 0; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); }
+.admin-shop-control__calendar-heading { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; }
+.admin-shop-control__calendar-heading [data-slot="button"] { width: 44px; }
+.admin-shop-control__calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.admin-shop-control__calendar-weekday { text-align: center; font-size: 11px; color: var(--muted-foreground); padding-block: 6px; }
+.admin-shop-control__calendar-grid .admin-shop-control__calendar-day { width: 100%; min-width: 0; padding: 0; height: 44px; border: 1px solid transparent; font-variant-numeric: tabular-nums; }
+.admin-shop-control__calendar-day[data-today="true"] { border-color: var(--ring); font-weight: 700; }
+.admin-shop-control__calendar-grid .admin-shop-control__calendar-day[data-closed="true"] { background: var(--muted); color: var(--foreground); border-color: currentColor; text-decoration: line-through; opacity: 1; }
+.admin-shop-control__calendar-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; color: var(--muted-foreground); font-size: 12px; }
+.admin-shop-control__calendar-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.admin-shop-control__calendar-legend i { width: 12px; height: 12px; border: 1px solid var(--ring); border-radius: 3px; }
+.admin-shop-control__calendar-legend i[data-kind="closed"] { background: var(--muted); border-color: var(--foreground); }
+.admin-shop-control__calendar > p { font-size: 12px; margin-top: 8px; }
+@container (max-width: 380px) { .admin-shop-control__calendar { padding: 6px; } .admin-shop-control__calendar-weekday { font-size: 10px; } .admin-shop-control__block { padding-inline: 12px; } }

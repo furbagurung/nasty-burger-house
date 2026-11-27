@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CalendarDays, Clock3, Store, Plus, Pencil, CalendarCheck, ChevronLeft, ChevronRight, PauseCircle, Play, Settings2, ShieldCheck, CircleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -105,12 +106,60 @@ export default function AdminShopControl() {
   const candidate = [...upcoming.filter(item => item.id !== draft.id), draft];
   const valid = isValidShopClosures(candidate) && !!saved && draft.start >= saved.today;
   const manual = saved && saved.mode !== "auto";
+  const available = !!saved && !loading && !error && saved.status.statusLabel !== "Ordering temporarily unavailable";
+  const isOpen = available && !!saved?.status.acceptingOrders;
+  const statusTitle = loading ? "Checking shop status…" : !available ? "Shop status unavailable" : isOpen ? "Shop is open" : "Shop is closed";
+  const sydneyClock = new Intl.DateTimeFormat("en-GB", { timeZone: "Australia/Sydney", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date());
+  const withinHours = !!saved && sydneyClock >= saved.hours.opensAt && sydneyClock < saved.hours.closesAt;
+  const toggleDisabled = disabled || !available || !!panel || !!confirm;
+  function changeAvailability(checked: boolean) {
+    if (!saved || toggleDisabled || checked === isOpen) return;
+    if (!checked) {
+      setPanel(null);
+      setConfirm("close-today");
+    } else {
+      setPanel(null);
+      setConfirm(active ? "reopen-active" : !withinHours && upcoming.length === 0 ? "force-open" : "reopen-now");
+    }
+  }
+  function confirmAvailability() {
+    if (!saved || !confirm) return;
+    if (confirm === "close-today") {
+      if (active) return;
+      const closure = { id: crypto.randomUUID(), start: saved.today, end: saved.today, reason: "Closed for today" };
+      void save({ mode: "auto", closures: [...upcoming, closure] }, "Shop closed for today.");
+    } else if (confirm === "reopen-active" && active) {
+      // Explicitly cancel only the active closure; retain future dates.
+      void save({ mode: "auto", closures: upcoming.filter(item => item.id !== active.id) }, "Current closure cancelled. Regular hours resumed.");
+    } else if (confirm === "reopen-now") {
+      // Resume the schedule rather than creating a persistent force-open override.
+      void save({ mode: "auto" }, "Regular hours resumed.");
+    } else {
+      void save(confirm === "resume" ? { mode: "auto" } : confirm === "force-open" ? { mode: "open" } : confirm === "force-closed" ? { mode: "closed" } : { closures: upcoming.filter(item => item.id !== confirm) }, "Shop availability updated.");
+    }
+  }
   return (
     <section className="admin-shop-control" aria-labelledby="shop-control-title" aria-busy={loading || saving}>
       <header className="admin-shop-control__heading">
         <div><h2 id="shop-control-title">Shop management</h2><p>Online ordering availability</p></div>
         <span className="admin-shop-control__timezone"><Clock3 size={16} aria-hidden="true" /> Sydney time</span>
       </header>
+      <div className="admin-shop-control__banner" data-tone={!available ? "unknown" : isOpen ? "open" : "closed"}>
+        <div className="admin-shop-control__banner-icon">{isOpen ? <Store size={24} aria-hidden="true" /> : <CircleAlert size={24} aria-hidden="true" />}</div>
+        <div className="admin-shop-control__banner-copy" role="status">
+          <strong>{statusTitle}</strong>
+          <p>{available ? saved?.status.notice : "Checking online ordering availability."}</p>
+        </div>
+        <div className="admin-shop-control__switch-wrap">
+          <Label htmlFor="shop-availability-switch">{isOpen ? "Open" : "Closed"}</Label>
+          <Switch id="shop-availability-switch" aria-label="Online ordering availability" checked={isOpen} disabled={toggleDisabled} onCheckedChange={changeAvailability} />
+        </div>
+      </div>
+      {(confirm === "close-today" || confirm === "reopen-active" || confirm === "reopen-now" || confirm === "force-open") && saved && <Card className="admin-shop-control__block admin-shop-control__quick-confirm" role="group" aria-label="Confirm shop status">
+        <h2>{confirm === "close-today" ? "Close for today?" : confirm === "reopen-active" ? "End the current closure?" : confirm === "force-open" ? "Open outside trading hours?" : "Resume regular hours?"}</h2>
+        <p>{confirm === "close-today" ? "New online orders stop now. Regular trading resumes after today and any consecutive scheduled closures." : confirm === "reopen-active" ? "This cancels the active closure, including any remaining days in it. Future closures stay scheduled." : confirm === "force-open" ? "Online orders will open now and stay open until you resume regular hours." : "The shop follows its regular hours. Outside trading hours it stays closed; use Open manually in More options if needed."}</p>
+        <div className="admin-shop-control__actions"><Button disabled={saving} onClick={confirmAvailability}>{confirm === "close-today" ? "Close for today" : confirm === "force-open" ? "Open manually" : "Resume regular hours"}</Button><Button disabled={saving} variant="outline" onClick={() => setConfirm(null)}>Cancel</Button></div>
+      </Card>}
       <div className="admin-shop-control__overview">
         <Card className="admin-shop-control__tile admin-shop-control__tile--status">
           <div className="admin-shop-control__tile-heading"><span className="admin-shop-control__icon" data-tone={saved?.status.acceptingOrders ? "open" : "neutral"}><Store size={24} aria-hidden="true" /></span><h3>Current status</h3></div>
@@ -166,7 +215,7 @@ export default function AdminShopControl() {
           <div><Label htmlFor="shop-closes-at">Closes</Label><Input id="shop-closes-at" type="time" value={hours.closesAt} onChange={e => setHours(h => ({ ...h, closesAt: e.target.value }))} /></div>
         </div>{!isValidShopHours(hours) && <p role="alert">Closing time must be later than opening time.</p>}<div className="admin-shop-control__actions"><Button disabled={!isValidShopHours(hours) || saving} onClick={() => void save({ hours }, "Trading hours saved.")}>Save hours</Button><Button variant="outline" onClick={() => setPanel(null)}>Cancel</Button></div></fieldset>
       </Card>}
-      {confirm && saved && <Card className="admin-shop-control__block" role="group" aria-label="Confirm change"><h2>{confirm === "resume" ? "Resume regular hours?" : confirm === "force-open" ? "Open outside trading hours?" : confirm === "force-closed" ? "Close until further notice?" : "Cancel this closure?"}</h2><p>{confirm.startsWith("force-") ? "This override stays active until you resume regular hours." : "Online orders will follow regular hours and any other scheduled closures."}</p><div className="admin-shop-control__actions"><Button disabled={saving} onClick={() => void save(confirm === "resume" ? { mode: "auto" } : confirm === "force-open" ? { mode: "open" } : confirm === "force-closed" ? { mode: "closed" } : { closures: upcoming.filter(item => item.id !== confirm) }, "Shop availability updated.")}>Confirm</Button><Button variant="outline" disabled={saving} onClick={() => setConfirm(null)}>Keep current settings</Button></div></Card>}
+      {confirm && !["close-today", "reopen-active", "reopen-now", "force-open"].includes(confirm) && saved && <Card className="admin-shop-control__block" role="group" aria-label="Confirm change"><h2>{confirm === "resume" ? "Resume regular hours?" : confirm === "force-open" ? "Open outside trading hours?" : confirm === "force-closed" ? "Close until further notice?" : "Cancel this closure?"}</h2><p>{confirm.startsWith("force-") ? "This override stays active until you resume regular hours." : "Online orders will follow regular hours and any other scheduled closures."}</p><div className="admin-shop-control__actions"><Button disabled={saving} onClick={confirmAvailability}>Confirm</Button><Button variant="outline" disabled={saving} onClick={() => setConfirm(null)}>Keep current settings</Button></div></Card>}
       <details className="admin-shop-control__block"><summary><Settings2 size={18} aria-hidden="true" />More options</summary><p>Manual overrides stay active until you resume regular hours. Use scheduled closures for automatic reopening.</p><div className="admin-shop-control__actions"><Button variant="outline" disabled={disabled || upcoming.length > 0} onClick={() => setConfirm("force-open")}>Open manually</Button><Button variant="outline" disabled={disabled || upcoming.length > 0} onClick={() => setConfirm("force-closed")}>Close until further notice</Button></div>{upcoming.length > 0 && <p>Cancel upcoming closures before using an indefinite override.</p>}</details>
       <p className="admin-shop-control__hint"><ShieldCheck size={18} aria-hidden="true" />Existing orders are unaffected. The menu remains available during closures.</p>
       {error && <><p className="admin-shop-control__error" role="alert"><CircleAlert size={16} aria-hidden="true" />{error}</p><Button variant="outline" disabled={saving || loading} onClick={() => { setPanel(null); setConfirm(null); setLoading(true); void load(); }}>Reload status</Button></>}

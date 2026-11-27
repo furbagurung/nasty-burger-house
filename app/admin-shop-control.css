@@ -80,3 +80,23 @@
 .admin-shop-control__calendar-legend i[data-kind="closed"] { background: var(--muted); border-color: var(--foreground); }
 .admin-shop-control__calendar > p { font-size: 12px; margin-top: 8px; }
 @container (max-width: 380px) { .admin-shop-control__calendar { padding: 6px; } .admin-shop-control__calendar-weekday { font-size: 10px; } .admin-shop-control__block { padding-inline: 12px; } }
+
+/* Live status banner and confirmed quick controls. */
+.admin-shop-control__banner { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; padding: 16px; border: 1px solid var(--border); border-inline-start: 4px solid var(--muted-foreground); background: var(--card); color: var(--card-foreground); border-radius: 12px; min-width: 0; }
+.admin-shop-control__banner[data-tone="closed"] { border-inline-start-color: var(--destructive); }
+.admin-shop-control__banner[data-tone="open"] { border-inline-start-color: #137441; }
+.dark .admin-shop-control__banner[data-tone="closed"] { border-inline-start-color: var(--nb-dark-danger); }
+.dark .admin-shop-control__banner[data-tone="open"] { border-inline-start-color: var(--nb-dark-success); }
+.admin-shop-control__banner-icon { display: grid; place-items: center; flex: 0 0 44px; height: 44px; border-radius: 10px; background: var(--muted); color: var(--foreground); }
+.admin-shop-control__banner[data-tone="closed"] .admin-shop-control__banner-icon { color: var(--destructive); }
+.dark .admin-shop-control__banner[data-tone="closed"] .admin-shop-control__banner-icon { color: var(--nb-dark-danger); }
+.admin-shop-control__banner[data-tone="open"] .admin-shop-control__banner-icon { color: #137441; }
+.dark .admin-shop-control__banner[data-tone="open"] .admin-shop-control__banner-icon { color: var(--nb-dark-success); }
+.admin-shop-control__banner-copy { flex: 1 1 180px; min-width: 0; }
+.admin-shop-control__banner-copy strong { font-size: 18px; line-height: 1.35; }
+.admin-shop-control__banner-copy p { margin: 3px 0 0; }
+.admin-shop-control__switch-wrap { display: flex; align-items: center; gap: 14px; min-height: 44px; padding: 0 10px; }
+.admin-shop-control__switch-wrap label { font-weight: 600; }
+.admin-shop-control__switch-wrap [data-slot="switch"] { border-color: var(--muted-foreground); }
+.admin-shop-control__switch-wrap [data-slot="switch"]:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+@container (max-width: 480px) { .admin-shop-control__switch-wrap { width: 100%; justify-content: space-between; border-top: 1px solid var(--border); padding: 10px 8px 0; } }

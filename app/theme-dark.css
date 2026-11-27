@@ -536,3 +536,34 @@
 .dark .admin-modern .admin-jobtracker-topbar-tools [data-slot="button"]:hover {
   background: var(--nb-dark-hover);
 }
+
+/* Shared appearance preference, visible switch in the admin top bar. */
+.admin-modern .admin-jobtracker-topbar-tools .nb-theme-switch--admin {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding-inline: 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--foreground);
+}
+.nb-theme-switch > svg { flex-shrink: 0; color: var(--muted-foreground); }
+.nb-theme-switch > svg[data-active="true"] { color: var(--foreground); }
+.nb-theme-switch [data-slot="switch"] { border-color: var(--muted-foreground); }
+.nb-theme-switch [data-slot="switch"]:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+.dark .admin-modern .admin-jobtracker-topbar-tools .nb-theme-switch--admin {
+  background: var(--nb-dark-raised);
+  border-color: var(--nb-dark-border);
+  color: var(--nb-dark-text-primary);
+}
+@media (max-width: 600px) {
+  .admin-modern .admin-jobtracker-topbar-tools .nb-theme-switch--admin { gap: 5px; padding-inline: 6px; }
+  .nb-theme-switch > svg { width: 14px; height: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nb-theme-switch [data-slot="switch"], .nb-theme-switch [data-slot="switch-thumb"] { transition: none; }
+}

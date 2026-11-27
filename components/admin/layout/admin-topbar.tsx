@@ -43,7 +43,7 @@ export function AdminTopbar({ pageTitle, groupLabel, adminEmail, mobileOpen, onO
           </div>
 
           <div className="admin-jobtracker-topbar-tools">
-            <ThemeToggle className="nb-theme-toggle--admin" />
+            <ThemeToggle variant="switch" className="nb-theme-switch--admin" />
             {onEnableAlerts && (
               <Button
                 type="button"

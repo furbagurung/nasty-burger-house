@@ -4,6 +4,7 @@ import { registerHooks } from 'node:module';
 import { pathToFileURL } from 'node:url';
 
 let mode = 'auto'; let opensAt = '11:30'; let closesAt = '21:45';
+let closures = [];
 let databaseFails = false; let authOk = true; let writes = 0;
 const client = { from() {
   let updated;
@@ -14,11 +15,12 @@ const client = { from() {
       if (databaseFails) return { error: { code: 'unavailable' } };
       if (updated) {
         mode = updated.mode;
+        closures = updated.closures ?? closures;
         opensAt = updated.opens_at ?? opensAt;
         closesAt = updated.closes_at ?? closesAt;
         writes++;
       }
-      return { data: { mode, opens_at: opensAt, closes_at: closesAt, updated_at: '2026-10-23T00:00:00Z' }, error: null };
+      return { data: { mode, closures, opens_at: opensAt, closes_at: closesAt, updated_at: '2026-10-23T00:00:00Z' }, error: null };
     },
   };
   return query;
@@ -89,4 +91,21 @@ test('updated schedule changes open/closed labels and cutoff times', () => {
   const after = getServiceStatus(settings, new Date('2026-10-23T09:15:00Z'));
   assert.equal(after.acceptingOrders, false);
   assert.match(after.notice, /8:15 PM/);
+});
+
+test("scheduled closure saves with version check and rejects overlaps", async () => {
+  databaseFails = false; authOk = true;
+  const { shopDate, nextShopDate } = await import("../app/lib/shop-control.ts");
+  const today = shopDate();
+  const item = { id: "today", start: today, end: today, reason: "Day off" };
+  const version = (await (await GET()).json()).updatedAt;
+  assert.equal((await PATCH(request({ mode: "auto", closures: [item], updatedAt: "stale" }))).status, 409);
+  assert.equal((await PATCH(request({ mode: "auto", closures: [item, {...item, id: "overlap"}], updatedAt: version }))).status, 422);
+  const response = await PATCH(request({ mode: "auto", closures: [item], updatedAt: version }));
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).status.acceptingOrders, false);
+  const { resolveShopStatus, readShopControl } = await import("../app/lib/shop-status.ts");
+  const next = nextShopDate(today);
+  const atNoonSydney = new Date(next + "T01:00:00Z");
+  assert.equal(resolveShopStatus(await readShopControl(), atNoonSydney).acceptingOrders, true);
 });

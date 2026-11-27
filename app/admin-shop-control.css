@@ -37,3 +37,20 @@
  .admin-shop-control__actions [data-slot="button"]:first-child { width: 100%; }
 }
 @media (max-width: 380px) { .admin-shop-control__time-grid { grid-template-columns: 1fr; } }
+
+.admin-shop-control__block { border-top: 1px solid var(--border); padding-top: 20px; margin-top: 20px; min-width: 0; }
+.admin-shop-control__block .admin-shop-control__heading > div { flex: 1 1 220px; min-width: 0; }
+.admin-shop-control__block .admin-shop-control__heading p, .admin-shop-control__list p { color: var(--muted-foreground); font-size: 14px; }
+.admin-shop-control__block [data-slot="button"] { min-height: 44px; max-width: 100%; white-space: normal; }
+.admin-shop-control__field { margin-top: 14px; max-width: 520px; }
+.admin-shop-control__field label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; }
+.admin-shop-control__field input { min-height: 44px; }
+.admin-shop-control__list { list-style: none; padding: 0; margin: 14px 0 0; }
+.admin-shop-control__list li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0; border-top: 1px solid var(--border); overflow-wrap: anywhere; }
+.admin-shop-control__list li > div:first-child { min-width: 0; flex: 1 1 220px; }
+.admin-shop-control__list .admin-shop-control__actions { margin: 0; }
+@media (max-width: 700px) {
+ .admin-shop-control__block .admin-shop-control__heading > button { width: 100%; }
+ .admin-shop-control__list .admin-shop-control__actions { width: 100%; }
+ .admin-shop-control__block .admin-shop-control__actions > button { flex: 1 1 140px; }
+}

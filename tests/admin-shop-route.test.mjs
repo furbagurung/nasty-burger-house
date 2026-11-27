@@ -25,12 +25,11 @@ test("Dashboard retains sales and no longer mounts the shop control", () => {
   assert.doesNotMatch(dashboard, /AdminShopControl|admin-shop-control-container/);
 });
 
-test("Shop controls preserve the authenticated settings endpoint and modes", () => {
+test("Shop controls use the authenticated endpoint and action-based workflow", () => {
   const control = source("app/components/admin-shop-control.tsx");
   assert.match(control, /fetch\("\/api\/admin\/shop-status"/);
   assert.match(control, /method: "PATCH"/);
-  assert.match(control, /body: JSON\.stringify\(\{ mode: selected, hours \}\)/);
-  for (const mode of ["auto", "open", "closed"]) {
-    assert.ok(control.includes(`mode: "${mode}"`));
-  }
+  assert.match(control, /Schedule closure/);
+  assert.match(control, /Resume regular hours/);
+  assert.doesNotMatch(control, /Ordering mode/);
 });

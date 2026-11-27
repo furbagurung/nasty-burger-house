@@ -116,3 +116,29 @@
 .admin-shop-control__calendar-grid .admin-shop-control__calendar-day[data-selected="true"]:not([data-closed="true"]) { background: var(--primary); color: var(--primary-foreground); font-weight: 600; }
 .admin-shop-control__sheet [data-slot="sheet-close"] { min-width: 44px; }
 @media (prefers-reduced-motion: reduce) { .admin-shop-control__sheet, .admin-shop-control__sheet * { transition-duration: 0.01ms !important; } }
+
+/* Compact widget dashboard: status, opening hours and closures. */
+.admin-shop-control__overview { align-items: start; gap: 14px; }
+@container (min-width: 560px) { .admin-shop-control__overview { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); } }
+.admin-shop-control .admin-shop-control__banner { flex-direction: row; gap: 12px; padding: 18px; border-radius: 16px; box-shadow: none; }
+.admin-shop-control__banner-copy strong { font-size: 21px; letter-spacing: -.025em; }
+.admin-shop-control__banner > [data-slot="dropdown-menu-trigger"] { flex: 0 0 44px; }
+.admin-shop-control__status-reset { flex-basis: 100%; padding-top: 4px; }
+.admin-shop-control__status-menu { min-width: 210px; font-family: var(--font-inter), Arial, sans-serif; }
+.admin-shop-control__status-menu [data-slot="dropdown-menu-item"] { min-height: 40px; }
+.admin-shop-control .admin-shop-control__tile { padding: 18px; border-radius: 16px; gap: 14px; }
+.admin-shop-control__tile-heading h3 { flex: 1; min-width: 0; font-size: 15px; }
+.admin-shop-control__tile-heading [data-slot="button"] { width: 44px; flex: 0 0 44px; }
+.admin-shop-control__hour-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.admin-shop-control__hour-pair > div { display: grid; align-content: start; gap: 6px; padding: 12px; background: var(--muted); border-radius: 11px; min-width: 0; }
+.admin-shop-control__hour-pair svg, .admin-shop-control__hour-pair span { color: var(--muted-foreground); }
+.admin-shop-control__hour-pair span { font-size: 12px; }
+.admin-shop-control__hour-pair strong { font-size: clamp(16px, 2.4cqi, 24px); line-height: 1.25; letter-spacing: -.035em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.admin-shop-control__count { display: grid; place-items: center; min-width: 32px; height: 32px; padding-inline: 7px; border-radius: 9px; background: var(--muted); color: var(--foreground); font-size: 18px; font-weight: 650; }
+.admin-shop-control__tile--closures > .admin-shop-control__actions { margin-top: 0; padding-top: 0; }
+.admin-shop-control__tile--closures .admin-shop-control__empty { border: 0; background: var(--muted); border-radius: 11px; padding: 14px; gap: 4px; }
+.admin-shop-control__tile--closures .admin-shop-control__empty-icon { background: transparent; margin: 0; }
+.admin-shop-control__tile--closures .admin-shop-control__list li { grid-template-columns: 48px minmax(0, 1fr); }
+.admin-shop-control__tile--closures .admin-shop-control__list .admin-shop-control__actions { grid-column: 1 / -1; }
+.admin-shop-control__tile--closures .admin-shop-control__list .admin-shop-control__actions button { width: auto; }
+@container (max-width: 480px) { .admin-shop-control__banner-copy { flex-basis: 140px; } .admin-shop-control__switch-wrap { width: auto; flex: 1; border-top: 0; padding: 0 8px; justify-content: flex-end; } .admin-shop-control__status-reset [data-slot="button"] { width: 100%; } }

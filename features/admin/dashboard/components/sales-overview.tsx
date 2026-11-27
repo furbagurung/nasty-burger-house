@@ -1,6 +1,8 @@
 "use client";
 
-import { BadgeDollarSign, ReceiptText, ShoppingBag, Users } from "lucide-react";
+import { BadgeDollarSign, ReceiptText, ShoppingBag, Users, Utensils } from "lucide-react";
+import Image from "next/image";
+import { menuItems } from "@/app/data/menu";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import type { AdminAnalyticsData } from "@/app/lib/admin-analytics";
 import type { SalesRange } from "@/app/lib/admin-sales-range";
@@ -15,6 +17,18 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
+
+const normalizeItemName = (name: string) => name.trim().toLowerCase().replace(/\s+/g, " ");
+const productImages = new Map(menuItems.filter(item => item.image).map(item => [normalizeItemName(item.name), item.image]));
+
+function ProductThumbnail({ name }: { name: string }) {
+  const image = productImages.get(normalizeItemName(name));
+  return (
+    <span className="admin-sales-product-thumbnail" aria-hidden="true">
+      {image ? <Image src={image} alt="" width={44} height={44} sizes="44px" loading="lazy" /> : <Utensils size={18} />}
+    </span>
+  );
+}
 
 const revenueChartConfig = {
   revenue: {
@@ -251,13 +265,11 @@ export default function SalesOverview({ data, selection }: { data: AdminAnalytic
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.topItems.map((item, index) => (
+                {data.topItems.map((item) => (
                   <TableRow key={item.name}>
                     <TableCell>
                       <div className="admin-sales-product-identity">
-                        <span className="admin-sales-product-rank">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
+                        <ProductThumbnail name={item.name} />
                         <div className="admin-sales-product-details">
                           <strong title={item.name}>{item.name}</strong>
                           <div className="admin-sales-product-track" aria-hidden="true">
